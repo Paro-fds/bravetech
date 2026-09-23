@@ -1,0 +1,4 @@
+#!/bin/sh
+# Stamps `updated:` on staged markdown. See .githooks/stamp_updated.py.
+# Enabled by `git config core.hooksPath .githooks` - AGENTS.md section 9.
+python .githooks/stamp_updated.py || exit 1
