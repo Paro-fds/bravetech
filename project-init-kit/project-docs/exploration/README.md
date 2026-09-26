@@ -3,14 +3,14 @@ created: 2026-09-10T19:30:13Z
 updated: 2026-09-11T14:49:25Z
 ---
 
-# `exploration/` — raw research, kept as it arrived
+# `exploration/` — recherche brute, conservée telle quelle
 
-Whatever you gathered before deciding: a research dump, a competitor's docs, notes from a brainstorm, a model's long answer to an open question.
+Tout ce que tu as collecté avant de décider : une mémoire de recherche, la documentation d'un concurrent, des notes de brainstorming, une réponse longue d'un modèle à une question ouverte.
 
-**Two rules.**
+**Deux règles.**
 
-**Kept as-is, never tidied.** The value is that it is unedited. Once polished it becomes a document that *looks* decided, and a reader can no longer tell evidence from guess.
+**Conservée telle quelle, jamais nettoyée.** La valeur est qu'elle n'est pas éditée. Une fois polie, elle devient un document qui *semble* décidé, et un lecteur ne peut plus distinguer la preuve de l'hypothèse.
 
-**Never cited as a decision.** Nothing in `PRD.md`, `SOLUTION_DESIGN.md` or a story may point here to justify a choice. A decision lives in the document that owns it — `SOLUTION_DESIGN.md` §14 for an architecture decision, with its rejected alternatives. If something in here is load-bearing, promote it to a real decision first.
+**Jamais citée comme décision.** Rien dans `PRD.md`, `SOLUTION_DESIGN.md` ou une histoire ne peut pointer ici pour justifier un choix. Une décision vit dans le document qui lui appartient — `SOLUTION_DESIGN.md` §14 pour une décision d'architecture, avec ses alternatives rejetées. Si quelque chose ici est fondamental, promets-le d'abord en vraie décision.
 
-Delete a file once it has been fully absorbed into a decision, or keep it as provenance. Either is fine. Treating it as canonical is not.
+Supprime un fichier une fois qu'il a été complètement absorbé dans une décision, ou garde-le comme provenance. Les deux sont acceptables. Le traiter comme canonique ne l'est pas.

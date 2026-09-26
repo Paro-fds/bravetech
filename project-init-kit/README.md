@@ -3,151 +3,151 @@ created: 2026-09-08T17:38:40Z
 updated: 2026-09-16T20:11:50Z
 ---
 
-# Project Init Kit
+# Kit d'initialisation du projet
 
-A documentation-first starting structure for a new software project, built with **Specification-Driven Development (SDD)**: you document context *before* you code, rather than improvising it mid-conversation with an agent.
+Une structure de départ orientée documentation pour un nouveau projet logiciel, construite avec le **Développement piloté par les spécifications (Specification-Driven Development, SDD)** : on documente le contexte *avant* d'écrire le code, plutôt que d'improviser au milieu d'une conversation avec un agent.
 
-> **This folder is self-contained.** Everything needed to understand and use this structure is included inside it — nothing to fetch from elsewhere. Copy it as-is into your own new project's workspace.
+> **Ce dossier est autonome.** Tout ce qu'il faut pour comprendre et utiliser cette structure est inclus ici — rien à récupérer ailleurs. Copie-le tel quel dans l'espace de travail de ton nouveau projet.
 
-## Install it, in four commands
+## Installe-le en quatre commandes
 
 ```bash
-# from inside your new, empty project directory
-cp -r /path/to/project-init-kit/. .      # the trailing /. is what copies .claude and .githooks
-git init                                  # if you have not already
-git config core.hooksPath .githooks       # stamps `updated:` on every markdown commit
-rm -rf project-init-kit                   # if you copied the folder rather than its contents
+# depuis le répertoire vide de ton nouveau projet
+cp -r /chemin/vers/project-init-kit/. .      # le ./ final est ce qui copie .claude et .githooks
+git init                                     # si tu ne l'as pas déjà fait
+git config core.hooksPath .githooks          # ajoute une balise `updated:` à chaque commit de markdown
+rm -rf project-init-kit                      # si tu as copié le dossier au lieu de son contenu
 ```
 
-**The trailing `/.` is the whole trick, and getting it wrong is the most common way this goes silently wrong.** `cp -r project-init-kit/ .` skips the dotted folders on most systems, so you lose `.claude/` (every skill) and `.githooks/` (the timestamp stamping) — and nothing announces it. On Windows, copying in Explorer needs *Show hidden files* turned on first.
+**Le `/.` final est tout le secret, et le faire faux est la manière la plus courante de tout casser sans bruit.** `cp -r project-init-kit/ .` ignore les dossiers cachés sur la plupart des systèmes, ce qui fait perdre `.claude/` (toutes les compétences) et `.githooks/` (le marquage des horodatages) — et rien ne l'annonce. Sous Windows, pour copier depuis l'Explorateur, il faut d'abord activer *Afficher les fichiers cachés*.
 
-**Check it worked:** `ls -a` should show `.claude` and `.githooks`. In Claude Code, `/help` should list the skills below.
+**Vérifie que ça a fonctionné :** `ls -a` doit afficher `.claude` et `.githooks`. Dans Claude Code, `/help` doit lister les compétences ci-dessous.
 
-Then read `project-docs/_ARCHITECTURE_EXPLAINED.md`, and paste `STARTER_PROMPT.md` into your agent.
+Ensuite, lis `project-docs/_ARCHITECTURE_EXPLAINED.md`, puis colle `STARTER_PROMPT.md` dans ton agent.
 
-## Why this exists
+## Pourquoi cela existe
 
-Most agent-assisted projects drift because the agent is given the whole product in one conversation, re-derived from scratch every session. This kit is the opposite bet: a small, ordered set of documents that give an agent the right context at the right time, so a session can start productive instead of re-explaining the product every time.
+La plupart des projets assistés par un agent dérivent parce que l'agent reçoit tout le produit dans une seule conversation, puis le redéduit à neuf reprises à chaque session. Ce kit suit l'approche opposée : un petit ensemble ordonné de documents qui donne à l'agent le bon contexte au bon moment, pour qu'une session puisse démarrer de manière productive au lieu de réexpliquer le produit à chaque fois.
 
-It also captures a real architectural pattern (layered backend structure — see `project-docs/learnings/03-backend-layered-architecture-template.md`) worth reusing on any new backend service, not just documented once and forgotten.
+Il capture aussi un vrai schéma architectural (structure backend en couches — voir `project-docs/learnings/03-backend-layered-architecture-template.md`) utile à réutiliser pour n'importe quel nouveau service backend, et non pas seulement documenté puis oublié.
 
-## What's in this kit
+## Ce qu'il y a dans ce kit
 
 ```text
 project-init-kit/
-├── README.md                        <- this file
-├── STARTER_PROMPT.md                <- the prompt to paste into your agent to begin
-├── AGENTS.md / CLAUDE.md            <- built last, a derived summary of everything below
-├── project-docs/                    <- EVERY document about building the project
-│   ├── _ARCHITECTURE_EXPLAINED.md   <- 0. READ first — how the code is split, and why
-│   ├── PRD.md                       <- 1. fill in first
+├── README.md                        <- ce fichier
+├── STARTER_PROMPT.md                <- le prompt à coller dans ton agent pour commencer
+├── AGENTS.md / CLAUDE.md            <- construit en dernier, résumé dérivé de tout ce qui suit
+├── project-docs/                    <- TOUS les documents sur la construction du projet
+│   ├── _ARCHITECTURE_EXPLAINED.md   <- 0. À LIRE EN PREMIER — comment le code est divisé, et pourquoi
+│   ├── PRD.md                       <- 1. remplir en premier
 │   ├── NFR.md                       <- 2.
 │   ├── SOLUTION_DESIGN.md           <- 3.
 │   ├── PLAN.md                      <- 4.
-│   ├── GLOSSARY.md                  <- 5. finalized last
-│   ├── PROJECT_WORKFLOW.md          <- 6. which document to touch, and when
-│   ├── templates/user-story.md      <- copy this for every story
+│   ├── GLOSSARY.md                  <- 5. finalisé en dernier
+│   ├── PROJECT_WORKFLOW.md          <- 6. quel document modifier et quand
+│   ├── templates/user-story.md      <- copier ceci pour chaque histoire
 │   ├── execution/
-│   │   ├── EPIC_EXECUTION.md        <- tracker, fills itself in as work happens
-│   │   └── epic-NNN-slug/           <- one folder per Epic, holding its US-NNN.md files
-│   ├── functional-specs/README.md   <- no fixed template, written once real behaviour ships
-│   ├── technical-specs/README.md    <- same, implementation side
-│   ├── reviews/README.md            <- what you believed that turned out false
-│   ├── learnings/README.md          <- practice that transfers to your next project
-│   │   └── 01-, 02-, 03-*.md        <- three worked examples, shipped; yours start at 04
-│   └── exploration/                 <- raw research, kept as-is, never cited as decided
-├── .githooks/                       <- pre-commit, stamps `updated:` on staged markdown
-│                                       enable once: git config core.hooksPath .githooks
-└── .claude/skills/                  <- executable Claude Code skills, see below
-    ├── bootstrap-project-docs/      <- the starter prompt, as a skill
-    ├── user-story/                  <- create/refine/update/delete a user story
-    ├── epic/                        <- create/refine/close an Epic
-    ├── get-work-status/             <- read-only "where are we" status readout
-    ├── check-project-docs/          <- audits the foundational docs for drift
-    ├── document-learning/           <- writes a project-docs/learnings/ file
-    ├── prepare-compact/             <- makes the committed files a sufficient handoff
-    ├── scaffold-backend-service/    <- scaffolds a new backend service (+ 12 template files)
-    └── scaffold-frontend-app/       <- scaffolds a React + TypeScript frontend
+│   │   ├── EPIC_EXECUTION.md        <- tableau de suivi, se remplit au fur et à mesure du travail
+│   │   └── epic-NNN-slug/           <- un dossier par Épic, contenant ses fichiers US-NNN.md
+│   ├── functional-specs/README.md   <- pas de template fixe, rédigé une fois que le comportement réel est en place
+│   ├── technical-specs/README.md    <- idem, côté implémentation
+│   ├── reviews/README.md            <- ce que tu croyais vrai et qui s'est finalement révélé faux
+│   ├── learnings/README.md          <- pratiques réutilisables pour ton prochain projet
+│   │   └── 01-, 02-, 03-*.md        <- trois exemples concrets livrés ; les tiens commencent à 04
+│   └── exploration/                 <- recherches brutes, conservées telles quelles, jamais citées comme décision finale
+├── .githooks/                       <- pre-commit, ajoute `updated:` sur les markdown indexés
+│                                       activer une fois : git config core.hooksPath .githooks
+└── .claude/skills/                  <- compétences exécutables de Claude Code, voir ci-dessous
+    ├── bootstrap-project-docs/      <- le prompt de démarrage, sous forme de compétence
+    ├── user-story/                  <- créer/affiner/mettre à jour/supprimer une user story
+    ├── epic/                        <- créer/affiner/fermer un Epic
+    ├── get-work-status/             <- lecture seule : « où en sommes-nous »
+    ├── check-project-docs/          <- vérifie les documents de fondation pour les dérives
+    ├── document-learning/           <- écrit un fichier dans project-docs/learnings/ de la bonne manière
+    ├── prepare-compact/             <- pousse le vrai travail de la session dans les fichiers d'histoire/suivi/revue, puis vérifie le chemin de reprise
+    ├── scaffold-backend-service/    <- crée la structure et le squelette d'un nouveau service backend (+ 12 fichiers modèles)
+    └── scaffold-frontend-app/       <- crée une app frontend React + TypeScript
 ```
 
-## The one rule the layout enforces
+## La règle unique que le layout impose
 
-**`project-docs/` holds every document about *building* the project, and nothing that *is* the product.** The repository root keeps only what a first session must read without being told: `README.md`, `AGENTS.md`, `CLAUDE.md`.
+**`project-docs/` contient tous les documents sur la *construction* du projet, et rien qui *est* le produit.** La racine du dépôt ne garde que ce qu'une première session doit lire sans avoir à être guidée : `README.md`, `AGENTS.md`, `CLAUDE.md`.
 
-That split is worth more than it looks, and it was installed on the source project only after the absence of it caused a real failure: product docs, process docs, teaching material, review records, tooling and this kit all shared a root and one catch-all folder with no rule about which was which. A session then asked what closing an Epic involved, found nothing, and **proposed inventing a procedure that already existed** two folders away. That is not a lookup failure, it is a structural one — and it is the kind that gets worse silently, because everything still works, it just cannot be found.
+Cette séparation vaut plus qu'elle n'en a l'air, et elle a été installée dans le projet source seulement après qu'une absence réelle ait causé un échec : documents de produit, documents de processus, matériel pédagogique, journaux de revue, outils et ce kit partageaient tous la même racine et un seul dossier fourre-tout sans règle sur ce qui appartenait à quoi. Une session a ensuite demandé ce que signifiait clôturer un Epic, n'a trouvé rien, et **a proposé d'inventer une procédure qui existait déjà** deux dossiers plus loin. Ce n'est pas un problème de recherche, c'est un problème structurel — et c'est le type de problème qui s'aggrave en silence, parce que tout fonctionne encore, il suffit juste de ne pas trouver l'information.
 
-**`project-docs/` is the name the source project uses too, and keeping it is worth more than it looks.** That project had named the folder after itself — a word from its author's own language — for exactly the reason you might want to do the same: a folder named after the project reads as a signature, and a folder named `docs` reads as ignorable.
+**`project-docs/` est aussi le nom utilisé par le projet source, et le conserver vaut plus qu'il n'y paraît.** Ce projet avait nommé le dossier d'après lui-même — un mot issu de sa propre langue — pour exactement la même raison que tu pourrais vouloir faire pareil : un dossier nommé d'après le projet se lit comme une signature, alors qu'un dossier nommé `docs` se lit comme quelque chose d'ignorable.
 
-It was renamed anyway, and the reason is worth one paragraph before you decide. A name that has to be explained cannot do a folder's first job, which is telling a stranger what is inside. And the moment the kit and the project it came from share a name, **every path in every document transfers between them unchanged** — there is nothing to translate, and so nothing to drift. That mattered here: an earlier version of this kit shipped one folder layout while the skills bundled inside it assumed another, and the half that was wrong was the half a student reads first.
+On l'a néanmoins renommé, et la raison vaut un paragraphe avant que tu décides. Un nom qu'il faut expliquer ne peut pas remplir la première mission d'un dossier, qui est de dire à un étranger ce qu'il contient. Et dès que le kit et le projet dont il est issu partagent le même nom, **tous les chemins dans tous les documents se transfèrent sans changement** — il n'y a rien à traduire, donc rien à dériver. C'était important ici : une version précédente de ce kit livrait une structure de dossiers alors que les compétences qui y étaient intégrées supposaient une autre structure, et la partie qui était fausse était exactement celle qu'un étudiant lit en premier.
 
-So rename it if you have a reason. If you do, grep once for `project-docs/` and fix the pointers — a few dozen, all in markdown — and know that you are taking on the translation the shared name removes.
+Renomme-le donc si tu as une raison. Si tu le fais, cherche une fois `project-docs/` et corrige les liens — quelques dizaines, tous dans du markdown — et sache que tu prends en charge la traduction que le nom partagé supprimait.
 
-**No leading dot**, whatever you call it. `.project-docs` would be hidden by `ls`, by Explorer, by most editor trees and by many search tools. `.claude/` is dotted because a machine owns it; these documents are for a human.
+**Pas de point en tête**, quel que soit le nom que tu choisis. `.project-docs` serait masqué par `ls`, par l'Explorateur, par la plupart des arbres d'éditeur et par de nombreux outils de recherche. `.claude/` est pointé parce qu'une machine le possède ; ces documents sont pour un humain.
 
-## The skills, and what each is for
+## Les compétences, et à quoi elles servent
 
-These are [Claude Code skills](https://code.claude.com/docs/en/skills) — they load automatically when their description matches what's being asked, or can be invoked by name. All nine assume this kit's document/story conventions.
+Ce sont des [compétences Claude Code](https://code.claude.com/docs/en/skills) — elles se chargent automatiquement lorsque leur description correspond à ce qui est demandé, ou peuvent être invoquées par nom. Les neuf supposent les conventions de documents et d'histoires de ce kit.
 
-They were extracted from a real project's working setup and then genericized: project-specific vocabulary, precedents and findings taken out, and `[OWNER]/[REPO]`-style placeholders left anywhere they touch GitHub. **What survives is the procedure and the reason for it** — where a skill says *this is the step that fails most often*, that is a real failure someone had, not a hypothetical.
+Elles ont été extraites du fonctionnement d'un vrai projet puis généralisées : vocabulaire propre au projet, précédents et conclusions retirés, et des emplacements de type `[OWNER]/[REPO]` laissés partout où elles touchent GitHub. **Ce qui reste est la procédure et sa raison d'être** — quand une compétence dit que *c'est l'étape qui échoue le plus souvent*, c'est un échec réel qu'une personne a vécu, pas une hypothèse.
 
-| Skill | Use it to... |
+| Compétence | Utilise-la pour... |
 |---|---|
-| `bootstrap-project-docs` | Interview you section by section to fill in `PRD.md` → `NFR.md` → `SOLUTION_DESIGN.md` → `PLAN.md` → `GLOSSARY.md` → `PROJECT_WORKFLOW.md`. Same job as `STARTER_PROMPT.md`, loads automatically. |
-| `user-story` | Create a new `US-NNN.md` (+ GitHub issue), **refine** one before building it, update one, or delete one — the day-to-day unit of work. |
-| `epic` | Create a new Epic, Refine one before its stories are written, or Close one (consolidation: closeout doc, functional+technical spec pair, staleness check, Milestone close). |
-| `get-work-status` | A read-only "where are we" readout: current Epic, last Done story, next story to build, unresolved items from the last session. |
-| `check-project-docs` | Audit `PRD.md`/`NFR.md`/`SOLUTION_DESIGN.md`/`CLAUDE.md`/`GLOSSARY.md` against what's actually been built, and for retired terms creeping back in. Reports only, never auto-edits. |
-| `document-learning` | Write or update a `project-docs/learnings/` file the right way — checking first that it *is* a learning rather than a review, and including the real failures rather than only the clean outcome. |
-| `prepare-compact` | Push the session's real work into the story/tracker/review files, then check the documented resume path still names the next action — so the committed tree *is* the handoff. Writes no handoff file of its own, and doesn't run `/compact`. |
-| `scaffold-backend-service` | Lay down a new FastAPI + SQLAlchemy service's folder structure and boilerplate, using the Clean Architecture layering from `_ARCHITECTURE_EXPLAINED.md` Part 1. Requires the project's documents to already exist. |
-| `scaffold-frontend-app` | Lay down a React + TypeScript + Vite frontend on Feature-Sliced Design, with Tailwind, React Router, TanStack Query, Zustand, the Steiger architecture linter and Vitest wired up — and the linter *proven* to fail on a violation before it reports success. Same precondition. |
+| `bootstrap-project-docs` | Te questionner section par section pour remplir `PRD.md` → `NFR.md` → `SOLUTION_DESIGN.md` → `PLAN.md` → `GLOSSARY.md` → `PROJECT_WORKFLOW.md`. Même rôle que `STARTER_PROMPT.md`, se charge automatiquement. |
+| `user-story` | Créer une nouvelle `US-NNN.md` (+ issue GitHub), **l'affiner** avant de la construire, la mettre à jour ou la supprimer — l'unité de travail du quotidien. |
+| `epic` | Créer un nouvel Epic, l'affiner avant d'écrire ses histoires, ou le clôturer (consolidation : document de clôture, paire de spécifications fonctionnelle + technique, vérification de périmé, fermeture de milestone). |
+| `get-work-status` | Un aperçu lecture seule de « où on en est » : Epic actuel, dernière histoire terminée, prochaine histoire à construire, éléments non résolus de la dernière session. |
+| `check-project-docs` | Auditer `PRD.md`/`NFR.md`/`SOLUTION_DESIGN.md`/`CLAUDE.md`/`GLOSSARY.md` par rapport à ce qui a réellement été construit, et repérer les termes obsolètes qui réapparaissent. Ne fait que rapporter, ne modifie jamais automatiquement. |
+| `document-learning` | Écrire ou mettre à jour un fichier dans `project-docs/learnings/` de la bonne manière — en vérifiant d'abord qu'il s'agit bien d'un apprentissage et non d'une revue, et en incluant les vrais échecs plutôt que seulement le résultat propre. |
+| `prepare-compact` | Pousser le vrai travail de la session dans les fichiers d'histoire/suivi/revue, puis vérifier que le chemin de reprise documenté nomme bien la prochaine action — de sorte que l'arbre validé soit bien le transfert de contexte. N'écrit aucun fichier de transfert et n'exécute pas `/compact`. |
+| `scaffold-backend-service` | Poser la structure de dossier et le squelette d'un nouveau service FastAPI + SQLAlchemy, en utilisant le découpage Clean Architecture de la partie 1 de `_ARCHITECTURE_EXPLAINED.md`. Nécessite que les documents du projet existent déjà. |
+| `scaffold-frontend-app` | Poser une application frontend React + TypeScript + Vite selon Feature-Sliced Design, avec Tailwind, React Router, TanStack Query, Zustand, le linter d'architecture Steiger et Vitest configurés — et le linter *prouvé* comme en échec sur une violation avant de rapporter une réussite. Même prérequis. |
 
-**Two of the nine scaffold code rather than documents** — `scaffold-backend-service` and `scaffold-frontend-app` — and both refuse to run until the documents exist. That refusal is the point: scaffolding first means choosing your layers before you know your domain.
+**Deux des neuf génèrent du code plutôt que de la documentation** — `scaffold-backend-service` et `scaffold-frontend-app` — et les deux refusent de s'exécuter tant que les documents n'existent pas. C'est précisément le but : scaffolder d'abord signifie choisir tes couches avant de connaître ton domaine.
 
-**One-time setup**: `user-story` and `epic` reference `[OWNER]/[REPO]` and, if you use a GitHub Project board, `[TRACKER_PROJECT_NUMBER]`/`[Tracker Project Name]` — open those two files once and fill in your actual values (or adapt the GitHub-specific steps to whatever tracker you're using, per `project-docs/PROJECT_WORKFLOW.md` § Work Tracking).
+**Configuration unique** : `user-story` et `epic` font référence à `[OWNER]/[REPO]` et, si tu utilises un tableau GitHub Project, à `[TRACKER_PROJECT_NUMBER]`/`[Tracker Project Name]` — ouvre ces deux fichiers une fois et remplis tes vraies valeurs (ou adapte les étapes spécifiques à GitHub à ce que tu utilises comme suivi, selon `project-docs/PROJECT_WORKFLOW.md` § Work Tracking).
 
-**Why the *documentation* has this shape**: `project-docs/learnings/01-documentation-structure-template.md` (full methodology, naming conventions) and its annex `02-document-section-reflection-questions.md` (the section-by-section reflection questions, the same ones already embedded in each document above).
+**Pourquoi la *documentation* a cette forme** : `project-docs/learnings/01-documentation-structure-template.md` (méthodologie complète, conventions de nommage) et son annexe `02-document-section-reflection-questions.md` (les questions de réflexion section par section, exactement les mêmes déjà intégrées dans chaque document ci-dessus).
 
-**Why the *code* has this shape**: `project-docs/_ARCHITECTURE_EXPLAINED.md` — **Clean Architecture** on the backend and **Feature-Sliced Design** on the frontend, the one rule behind each, the naming conventions, the recommended stack for both halves, and a checked reading list for going further. `03-backend-layered-architecture-template.md` carries the backend's longer reasoning.
+**Pourquoi le *code* a cette forme** : `project-docs/_ARCHITECTURE_EXPLAINED.md` — **Clean Architecture** côté backend et **Feature-Sliced Design** côté frontend, la règle unique derrière chacun, les conventions de nommage, la stack recommandée pour les deux parties, et une liste de lecture vérifiée pour aller plus loin. `03-backend-layered-architecture-template.md` porte la réflexion plus longue côté backend.
 
-Those three learnings ship as **worked examples of the form**, which is why they are numbered `01`–`03` and your own start at `04`.
+Ces trois apprentissages sont livrés comme **exemples concrets de forme**, c'est pourquoi ils sont numérotés `01` à `03` et les tiens commencent à `04`.
 
-## The order you fill things in — not alphabetical order
+## L'ordre dans lequel tu remplis les documents — et pas l'ordre alphabétique
 
 ```text
-PRD.md                   <- what, for whom, why — THE FIRST document, depends on nothing
+PRD.md                   <- ce qu'on veut, pour qui, pourquoi — LE PREMIER document, ne dépend de rien
        ↓
-NFR.md                   <- what quality bar (can move in parallel with the PRD)
+NFR.md                   <- quelle barre de qualité (peut avancer en parallèle avec le PRD)
        ↓
-SOLUTION_DESIGN.md        <- how it's built, in what Workstreams
+SOLUTION_DESIGN.md        <- comment c'est construit, dans quels Workstreams
        ↓
-PLAN.md                   <- in what order, grouped into what Epics
+PLAN.md                   <- dans quel ordre, regroupé par quels Epics
        ↓
-GLOSSARY.md               <- the vocabulary — starts as soon as a first PRD exists, FINALIZED last
+GLOSSARY.md               <- le vocabulaire — commence dès qu'un premier PRD existe, FINALISÉ en dernier
        ↓
-project-docs/PROJECT_WORKFLOW.md  <- which document to touch, and when
+project-docs/PROJECT_WORKFLOW.md  <- quel document modifier et quand
 ```
 
-`_ARCHITECTURE_EXPLAINED.md` is not in that sequence because **you do not fill it in — you read it, then decide.** It already contains answers. What it asks of you is that you accept or replace each one deliberately, and record what you chose in `SOLUTION_DESIGN.md` §5 where the rest of your architecture lives.
+`_ARCHITECTURE_EXPLAINED.md` n'est pas dans cette séquence parce que **tu ne le remplis pas — tu le lis, puis tu décides.** Il contient déjà des réponses. Ce qu'il te demande, c'est d'accepter ou de remplacer chaque réponse délibérément, puis d'enregistrer ton choix dans `SOLUTION_DESIGN.md` §5, où vit le reste de ton architecture.
 
-**Why the Glossary isn't first, despite the intuition**: without knowing yet what the product is, you don't know which vocabulary deserves an entry. The Glossary can start filling in as soon as a first PRD draft exists, but it only gets finalized once `PLAN.md` is done — that's when there's enough material to actually know what the product is. Its "Workstream, Epic, and Milestone" section is the exception: generic, product-independent, already filled in from day one.
+**Pourquoi le Glossary n'est pas en premier, malgré l'intuition** : sans savoir encore ce qu'est le produit, tu ne sais pas quel vocabulaire mérite une entrée. Le Glossary peut commencer à se remplir dès qu'une première version de PRD existe, mais il n'est finalisé qu'une fois `PLAN.md` terminé — c'est à ce moment qu'il y a assez de matière pour savoir réellement ce que le produit est. Sa section « Workstream, Epic et Milestone » est l'exception : générique, indépendante du produit, déjà remplie dès le premier jour.
 
-`AGENTS.md` / `CLAUDE.md` and everything under `project-docs/execution/`, `functional-specs/`, `technical-specs/` and `reviews/` **don't get filled in now**: `AGENTS.md`/`CLAUDE.md` are the *derived* summary of everything else, built last; the rest fills in once there is real work to record, not before.
+`AGENTS.md` / `CLAUDE.md` et tout ce qui se trouve sous `project-docs/execution/`, `functional-specs/`, `technical-specs/` et `reviews/` **ne sont pas remplis maintenant** : `AGENTS.md`/`CLAUDE.md` sont le résumé *dérivé* de tout le reste, construit en dernier ; le reste se remplit une fois qu'il y a un vrai travail à consigner, pas avant.
 
-## Try the PRD without an agent first
+## Essaie le PRD sans agent d'abord
 
-**For `PRD.md` specifically**: before opening an agent at all, take the time to answer the reflection questions yourself — on paper, in a draft, or directly in the file. This isn't a formality: it's the point of the exercise. An agent can help *formalize* an answer you already have in mind, but if you ask it to supply the answer instead, you skip the actual skill this document is meant to build: your own capacity to think through and plan the thing you're building.
+**Pour `PRD.md` uniquement** : avant d'ouvrir un agent, prends le temps de répondre toi-même aux questions de réflexion — sur papier, dans un brouillon ou directement dans le fichier. Ce n'est pas une formalité : c'est le but de l'exercice. Un agent peut aider à **formaliser** une réponse que tu as déjà en tête, mais si tu lui demandes de la fournir à ta place, tu rates la vraie compétence que ce document est censé développer : ta propre capacité à penser et à planifier ce que tu construis.
 
-Once the PRD is genuinely your own thinking, lean on the agent more for the documents that follow (`NFR.md`, `SOLUTION_DESIGN.md`, `PLAN.md`...) — that help is more legitimate once the foundational thinking is already done, on the document that defines what you're building.
+Une fois que le PRD est vraiment ta propre réflexion, repose davantage sur l'agent pour les documents qui suivent (`NFR.md`, `SOLUTION_DESIGN.md`, `PLAN.md`...) — cette aide est plus légitime une fois que la réflexion fondatrice est déjà faite, sur le document qui définit ce que tu construis.
 
-## Filling in the documents with an agent
+## Remplir les documents avec un agent
 
-Copy the prompt from **`STARTER_PROMPT.md`** into your agent (works with any tool — Claude Code, or any other agentic coding tool). It walks the agent through asking each document's questions, one section at a time, in the right order, without ever inventing an answer for you. If you're using Claude Code, the skill `.claude/skills/bootstrap-project-docs/SKILL.md` does the same thing and loads automatically.
+Copie le prompt depuis **`STARTER_PROMPT.md`** dans ton agent (ça marche avec n'importe quel outil — Claude Code ou tout autre outil de codage agentique). Il guide l'agent pour poser les questions de chaque document, une section à la fois, dans le bon ordre, sans jamais inventer une réponse à ta place. Si tu utilises Claude Code, la compétence `.claude/skills/bootstrap-project-docs/SKILL.md` fait la même chose et se charge automatiquement.
 
-**Rule to watch for**: if the agent starts drafting several documents at once without asking you anything, stop it and paste the prompt again — the goal isn't speed, it's that the content is genuinely yours. And even when it does ask instead of inventing, the real goal is that **you** already thought through the answer, not that you improvised it in front of the agent.
+**Règle à surveiller** : si l'agent commence à rédiger plusieurs documents à la fois sans te poser aucune question, arrête-le et colle à nouveau le prompt — l'objectif n'est pas la vitesse, c'est que le contenu soit vraiment le tien. Et même quand il pose des questions au lieu d'inventer, le vrai objectif est que **tu** aies déjà réfléchi à la réponse, pas que tu l'aies improvisée devant l'agent.
 
-## Once the documents are filled in
+## Une fois les documents remplis
 
-Move into the Explore → Plan → Implement → Commit cycle: use `PLAN.md`'s Epic sequencing to pick the first Epic, `project-docs/templates/user-story.md` to write its first story, and build from there.
+Passe au cycle Explorer → Planifier → Implémenter → Commit : utilise le séquençage des Epics de `PLAN.md` pour choisir le premier Epic, `project-docs/templates/user-story.md` pour écrire sa première histoire, puis construis à partir de là.
 
-**Scaffold the code at this point, and not before** — `scaffold-backend-service`, then `scaffold-frontend-app`. Scaffolding first means choosing your layers before you know your domain, and the layer you get wrong is the one you will not notice for a month. `project-docs/execution/EPIC_EXECUTION.md` starts tracking status the moment the first story exists; `project-docs/functional-specs/` and `project-docs/technical-specs/` start once the first story actually ships.
+**Scaffold le code à ce moment-là, et pas avant** — `scaffold-backend-service`, puis `scaffold-frontend-app`. Créer le squelette trop tôt signifie choisir tes couches avant de connaître ton domaine, et la couche que tu choisis mal est celle que tu ne remarqueras pas pendant un mois. `project-docs/execution/EPIC_EXECUTION.md` commence à suivre le statut dès qu'il existe une première histoire ; `project-docs/functional-specs/` et `project-docs/technical-specs/` commencent une fois que la première histoire est réellement livrée.

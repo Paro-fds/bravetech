@@ -1,132 +1,147 @@
 ---
-created: 2026-09-08T17:38:40Z
-updated: 2026-09-11T14:49:25Z
+created: 2026-09-24T20:42:00Z
+updated: 2026-09-24T20:42:00Z
 ---
 
-# PRD.md — [Project Name]
+# PRD.md — FDS Portail
 
-**Answers:** What are we building, for whom, why?
-**Depends on:** nothing — **this is the first document to fill in.** The vocabulary (`GLOSSARY.md`) gets built from what's decided here, not the other way around.
-
-> **Status: starter structure.** Answer the reflection questions yourself before asking an agent to draft. Sections marked **Conditional** are guesses about whether they apply — confirm explicitly rather than silently accepting or skipping them.
->
-> **Try it without an agent first.** This document in particular deserves to be thought through by you before opening an agent — on paper or in a draft. An agent can help formalize an answer you already have; if it supplies the answer instead, the exercise doesn't build the skill it's meant to target: your own capacity to think and plan.
-
-*(Fill in before drafting: what is this product, in one line? What stack, if already decided? Is this for real end users, an internal tool, or a learning/demo project?)*
+**Réponses :** Qu'est-ce que nous construisons, pour qui, et pourquoi ?
+**Dépend de :** rien — c'est le premier document à remplir.
 
 ---
 
-## 1. Product Statement
+## 1. Énoncé du produit
 
-> 1. In one or two sentences, what does this product actually do, and who is it for?
-> 2. What real problem does it solve? Does it solve more than one distinct problem for more than one distinct audience?
-> 3. Why does it need to exist now, for this person, rather than being solved another way?
+**FDS Portail** est la vitrine publique officielle de la Faculté des Sciences (FDS-UEH) et la plateforme dématérialisée d'inscription. Il permet à un candidat à l'admission de s'informer sur les cursus, de soumettre son dossier et de suivre son traitement intégralement en ligne depuis son smartphone.
 
-*(To be written)*
+Il existe parce que les informations sur les cursus circulent via des canaux informels (WhatsApp, bouche-à-oreille), et qu'un candidat hors de Port-au-Prince doit aujourd'hui obligatoirement se déplacer physiquement pour obtenir une information fiable ou déposer une candidature — créant une inégalité d'accès structurelle.
 
-## 2. Audience
+## 2. Public
 
-> 1. Who will actually use or encounter this, in every distinct capacity — not just the "main" user?
-> 2. Is there a logic behind who gets access and who doesn't?
-> 3. Which audience matters most if their needs conflict with another's?
+**Candidat (public principal)** — lycéen, souvent hors de Port-au-Prince, smartphone Android, connexion 3G intermittente. Son accès est entièrement public : aucun compte requis pour postuler ou suivre son dossier (il utilise sa référence dossier).
 
-*(To be written)*
+**Administrateur FDS (public secondaire)** — agent du secrétariat qui traite les dossiers reçus. Son accès est authentifié (email + mot de passe, JWT). Il a priorité sur le candidat en cas de conflit de besoin (ex. traçabilité vs simplicité).
 
-## 3. Ideal End-to-End Scenario
+## 3. Scénario idéal de bout en bout
 
-> 1. Describe, step by step, the best possible experience a real person has, from first contact to the outcome they wanted.
-> 2. What has to be true at each step for that scenario to actually happen?
-> 3. Where in that journey would the experience break down today if nothing more got built?
+1. Louismy ouvre le portail sur son Android et consulte la fiche du cursus Génie Informatique (dates, prérequis, pièces requises).
+2. Il clique « Postuler », saisit ses informations personnelles et répond à la question sur le déplacement physique.
+3. Il simule le paiement des frais (MonCash/NatCash) — une référence transactionnelle est générée.
+4. Il uploade ses pièces justificatives (PDF/JPG, max 5 Mo chacune).
+5. Le système génère la référence `CAN-2026-0089` et lui envoie un email de confirmation avec un lien de suivi.
+6. Louismy suit son dossier via sa référence : une barre de progression indique l'état de chaque document.
+7. L'administrateur valide ou rejette un document — Louismy reçoit immédiatement un email.
+8. Si un document est rejeté, Louismy le remplace depuis la page de suivi sans se déplacer.
 
-*(To be written)*
+**Ce qui doit être vrai à chaque étape :**
+- Étape 1 : le portail est accessible en 3G, les fiches cursus sont à jour et lisibles sur mobile
+- Étapes 2-4 : le formulaire fonctionne en plusieurs étapes sans perte de données si la connexion est coupée entre deux
+- Étape 5 : l'email est envoyé de manière non bloquante — si il échoue, la référence est quand même affichée à l'écran
+- Étape 6 : la barre de progression reflète l'état réel de la base, pas un état calculé côté client
+- Étapes 7-8 : l'admin est authentifié, chaque décision est auditée, et le candidat peut remplacer sans créer un doublon
 
-## 4. Jobs to Be Done
+**Où ça se casse aujourd'hui :** à l'étape 1 (aucune source officielle fiable en ligne) et à l'étape 4 (dépôt papier uniquement, impossible à distance).
 
-> 1. What is the user trying to accomplish, independent of any feature you might build?
-> 2. For each job, what does the user do today without this product?
-> 3. Which job, if left unsolved, makes the whole product pointless?
+## 4. Tâches à accomplir
 
-*(To be written)*
+| Tâche | Sans le portail aujourd'hui |
+|---|---|
+| S'informer sur les cursus et prérequis | Chercher sur Google → site obsolète → déplacement physique pour obtenir une brochure photocopiée avec corrections à la main |
+| Déposer une candidature | Déplacement physique obligatoire + remplissage de formulaire papier |
+| Suivre l'avancement de son dossier | Rappeler la faculté (souvent sans réponse) ou se déplacer à nouveau |
+| Remplacer un document rejeté | Nouveau déplacement physique |
 
-## 5. Layered Product Experience *(Conditional — skip if there's only one tier of access/capability)*
+La tâche critique : **le dépôt de candidature**. Si elle reste non résolue, tout le reste du produit est inutile.
 
-> 1. Does this product have more than one tier of access or capability? How many, concretely?
-> 2. What can each tier see or do that the tier below it cannot?
-> 3. Is a tier boundary here about trust/security, or just feature richness?
+## 5. Expérience produit en couches
 
-*(To confirm: how many tiers, if any)*
+Deux niveaux d'accès, distincts par nature de confiance :
 
-## 6. What the Product Can Do
+- **Candidat (public)** — aucun compte, accès par référence dossier. Peut consulter les cursus, postuler, suivre son dossier, remplacer un document rejeté.
+- **Administrateur FDS (authentifié)** — JWT, rôle `admin` ou `agent`. Peut consulter toutes les candidatures, valider/rejeter des documents.
 
-> 1. List the concrete capabilities a user can invoke, one per line, in plain verbs.
-> 2. For each capability, what triggers it, and what's the actual output?
-> 3. Is there a capability everyone will assume exists but isn't actually planned? State it explicitly as out of scope now.
+La frontière est de **sécurité** : un candidat ne doit jamais voir le dossier d'un autre.
 
-*(To be written)*
+## 6. Ce que le produit peut faire
 
-## 7. What the Product Must Never Do
+| Capacité | Déclencheur | Résultat réel |
+|---|---|---|
+| **Consulter les fiches cursus** | Candidat clique sur un cursus depuis l'accueil | Page affichant description, dates clés et liste des pièces requises |
+| **Postuler** | Candidat clique « Postuler » et complète le formulaire en 3 étapes | Dossier créé en base, référence `CAN-2026-X` générée, email de confirmation envoyé |
+| **Simuler le paiement** | Candidat confirme la simulation MonCash/NatCash | `statut_paiement` et `reference_paiement` enregistrés, accès à l'étape upload débloqué |
+| **Uploader une pièce** | Candidat attache un fichier PDF/JPG ≤ 5 Mo | Fichier stocké sur Cloudinary, `DocumentSoumis` créé avec statut `en_attente` |
+| **Suivre son dossier** | Candidat saisit sa référence sur la page de suivi | Barre de progression affichant le statut de chaque document |
+| **Remplacer un document rejeté** | Candidat uploade un nouveau fichier sur un document `rejete` | Même `DocumentSoumis` mis à jour (upsert), statut repassé à `en_attente` |
+| **Valider / rejeter un document** | Admin clique Valider ou Rejeter dans le tableau de bord | Statut mis à jour en base, audit enregistré (`valide_par`, `date_validation`), email déclenché |
+| **Consulter les candidatures** | Admin ouvre le tableau de bord | Liste paginée des dossiers avec statuts et indicateur `deplacement_physique` |
 
-> 1. What would be actively harmful, embarrassing, or unsafe if this product did it, even once?
-> 2. Are there topics, data, or actions that must always redirect to a human instead of being handled automatically?
-> 3. What's the worst plausible misuse, and does this document say what happens if someone tries it?
+**Capacité supposée présente mais explicitement hors périmètre V1 :** le paiement réel (MonCash/NatCash). Un candidat qui s'attendrait à payer directement depuis le portail sera redirigé vers une simulation — l'argent réel est délégué à FDS Pay.
 
-*(To be written)*
+## 7. Ce que le produit ne doit jamais faire
 
-## 8. Voice and Persona *(Conditional — skip if there's no conversational or brand-voice component)*
+- Exposer le dossier d'un candidat à un autre candidat (même par URL directe)
+- Accepter un fichier exécutable déguisé en PDF/JPG
+- Laisser un échec d'email annuler une candidature valide (l'email est une notification, pas la source de vérité)
+- Révéler des détails internes (stack trace, schéma BDD) dans les réponses d'erreur
 
-> 1. Does this product "speak" to anyone directly — chat, notifications, generated copy? If not, this section doesn't apply.
-> 2. If it does, whose voice is it: a company's, a persona's, your own?
-> 3. What tone would feel wrong for this product even if factually accurate?
+**Pire cas d'abus plausible et réponse du système :**
+- *Un acteur forge un JWT pour accéder aux dossiers admin* → signature HS256 validée à chaque requête via `get_current_admin()` ; toute requête non valide retourne 401/403 sans détail interne
+- *Un candidat tente d'accéder au dossier d'un autre via sa référence* → seul le statut public est retourné par référence, aucune donnée personnelle de tiers n'est exposée
+- *Upload massif de fichiers pour épuiser le stockage* → rate limiting sur `POST /api/upload` (10 req/60s par IP) + limite de taille serveur (5 Mo)
+- *Upload d'un exécutable renommé en PDF* → vérification des magic bytes côté serveur via `filetype` avant tout enregistrement
 
-*(To confirm: applicable or skip)*
+## 8. Voix et persona
 
-## 9. Access Model
+*Non applicable.* Le portail ne génère pas de contenu conversationnel propre. Les emails transactionnels (confirmation, validation, rejet) sont fonctionnels et factuels.
 
-> 1. How does someone go from "no access" to "has access"? Who approves it, if anyone?
-> 2. What's stored about who has access, and who can revoke it?
-> 3. Is there a difference between "logged in" and "trusted enough to see everything"?
+## 9. Modèle d'accès
 
-*(To be written)*
+**Candidat** : aucune inscription requise. L'accès au suivi de dossier se fait par référence unique (`CAN-2026-X`). Aucune révocation.
 
-## 10. Observability
+**Administrateur** : compte créé par la FDS (FDS SYS est le System of Record des identités internes — FDS Portail consomme cette donnée). Authentification email + mot de passe hashé bcrypt → JWT HS256 (durée 60 min). Révocation possible par suppression du compte. Toute action admin est auditée (`valide_par`, `date_validation`).
 
-> 1. Once this is live, what's the first question you'll want answered about real usage?
-> 2. What would you need to be alerted about quickly if something started going wrong?
-> 3. Who looks at this data, and how often?
+## 10. Observabilité
 
-*(To be written)*
+Première question après mise en ligne : **combien de candidatures ont été soumises, et quel pourcentage sans déplacement physique ?**
 
-## 11. Success Criteria
+Surveillance à risque : indisponibilité pendant la période d'inscription, taux d'abandon du formulaire > 30 %, taux de rejet de documents > 20 %.
 
-> 1. How will you know, concretely, that this product is working as intended?
-> 2. Is success measured by usage, by an outcome for the user, or by your own judgment?
-> 3. What's the smallest version of "success" that would still be worth having shipped?
+Consulté par : l'équipe produit et le secrétariat FDS, pendant la période d'inscription.
 
-*(To be written)*
+## 11. Critères de succès
 
-## 12. Failure Criteria / Go-Live Blockers
+- ≥ 20 candidatures soumises en ligne dans les 14 premiers jours
+- ≥ 70 % des candidats répondent « Non » à la question de déplacement physique
+- ≤ 30 % d'abandon du formulaire
+- ≥ 80 % des documents rejetés remplacés en ligne sans déplacement
 
-> 1. What must be true before this is allowed to go live, non-negotiably?
-> 2. What would make you pull this back down after launch?
-> 3. Is there a difference here between "not perfect yet" and "actually blocking"?
+La plus petite version valide : **un candidat soumet un dossier complet et reçoit sa référence sans avoir à se déplacer**.
 
-*(To be written)*
+## 12. Critères d'échec / blocages avant mise en ligne
 
-## 13. Out of Scope — V1
+- Un document candidat est accessible sans authentification admin → **bloquant**
+- Le formulaire est inutilisable sur mobile 360 px → **bloquant**
+- Une candidature est perdue si l'email échoue → **bloquant**
+- Les fichiers exécutables sont acceptés à l'upload → **bloquant**
 
-> 1. What are you deliberately not building yet, even though it's related?
-> 2. What would you say to someone who asks "why doesn't it do X" for each excluded item?
-> 3. Is anything here likely to be assumed as included by a first-time reader?
+**Différence entre « pas parfait » et « réellement bloquant » :** un mode sombre absent, une barre de progression imparfaite, ou une notification SMS manquante sont des imperfections — le portail reste utilisable. Ce qui est bloquant, c'est ce qui empêche un candidat de soumettre son dossier ou expose des données personnelles. Les quatre critères ci-dessus sont non négociables ; tout le reste est une amélioration.
 
-*(To be written)*
+## 13. Hors périmètre — V1
 
-## 14. Related Documents
+| Élément exclu | Pourquoi pas en V1 | Supposé inclus par un lecteur novice ? |
+|---|---|---|
+| Transactions monétaires réelles | Déléguées à FDS Pay (module séparé) | **Oui** — un candidat pourrait supposer qu'il paye vraiment |
+| Espace étudiant complet (compte, historique) | Le suivi par référence suffit pour le MVP ; un compte complet est post-MVP | Non |
+| Plateforme de cours (FDS Akademi) | Module séparé, hors périmètre Bravetech | Non |
+| SSO institutionnel complet (FDS SYS) | Architecturalement préparé, pas livré en V1 | Non |
+| Notifications SMS | Should Have — prévu mais non bloquant pour le MVP | Non |
+| Export CSV/PDF des dossiers | Could Have — utile pour les commissions, pas critique pour le lancement | Non |
+| Mode sombre | Could Have — confort, pas accessibilité de base | Non |
 
-> 1. What other documents does a new reader need, and in what order?
-> 2. Is there a single canonical map of every project document, or does this list risk becoming a second copy that drifts?
+## 14. Documents associés
 
-See `GLOSSARY.md`, `NFR.md`, `SOLUTION_DESIGN.md`, `PLAN.md`, `project-docs/execution/`, `project-docs/PROJECT_WORKFLOW.md`, `AGENTS.md`.
+Voir `NFR.md`, `SOLUTION_DESIGN.md`, `PLAN.md`, `GLOSSARY.md`, `project-docs/execution/`, `project-docs/PROJECT_WORKFLOW.md`, `AGENTS.md`.
 
 ---
 
-*PRD.md — [Project Name] — starter structure from `project-init-kit/`.*
+*PRD.md — FDS Portail — Bravetech · GL-EN3-2026*

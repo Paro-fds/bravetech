@@ -1,10 +1,16 @@
 ---
-created: 2026-09-08T17:38:40Z
-updated: 2026-09-11T14:49:25Z
+created: 2026-09-26T12:52:00Z
+updated: 2026-09-26T12:52:00Z
 ---
 
 @AGENTS.md
 
-## Claude Code
+## Instructions spécifiques à cet outil agentique
 
-*(Claude-Code-specific instructions only, if needed — otherwise this file stays just the import above. Don't duplicate `AGENTS.md`'s content here.)*
+**Avant toute action de code :**
+1. Lire `AGENTS.md` — en particulier les sections "Faits critiques" et "Règle de dépendance".
+2. Vérifier `execution/EPIC_EXECUTION.md` pour le statut de l'Epic en cours.
+3. Ne jamais modifier `project-init-kit/project-docs/_ARCHITECTURE_EXPLAINED.md` — c'est une référence en lecture seule.
+
+**Après toute action de code qui produit une règle :**
+Appliquer le tableau "Où va une règle" de `AGENTS.md` avant de déclarer le travail terminé.

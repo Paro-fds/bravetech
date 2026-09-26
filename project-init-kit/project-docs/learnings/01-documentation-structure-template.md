@@ -3,203 +3,203 @@ created: 2026-09-08T17:38:40Z
 updated: 2026-09-16T19:53:40Z
 ---
 
-> **First learned:** 2026-08-11 18:23:37
-> **Last updated:** 2026-08-13 18:10:19
+> **Premier apprentissage :** 2026-08-11 18:23:37
+> **Dernière mise à jour :** 2026-08-13 18:10:19
 
-## Context
+## Contexte
 
-This file is the extractable, reusable version of a document taxonomy that emerged after two full sessions of restructuring, auditing, and cross-reference cleanup on a real multi-service product. It exists so that starting a *new* project doesn't require re-deriving this structure from scratch. This file is the "what," ready to copy; the project it was extracted from has its own longer history of *why* each document earned its scope.
+Ce fichier est la version extractible et réutilisable d'une taxonomie documentaire qui a émergé après deux sessions complètes de restructuration, d'audit et de nettoyage des références croisées sur un vrai produit multi-service. Il existe pour qu'un *nouveau* projet n'ait pas à redériver cette structure à partir de zéro. Ce fichier est le « quoi », prêt à copier ; le projet dont il a été extrait a sa propre histoire plus longue du *pourquoi* chaque document a mérité sa portée.
 
-A second annex, [`02-document-section-reflection-questions.md`](02-document-section-reflection-questions.md), breaks every document in the table below into its actual sections and gives 3-5 brainstorming questions per section — use it when actually starting a new project and filling these documents in, not when just learning the shape.
+Une deuxième annexe, [`02-document-section-reflection-questions.md`](02-document-section-reflection-questions.md), décompose chaque document du tableau ci-dessous en ses sections réelles et donne 3 à 5 questions de réflexion par section — à utiliser lors du démarrage effectif d'un nouveau projet et du remplissage de ces documents, pas simplement pour apprendre la forme.
 
-## How this was learned
+## Comment cela a été appris
 
-**Trigger:** After a full file-by-file audit pass on a live project, the owner asked to "log the final map" so the same structure could be rebuilt for a future project "more or less" from this template rather than from memory.
+**Déclencheur :** Après un passage d'audit complet fichier par fichier sur un projet en cours, le propriétaire a demandé à « consigner la carte finale » afin que la même structure puisse être reconstruite pour un futur projet « plus ou moins » à partir de ce modèle plutôt qu'à partir de mémoire.
 
-**Addendum trigger:** A request followed to also cover the layer *below* `CLAUDE.md` that the original pass didn't touch: the distinction between `CLAUDE.md` and the open `AGENTS.md` standard, how nested/per-folder `CLAUDE.md` files work, and a full representation of what can live inside `.claude/` (rules, skills, commands, agents, workflows, hooks, MCP, plugins, worktrees) — because the plan was to reuse this exact document structure for a second, smaller project, and the extension layer needed documenting up front rather than rediscovered. Researched against the current official Claude Code docs at the time rather than assumed, since this layer changes frequently between versions. A later ask in the same session pulled the project's own physical folder tree into this file directly, so the naming-convention rules that were already here as prose sit next to a real worked example instead of staying abstract — then asked for that tree to be anonymized: project name genericized to `<project-root>/`, Epic/story names reduced to their `epic-NNN-<name>`/`US-NNN` pattern, and every folder specific to *what* that particular project builds (service folders, its data layer) removed, so what remains is the minimal, truly generic documentation-layer shape rather than a snapshot of one product.
+**Déclencheur de l'addendum :** Une demande a suivi pour couvrir aussi la couche *en dessous* de `CLAUDE.md` que le passage original n'avait pas touchée : la distinction entre `CLAUDE.md` et le standard ouvert `AGENTS.md`, comment fonctionnent les fichiers `CLAUDE.md` imbriqués/par dossier, et une représentation complète de ce qui peut vivre dans `.claude/` (règles, compétences, commandes, agents, workflows, hooks, MCP, plugins, worktrees) — parce que le plan était de réutiliser cette structure documentaire exacte pour un second projet plus petit, et que la couche d'extension devait être documentée dès le départ plutôt que redécouverte. Recherché dans la documentation officielle Claude Code du moment plutôt qu'assumé, puisque cette couche change fréquemment entre les versions. Une demande ultérieure dans la même session a intégré directement l'arborescence physique du projet dans ce fichier, de sorte que les règles de convention de nommage déjà présentes en prose se retrouvent à côté d'un vrai exemple concret au lieu de rester abstraites — puis a demandé que cette arborescence soit anonymisée : nom du projet généralisé en `<project-root>/`, noms des Épiques/stories réduits à leur pattern `epic-NNN-<name>`/`US-NNN`, et chaque dossier spécifique à *ce que* ce projet particulier construit (dossiers de service, sa couche de données) supprimé, de sorte que ce qui reste est la forme minimale et vraiment générique de la couche documentation plutôt qu'un instantané d'un produit.
 
-**The path:** The structure below is not what the source project started with. It went through a real Phase→Epic rename, two folder reorganisations, a PRD/NFR split, a Workstream-vs-Epic disentanglement, a restructure of the execution tracking (a flat `EPIC_EXECUTION.md`, split `functional-specs/` and `technical-specs/`, zero-padded Epic and Workstream folders), and a final file-by-file consistency audit that caught real drift: duplicated tables, stale section-number cross-references, inconsistent status vocabulary, mismatched persona tags, and a document (`GLOSSARY.md`) that stated its own table was canonical elsewhere while still containing a full copy of it two lines below.
+**Le chemin :** La structure ci-dessous n'est pas celle avec laquelle le projet source a commencé. Elle a traversé un vrai renommage Phase→Épique, deux réorganisations de dossiers, une séparation PRD/NFR, un démêlage Workstream-vs-Épique, une restructuration du suivi d'exécution (un `EPIC_EXECUTION.md` plat, des `functional-specs/` et `technical-specs/` séparés, des dossiers Épique et Workstream avec zéros de bourrage), et un audit final de cohérence fichier par fichier qui a détecté une vraie dérive : des tableaux dupliqués, des références croisées de numéros de section périmées, un vocabulaire de statut incohérent, des balises de persona non concordantes, et un document (`GLOSSARY.md`) qui affirmait que son propre tableau était canonique ailleurs tout en contenant une copie complète deux lignes plus bas.
 
-**Things to be aware of:** every one of these documents earned its scope the hard way, by first having the wrong scope and being caught overlapping with something else. Copying the *shape* below into a new project on day one is fine. Copying content into the wrong document, or skipping the "does this already say that" check before writing, will reproduce the exact drift this cleanup was needed for in the first place.
+**À avoir en tête :** chacun de ces documents a mérité sa portée à la dure, en ayant d'abord la mauvaise portée et en se faisant prendre à chevaucher autre chose. Copier la *forme* ci-dessous dans un nouveau projet dès le premier jour, c'est bien. Copier du contenu dans le mauvais document, ou ignorer la vérification « est-ce que ça dit déjà ça » avant d'écrire, reproduira exactement la dérive pour laquelle ce nettoyage a été nécessaire.
 
-## The Rule
+## La Règle
 
-### The document set, in dependency order
+### L'ensemble de documents, par ordre de dépendance
 
-| # | Document | Answers | Depends on |
+| # | Document | Répond à | Dépend de |
 |---|---|---|---|
-| 1 | `GLOSSARY.md` | What does this term mean? | Nothing — read first when a term is ambiguous |
-| 2 | `PRD.md` | What are we building, for whom, why? | Glossary for vocabulary |
-| 3 | `NFR.md` | What quality bar must it meet? | PRD (companion, not a subset) |
-| 4 | `SOLUTION_DESIGN.md` | How is it built? What Workstreams does it decompose into? | PRD + NFR |
-| 5 | `PLAN.md` | In what order, grouped into what Epics? | SOLUTION_DESIGN for Workstream IDs |
-| 6 | `project-docs/execution/EPIC_EXECUTION.md` | What's the status of each story, right now? | PLAN for Epic names |
-| 7 | `project-docs/functional-specs/`, `project-docs/technical-specs/` | What does a delivered Workstream actually do / how is it actually built? | Written incrementally as stories close, never upfront |
-| 8 | `project-docs/execution/epic-NNN-*/US-NNN.md` | What, specifically, was asked for and accepted for one unit of work? | Nothing — the atomic unit everything else summarizes |
-| 9 | `project-docs/PROJECT_WORKFLOW.md` | How does work actually flow through the system, and which doc do I touch when? | Everything above, it's the connective tissue |
-| 10 | `.claude/skills/<name>/SKILL.md` | The executable version of #9, for one recurring task | PROJECT_WORKFLOW (self-contained copy, doesn't re-read it at runtime) |
-| 11 | `CLAUDE.md` | What does every session need before touching anything? | Everything above — this is the *derived* summary, built last, not first |
+| 1 | `GLOSSARY.md` | Que signifie ce terme ? | Rien — à lire en premier quand un terme est ambigu |
+| 2 | `PRD.md` | Que construisons-nous, pour qui, pourquoi ? | Glossaire pour le vocabulaire |
+| 3 | `NFR.md` | Quel niveau de qualité doit-il atteindre ? | PRD (complémentaire, pas un sous-ensemble) |
+| 4 | `SOLUTION_DESIGN.md` | Comment est-il construit ? En quels Workstreams se décompose-t-il ? | PRD + NFR |
+| 5 | `PLAN.md` | Dans quel ordre, regroupés en quels Épiques ? | SOLUTION_DESIGN pour les IDs de Workstream |
+| 6 | `project-docs/execution/EPIC_EXECUTION.md` | Quel est le statut de chaque story, en ce moment ? | PLAN pour les noms d'Épiques |
+| 7 | `project-docs/functional-specs/`, `project-docs/technical-specs/` | Que fait réellement un Workstream livré / comment est-il réellement construit ? | Rédigés progressivement au fur et à mesure que les stories se closent, jamais à l'avance |
+| 8 | `project-docs/execution/epic-NNN-*/US-NNN.md` | Qu'est-ce qui a été spécifiquement demandé et accepté pour une unité de travail ? | Rien — l'unité atomique que tout le reste résume |
+| 9 | `project-docs/PROJECT_WORKFLOW.md` | Comment le travail circule-t-il réellement dans le système, et quel document toucher quand ? | Tout ce qui précède, c'est le tissu conjonctif |
+| 10 | `.claude/skills/<name>/SKILL.md` | La version exécutable du #9, pour une tâche récurrente | PROJECT_WORKFLOW (copie autonome, ne le relit pas à l'exécution) |
+| 11 | `CLAUDE.md` | Que doit savoir chaque session avant de toucher quoi que ce soit ? | Tout ce qui précède — c'est le résumé *dérivé*, construit en dernier, pas en premier |
 
-Each row answers exactly one question. If a piece of content could answer two rows' questions, it belongs in whichever row is more specific, and every other row gets a pointer instead of a copy.
+Chaque ligne répond à exactement une question. Si un contenu pouvait répondre aux questions de deux lignes, il appartient à la ligne la plus spécifique, et chaque autre ligne obtient un pointeur au lieu d'une copie.
 
-**Deliberately missing from this table: a testing-strategy document.** Which test framework(s) to use and how testing will actually work isn't decided upfront in this template — that decision is left to emerge once there's real code to test against, rather than speculated on before a first line of code exists. If a project reaches the point of actually needing this decided, it would most naturally land as a new row in this table, or fold into `NFR.md`'s existing Maintainability section (which already asks whether a test suite exists and what it covers) — not invented before there's a first line of code to write tests for.
+**Délibérément absent de ce tableau : un document de stratégie de test.** Quel(s) framework(s) de test utiliser et comment les tests fonctionneront réellement n'est pas décidé à l'avance dans ce modèle — cette décision est laissée à émerger une fois qu'il y a du code réel à tester, plutôt que spéculée avant qu'une première ligne de code existe. Si un projet atteint le point où cela doit être décidé, cela atterrirait le plus naturellement comme une nouvelle ligne dans ce tableau, ou se fondrait dans la section Maintenabilité existante de `NFR.md` (qui demande déjà si une suite de tests existe et ce qu'elle couvre) — pas inventé avant qu'il y ait une première ligne de code pour laquelle écrire des tests.
 
-### Non-negotiable naming conventions
+### Conventions de nommage non négociables
 
-- **Workstream** (functional area, not time-bound): `WS-NN`, two-digit zero-padded (`WS-00`… `WS-06`). Two digits because a project won't realistically exceed 99 functional areas — Epics and stories are a different, faster-growing count and get their own padding.
-- **Epic** (sequential, time-bound build stage, one active at a time): `epic-NNN-name`, three-digit zero-padded folders (`epic-000-...`, `epic-001-...`).
-- **User story**: `US-NNN`, sequential across the *whole project*, never reset per Epic, never reused.
-- **Functional/technical spec files**: `ws-func-NN-name.md` / `ws-tech-NN-name.md`, matching the Workstream's own two-digit ID exactly.
-- **Service folders** (once a project splits into multiple backend/frontend services): `<actor>-<service>` (e.g. `user-backend` / `admin-backend`, or whatever the actor split is), always hyphenated, flat at repo root, never concatenated, never nested under a shared parent folder.
+- **Workstream** (domaine fonctionnel, non limité dans le temps) : `WS-NN`, deux chiffres avec zéro de bourrage (`WS-00`… `WS-06`). Deux chiffres car un projet ne dépassera pas réalistement 99 domaines fonctionnels — les Épiques et les stories sont un comptage différent, plus rapide, et ont leur propre bourrage.
+- **Épique** (étape de construction séquentielle et limitée dans le temps, une active à la fois) : `epic-NNN-name`, dossiers à trois chiffres avec zéro de bourrage (`epic-000-...`, `epic-001-...`).
+- **User story** : `US-NNN`, séquentiel sur *l'ensemble du projet*, jamais remis à zéro par Épique, jamais réutilisé.
+- **Fichiers spec fonctionnelle/technique** : `ws-func-NN-name.md` / `ws-tech-NN-name.md`, correspondant exactement à l'identifiant à deux chiffres du Workstream.
+- **Dossiers de service** (dès qu'un projet se divise en plusieurs services backend/frontend) : `<acteur>-<service>` (ex. `user-backend` / `admin-backend`, ou quel que soit le découpage acteur), toujours en tirets, plat à la racine du dépôt, jamais concaténé, jamais imbriqué sous un dossier parent commun.
 
-### The physical folder tree, generic template
+### L'arborescence physique des dossiers, modèle générique
 
-Copy this shape as-is into a new project; only the content of each file changes:
+Copiez cette forme telle quelle dans un nouveau projet ; seul le contenu de chaque fichier change :
 
 ```
 <project-root>/
-├── README.md                     <- how a stranger runs it
-├── AGENTS.md                     <- row 11: derived summary, built last, stays lean
-├── CLAUDE.md                     <- a thin import of AGENTS.md, plus Claude-Code-only notes
+├── README.md                     <- comment un inconnu le fait tourner
+├── AGENTS.md                     <- ligne 11 : résumé dérivé, construit en dernier, reste léger
+├── CLAUDE.md                     <- import léger d'AGENTS.md, plus notes spécifiques à Claude Code
 ├── .claude/
-│   ├── settings.json             <- committed: permissions/hooks config
-│   ├── settings.local.json       <- gitignored: personal overrides
+│   ├── settings.json             <- versionné : config permissions/hooks
+│   ├── settings.local.json       <- gitignored : substitutions personnelles
 │   └── skills/
-│       └── <skill-name>/SKILL.md <- row 10: executable version of PROJECT_WORKFLOW.md, one recurring task
-├── .githooks/pre-commit          <- stamps `updated:` on staged markdown
+│       └── <skill-name>/SKILL.md <- ligne 10 : version exécutable de PROJECT_WORKFLOW.md, une tâche récurrente
+├── .githooks/pre-commit          <- estampille `updated:` sur les markdown mis en stage
 │
-├── project-docs/                 <- EVERY document about building the project
-│   ├── PRD.md                    <- row 2: what, for whom, why
-│   ├── NFR.md                    <- row 3: the quality bar, companion to PRD not a subset
-│   ├── SOLUTION_DESIGN.md        <- row 4: architecture, Workstreams (WS-NN), ADRs
-│   ├── PLAN.md                   <- row 5: Epic sequencing, keyed to Workstream IDs
-│   ├── GLOSSARY.md               <- row 1: vocabulary, read first when a term is ambiguous
-│   ├── PROJECT_WORKFLOW.md       <- row 9: which document to touch, and when
-│   ├── _ARCHITECTURE_EXPLAINED.md         <- how the code is split, and why
+├── project-docs/                 <- CHAQUE document sur la construction du projet
+│   ├── PRD.md                    <- ligne 2 : quoi, pour qui, pourquoi
+│   ├── NFR.md                    <- ligne 3 : le niveau de qualité, complémentaire au PRD et non un sous-ensemble
+│   ├── SOLUTION_DESIGN.md        <- ligne 4 : architecture, Workstreams (WS-NN), ADRs
+│   ├── PLAN.md                   <- ligne 5 : séquencement des Épiques, indexé sur les IDs de Workstream
+│   ├── GLOSSARY.md               <- ligne 1 : vocabulaire, à lire en premier quand un terme est ambigu
+│   ├── PROJECT_WORKFLOW.md       <- ligne 9 : quel document toucher, et quand
+│   ├── _ARCHITECTURE_EXPLAINED.md         <- comment le code est découpé, et pourquoi
 │   ├── execution/
-│   │   ├── EPIC_EXECUTION.md              <- row 6: continuous, per-story status
-│   │   ├── epic-000-<name>/               <- three-digit zero-padded Epic folder
-│   │   └── epic-001-<name>/US-NNN.md      <- row 8: sequential project-wide, never reset per Epic
-│   ├── functional-specs/ws-func-NN-*.md   <- row 7: two-digit, matches the Workstream's WS-NN exactly
-│   ├── technical-specs/ws-tech-NN-*.md    <- row 7: same pairing, implementation side
-│   ├── reviews/NN-<name>.md      <- what was believed here that turned out false
-│   ├── learnings/NN-<name>.md    <- this file lives here
-│   ├── templates/user-story.md   <- copied once per story
-│   └── exploration/              <- raw research, kept as-is, never cited as decided
+│   │   ├── EPIC_EXECUTION.md              <- ligne 6 : statut continu, par story
+│   │   ├── epic-000-<name>/               <- dossier Épique à trois chiffres avec zéro de bourrage
+│   │   └── epic-001-<name>/US-NNN.md      <- ligne 8 : séquentiel à l'échelle du projet, jamais remis à zéro par Épique
+│   ├── functional-specs/ws-func-NN-*.md   <- ligne 7 : deux chiffres, correspond exactement au WS-NN du Workstream
+│   ├── technical-specs/ws-tech-NN-*.md    <- ligne 7 : même couplage, côté implémentation
+│   ├── reviews/NN-<name>.md      <- ce qui était cru ici et s'est avéré faux
+│   ├── learnings/NN-<name>.md    <- ce fichier vit ici
+│   ├── templates/user-story.md   <- copié une fois par story
+│   └── exploration/              <- recherche brute, conservée telle quelle, jamais citée comme décidée
 │
-└── <the product's own source>    <- frontend/, backend/, whatever the thing actually is
+└── <le code source du produit>    <- frontend/, backend/, quoi que ce soit que la chose est réellement
 ```
 
-**One rule governs that layout: `project-docs/` holds every document about *building* the project, and nothing that *is* the product.** The root keeps only what a first session must read without being told.
+**Une règle régit cette disposition : `project-docs/` contient chaque document sur la *construction* du projet, et rien qui *est* le produit.** La racine ne garde que ce qu'une première session doit lire sans qu'on le lui dise.
 
-**And no leading dot on it.** A dotted folder is a contract with tooling meaning *machine-owned*: `ls` omits it, Explorer hides it, and most search tools skip it without a flag — so documents behind one are invisible to every staleness check that works by grepping. `.claude/` is dotted because nothing searches for it and every agent is handed that path literally. These documents are for a human.
+**Et sans point au début.** Un dossier avec point est un contrat avec l'outillage signifiant *géré par la machine* : `ls` l'omet, l'Explorateur le cache, et la plupart des outils de recherche le sautent sans option — donc les documents derrière l'un sont invisibles à toute vérification de fraîcheur qui fonctionne par grep. `.claude/` est avec point parce que rien ne le recherche et que chaque agent reçoit littéralement ce chemin. Ces documents sont pour un humain.
 
-Wherever the project's own source code and service folders live (frontend, backend, a data layer, whatever the product actually is) is out of scope for this template by design — that's product-specific, not part of the reusable documentation shape. This file standardizes the documentation layer sitting above the code; **`project-docs/_ARCHITECTURE_EXPLAINED.md` is its counterpart for the code itself**, and the project's own `AGENTS.md` folder map records the real, concrete layout.
+Où vivent le code source du projet et les dossiers de service (frontend, backend, une couche de données, quel que soit ce que le produit est réellement) est délibérément hors de portée pour ce modèle — c'est spécifique au produit, pas une partie de la forme de documentation réutilisable. Ce fichier standardise la couche documentation assise au-dessus du code ; **`project-docs/_ARCHITECTURE_EXPLAINED.md` est son pendant pour le code lui-même**, et la propre carte des dossiers `AGENTS.md` du projet enregistre la disposition réelle et concrète.
 
-### The three build-tracking axes, kept deliberately separate
+### Les trois axes de suivi de construction, délibérément séparés
 
-- **Workstream** = *what area*. Doesn't complete. Can be revisited by a later Epic.
-- **Epic** = *when, how much at once*. Whether a project runs Epics sequentially (one finished before the next starts) or allows some parallelism is a project-specific constraint — state it explicitly, it's not a universal property of "Epic."
-- **Milestone** = *what ships*. The GitHub-native representation of an Epic, not a fourth concept.
+- **Workstream** = *quel domaine*. Ne se complète pas. Peut être revisité par un Épique ultérieur.
+- **Épique** = *quand, combien à la fois*. Que le projet gère les Épiques séquentiellement (l'un terminé avant que le suivant commence) ou permette une certaine parallélisation est une contrainte spécifique au projet — énoncer-la explicitement, ce n'est pas une propriété universelle d'« Épique ».
+- **Milestone** = *ce qui est livré*. La représentation native GitHub d'un Épique, pas un quatrième concept.
 
-### Which document to update, and when (the part that prevents drift)
+### Quel document mettre à jour, et quand (la partie qui prévient la dérive)
 
-The full table lives in `project-docs/PROJECT_WORKFLOW.md` § Which document to update, and when — copy that table verbatim into a new project's `PROJECT_WORKFLOW.md`, then adjust document names only. The one-line version: **story detail is continuous, Epic detail is per-Epic, product decisions are per-decision, architecture decisions get an ADR entry in place, everything else updates only when the fact it states actually changes.** Never update on a schedule, never update speculatively.
+Le tableau complet vit dans `project-docs/PROJECT_WORKFLOW.md` § Quel document mettre à jour, et quand — copiez ce tableau mot pour mot dans le `PROJECT_WORKFLOW.md` d'un nouveau projet, puis ajustez uniquement les noms de documents. La version en une ligne : **le détail d'une story est continu, le détail d'un Épique est par Épique, les décisions produit sont par décision, les décisions d'architecture obtiennent une entrée ADR sur place, tout le reste ne se met à jour que quand le fait qu'il énonce change réellement.** Ne jamais mettre à jour selon un calendrier, jamais de façon spéculative.
 
-### Architecture Decision Records live inside the solution design doc
+### Les Architecture Decision Records vivent dans le document de conception de solution
 
-Not a separate file, not a separate folder. One table, at the end of `SOLUTION_DESIGN.md`, entries never deleted, only marked `Deprecated` with a date and reason. This keeps "current architecture" and "why it's not the other thing" in the same document, which is where someone actually needs both at once.
+Pas un fichier séparé, pas un dossier séparé. Un seul tableau, à la fin de `SOLUTION_DESIGN.md`, les entrées ne sont jamais supprimées, seulement marquées `Deprecated` avec une date et une raison. Cela maintient « architecture actuelle » et « pourquoi ce n'est pas l'autre chose » dans le même document, là où quelqu'un a réellement besoin des deux en même temps.
 
-### `CLAUDE.md` is built last, and stays lean
+### `CLAUDE.md` est construit en dernier, et reste léger
 
-Every other document above is a source; `CLAUDE.md` is the derived, always-loaded summary. Concretely: a folder map, a tech-stack pointer (not a restated tech-stack table), the confidentiality/behavioral constraints unique to this project, a first-session reading order (quick-resume path + full-orientation path), and a pointers section that names which doc is canonical for what, never inlining that doc's content. Target under ~300 lines. For each line, the test is: would removing this cause a wrong action? If not, cut it or turn it into a pointer.
+Chaque autre document ci-dessus est une source ; `CLAUDE.md` est le résumé dérivé, toujours chargé. Concrètement : une carte des dossiers, un pointeur vers la stack technique (pas un tableau de stack technique recopié), les contraintes de confidentialité/comportementales propres à ce projet, un ordre de lecture pour la première session (chemin de reprise rapide + chemin d'orientation complète), et une section de pointeurs qui nomme quel document est canonique pour quoi, sans jamais incorporer le contenu de ce document. Visez moins de ~300 lignes. Pour chaque ligne, le test est : supprimer ceci causerait-il une mauvaise action ? Si non, supprimez-le ou transformez-le en pointeur.
 
 ### `CLAUDE.md` vs `AGENTS.md`
 
-`AGENTS.md` is an open, tool-agnostic standard (Linux Foundation-stewarded, tens of thousands of repos as of late 2025): plain markdown, no required fields, read natively by Codex, Cursor, Copilot, Gemini CLI, Aider, Windsurf, and 20+ other tools. **Claude Code does not read `AGENTS.md` natively.** If a repo needs both (multiple AI tools in play), the supported pattern is a thin `CLAUDE.md` that imports it and adds Claude-specific instructions below:
+`AGENTS.md` est un standard ouvert et agnostique aux outils (géré par la Linux Foundation, des dizaines de milliers de dépôts fin 2025) : markdown simple, pas de champs requis, lu nativement par Codex, Cursor, Copilot, Gemini CLI, Aider, Windsurf, et 20+ autres outils. **Claude Code ne lit pas `AGENTS.md` nativement.** Si un dépôt a besoin des deux (plusieurs outils IA en jeu), le pattern supporté est un `CLAUDE.md` léger qui l'importe et ajoute des instructions spécifiques à Claude en dessous :
 
 ```markdown
 @AGENTS.md
 
 ## Claude Code
-Use plan mode for changes under src/billing/.
+Utiliser le mode plan pour les modifications dans src/billing/.
 ```
 
-A symlink (`ln -s AGENTS.md CLAUDE.md`) also works if there's nothing Claude-specific to add, but requires admin rights on Windows, so the `@`-import is the more portable default.
+Un lien symbolique (`ln -s AGENTS.md CLAUDE.md`) fonctionne aussi s'il n'y a rien de spécifique à Claude à ajouter, mais nécessite des droits administrateur sur Windows, donc l'import `@` est le défaut le plus portable.
 
-**When to use which:** a single-tool project (only Claude Code touches the repo) needs `CLAUDE.md` alone — adding `AGENTS.md` on top is pure duplication with nothing reading it a second way. `AGENTS.md` earns its place the moment a second AI coding tool joins the project; at that point it becomes the shared source of truth and `CLAUDE.md` shrinks to an import plus a short Claude-specific addendum.
+**Quand utiliser lequel :** un projet mono-outil (seul Claude Code touche le dépôt) n'a besoin que de `CLAUDE.md` — ajouter `AGENTS.md` en plus est une pure duplication sans que rien ne le lise de la même façon. `AGENTS.md` gagne sa place dès qu'un second outil de codage IA rejoint le projet ; à ce moment, il devient la source de vérité partagée et `CLAUDE.md` se réduit à un import plus un court addendum spécifique à Claude.
 
-### Nested `CLAUDE.md` and `.claude/rules/`
+### `CLAUDE.md` imbriqués et `.claude/rules/`
 
-Two different mechanisms for scoping instructions below the project root, both real and both worth knowing before defaulting to "everything goes in the root `CLAUDE.md`":
+Deux mécanismes différents pour délimiter les instructions en dessous de la racine du projet, tous deux réels et tous deux utiles à connaître avant de se rabattre sur « tout va dans le `CLAUDE.md` racine » :
 
-- **Nested `CLAUDE.md`** (or `CLAUDE.local.md`): a `CLAUDE.md` inside a subdirectory of the working directory is discovered automatically but loads **on demand**, only when Claude actually reads a file in that subtree — not at session launch. Ancestor `CLAUDE.md` files (cwd walking up to the filesystem root) load in full at launch instead, ordered root-first so the most specific file is read last. Use this for a subtree with a genuinely different context — a service folder with its own Python-specific detail that's irrelevant while working on an unrelated frontend, for instance.
-- **`.claude/rules/*.md`**: the sibling mechanism, scoped by file-glob instead of by directory. A rule with `paths:` frontmatter (e.g. `src/api/**/*.ts`) loads only when Claude reads a matching file; a rule without `paths:` loads at launch, same priority as `.claude/CLAUDE.md`. Reach for this when the split is by *file type or convention* cutting across the whole tree (e.g. "testing conventions," "API design rules") rather than by *directory*.
+- **`CLAUDE.md` imbriqué** (ou `CLAUDE.local.md`) : un `CLAUDE.md` dans un sous-répertoire du répertoire de travail est découvert automatiquement mais chargé **à la demande**, seulement quand Claude lit réellement un fichier dans cette sous-arborescence — pas au lancement de session. Les fichiers `CLAUDE.md` ancêtres (remontant depuis le répertoire courant jusqu'à la racine du système de fichiers) se chargent en entier au lancement à la place, ordonnés racine en premier afin que le fichier le plus spécifique soit lu en dernier. Utilisez ceci pour une sous-arborescence avec un contexte vraiment différent — un dossier de service avec ses propres détails spécifiques à Python qui sont non pertinents en travaillant sur un frontend sans rapport, par exemple.
+- **`.claude/rules/*.md`** : le mécanisme frère, délimité par glob de fichiers au lieu de par répertoire. Une règle avec frontmatter `paths:` (ex. `src/api/**/*.ts`) ne se charge que quand Claude lit un fichier correspondant ; une règle sans `paths:` se charge au lancement, même priorité que `.claude/CLAUDE.md`. Préférez ceci quand le découpage est par *type de fichier ou convention* traversant l'ensemble de l'arborescence (ex. « conventions de test », « règles de conception API ») plutôt que par *répertoire*.
 
-Official guidance: split out of the root `CLAUDE.md` once it approaches ~200 lines — long files still load in full but reduce instruction adherence.
+Recommandation officielle : sortir du `CLAUDE.md` racine dès qu'il approche ~200 lignes — les longs fichiers se chargent encore en entier mais réduisent l'adhérence aux instructions.
 
-### The `.claude/` folder
+### Le dossier `.claude/`
 
-Everything Claude Code reads that's specific to one project:
+Tout ce que Claude Code lit qui est spécifique à un projet :
 
 ```
 .claude/
-├── settings.json         committed   — permissions, hooks, model, env, statusLine
-├── settings.local.json   gitignored  — personal overrides, same schema as above
-├── CLAUDE.md              committed   — alternative to root CLAUDE.md, same effect
-├── rules/*.md             committed   — topic-scoped instructions, optional paths:
-├── skills/<name>/SKILL.md committed   — executable procedures for recurring tasks
-├── commands/<name>.md     committed   — legacy single-file /command; skills supersede
-├── agents/<name>.md       committed   — "subagents": isolated context, own tool access
-├── workflows/<name>.js    committed   — multi-subagent orchestration scripts
-├── output-styles/         committed   — only if the team shares a custom style
-└── agent-memory/<agent>/  Claude-written — only for subagents with memory
+├── settings.json         versionné   — permissions, hooks, modèle, env, statusLine
+├── settings.local.json   gitignored  — substitutions personnelles, même schéma que ci-dessus
+├── CLAUDE.md              versionné   — alternative au CLAUDE.md racine, même effet
+├── rules/*.md             versionné   — instructions délimitées par sujet, paths: optionnel
+├── skills/<name>/SKILL.md versionné   — procédures exécutables pour les tâches récurrentes
+├── commands/<name>.md     versionné   — /commande ancienne en fichier unique ; les skills la remplacent
+├── agents/<name>.md       versionné   — « sous-agents » : contexte isolé, accès propre aux outils
+├── workflows/<name>.js    versionné   — scripts d'orchestration multi-sous-agents
+├── output-styles/         versionné   — seulement si l'équipe partage un style personnalisé
+└── agent-memory/<agent>/  écrit par Claude — seulement pour les sous-agents avec mémoire
 ```
 
-Plus two things that live at the project root, not inside `.claude/`: `.mcp.json` (committed, team-shared MCP servers Claude Code itself connects to) and `CLAUDE.local.md` (gitignored, personal project notes, sibling to a gitignored `settings.local.json`).
+Plus deux éléments qui vivent à la racine du projet, pas dans `.claude/` : `.mcp.json` (versionné, serveurs MCP partagés par l'équipe auxquels Claude Code lui-même se connecte) et `CLAUDE.local.md` (gitignored, notes personnelles de projet, frère d'un `settings.local.json` gitignored).
 
-**Naming collision worth flagging in any project that defines its own domain "agent" vocabulary**: `.claude/agents/` is a distinct Claude Code platform mechanism ("subagents" — an isolated-context-window helper Claude delegates to, e.g. a code-reviewer subagent). If a project's own product already has an "Agent" concept (a user-facing AI agent, say), say so explicitly in conversation and in the file itself, since "the agent" would otherwise be an overloaded term.
+**Collision de nommage à signaler dans tout projet qui définit son propre vocabulaire de domaine « agent »** : `.claude/agents/` est un mécanisme distinct de la plateforme Claude Code (« sous-agents » — un assistant à fenêtre de contexte isolée auquel Claude délègue, ex. un sous-agent de révision de code). Si le propre produit d'un projet a déjà un concept d'« Agent » (un agent IA visible par l'utilisateur, par exemple), dites-le explicitement en conversation et dans le fichier lui-même, car « l'agent » serait sinon un terme surchargé.
 
-### Advanced extension points, documented but not always adopted
+### Points d'extension avancés, documentés mais pas toujours adoptés
 
-Four more pieces of the `.claude/` ecosystem, real and current, not necessarily needed by every project. Documenting the decision to skip one, when that's the choice, makes it a decision rather than a gap:
+Quatre éléments supplémentaires de l'écosystème `.claude/`, réels et actuels, pas nécessairement nécessaires pour chaque projet. Documenter la décision de ne pas en adopter un, quand c'est le choix, en fait une décision plutôt qu'une lacune :
 
-| Mechanism | What it is | Where it lives | Adopt when... |
+| Mécanisme | Ce que c'est | Où il vit | À adopter quand... |
 |---|---|---|---|
-| **Hooks** | Deterministic shell commands Claude Code runs at lifecycle events (`PreToolUse` can block a tool call outright, `PostToolUse` runs after one succeeds, `SessionStart` fires on launch/resume/compact). Unlike `CLAUDE.md`, these are enforced regardless of what Claude decides — settings rules are enforced by the client, not by Claude's judgment. | `hooks` key inside `settings.json` (project, user, or local scope) — not a separate folder | A `CLAUDE.md` rule keeps being described but not reliably followed (e.g. "always run the linter before committing") — that's the signal to promote it from advisory instruction to an enforced `PreToolUse`/`PostToolUse` hook instead of writing the sentence a third time |
-| **MCP (`.mcp.json`)** | Claude Code's *own* config for connecting itself, as a coding tool, to external MCP servers (GitHub, a database, a design tool) during a session. **Naming collision to flag explicitly**: this is unrelated to a project's own planned MCP-server product architecture, if it has one — those would be services the project builds as part of its product, not something Claude Code the CLI reads to extend itself | `.mcp.json` at the project root, committed, team-shared | The team wants Claude Code itself (not the product) to read from an external system mid-session — e.g. querying a live issue tracker instead of pasting ticket text into chat |
-| **Plugins** | A self-contained, distributable bundle of skills + agents + hooks + MCP servers (+ LSP servers), either installed from a marketplace or auto-discovered with zero install step via a `.claude-plugin/plugin.json` manifest | A plugin directory, installed at user or project scope | **The direct answer to reusing one project's structure in a sibling project without copy-paste drift**: once a skill or a rule set is meant to be shared and stay in sync across repos rather than duplicated by hand, package it as one plugin and enable it in both, instead of maintaining two independent copies |
-| **Worktrees** | Isolated parallel git checkouts (`--worktree`/`-w` flag, `.claude/worktrees/<name>/`, `.worktreeinclude` for copying gitignored files like `.env` into each one, subagent `isolation: worktree`) so multiple sessions edit without colliding | `.claude/worktrees/` (add to `.gitignore`), `.worktreeinclude` at project root | Useful the moment a project's own working model allows multiple parallel sessions. **Not applicable** if a project's stated working model is explicitly sequential — one agent, one story at a time, no parallel work — worktrees exist specifically to run parallel isolated sessions, the opposite of that constraint |
+| **Hooks** | Commandes shell déterministes que Claude Code exécute lors d'événements du cycle de vie (`PreToolUse` peut bloquer complètement un appel d'outil, `PostToolUse` s'exécute après qu'un appel réussit, `SessionStart` se déclenche au lancement/reprise/compactage). Contrairement à `CLAUDE.md`, ceux-ci sont appliqués indépendamment de ce que Claude décide — les règles de paramètres sont appliquées par le client, pas par le jugement de Claude. | Clé `hooks` dans `settings.json` (portée projet, utilisateur ou locale) — pas un dossier séparé | Une règle `CLAUDE.md` continue d'être décrite mais pas suivie de façon fiable (ex. « toujours exécuter le linter avant de committer ») — c'est le signal pour la promouvoir d'instruction consultative à un hook `PreToolUse`/`PostToolUse` appliqué plutôt que d'écrire la phrase une troisième fois |
+| **MCP (`.mcp.json`)** | La *propre* config de Claude Code pour se connecter lui-même, en tant qu'outil de codage, à des serveurs MCP externes (GitHub, une base de données, un outil de design) pendant une session. **Collision de nommage à signaler explicitement** : ceci n'a aucun rapport avec une propre architecture de produit MCP-server planifiée d'un projet, le cas échéant — ce seraient des services que le projet construit dans son produit, pas quelque chose que Claude Code le CLI lit pour s'étendre | `.mcp.json` à la racine du projet, versionné, partagé par l'équipe | L'équipe veut que Claude Code lui-même (pas le produit) lise depuis un système externe mi-session — ex. interroger un gestionnaire de tickets en direct au lieu de coller du texte de ticket dans le chat |
+| **Plugins** | Un bundle autonome et distribuable de skills + agents + hooks + serveurs MCP (+ serveurs LSP), soit installé depuis une marketplace, soit auto-découvert sans étape d'installation via un manifeste `.claude-plugin/plugin.json` | Un répertoire de plugin, installé au niveau utilisateur ou projet | **La réponse directe à la réutilisation de la structure d'un projet dans un projet frère sans dérive de copier-coller** : une fois qu'une skill ou un ensemble de règles est destiné à être partagé et rester synchronisé entre les dépôts plutôt que dupliqué à la main, emballez-le en un plugin et activez-le dans les deux, au lieu de maintenir deux copies indépendantes |
+| **Worktrees** | Checkouts git parallèles isolés (`--worktree`/`-w`, `.claude/worktrees/<name>/`, `.worktreeinclude` pour copier les fichiers gitignored comme `.env` dans chacun, sous-agent `isolation: worktree`) afin que plusieurs sessions éditent sans collision | `.claude/worktrees/` (ajouter à `.gitignore`), `.worktreeinclude` à la racine du projet | Utile dès qu'un modèle de travail de projet permet plusieurs sessions parallèles. **Non applicable** si le modèle de travail déclaré d'un projet est explicitement séquentiel — un agent, une story à la fois, pas de travail parallèle — les worktrees existent spécifiquement pour exécuter des sessions isolées parallèles, le contraire de cette contrainte |
 
-### Reading order for a fresh session
+### Ordre de lecture pour une session fraîche
 
-**Quick resume:** `project-docs/execution/EPIC_EXECUTION.md`, then `PLAN.md` § Immediate Next Steps, then — if an Epic is open — that Epic's `epic-NNN-refinement.md`, which `EPIC_EXECUTION.md` names.
+**Reprise rapide :** `project-docs/execution/EPIC_EXECUTION.md`, puis `PLAN.md` § Étapes immédiates suivantes, puis — si un Épique est ouvert — le `epic-NNN-refinement.md` de cet Épique, que `EPIC_EXECUTION.md` nomme.
 
-**The handoff is the committed files, not a separate handoff note.** An earlier version of this template sent a resuming session to gitignored scratch files. Tracked documents beat scratch notes for the reason version control exists: they are reviewed, they are shared, and they cannot quietly be the stale copy.
+**La passation est dans les fichiers versionnés, pas dans une note de passation séparée.** Une version antérieure de ce modèle envoyait une session de reprise vers des fichiers scratch gitignored. Les documents suivis battent les notes scratch pour la raison pour laquelle le contrôle de version existe : ils sont révisés, ils sont partagés, et ils ne peuvent pas silencieusement être la copie périmée.
 
-**Full orientation:** `PRD.md` → `NFR.md` → `SOLUTION_DESIGN.md` → `PLAN.md` → `project-docs/execution/EPIC_EXECUTION.md` → `project-docs/functional-specs/` + `project-docs/technical-specs/` → `project-docs/PROJECT_WORKFLOW.md` + the relevant skill. `GLOSSARY.md` is a standing reference outside this sequence, consulted on demand.
+**Orientation complète :** `PRD.md` → `NFR.md` → `SOLUTION_DESIGN.md` → `PLAN.md` → `project-docs/execution/EPIC_EXECUTION.md` → `project-docs/functional-specs/` + `project-docs/technical-specs/` → `project-docs/PROJECT_WORKFLOW.md` + la skill pertinente. `GLOSSARY.md` est une référence permanente en dehors de cette séquence, consultée à la demande.
 
-## Common mistakes table
+## Tableau des erreurs courantes
 
-| Mistake | Why it happens | The fix |
+| Erreur | Pourquoi ça arrive | La correction |
 |---|---|---|
-| Restating a table in a second document "for convenience" | Feels helpful in the moment | One canonical location per fact, always. Every other mention is a pointer, even if that means an extra click |
-| Renumbering a section and stopping once the headers look right | The obvious fix (headers) is visible; the cross-references are not | After any renumber, grep the *whole repo* for `Section N` / `§N` patterns, not just the file you edited, and not just files that seem like "obvious candidates" |
-| Inventing a new formatting convention instead of finding the one already in use | Faster than searching | Grep for how the same kind of thing is already written elsewhere before formatting something new |
-| Treating a reflective "what do you think" question as an instruction to execute | Eagerness to be useful | If the message is framed as a question, answer the question first. Wait for an explicit go-ahead before writing anything |
-| Adding a status/progress dimension to a document meant to be timeless (e.g. a glossary) | Status feels like useful context | A definition answers "what is this," not "is this built yet." Keep a separate, explicit `Status` field if genuinely needed, never bury delivery status inside the definition prose |
-| Leaving a document's own text un-updated after moving what it describes | The move itself feels like the whole task | If a document says "the canonical version of X is here," and X moves, that sentence has to move or be rewritten too, it's part of the content, not incidental |
-| Assuming an agentic tool reads `AGENTS.md` automatically because it exists in the repo | The two files look interchangeable and both describe "instructions for AI agents" | Claude Code only reads `CLAUDE.md`. An `AGENTS.md` with nothing importing it via `@AGENTS.md` is invisible to Claude Code no matter how complete it is |
-| Building the same reusable skill/hook/rule set by hand a second time in a sibling project instead of packaging it once | Copy-pasting a folder is faster in the moment than setting up a plugin | Once a piece of `.claude/` is meant to be shared across repos, package it as a plugin so both projects read one source instead of drifting apart silently |
+| Réénoncer un tableau dans un second document « pour commodité » | Semble utile sur le moment | Un emplacement canonique par fait, toujours. Toute autre mention est un pointeur, même si ça signifie un clic supplémentaire |
+| Renuméroter une section et s'arrêter une fois que les en-têtes semblent corrects | La correction évidente (les en-têtes) est visible ; les références croisées ne le sont pas | Après toute renumérotation, grep *tout le dépôt* pour les patterns `Section N` / `§N`, pas seulement le fichier modifié, et pas seulement les fichiers qui semblent des « candidats évidents » |
+| Inventer une nouvelle convention de formatage au lieu de trouver celle déjà en usage | Plus rapide que de chercher | Grep pour voir comment le même genre de chose est déjà écrit ailleurs avant de formater quelque chose de nouveau |
+| Traiter une question réflexive « qu'en pensez-vous » comme une instruction à exécuter | Empressement à être utile | Si le message est formulé comme une question, répondre à la question en premier. Attendre un feu vert explicite avant d'écrire quoi que ce soit |
+| Ajouter une dimension de statut/progression à un document censé être intemporel (ex. un glossaire) | Le statut semble du contexte utile | Une définition répond à « qu'est-ce que c'est », pas à « est-ce que c'est construit ». Garder un champ `Statut` séparé et explicite si réellement nécessaire, ne jamais enfouir le statut de livraison dans la prose de définition |
+| Laisser le texte propre d'un document non mis à jour après avoir déplacé ce qu'il décrit | Le déplacement lui-même semble être toute la tâche | Si un document dit « la version canonique de X est ici », et que X se déplace, cette phrase doit se déplacer ou être réécrite aussi, c'est une partie du contenu, pas accessoire |
+| Supposer qu'un outil agentique lit `AGENTS.md` automatiquement parce qu'il existe dans le dépôt | Les deux fichiers semblent interchangeables et décrivent tous deux « des instructions pour les agents IA » | Claude Code lit uniquement `CLAUDE.md`. Un `AGENTS.md` sans rien qui l'importe via `@AGENTS.md` est invisible pour Claude Code quelle que soit sa complétude |
+| Reconstruire manuellement le même ensemble de skills/hooks/règles réutilisables une seconde fois dans un projet frère au lieu de l'empaqueter une fois | Copier-coller un dossier est plus rapide sur le moment que mettre en place un plugin | Une fois qu'un élément de `.claude/` est destiné à être partagé entre dépôts, emballez-le en plugin afin que les deux projets lisent une seule source au lieu de dériver silencieusement |
 
 ### Sources
 
-Researched against official Claude Code documentation (all under `code.claude.com`, which `docs.anthropic.com/en/docs/claude-code/*` now redirects to):
+Recherché dans la documentation officielle Claude Code (tout sous `code.claude.com`, vers lequel `docs.anthropic.com/en/docs/claude-code/*` redirige maintenant) :
 
-- [How Claude remembers your project](https://code.claude.com/docs/en/memory) — `CLAUDE.md` hierarchy and load order, `AGENTS.md` interop, `.claude/rules/`
-- [Explore the `.claude` directory](https://code.claude.com/docs/en/claude-directory) — full file/folder reference for project- and user-level `.claude/`
-- [Plugins reference](https://code.claude.com/docs/en/plugins-reference) — plugin components, installation scopes, skills-directory (manifest-only) plugins
-- [Automate actions with hooks](https://code.claude.com/docs/en/hooks-guide) — hook lifecycle events, enforcement vs. `CLAUDE.md` guidance, example use cases
-- [Connect Claude Code to tools via MCP](https://code.claude.com/docs/en/mcp) — `.mcp.json` project scope vs. `~/.claude.json` local/user scope
-- [Run parallel sessions with worktrees](https://code.claude.com/docs/en/worktrees) — `--worktree`, `.worktreeinclude`, subagent `isolation: worktree`
-- [AGENTS.md](https://agents.md/) — the open standard's own spec page
+- [How Claude remembers your project](https://code.claude.com/docs/en/memory) — hiérarchie et ordre de chargement de `CLAUDE.md`, interop `AGENTS.md`, `.claude/rules/`
+- [Explore the `.claude` directory](https://code.claude.com/docs/en/claude-directory) — référence complète des fichiers/dossiers `.claude/` au niveau projet et utilisateur
+- [Plugins reference](https://code.claude.com/docs/en/plugins-reference) — composants de plugin, portées d'installation, plugins skills-directory (manifest uniquement)
+- [Automate actions with hooks](https://code.claude.com/docs/en/hooks-guide) — événements du cycle de vie des hooks, application vs. guidance `CLAUDE.md`, cas d'usage exemples
+- [Connect Claude Code to tools via MCP](https://code.claude.com/docs/en/mcp) — portée projet `.mcp.json` vs. portée locale/utilisateur `~/.claude.json`
+- [Run parallel sessions with worktrees](https://code.claude.com/docs/en/worktrees) — `--worktree`, `.worktreeinclude`, sous-agent `isolation: worktree`
+- [AGENTS.md](https://agents.md/) — la page de spécification du standard ouvert

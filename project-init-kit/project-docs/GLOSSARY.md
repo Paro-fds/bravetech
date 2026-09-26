@@ -1,87 +1,98 @@
 ---
-created: 2026-09-08T17:38:40Z
-updated: 2026-09-11T14:49:25Z
+created: 2026-09-26T00:35:00Z
+updated: 2026-09-26T00:35:00Z
 ---
 
-# GLOSSARY.md — [Project Name]
+# GLOSSARY.md — FDS Portail
 
-**Answers:** What does this term mean? — consult whenever a word is ambiguous, once filled in.
-**Depends on:** nothing for the "Workstream, Epic, and Milestone" section (generic, already here); on `PRD.md`, and especially `PLAN.md`, for everything else.
-
-> **Status: starter structure — the last document to finalize, not the first.** Counter-intuitively, this isn't where you start: without knowing yet what product this is, you don't know which vocabulary deserves an entry. Real order: `PRD.md` → `NFR.md` → `SOLUTION_DESIGN.md` → `PLAN.md` → **here, last**. This file can start filling in as soon as a first PRD draft exists (the first terms emerge), but it only **finalizes** once `PLAN.md` is done — that's when there's enough material to actually know what product this is. Each section carries the reflection questions to ask yourself before writing — don't ask the agent to invent the answers.
-
----
-
-## Actors and Roles
-
-*Who or what interacts with this system, in a distinct capacity.*
-
-> **Questions to ask:**
-> 1. Who or what touches this system, and does each one need different capabilities, access, or trust level?
-> 2. Is there a word (like "user" or "agent") that could mean two different things depending on context here? Does it need splitting into two terms?
-> 3. Are there distinct modes or intents the same actor can be in, worth naming separately?
-
-*(To be written)*
+**Réponses :** Que signifie ce terme ? — consulter ce document chaque fois qu'un mot est ambigu.
+**Dépend de :** `PRD.md` + `PLAN.md`.
 
 ---
 
-## System Components
+## Acteurs et rôles
 
-*The pieces that run or deploy independently.*
+*Qui ou quoi interagit avec ce système, dans une capacité distincte.*
 
-> **Questions to ask:**
-> 1. What are the independently-run or independently-deployable pieces of this system?
-> 2. Do any two components have similar names that could be confused? What distinguishes each in one sentence?
-> 3. Is there a natural split worth naming as a category (public vs. private, always-on vs. on-demand)?
+| Terme | Définition |
+|---|---|
+| **Candidat** | Lycéen ou adulte souhaitant s'inscrire à la FDS-UEH. Accès entièrement public — aucun compte requis. S'identifie via sa **référence dossier** pour le suivi. Peut consulter les cursus, postuler, uploader des documents, suivre son dossier et remplacer un document rejeté. |
+| **Administrateur (Admin)** | Agent du secrétariat FDS. Accès authentifié (email + mot de passe → JWT). Peut consulter toutes les candidatures, valider ou rejeter des documents. Toute action est auditée. En cas de conflit de besoin avec le Candidat, l'Admin est prioritaire (traçabilité > simplicité). |
+| **Agent** | Sous-rôle d'Administrateur avec permissions potentiellement réduites. Identifiant de rôle : `agent` (vs `admin`). Non différencié fonctionnellement en V1 — distinction préparée pour post-MVP. |
+| **Système** | Le backend FastAPI agissant de façon autonome : génération de références, déclenchement d'emails, validation des fichiers. N'est pas un acteur humain. |
 
-*(To be written — probably short here if this is a single backend/single frontend project)*
-
----
-
-## Data Stores
-
-*Where information actually persists.*
-
-> **Questions to ask:**
-> 1. Where does information actually persist, and how many distinct stores are there?
-> 2. Does any one store hold more than one kind of data that should be named separately?
-> 3. Which store, if lost, would be the most damaging?
-
-*(To be written)*
+> **Terme à ne pas confondre :** « utilisateur » n'est jamais utilisé seul dans ce projet — il désigne toujours un Candidat (public) ou un Administrateur (authentifié). Utiliser le terme précis selon le contexte.
 
 ---
 
-## Domain Vocabulary
+## Composants du système
 
-*Process or content terms an outsider might misread.*
+*Les éléments qui tournent ou se déploient indépendamment.*
 
-> **Questions to ask:**
-> 1. What recurring nouns or process names would an outsider misinterpret without a definition?
-> 2. Which terms get said constantly in conversation about this project that aren't obvious from the word alone?
-> 3. Is there a term borrowed from a wider field that means something narrower here?
-
-*(To be written)*
-
----
-
-## Workstream, Epic, and Milestone
-
-*Generic — reuse as-is.*
-
-- **Workstream** = *which functional area*. Never finishes. Can be revisited by a later Epic. Identifier: `WS-NN` (two digits).
-- **Epic** = *when, how much at once*. Sequential, time-boxed build stage. Identifier: `epic-NNN-name` (three-digit folder).
-- **Milestone** = *what ships*. The GitHub representation of an Epic — not a fourth, separate concept.
-
-> **Question to ask:** does this project genuinely need all three axes, or is it small enough that two collapse into one? What are this project's actual Workstreams, independent of the order they'll be built in?
+| Terme | Définition |
+|---|---|
+| **FDS Portail** | Le produit dans son ensemble — comprend le frontend et le backend. À ne pas confondre avec les autres modules de l'écosystème FDS (FDS Pay, FDS Akademi, FDS SYS). |
+| **Frontend** | Application React/Vite (SPA) hébergée sur Vercel. Sert les pages publiques (cursus, candidature, suivi) et le tableau de bord admin. Structure interne : Feature-Sliced Design (FSD). |
+| **Backend** | API FastAPI hébergée sur Railway. Structure interne : Clean Architecture (4 couches). Expose les endpoints REST sous `/api/v1/`. Source de vérité : PostgreSQL. |
+| **FDS SYS** | Système externe — System of Record des identités des administrateurs FDS. FDS Portail *consomme* ces identités mais ne les gère pas. Non livré en V1 : les comptes admin sont créés manuellement. |
+| **FDS Pay** | Module externe de paiement réel (MonCash/NatCash). Non livré en V1 — FDS Portail simule le paiement. |
 
 ---
 
-## Project Documents
+## Stockages de données
 
-*Generic — pointer only.*
+*Où l'information persiste réellement.*
 
-The canonical document listing every other project document: see `PRD.md` § Related Documents.
+| Terme | Définition |
+|---|---|
+| **PostgreSQL** | **Source de vérité unique.** Hébergé sur Railway. Contient toutes les tables (`candidats`, `documents_requis`, `documents_soumis`, `utilisateurs`). Backup quotidien automatique. Perte = perte de dossiers. |
+| **Cloudinary** | Stockage des fichiers physiques (PDF, JPG) uploadés par les candidats. Stockage secondaire — les fichiers survivent si PostgreSQL est perdu, mais les dossiers associés ne peuvent pas être reconstitués sans la base. URLs signées, accès via proxy admin. |
+| **Mémoire application** | L'API FastAPI est **stateless** — aucun état persisté entre les requêtes. Aucun cache en mémoire en V1. |
+
+> **Règle absolue :** les URLs Cloudinary et les statuts d'email ne remplacent jamais les données PostgreSQL. Si les deux divergent, PostgreSQL a raison.
 
 ---
 
-*GLOSSARY.md — [Project Name] — starter structure from `project-init-kit/`.*
+## Vocabulaire du domaine
+
+*Termes de processus ou de contenu qu'un outsider pourrait mal interpréter.*
+
+| Terme | Définition |
+|---|---|
+| **Référence dossier** | Identifiant unique d'une candidature, format `CAN-YYYY-NNNN` (ex. `CAN-2026-0089`). Générée par le backend au moment de la soumission. Sert de clé d'accès public au suivi — remplace un login pour le Candidat. |
+| **Dossier** | L'ensemble des informations et documents soumis par un Candidat pour une candidature. Synonyme de "candidature" dans les conversations courantes — mais dans le code, c'est l'entité `Candidat` qui porte le dossier. |
+| **Document requis** | Pièce justificative exigée par la FDS pour une candidature (ex. diplôme, pièce d'identité). Défini dans la table `documents_requis`. Référence : ce que le candidat *doit* fournir. |
+| **Document soumis** | Fichier effectivement uploadé par un Candidat pour satisfaire un Document requis. Entité `DocumentSoumis` en base. Un Document soumis remplace le précédent en cas de rejet (upsert — jamais deux lignes pour le même `(candidat_id, document_requis_id)`). |
+| **Statut de validation** | État d'un Document soumis. Trois valeurs possibles : `en_attente` (uploadé, pas encore traité), `valide` (approuvé par un Admin), `rejete` (refusé par un Admin). Alimente la barre de progression du suivi. |
+| **Déplacement physique** | Champ booléen `deplacement_physique` sur l'entité `Candidat`. Indique si le candidat a dû se déplacer physiquement pour compléter sa candidature. Valeur cible : `false` pour ≥ 70 % des dossiers (critère de succès PRD §11). |
+| **Walking Skeleton** | Implémentation minimale traversant toutes les couches du système de bout en bout : d'un `POST /api/v1/candidature` jusqu'à l'affichage de la référence à l'écran et l'envoi de l'email. Objectif de `epic-002`. |
+| **Simulation de paiement** | Dans FDS Portail V1, le paiement MonCash/NatCash est simulé — aucune transaction réelle n'a lieu. Le candidat saisit une référence transactionnelle fictive, et le système la persiste comme si elle était valide. Le paiement réel est délégué à FDS Pay (hors V1). |
+| **Proxy document** | Endpoint admin (`GET /api/v1/admin/proxy-document`) qui récupère un fichier Cloudinary et le sert au client après vérification du JWT. Empêche l'accès direct aux URLs Cloudinary sans authentification. |
+| **Audit** | Enregistrement immuable de chaque décision admin sur un Document soumis — champs `valide_par` (ID de l'Admin) et `date_validation` (timestamp). Permet au secrétariat de justifier toute décision. |
+| **Upsert** | Opération d'écriture qui crée un Document soumis s'il n'existe pas, ou le met à jour s'il existe déjà (sur la contrainte UNIQUE `(candidat_id, document_requis_id)`). Utilisé lors du remplacement d'un document rejeté — garantit qu'un candidat n'a jamais deux lignes pour le même document. |
+| **Magic bytes** | Signature binaire au début d'un fichier identifiant son vrai format (ex. `%PDF-` pour les PDFs). Vérifiés côté serveur via la bibliothèque `filetype` pour empêcher l'upload de fichiers exécutables renommés en `.pdf` ou `.jpg`. |
+| **Période d'inscription** | Fenêtre temporelle pendant laquelle les candidatures sont ouvertes. Correspond au pic de charge connu — aucune maintenance tolérée durant cette période. |
+
+---
+
+## Workstream, Epic et Milestone
+
+*Générique — conservé tel quel.*
+
+- **Workstream** = *quelle zone fonctionnelle*. Ne finit jamais. Peut être revisité par un Epic ultérieur. Identifiant : `WS-NN` (deux chiffres).
+- **Epic** = *quand, et à quel volume à la fois*. Étape de construction séquentielle et cadrée dans le temps. Identifiant : `epic-NNN-name` (dossier à trois chiffres).
+- **Milestone** = *ce qui est livré*. La représentation GitHub d'un Epic — pas un quatrième concept séparé.
+
+**Workstreams de FDS Portail :** WS-01 (Portail public), WS-02 (Candidature), WS-03 (Suivi), WS-04 (Administration), WS-05 (Notifications) — définis dans `SOLUTION_DESIGN.md §2`.
+
+---
+
+## Documents du projet
+
+*Simple pointeur.*
+
+La liste canonique de tous les autres documents du projet : voir `PRD.md §14` — Documents associés.
+
+---
+
+*GLOSSARY.md — FDS Portail — Bravetech · GL-EN3-2026*

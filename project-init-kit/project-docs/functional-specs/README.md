@@ -5,15 +5,15 @@ updated: 2026-09-11T14:49:25Z
 
 # functional-specs/
 
-**Answers:** What does a delivered Workstream actually do, from a behavior standpoint?
+**Réponses :** Que fait réellement un Workstream livré, du point de vue du comportement ?
 
-**No fixed template.** Sections are decided per Workstream, once there's real behavior to document — never ahead of time. Writing a functional spec before a story in that Workstream has closed is speculation, not documentation.
+**Pas de template fixe.** Les sections sont décidées par Workstream, une fois qu'il existe un vrai comportement à documenter — jamais avant. Rédiger une spécification fonctionnelle avant la clôture d'une histoire de ce Workstream relève de la spéculation, pas de la documentation.
 
-**Filename convention:** `ws-func-NN-name.md`, where `NN` matches the Workstream's ID in `SOLUTION_DESIGN.md` § Workstreams exactly.
+**Convention de nommage :** `ws-func-NN-name.md`, où `NN` correspond exactement à l'identifiant du Workstream dans `SOLUTION_DESIGN.md` § Workstreams.
 
-> **Questions to ask to decide whether a section is needed (not to fill in a fixed list):**
-> 1. What does a user or calling system observe now that they couldn't observe before this Workstream existed?
-> 2. What are the edge cases or refusal conditions someone building against this needs to know?
-> 3. Is there a rule here that isn't obvious from reading the code — a business rule, a confidentiality boundary, an ordering requirement?
+> **Questions à se poser pour décider si une section est nécessaire (et non pour remplir une liste fixe) :**
+> 1. Qu'un utilisateur ou un système appelant observe-t-il maintenant qu'il ne pouvait pas observer avant l'existence de ce Workstream ?
+> 2. Quels sont les cas limites ou les conditions de refus qu'une personne qui s'appuie dessus doit connaître ?
+> 3. Existe-t-il une règle ici qui n'est pas évidente à la lecture du code — règle métier, frontière de confidentialité, contrainte d'ordre ?
 >
-> **Governing question for all of it: has a story in this Workstream actually closed yet? If not, there's nothing real to document — wait.**
+> **Question directrice pour tout cela : une histoire de ce Workstream est-elle réellement clôturée ? Sinon, il n'y a rien de réel à documenter — il faut attendre.**

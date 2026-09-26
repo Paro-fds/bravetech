@@ -3,104 +3,104 @@ created: 2026-09-08T17:38:40Z
 updated: 2026-09-16T19:53:40Z
 ---
 
-> **First learned:** 2026-09-08 15:30:00
-> **Last updated:** 2026-09-08 15:30:00
+> **Premier apprentissage :** 2026-09-08 15:30:00
+> **Dernière mise à jour :** 2026-09-08 15:30:00
 
-## Context
+## Contexte
 
-A real multi-service backend went through several rounds of critique before its internal layering settled into something worth reusing as-is on the *next* backend service, rather than re-derived (and re-making the same corrected mistakes) from scratch each time. This file is the generalized, project-agnostic version of that settled structure — pulled out of one project's own internal learning notes and its companion scaffolding skill, so a new project can start a backend service already at the "settled" shape instead of at the "first attempt, about to get critiqued" shape.
+Un backend multi-service réel a traversé plusieurs cycles de critique avant que sa structuration interne ne se stabilise en quelque chose valant la peine d'être réutilisé tel quel sur le *prochain* service backend, plutôt que redérivé (en refaisant les mêmes erreurs corrigées) depuis zéro à chaque fois. Ce fichier est la version généralisée et agnostique au projet de cette structure stabilisée — extrait des notes d'apprentissage internes d'un projet et de la skill de scaffolding qui l'accompagne, afin qu'un nouveau projet puisse démarrer un service backend déjà à la forme « stabilisée » au lieu de la forme « premier essai, sur le point d'être critiqué ».
 
-This complements `01-documentation-structure-template.md`: that file is about the *documentation* layer sitting above a project; this file is about the *internal code* layer sitting inside one backend service. Use it once `SOLUTION_DESIGN.md` §4/§6 has decided a service needs a real internal structure (not a single-file script), before writing the first line of that service's source.
+Ce fichier complète `01-documentation-structure-template.md` : ce fichier concerne la couche *documentation* au-dessus d'un projet ; le présent fichier concerne la couche *code interne* à l'intérieur d'un service backend. À utiliser une fois que `SOLUTION_DESIGN.md` §4/§6 a décidé qu'un service a besoin d'une vraie structure interne (pas un script en fichier unique), avant d'écrire la première ligne du code source de ce service.
 
-## How this was learned
+## Comment cela a été appris
 
-**Trigger:** A second backend service in the same project needed to share a database table with the first one. Deciding *how* forced a real, researched architectural question — duplicate the data-access mapping in each service, or extract a shared package — which in turn required the layering itself to already be principled enough to reason about cleanly. That pressure-test is what surfaced most of the rules below; they weren't designed upfront, they were corrected into shape.
+**Déclencheur :** Un second service backend dans le même projet devait partager une table de base de données avec le premier. Décider *comment* a forcé une vraie question architecturale recherchée — dupliquer le mapping d'accès aux données dans chaque service, ou extraire un package partagé — ce qui à son tour nécessitait que la structuration elle-même soit déjà suffisamment principiée pour raisonner dessus proprement. Cette pression-test est ce qui a fait émerger la plupart des règles ci-dessous ; elles n'ont pas été conçues à l'avance, elles ont été corrigées jusqu'à leur forme finale.
 
-**The path:** The first backend service did not start with this structure — it went through real critique rounds that caught: business logic accidentally depending on a framework-specific ORM type instead of a plain domain object; an exception hierarchy split across layers that made it unclear which layer was allowed to decide an HTTP status code; and a "just add the field to the model" instinct that leaked a persistence-layer concern (a database column) into code that should only ever see a domain concept. Each of these got corrected once, then written down as a rule so the correction didn't have to happen again on the next service. When a second service needed the same database, the choice between "duplicate the mapping" and "share a package" was resolved by weighing a concrete tradeoff (schema-drift risk of duplication vs. tooling-convention conflict of a shared package) rather than picked by default — see the Decision Log for how that specific case was reasoned through.
+**Le chemin :** Le premier service backend n'a pas démarré avec cette structure — il a traversé de vrais cycles de critique qui ont détecté : une logique métier dépendant accidentellement d'un type ORM spécifique au framework au lieu d'un objet de domaine simple ; une hiérarchie d'exceptions éclatée entre les couches qui rendait flou quelle couche était autorisée à décider d'un code de statut HTTP ; et un instinct « ajouter simplement le champ au modèle » qui faisait fuiter une préoccupation de couche de persistance (une colonne de base de données) dans du code qui ne devrait jamais voir qu'un concept de domaine. Chacun de ces éléments a été corrigé une fois, puis consigné comme règle pour que la correction n'ait pas à se reproduire sur le prochain service. Quand un second service a eu besoin de la même base de données, le choix entre « dupliquer le mapping » et « partager un package » a été résolu en pesant un compromis concret (risque de dérive de schéma de la duplication vs. conflit de convention d'outillage d'un package partagé) plutôt que par défaut — voir le Journal des Décisions pour la façon dont ce cas spécifique a été raisonné.
 
-**Things to be aware of:**
-- This structure earns its cost on a service with real business logic and more than a couple of entities. A single-endpoint utility service does not need four layers — don't impose this on something that doesn't have the complexity to justify it.
-- The one-way dependency rule (below) is easy to state and easy to accidentally violate the first time a "just this once" shortcut feels convenient — e.g. importing an ORM model directly into a route handler to save a conversion step. Every one of those shortcuts, taken once, becomes very hard to find and undo later, once a dozen more routes have copied the same shortcut.
-- Deciding whether to duplicate a data-access mapping or share it as a package across services is a real, non-obvious tradeoff, not a default — see the Rule's "Sharing data access across services" subsection.
+**À avoir en tête :**
+- Cette structure justifie son coût sur un service avec une vraie logique métier et plus de quelques entités. Un service utilitaire à un seul endpoint n'a pas besoin de quatre couches — n'imposez pas ceci sur quelque chose qui n'a pas la complexité pour le justifier.
+- La règle de dépendance unidirectionnelle (ci-dessous) est facile à énoncer et facile à violer accidentellement la première fois qu'un raccourci « juste cette fois » semble pratique — ex. importer directement un modèle ORM dans un gestionnaire de route pour économiser une étape de conversion. Chacun de ces raccourcis, pris une fois, devient très difficile à trouver et annuler plus tard, une fois qu'une douzaine d'autres routes ont copié le même raccourci.
+- Décider de dupliquer un mapping d'accès aux données ou de le partager comme package entre services est un vrai compromis non évident, pas un défaut — voir la sous-section « Partager l'accès aux données entre services » de La Règle.
 
-## The Rule
+## La Règle
 
-### The four layers, and the one-way dependency
+### Les quatre couches, et la dépendance unidirectionnelle
 
 ```
-Entities  ←  Data Access Layer (DAL)  ←  Business Logic Layer (BLL)  ←  API layer
+Entités  ←  Couche d'Accès aux Données (DAL)  ←  Couche de Logique Métier (BLL)  ←  Couche API
 ```
 
-Dependencies point **one way only**, left to right is never allowed:
+Les dépendances pointent dans **un seul sens**, de gauche à droite n'est jamais permis :
 
-- **Entities** — plain domain objects (a dataclass, a Pydantic model used as a domain type, or equivalent in your language). No framework imports, no ORM base class, no knowledge that a database exists at all. This is what every other layer actually thinks about.
-- **Data Access Layer (DAL)** — the *only* layer allowed to import the ORM/database library. It maps between the framework's persistence representation (e.g. a SQLAlchemy mapped class) and a plain Entity, and exposes functions/methods that take and return Entities only — never the ORM row type. Keep the real mapped class module-private (e.g. prefix it `_UserRow` or equivalent) so nothing outside this layer is even tempted to import it directly.
-- **Business Logic Layer (BLL)** — all business rules, validation, and orchestration across DAL calls. Takes Entities in, returns Entities out — never a DTO, never an ORM type. This is where "can this action happen" gets decided, not in the API layer and not in the DAL.
-- **API layer** — request/response handling only. Converts an incoming request into whatever the BLL needs, calls the BLL, converts the BLL's Entity result into a response shape (a DTO). Contains no business rules of its own.
+- **Entités** — objets de domaine simples (un dataclass, un modèle Pydantic utilisé comme type de domaine, ou équivalent dans votre langage). Pas d'imports de framework, pas de classe de base ORM, pas de connaissance qu'une base de données existe du tout. C'est ce à quoi chaque autre couche pense réellement.
+- **Couche d'Accès aux Données (DAL)** — la *seule* couche autorisée à importer la bibliothèque ORM/base de données. Elle fait le mapping entre la représentation de persistance du framework (ex. une classe mappée SQLAlchemy) et une Entité simple, et expose des fonctions/méthodes qui prennent et retournent uniquement des Entités — jamais le type de ligne ORM. Gardez le vrai module de classe mappée privé au module (ex. préfixez-le `_UserRow` ou équivalent) pour que rien en dehors de cette couche ne soit même tenté de l'importer directement.
+- **Couche de Logique Métier (BLL)** — toutes les règles métier, la validation et l'orchestration des appels DAL. Prend des Entités en entrée, retourne des Entités en sortie — jamais un DTO, jamais un type ORM. C'est là que « cette action peut-elle se produire » est décidé, pas dans la couche API et pas dans la DAL.
+- **Couche API** — gestion des requêtes/réponses uniquement. Convertit une requête entrante en ce dont la BLL a besoin, appelle la BLL, convertit le résultat Entité de la BLL en une forme de réponse (un DTO). Ne contient pas de règles métier propres.
 
-**Why one-way, not a shortcut "just this once":** the moment a route handler imports an ORM model directly, or the BLL starts returning a database row, the whole point of the boundary is gone — the layer that was supposed to be swappable/testable in isolation now silently depends on the thing it was insulated from. This is the single most common way this structure erodes; treat any exception request to it as a signal to look harder for the correct layer, not as a pragmatic one-off.
+**Pourquoi unidirectionnel, pas un raccourci « juste cette fois » :** le moment où un gestionnaire de route importe directement un modèle ORM, ou que la BLL commence à retourner une ligne de base de données, tout l'intérêt de la frontière disparaît — la couche qui était supposée être interchangeable/testable en isolation dépend maintenant silencieusement de la chose dont elle était isolée. C'est la façon la plus courante dont cette structure s'érode ; traitez toute demande d'exception comme un signal pour chercher plus dur la couche correcte, pas comme un one-off pragmatique.
 
-### DTOs live at the edge, not in the middle
+### Les DTOs vivent à la périphérie, pas au milieu
 
-A DTO (Data Transfer Object — the shape of a request body or response payload) belongs to the API layer only. It exists to define the *wire contract*, which is allowed to differ from the internal Entity shape (different field names, a subset of fields, a computed field). Never let a DTO leak into the BLL or DAL — those layers only ever see Entities.
+Un DTO (Data Transfer Object — la forme d'un corps de requête ou d'une payload de réponse) appartient uniquement à la couche API. Il existe pour définir le *contrat réseau*, qui est autorisé à différer de la forme interne de l'Entité (noms de champs différents, un sous-ensemble de champs, un champ calculé). Ne laissez jamais un DTO fuiter dans la BLL ou la DAL — ces couches ne voient jamais que des Entités.
 
-### Exceptions: one flat file, named semantically, mapped in exactly one place
+### Exceptions : un fichier plat, nommé sémantiquement, mappé en exactement un endroit
 
-- Keep exception classes in a single flat file (e.g. `core/exceptions.py`), not split per-layer or per-feature. Name them for the business meaning of the failure (`InvalidCredentialsError`, `DuplicateEmailError`), never for which layer raised them (`DAL_NotFoundError`) — a caller shouldn't need to know which layer failed to understand what went wrong.
-- Map each exception to an HTTP status (or equivalent transport-level response) in exactly one place (e.g. `core/exception_handlers.py`). No other file should ever decide a status code from an exception type — that decision belongs in one place so it can't drift into two different answers for the same exception.
-- It's fine, and often correct, for one exception to cover more than one underlying cause when the caller shouldn't be able to distinguish them (e.g. a single generic "invalid credentials" exception covering both "wrong password" and "expired token," so a caller can't use error specificity to enumerate which part of an auth check failed).
+- Gardez les classes d'exceptions dans un fichier plat unique (ex. `core/exceptions.py`), pas éclaté par couche ou par fonctionnalité. Nommez-les pour le sens métier de l'échec (`InvalidCredentialsError`, `DuplicateEmailError`), jamais pour quelle couche les a levées (`DAL_NotFoundError`) — un appelant ne devrait pas avoir besoin de savoir quelle couche a échoué pour comprendre ce qui a mal tourné.
+- Mappez chaque exception à un statut HTTP (ou réponse au niveau transport équivalente) en exactement un endroit (ex. `core/exception_handlers.py`). Aucun autre fichier ne devrait jamais décider d'un code de statut depuis un type d'exception — cette décision appartient en un seul endroit pour qu'elle ne puisse pas dériver en deux réponses différentes pour la même exception.
+- C'est bien, et souvent correct, qu'une exception couvre plus d'une cause sous-jacente quand l'appelant ne devrait pas pouvoir les distinguer (ex. une exception générique unique d'« identifiants invalides » couvrant à la fois « mauvais mot de passe » et « token expiré », pour qu'un appelant ne puisse pas utiliser la spécificité de l'erreur pour énumérer quelle partie d'une vérification d'authentification a échoué).
 
-### Sharing data access across services
+### Partager l'accès aux données entre services
 
-The moment two independent services need to read/write the same underlying data store, there's a real choice, not a default:
+Dès que deux services indépendants ont besoin de lire/écrire le même entrepôt de données sous-jacent, il y a un vrai choix, pas un défaut :
 
-| Option | When it's right | The real cost |
+| Option | Quand c'est juste | Le vrai coût |
 |---|---|---|
-| **Duplicate the data-access mapping** in each service (each service defines its own DAL-layer model for the shared table) | Services are meant to stay independently deployable, each with its own dependency/environment setup, and the shared table's schema changes rarely and predictably (owned by exactly one service's migration history) | Risk of schema drift if the duplicated mappings aren't kept in sync — mitigate with a clear single owner of the actual schema/migrations, and a code comment in every duplicate pointing at that owner |
-| **Extract a shared package** (a shared library both services depend on) | Services already share a dependency-management setup (a monorepo-style workspace, a shared virtual environment/lockfile), or the shared schema changes often enough that duplication would drift immediately | Usually means collapsing both services onto one shared environment/lockfile — a real cost if your project's convention is one independent environment per service |
+| **Dupliquer le mapping d'accès aux données** dans chaque service (chaque service définit son propre modèle de couche DAL pour la table partagée) | Les services sont censés rester indépendamment déployables, chacun avec sa propre configuration de dépendances/environnement, et le schéma de la table partagée change rarement et de façon prévisible (propriété d'exactement un historique de migrations de service) | Risque de dérive de schéma si les mappings dupliqués ne sont pas maintenus synchronisés — à atténuer avec un propriétaire unique clair du schéma/migrations réel, et un commentaire de code dans chaque doublon pointant vers ce propriétaire |
+| **Extraire un package partagé** (une bibliothèque partagée dont les deux services dépendent) | Les services partagent déjà une configuration de gestion des dépendances (un workspace style monorepo, un environnement virtuel/lockfile partagé), ou le schéma partagé change suffisamment souvent pour que la duplication dériverait immédiatement | Signifie généralement faire converger les deux services vers un environnement/lockfile partagé — un vrai coût si la convention de votre projet est un environnement indépendant par service |
 
-Whichever is chosen, write the decision down as an ADR entry in `SOLUTION_DESIGN.md` §14 — this is exactly the kind of choice that looks arbitrary in hindsight if the tradeoff that was weighed isn't recorded.
+Quel que soit le choix, consignez la décision comme une entrée ADR dans `SOLUTION_DESIGN.md` §14 — c'est exactement le type de choix qui semble arbitraire rétrospectivement si le compromis pesé n'est pas enregistré.
 
-### A minimal folder shape for one backend service
+### Une forme de dossier minimale pour un service backend
 
 ```
 <service>/
 ├── app/
-│   ├── main.py                 <- app entry point / server bootstrap
+│   ├── main.py                 <- point d'entrée de l'app / bootstrap du serveur
 │   ├── core/
-│   │   ├── config.py           <- settings/env loading
-│   │   ├── exceptions.py       <- flat file, one class per business failure
-│   │   └── exception_handlers.py  <- the one place exceptions map to a response status
-│   ├── entities/                <- plain domain objects, no framework imports
-│   ├── dal/                     <- the only layer allowed to import the ORM/DB library
-│   ├── bll/                     <- business rules, takes/returns Entities only
+│   │   ├── config.py           <- chargement des paramètres/env
+│   │   ├── exceptions.py       <- fichier plat, une classe par échec métier
+│   │   └── exception_handlers.py  <- le seul endroit où les exceptions se mappent en statut de réponse
+│   ├── entities/                <- objets de domaine simples, pas d'imports de framework
+│   ├── dal/                     <- la seule couche autorisée à importer la bibliothèque ORM/BD
+│   ├── bll/                     <- règles métier, prend/retourne uniquement des Entités
 │   └── api/
 │       └── v1/
-│           └── dto/             <- request/response shapes, API layer only
-└── <dependency manifest, migrations folder, etc. per your stack>
+│           └── dto/             <- formes requête/réponse, couche API uniquement
+└── <manifeste de dépendances, dossier de migrations, etc. selon votre stack>
 ```
 
-A freshly scaffolded service should have working infrastructure (`core/`, the DAL's database connection setup, an empty API router) but **no** `entities/`, `dal/`, `bll/`, or `dto/` file yet — those are real feature work, added per unit of work (per user story), not part of scaffolding. Building them ahead of a real need produces dead code that has to be maintained without ever being exercised.
+Un service fraîchement scaffoldé devrait avoir une infrastructure fonctionnelle (`core/`, la configuration de connexion base de données de la DAL, un routeur API vide) mais **pas** de fichier `entities/`, `dal/`, `bll/` ou `dto/` encore — ce sont de vrais travaux de fonctionnalité, ajoutés par unité de travail (par user story), pas dans le cadre du scaffolding. Les construire avant un vrai besoin produit du code mort qui doit être maintenu sans jamais être exercé.
 
-### A concurrency gotcha worth checking the moment a second writer appears
+### Un piège de concurrence à vérifier dès qu'un second writer apparaît
 
-If more than one process/service will write to the same lightweight file-based database (e.g. SQLite), don't assume a documented concurrency setting (e.g. "we use WAL mode") is actually in effect — verify it directly (query the actual runtime setting) rather than trusting a comment or a tech-stack table. A single-writer setup never surfaces the gap; it only becomes a real correctness risk the moment a second writer joins, which is exactly when it's easiest to miss because nothing about adding the second service *looks* like a database change.
+Si plus d'un processus/service écrira dans la même base de données légère à base de fichiers (ex. SQLite), ne supposez pas qu'un paramètre de concurrence documenté (ex. « nous utilisons le mode WAL ») est réellement en vigueur — vérifiez-le directement (interrogez le paramètre réel à l'exécution) plutôt que de faire confiance à un commentaire ou un tableau de stack. Une configuration mono-writer ne fait jamais apparaître l'écart ; il ne devient un vrai risque de correction que le moment où un second writer arrive, ce qui est exactement quand il est le plus facile de le rater parce qu'ajouter le second service ne *ressemble* pas à un changement de base de données.
 
-### A cross-origin gotcha worth checking the moment a second, separate-origin frontend appears
+### Un piège CORS à vérifier dès qu'un second frontend d'origine distincte apparaît
 
-If a browser-based frontend calls this backend from a different origin (different port or domain), backend-only verification (a command-line HTTP client) will not catch a missing CORS configuration — CORS preflight and enforcement are purely browser-side, invisible to any non-browser client. The only reliable check is a real browser-based test (a headless-browser script or manual click-through) driving the actual frontend against the actual backend.
+Si un frontend basé sur navigateur appelle ce backend depuis une origine différente (port ou domaine différent), la vérification uniquement côté backend (un client HTTP en ligne de commande) ne détectera pas une configuration CORS manquante — le preflight CORS et son application sont purement côté navigateur, invisibles à tout client non-navigateur. La seule vérification fiable est un test basé sur un vrai navigateur (un script de navigateur headless ou un clic manuel) pilotant le vrai frontend contre le vrai backend.
 
-## Common mistakes
+## Erreurs courantes
 
-| Mistake | Why it happens | Fix |
+| Erreur | Pourquoi ça arrive | Correction |
 |---|---|---|
-| Importing the ORM-mapped class directly in a route handler "just to save a conversion step" | Feels like unnecessary boilerplate in the moment | Always convert to/from the Entity at the DAL boundary, even when it feels redundant for a trivial field set — the boilerplate is what keeps the boundary real |
-| Letting a DTO field name or shape leak into the BLL's own logic (e.g. branching on a DTO's optional field instead of the Entity's) | The DTO is already in scope in the API handler, feels convenient to pass through | Convert DTO → Entity before calling into the BLL, always, even for a single-field request |
-| Splitting exception classes by layer (`DAL_NotFoundError`, `BLL_NotFoundError`) | Feels like it mirrors the architecture cleanly | Name exceptions for the business meaning of the failure, not the layer — a flat file, one meaning per class |
-| Assuming a documented concurrency or CORS setting is actually implemented, because it's written down in a config/architecture doc | Documentation describes intent, and intent is easy to mistake for verified fact | Verify runtime behavior directly (query the actual setting, run the actual browser-based check) the moment a second service or a second origin joins, don't trust the doc alone |
+| Importer la classe mappée ORM directement dans un gestionnaire de route « juste pour économiser une étape de conversion » | Semble du boilerplate inutile sur le moment | Toujours convertir vers/depuis l'Entité à la frontière DAL, même quand cela semble redondant pour un ensemble de champs trivial — le boilerplate est ce qui garde la frontière réelle |
+| Laisser un nom ou une forme de champ DTO fuiter dans la propre logique de la BLL (ex. brancher sur le champ optionnel d'un DTO au lieu de celui de l'Entité) | Le DTO est déjà dans la portée dans le gestionnaire API, pratique de le passer en travers | Convertir DTO → Entité avant d'appeler dans la BLL, toujours, même pour une requête à un seul champ |
+| Éclater les classes d'exceptions par couche (`DAL_NotFoundError`, `BLL_NotFoundError`) | Semble refléter proprement l'architecture | Nommer les exceptions pour le sens métier de l'échec, pas la couche — un fichier plat, un sens par classe |
+| Supposer qu'un paramètre de concurrence ou CORS documenté est réellement implémenté, parce que c'est écrit dans un doc de config/architecture | La documentation décrit l'intention, et l'intention est facile à confondre avec un fait vérifié | Vérifier le comportement à l'exécution directement (interroger le paramètre réel, exécuter la vraie vérification basée sur navigateur) le moment où un second service ou une seconde origine rejoint, ne pas faire confiance au seul document |
 
-## Decision Log — Sequence of Changes
+## Journal des Décisions — Séquence des Changements
 
-1. **First backend service built** — the four-layer split (Entities/DAL/BLL/API) and the flat-exceptions-file convention adopted after real critique caught boundary violations in an earlier draft.
-2. **Second backend service needed to share a table with the first** — resolved via the "Sharing data access across services" tradeoff above: duplicated the DAL-layer mapping rather than extracting a shared package, specifically because the project's convention was one independent dependency environment per service, and a shared package would have required collapsing both onto one environment.
-3. **Second service's build surfaced two real gaps, not decisions**: a documented-but-not-implemented database concurrency setting, and a missing CORS configuration only caught by an actual browser-based test after a command-line check had passed cleanly — both generalized into this file's two gotcha subsections above.
+1. **Premier service backend construit** — la séparation en quatre couches (Entités/DAL/BLL/API) et la convention du fichier d'exceptions plat adoptées après que la vraie critique a détecté des violations de frontière dans un brouillon antérieur.
+2. **Le second service backend avait besoin de partager une table avec le premier** — résolu via le compromis « Partager l'accès aux données entre services » ci-dessus : le mapping de couche DAL a été dupliqué plutôt qu'un package partagé extrait, spécifiquement parce que la convention du projet était un environnement de dépendances indépendant par service, et un package partagé aurait nécessité de faire converger les deux sur un seul environnement.
+3. **La construction du second service a fait émerger deux vrais écarts, pas des décisions** : un paramètre de concurrence de base de données documenté mais non implémenté, et une configuration CORS manquante uniquement détectée par un vrai test basé sur navigateur après qu'une vérification en ligne de commande avait réussi proprement — les deux généralisés dans les deux sous-sections de pièges de ce fichier ci-dessus.

@@ -1,140 +1,393 @@
 ---
-created: 2026-09-08T17:38:40Z
-updated: 2026-09-16T19:53:40Z
+created: 2026-09-26T00:18:00Z
+updated: 2026-09-26T00:18:00Z
 ---
 
-# SOLUTION_DESIGN.md — [Project Name]
+# SOLUTION_DESIGN.md — FDS Portail
 
-**Answers:** How is this built? What Workstreams does it decompose into?
-**Depends on:** `PRD.md` + `NFR.md`.
-
-> **Status: starter structure.** Sections marked **Conditional** are guesses about applicability — confirm explicitly.
-
-*(Fill in before drafting: is the stack already decided? Single service or multiple? Any hard constraint already fixed?)*
+**Réponses :** Comment ce système est-il construit ? En quels Workstreams se décompose-t-il ?
+**Dépend de :** `PRD.md` + `NFR.md`.
 
 ---
 
-## 1. Purpose and Scope
+## 1. Objectif et périmètre
 
-> 1. What is this document responsible for deciding that no other document decides?
-> 2. What's explicitly outside this document's authority (e.g. product decisions belong in the PRD)?
+**Ce document décide :**
+- La décomposition du système en Workstreams (zones fonctionnelles indépendantes).
+- L'architecture interne du backend (Clean Architecture — 4 couches).
+- La stack technique retenue et les raisons de chaque choix.
+- Le modèle de données canonique (source de vérité : PostgreSQL).
+- Le flux d'authentification et d'autorisation.
+- La stratégie de déploiement (Vercel + Railway).
+- Les ADRs structurants.
 
-*(To be written)*
+**Hors périmètre de ce document :**
+- Les décisions produit (périmètre fonctionnel, priorisation MoSCoW) → `PRD.md`.
+- Les barres de qualité (performance, disponibilité, sécurité) → `NFR.md`.
+- L'ordre de construction et les Epics → `PLAN.md`.
+- Les user stories détaillées → `project-docs/functional-specs/`.
 
-## 2. Workstreams — canonical definition of `WS-NN`
+---
 
-> **Vocabulary reminder (generic, product-independent — see also `GLOSSARY.md` § Workstream, Epic, and Milestone):**
-> - **Workstream** = *which functional area*. Never finishes, can be revisited by a later Epic. Identifier: `WS-NN` (two digits).
-> - **Epic** = *when, how much at once*. Sequential, time-boxed build stage. Identifier: `epic-NNN-name`.
-> - **Milestone** = *what ships*. The GitHub-native representation of an Epic, not a separate concept.
+## 2. Workstreams — définition canonique `WS-NN`
+
+Cinq zones fonctionnelles indépendantes, chacune pouvant évoluer sans bloquer les autres :
+
+| ID | Nom | Responsabilité |
+|---|---|---|
+| **WS-01** | Portail public | Pages de présentation des cursus, FAQ, contacts. Lecture seule, aucune authentification. |
+| **WS-02** | Candidature | Formulaire multi-étapes (infos personnelles → simulation paiement → upload → soumission). Génération de la référence `CAN-XXXX`. |
+| **WS-03** | Suivi de dossier | Page de tracking par référence. Barre de progression. Remplacement d'un document rejeté. |
+| **WS-04** | Administration | Tableau de bord admin (liste des dossiers, validation/rejet de documents, audit). Accès JWT uniquement. |
+| **WS-05** | Notifications | Emails transactionnels (confirmation, validation, rejet) via Resend. Non bloquant pour le flux principal. |
+
+**Indépendance :** WS-01 peut être livré seul (vitrine statique). WS-02 dépend de WS-05 pour la confirmation mais ne le bloque pas. WS-04 dépend de WS-02 (il n'y a rien à administrer sans candidatures). WS-03 dépend de WS-02 (pas de suivi sans dossier créé).
+
+---
+
+## 3. Vue d'ensemble du système
+
+FDS Portail est un **monolithe modulaire** déployé en deux artefacts coordonnés :
+- Un **frontend React/Vite** (SPA) hébergé sur Vercel.
+- Un **backend FastAPI** hébergé sur Railway, connecté à PostgreSQL (Railway) et aux services externes Cloudinary (stockage) et Resend (email).
+
+Le flux de bout en bout : le candidat accède au frontend via HTTPS → le frontend appelle le backend via REST JSON → le backend lit/écrit dans PostgreSQL, délègue les fichiers à Cloudinary et les emails à Resend. L'administrateur passe par le même frontend mais ses routes sont protégées par JWT.
+
+```
+Candidat / Admin
+      │ HTTPS
+      ▼
+ [Vercel — React/Vite SPA]
+      │ REST JSON
+      ▼
+ [Railway — FastAPI]
+   ├── PostgreSQL (source de vérité)
+   ├── Cloudinary (fichiers)
+   └── Resend (emails)
+```
+
+---
+
+## 4. Carte des composants
+
+### 4.1 Frontend (Vercel)
+- **Framework :** React 19 + Vite + TypeScript
+- **Structure :** Feature-Sliced Design (FSD) — couches `app/`, `pages/`, `features/`, `entities/`, `shared/`
+- **Points d'entrée publics :** `/`, `/cursus/:id`, `/postuler`, `/suivi`, `/contact`, `/admin/login`, `/admin/dashboard`
+- **État serveur :** TanStack Query (cache, retry, invalidation)
+- **État client :** Zustand (formulaire multi-étapes en cours)
+
+### 4.2 Backend (Railway — FastAPI)
+Organisé selon la **Clean Architecture** (`_ARCHITECTURE_EXPLAINED.md`, Partie 1) :
+
+| Couche | Dossier | Contenu |
+|---|---|---|
+| Domain | `entities/` | `Candidat`, `DocumentSoumis`, `DocumentRequis` — dataclasses pures, zéro dépendance externe |
+| Application | `bll/` + `ports/` | Use cases (`SoumettreCandidature`, `ValiderDocument`, `RemplacerDocument`, `SuivreDossier`) + interfaces abstraites (`ICandidatRepository`, `IStorageService`, `IEmailService`) |
+| Infrastructure | `dal/` | `CandidatRepositorySQLAlchemy`, `CloudinaryStorageAdapter`, `ResendEmailAdapter`, `JWTAuthAdapter` |
+| Presentation | `api/v1/` | Routers FastAPI, Pydantic DTOs, middleware, injection de dépendances |
+
+**Points d'entrée REST :**
+
+| Méthode | Route | Accès |
+|---|---|---|
+| `GET` | `/api/v1/cursus` | Public |
+| `GET` | `/api/v1/documents-requis` | Public |
+| `POST` | `/api/v1/candidature` | Public |
+| `POST` | `/api/v1/upload` | Public |
+| `GET` | `/api/v1/candidature/{ref}` | Public |
+| `POST` | `/api/v1/auth/token` | Public |
+| `GET` | `/api/v1/admin/candidatures` | JWT admin |
+| `PUT` | `/api/v1/admin/documents/{id}/statut` | JWT admin |
+| `GET` | `/api/v1/admin/proxy-document` | JWT admin |
+
+### 4.3 Services externes
+| Service | Rôle | Interface locale |
+|---|---|---|
+| **PostgreSQL (Railway)** | Source de vérité | SQLAlchemy 2.x via `dal/` |
+| **Cloudinary** | Stockage fichiers | `IStorageService` → `CloudinaryStorageAdapter` |
+| **Resend** | Email transactionnel | `IEmailService` → `ResendEmailAdapter` |
+
+---
+
+## 5. Stack technique
+
+| Partie | Technologie | Raison |
+|---|---|---|
+| Frontend | React 19 / Vite / TypeScript | SPA Mobile-First, typage fort, HMR rapide, écosystème FSD |
+| Backend | FastAPI 0.x / Python 3.11+ | Async natif, OpenAPI auto-généré, Pydantic v2 |
+| Base de données | PostgreSQL 15 | ACID, intégrité référentielle stricte, index B-Tree |
+| ORM | SQLAlchemy 2.x | Requêtes paramétrées (anti-injection), migrations Alembic |
+| Auth | python-jose (JWT HS256) + passlib (bcrypt) | Lib éprouvée, hash sécurisé |
+| Stockage fichiers | Cloudinary | Upload sécurisé, URL signée, sans infra propre |
+| Email | Resend (API REST) | Notifications transactionnelles non bloquantes |
+| Frontend deploy | Vercel | CDN global, HTTPS automatique, preview par PR |
+| Backend deploy | Railway (PaaS) | CI/CD depuis GitHub, stateless, PostgreSQL intégré |
+| Secrets | `.env` hors repo + `.gitignore` | Anti-fuite de clés |
+| Tests | pytest + pytest-asyncio | Architecture + unitaires + intégration |
+
+**Aucun emplacement réservé dans cette stack** — tous les choix sont des décisions réelles déjà validées par l'équipe (cf. cahier des charges §11).
+
+---
+
+## 6. Couche de données
+
+**Source de vérité unique : PostgreSQL.**
+Les URLs Cloudinary et les statuts email ne remplacent jamais les données en base — ce sont des effets de bord, pas des états.
+
+### Entités principales
+
+| Entité | Table | Clé |
+|---|---|---|
+| `Candidat` | `candidats` | `reference_dossier` (UNIQUE) |
+| `DocumentRequis` | `documents_requis` | `id` (UUID) |
+| `DocumentSoumis` | `documents_soumis` | `(candidat_id, document_requis_id)` (UNIQUE) |
+| `Utilisateur` | `utilisateurs` | `email` (UNIQUE) — consommé depuis FDS SYS |
+
+### Contrat critique
+- `DocumentSoumis.statut_validation` ∈ `{en_attente, valide, rejete}` — alimente la barre de progression.
+- `candidats.deplacement_physique` ∈ `{true, false, NULL}` — mesure de l'hypothèse §3.4.
+- Contrainte UNIQUE `(candidat_id, document_requis_id)` → upsert sans doublon lors d'un remplacement.
+- `valide_par` + `date_validation` → audit immuable de chaque décision admin.
+
+Schéma SQL complet : `cahier_des_charges.md §9.3`.
+
+---
+
+## 7. Flux d'authentification et d'autorisation
+
+**Applicable — les routes admin sont protégées.**
+
+**AuthN (Qui es-tu ?) :**
+1. `POST /api/v1/auth/token` — email + mot de passe.
+2. Le backend vérifie le hash bcrypt contre `utilisateurs.mot_de_passe_hash`.
+3. Retourne un JWT HS256 (durée 60 min, payload : `sub=user_id`, `role`).
+
+**AuthO (Qu'as-tu le droit de faire ?) :**
+- RBAC — `Utilisateur.role` ∈ `{admin, agent}`.
+- `get_current_admin()` est appelé à **chaque endpoint admin** — pas seulement à la connexion.
+- Deny by default : toute exception dans le contrôle d'accès → 403 Forbidden.
+
+**Rate limiting :** 5 requêtes / 60s sur `POST /api/v1/auth/token` (anti brute-force).
+
+**Refresh tokens :** non implémentés en MVP — l'admin se reconnecte après 60 min. Prévu en post-MVP (`POST /api/v1/auth/refresh`).
+
+---
+
+## 8. Architecture temps réel / interactive
+
+**Non applicable en MVP.**
+Les notifications (validation, rejet) sont asynchrones par email — pas de WebSocket, pas de Server-Sent Events. Le candidat consulte son statut en interrogeant `GET /api/v1/candidature/{ref}` (polling manuel). WebSockets serait surdimensionné pour des notifications différées.
+
+---
+
+## 9-10. Boucle de mise à jour automatique
+
+**Applicable — limitée à un seul cas.**
+L'envoi d'email est déclenché automatiquement par deux événements métier : soumission de candidature et décision admin sur un document. Le déclencheur est synchrone dans le handler FastAPI mais l'envoi est non bloquant (une erreur Resend ne fait pas échouer la requête principale).
+
+Pas de boucle autonome, pas de tâche planifiée, pas de risque de runaway en MVP.
+
+---
+
+## 11. Vue d'ensemble du déploiement
+
+**Aujourd'hui (développement) :** local (`npm run dev` + `uvicorn --reload`), base de données SQLite ou PostgreSQL local, variables `.env`.
+
+**Au lancement (production) :**
+
+| Composant | Hébergement | Pipeline |
+|---|---|---|
+| Frontend | Vercel | Push sur `main` → build Vite → déploiement CDN automatique |
+| Backend | Railway | Push sur `main` → build Docker → déploiement stateless automatique |
+| Base de données | Railway PostgreSQL | Provisionnée dans le même projet Railway, backups quotidiens |
+
+**Chemin d'un changement local jusqu'en prod :**
+1. Développement en branche feature.
+2. Pull Request → review → merge sur `main`.
+3. GitHub Actions (ou Railway/Vercel hooks) : tests pytest (`test_architecture`, unitaires, intégration) + build.
+4. Si tout est vert → déploiement automatique.
+
+**CI/CD en MVP :** validation minimale — `pytest tests/` + build Vite. Pas de staging environment dédié en V1.
+
+---
+
+## 12. Hypothèses
+
+| Hypothèse | Conséquence si fausse |
+|---|---|
+| Le volume de candidatures reste < 500 en V1 | Pool PostgreSQL (5+10 connexions) insuffisant → scale up Railway immédiat |
+| Railway PostgreSQL est fiable à 99 % | Indisponibilité pendant la période d'inscription → perte de candidatures |
+| Les candidats ont accès à un email valide | Le système de suivi par référence + email devient inutilisable → ajouter un canal SMS |
+| Cloudinary maintient son API stable | `CloudinaryStorageAdapter` à réécrire → isolé derrière `IStorageService`, coût limité |
+| FDS SYS fournit les comptes administrateurs avant le lancement | Besoin d'une procédure manuelle de création de compte si ce n'est pas le cas |
+
+**Hypothèse dont la fausseté imposerait une refonte :** si le candidat a besoin d'un compte complet (pas seulement une référence), le modèle d'accès public de WS-02 et WS-03 est à repenser en profondeur.
+
+---
+
+## 13. Hors périmètre architectural V1
+
+| Élément exclu | Raison | Workstream futur |
+|---|---|---|
+| Transactions monétaires réelles (MonCash/NatCash) | Déléguées à FDS Pay — module séparé | WS-02 (intégration Webhook) |
+| SSO institutionnel complet (FDS SYS) | Architecturalement préparé, non livré | WS-04 (auth) |
+| Cache Redis (Cache-Aside) | Non justifié au volume MVP | WS-01 / WS-02 |
+| Refresh tokens | MVP : reconnexion après 60 min acceptable | WS-04 (auth) |
+| Notifications SMS | Should Have — non bloquant pour le lancement | WS-05 |
+| Microservices | Équipe < 5 personnes, domaine en MVP — les ports Clean Arch préparent cette extraction | Post-MVP |
+
+---
+
+## 14. Registres de décisions d'architecture (ADR)
+
+| # | Décision | Alternative rejetée | Raison | Statut |
+|---|---|---|---|---|
+| ADR-001 | Monolithe Modulaire | Microservices | Équipe < 5 personnes, MVP, complexité opérationnelle non justifiée. Les modules Clean Arch facilitent une migration future. | Accepté |
+| ADR-002 | REST (Contract-First, OpenAPI) | GraphQL | CRUD classique, pas d'over-fetching problématique, OpenAPI auto-généré par FastAPI, cache HTTP natif sur GET. | Accepté |
+| ADR-003 | Clean Architecture (Domain / Application / Infrastructure / Presentation) | MVC | Logique métier testable sans DB, remplacement de services externes sans impact domaine, structure explicite pour l'onboarding. | Accepté |
+| ADR-004 | Cloudinary pour le stockage fichiers | S3 / MinIO auto-hébergé | Pas d'infrastructure propre à gérer, URLs signées, SDK simple. Isolé derrière `IStorageService`. | Accepté |
+| ADR-005 | Resend pour l'email transactionnel | SendGrid / SMTP propre | API REST simple, bonne délivrabilité, SDK Python. Isolé derrière `IEmailService`. | Accepté |
+
+---
+
+## 15. Questions ouvertes
+
+| Question | Bloquante ? | Qui / Quand |
+|---|---|---|
+| Conformité légale haïtienne sur les données personnelles (consentement, responsable légal) | Non pour le lancement technique | FDS-UEH — avant mise en production publique |
+| Procédure de création des comptes admin si FDS SYS n'est pas prêt | Oui si aucun admin n'existe au lancement | Équipe Bravetech — sprint pré-lancement |
+| Test de restauration du backup Railway PostgreSQL | Non (RPO/RTO documentés, test non effectué) | Équipe Bravetech — avant la période d'inscription |
+| Monitoring automatique (alertes 5xx) | Non pour le MVP | Post-MVP — intégrer Uptime Robot ou équivalent |
+
+---
+
+*SOLUTION_DESIGN.md — FDS Portail — Bravetech · GL-EN3-2026*
+
+
+---
+
+## 1. Objectif et périmètre
+
+> 1. Qu'est-ce que ce document est responsable de décider sans qu'un autre document décide à sa place ?
+> 2. Qu'est-ce qui est explicitement hors de sa portée (par exemple, les décisions produit appartiennent au PRD) ?
+
+*(À rédiger)*
+
+## 2. Workstreams — définition canonique de `WS-NN`
+
+> **Rappel de vocabulaire (générique, indépendant du produit — voir aussi `GLOSSARY.md` § Workstream, Epic et Milestone) :**
+> - **Workstream** = *quelle zone fonctionnelle*. Ne finit jamais, peut être revisité par un Epic ultérieur. Identifiant : `WS-NN` (deux chiffres).
+> - **Epic** = *quand, et à quel volume à la fois*. Étape de construction séquentielle et cadrée dans le temps. Identifiant : `epic-NNN-name`.
+> - **Milestone** = *ce qui est livré*. La représentation native GitHub d'un Epic, pas un concept séparé.
 >
-> Workstreams get defined here; Epics (which group Workstreams over time) get defined next, in `PLAN.md`.
+> Les Workstreams sont définis ici ; les Epics (qui regroupent les Workstreams dans le temps) sont définis ensuite dans `PLAN.md`.
 
-> 1. What are the independent functional areas of this system, regardless of build order?
-> 2. Could two Workstreams be worked by different people at the same time without stepping on each other?
-> 3. Is there a Workstream hiding inside another one that deserves its own ID?
+> 1. Quelles sont les zones fonctionnelles indépendantes de ce système, sans tenir compte de l'ordre de construction ?
+> 2. Deux Workstreams peuvent-ils être traités par des personnes différentes en même temps sans se marcher dessus ?
+> 3. Un Workstream se cache-t-il dans un autre et mérite-t-il son propre identifiant ?
 
-*(To be written)*
+*(À rédiger)*
 
-## 3. System Overview
+## 3. Vue d'ensemble du système
 
-> 1. In a few sentences, how do the major pieces fit together end to end?
-> 2. What's the one diagram or flow that would explain this fastest to a new engineer?
+> 1. En quelques phrases, comment les éléments majeurs s'assemblent-ils de bout en bout ?
+> 2. Quel est le seul diagramme ou flux qui expliquerait le plus vite ce système à un ingénieur junior ?
 
-*(To be written)*
+*(À rédiger)*
 
-## 4. Component Map
+## 4. Carte des composants
 
-> 1. What are the actual runnable/deployable components, and what does each one own?
-> 2. What ports, URLs, or entry points does each expose?
-> 3. Is there a component here that's really two components pretending to be one?
+> 1. Quels sont les composants réellement exécutable/déployables, et que chacun possède-t-il ?
+> 2. Quels ports, URLs ou points d'entrée chaque composant expose-t-il ?
+> 3. Existe-t-il un composant qui est en réalité deux composants qui se font passer pour un seul ?
 
-*(To be written)*
+*(À rédiger)*
 
-**Before answering this section, read `project-docs/_ARCHITECTURE_EXPLAINED.md`.** It proposes a settled internal structure for both halves of a project — a layered backend (entities / dal / bll / api, with DTOs and versioning at the edge) and a Feature-Sliced frontend — together with the naming conventions and a recommended stack, each with the reasoning and the cost stated.
+**Avant de répondre à cette section, lis `project-docs/_ARCHITECTURE_EXPLAINED.md`.** Elle propose une structure interne stabilisée pour les deux moitiés d'un projet — un backend structuré en couches (entities / dal / bll / api, avec DTOs et versioning à la frontière) et un frontend en Feature-Sliced Design — ainsi que les conventions de nommage et une stack recommandée, chaque élément accompagné de sa raison et de son coût.
 
-**Treat it as a proposal to accept or replace deliberately, not a default to apply silently.** A single-endpoint utility service does not need four layers, and forcing it into them is its own mistake. Whatever you decide, **record the decision here** — that is what this section is for, and "we used the kit's" is a perfectly good answer as long as it is written down.
+**Traite-la comme une proposition à accepter ou remplacer délibérément, pas comme un défaut à appliquer silencieusement.** Un service utilitaire à point d'entrée unique n'a pas besoin de quatre couches, et l'imposer est une erreur en soi. Quelle que soit ta décision, **consigne-la ici** — c'est précisément ce que cette section est pour, et « on a utilisé le kit » est une bonne réponse tant qu'elle est écrite.
 
-`project-docs/learnings/03-backend-layered-architecture-template.md` carries the backend pattern's longer reasoning, including the tradeoff when two services need the same table.
+`project-docs/learnings/03-backend-layered-architecture-template.md` contient la réflexion plus longue sur le schéma backend, y compris le compromis quand deux services ont besoin de la même table.
 
-## 5. Tech Stack
+## 5. Stack technique
 
-> 1. What's the stack for each major part of the system, and why that choice specifically?
-> 2. Is there a piece of the stack that's a placeholder/guess rather than a real decision yet?
+> 1. Quelle est la pile pour chaque partie majeure du système, et pourquoi ce choix précisément ?
+> 2. Y a-t-il une pièce de la stack qui est un emplacement réservé/une supposition plutôt qu'une décision réelle ?
 
-*(To be written)*
+*(À rédiger)*
 
-## 6. Data Layer
+## 6. Couche de données
 
-> 1. Where does each kind of data actually live, and in what shape?
-> 2. Which store is the source of truth if two stores could disagree?
-> 3. What's the schema or contract, precisely enough that two implementations wouldn't drift?
+> 1. Où chaque type de donnée vit-il réellement, et sous quelle forme ?
+> 2. Quel magasin est la source de vérité si deux magasins peuvent diverger ?
+> 3. Quel est le schéma ou contrat, assez précisément pour éviter qu'une implémentation et une autre ne dérivent ?
 
-*(To be written)*
+*(À rédiger)*
 
-## 7. Authentication and Authorization Flow *(Conditional — skip if there's no access control at all)*
+## 7. Flux d'authentification et d'autorisation *(Conditionnelle — ignorer s'il n'y a aucun contrôle d'accès)*
 
-> 1. Step by step, how does someone go from anonymous to authenticated to authorized for a specific action?
-> 2. What's issued (a token, a session, a key), and what does it actually prove?
+> 1. Étape par étape, comment quelqu'un passe-t-il d'anonyme à authentifié puis autorisé pour une action spécifique ?
+> 2. Qu'est-ce qui est émis (jeton, session, clé), et ce qu'il prouve réellement ?
 
-*(To confirm: applicable or skip)*
+*(À confirmer : applicable ou ignoré)*
 
-## 8. Real-Time / Interactive Architecture *(Conditional — skip if nothing is live/streaming)*
+## 8. Architecture temps réel / interactive *(Conditionnelle — ignorer s'il n'y a rien en direct ou en streaming)*
 
-> 1. What has to happen in real time versus what can be request/response?
-> 2. What's the fallback if the real-time channel drops mid-interaction?
+> 1. Qu'est-ce qui doit arriver en temps réel par rapport à ce qui peut être en requête/réponse ?
+> 2. Quel est le plan de secours si le canal temps réel tombe en plein milieu d'une interaction ?
 
-*(To confirm: applicable or skip)*
+*(À confirmer : applicable ou ignoré)*
 
-## 9-10. Automated Update or Feedback Loop *(Conditional — skip if content/behavior only changes by manual edit)*
+## 9-10. Boucle de mise à jour automatique ou de retour d'information *(Conditionnelle — ignorer si le contenu/comportement ne change que par modification manuelle)*
 
-> 1. Does anything in this system update itself based on usage or new data? What triggers it?
-> 2. Who reviews an automated change before it goes live, if anyone?
-> 3. What's the worst thing an automated update loop could do if left unchecked?
+> 1. Le système met-il quelque chose à jour automatiquement selon l'usage ou de nouvelles données ? Quel est le déclencheur ?
+> 2. Qui valide une modification automatisée avant qu'elle passe en ligne, si quelqu'un le fait ?
+> 3. Quel est le pire effet qu'une boucle de mise à jour automatique pourrait provoquer si elle échappe au contrôle ?
 
-*(To confirm: applicable or skip)*
+*(À confirmer : applicable ou ignoré)*
 
-## 11. Deployment Overview
+## 11. Vue d'ensemble du déploiement
 
-> 1. Where does this actually run today, and where will it run at launch?
-> 2. What's the path from a local change to it being live?
-> 3. Is there a CI/CD step, and what does it actually gate?
+> 1. Où ce système tourne-t-il réellement aujourd'hui, et où tournera-t-il au lancement ?
+> 2. Quel est le chemin d'un changement local jusqu'à ce qu'il soit en ligne ?
+> 3. Existe-t-il une étape CI/CD, et ce qu'elle valide réellement ?
 
-*(To be written)*
+*(À rédiger)*
 
-## 12. Assumptions
+## 12. Hypothèses
 
-> 1. What is this design assuming is true that hasn't actually been verified?
-> 2. Which assumption, if wrong, would force a redesign rather than a patch?
+> 1. Sur quoi cette conception s'appuie-t-elle sans avoir été vérifiée ?
+> 2. Quelle hypothèse, si elle est fausse, imposerait une refonte plutôt qu'un correctif ?
 
-*(To be written)*
+*(À rédiger)*
 
-## 13. Out of Scope
+## 13. Hors périmètre
 
-> 1. What's architecturally excluded from this version, and why?
-> 2. Is there anything excluded here that a later Workstream will need to revisit?
+> 1. Qu'est-ce qui est exclu architecturalement de cette version, et pourquoi ?
+> 2. Existe-t-il quelque chose d'exclu ici qu'un Workstream ultérieur devra revoir ?
 
-*(To be written)*
+*(À rédiger)*
 
-## 14. Architecture Decision Records (ADR)
+## 14. Registres de décisions d'architecture (ADR)
 
-*Generic — reuse the table as-is. Entries are never deleted, only marked `Deprecated` with a date and reason.*
+*Générique — réutilise le tableau tel quel. Les entrées ne sont jamais supprimées, seulement marquées `Deprecated` avec une date et une raison.*
 
-| # | Decision | Rejected alternative | Reason | Status |
+| # | Décision | Alternative rejetée | Raison | Statut |
 |---|---|---|---|---|
 | | | | | |
 
-> **Questions to ask, for every new entry:**
-> 1. What was decided that could plausibly have gone the other way?
-> 2. Why was the other option rejected, specifically enough that someone won't propose it again without knowing?
+> **Questions à se poser, pour chaque nouvelle entrée :**
+> 1. Qu'a-t-on décidé qui aurait pu très bien aller dans l'autre sens ?
+> 2. Pourquoi l'autre option a-t-elle été rejetée, de façon suffisamment explicite pour que quelqu'un ne la propose pas de nouveau sans le savoir ?
 
-## 15. Open Questions
+## 15. Questions ouvertes
 
-> 1. What's genuinely unresolved right now, without blocking the start, but also not forgotten?
-> 2. Who or what would resolve each open question, and when?
+> 1. Qu'est-ce qui reste réellement non résolu maintenant, sans bloquer le démarrage, mais sans être oublié non plus ?
+> 2. Qui ou quoi résoudra chaque question ouverte, et quand ?
 
-*(To be written as they come up)*
+*(À rédiger au fur et à mesure)*
 
 ---
 
-*SOLUTION_DESIGN.md — [Project Name] — starter structure from `project-init-kit/`.*
+*SOLUTION_DESIGN.md — [Nom du projet] — structure de départ issue de `project-init-kit/`.*

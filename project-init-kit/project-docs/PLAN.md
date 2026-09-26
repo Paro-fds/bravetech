@@ -1,62 +1,156 @@
 ---
-created: 2026-09-08T17:38:40Z
-updated: 2026-09-11T14:49:25Z
+created: 2026-09-26T00:30:00Z
+updated: 2026-09-26T00:30:00Z
 ---
 
-# PLAN.md — [Project Name]
+# PLAN.md — FDS Portail
 
-**Answers:** In what order, grouped into what Epics?
-**Depends on:** `SOLUTION_DESIGN.md` for Workstream IDs.
-
-> **Status: starter structure.** All sections are generic (sequencing/prioritization patterns, no product-specific content yet).
-
-> **Vocabulary reminder (generic — see also `GLOSSARY.md` § Workstream, Epic, and Milestone):**
-> - **Epic** = *when, how much at once*. Sequential, time-boxed build stage, grouping one or more Workstreams (defined in `SOLUTION_DESIGN.md`). Identifier `epic-NNN-name` (three-digit folder).
-> - **User story** = the concrete unit of work inside an Epic. Identifier `US-NNN`, sequential across the whole project, never reset per Epic.
-> - **Milestone** = what ships — the GitHub representation of an Epic, once a tracker is in use.
+**Réponses :** Dans quel ordre, regroupé en quels Epics ?
+**Dépend de :** `SOLUTION_DESIGN.md` (identifiants WS-01 à WS-05).
 
 ---
 
-## Epic Overview
+## Vue d'ensemble des Epics
 
-> 1. In what order will functional areas actually get worked, and why that order?
-> 2. Is any Epic blocked on another finishing first?
-> 3. Could two Epics genuinely run in parallel, or is sequential truly required here — and why?
+Les Epics sont **séquentiels** — chaque Epic doit être livrable et testable avant que le suivant commence. L'équipe est < 5 personnes : le parallélisme augmente le risque d'intégration et le coût de context-switching.
 
-*(To be written — state explicitly whether this project works Epics sequentially, one at a time, or allows parallel work)*
+| Epic | Nom | Workstreams | Bloqué par | Livrable clé |
+|---|---|---|---|---|
+| `epic-001-socle` | Socle & Portail public | WS-01 | — | 🟡 In progress — [suivi](execution/epic-001-socle/) |
+| `epic-002-candidature` | Candidature & Suivi | WS-02, WS-03, WS-05 | `epic-001` | Un candidat soumet un dossier complet et le suit via sa référence. |
+| `epic-003-administration` | Administration & Audit | WS-04, WS-05 | `epic-002` | Un admin valide/rejette des documents. Les emails de statut partent. Le candidat peut remplacer un document rejeté. |
 
-## Jobs to Be Done — Reference
+**Pourquoi cet ordre ?**
+- `epic-001` établit le socle technique (CI/CD, déploiement, base de données, auth basique) sur lequel tout repose.
+- `epic-002` livre la tâche critique du MVP : permettre à un candidat de postuler sans se déplacer.
+- `epic-003` ferme la boucle administrative sans laquelle les dossiers reçus restent bloqués.
 
-*Pointer to `PRD.md` § Jobs to Be Done, not a second copy.*
-
-> 1. Does every Job to Be Done map to exactly one Epic, or does one job span several?
-
-## MoSCoW Prioritization
-
-> 1. For each Job to Be Done, what's truly Must-have versus Should/Could/Won't for V1?
-> 2. What's the cost of being wrong about something marked Must-have that turns out not to be needed?
-> 3. Is anything marked Won't-have likely to get asked about anyway — worth stating explicitly rather than silently dropping?
-
-*(To be written)*
-
-## Per-Epic Detail
-
-*One section per Epic, once the Epics above are identified.*
-
-> **Questions to ask, per Epic:**
-> 1. What does this Epic deliver that the previous one didn't?
-> 2. What Workstream(s) does it primarily touch?
-> 3. What's the one-sentence goal a stakeholder could repeat back correctly?
-
-*(To be written)*
-
-## Immediate Next Steps
-
-> 1. What's the very next concrete action — not a restatement of the whole roadmap?
-> 2. Is this section likely to go stale quickly — should day-to-day status live in a dedicated tracker instead (`project-docs/execution/EPIC_EXECUTION.md`)?
-
-*(To be written)*
+**Parallélisme possible mais non recommandé :** WS-04 (admin) pourrait démarrer pendant WS-03 (suivi) car ils partagent peu de code. Le risque : contention sur le modèle de données `DocumentSoumis`. Décision : séquentiel, Epic-002 terminé avant Epic-003.
 
 ---
 
-*PLAN.md — [Project Name] — starter structure from `project-init-kit/`.*
+## Tâches à accomplir — référence
+
+→ `PRD.md §4` — Jobs to Be Done.
+
+Correspondance Epic ↔ JTBD :
+
+| JTBD (PRD §4) | Epic |
+|---|---|
+| S'informer sur les cursus et prérequis | `epic-001` |
+| Déposer une candidature en ligne | `epic-002` |
+| Suivre l'avancement de son dossier | `epic-002` |
+| Remplacer un document rejeté sans se déplacer | `epic-003` |
+
+---
+
+## Priorisation MoSCoW
+
+Source : `PRD.md §6` (Must / Should / Won't). Consolidé ici pour le séquencement.
+
+### Must Have — bloquant pour le lancement
+| Fonctionnalité | Epic |
+|---|---|
+| Pages cursus avec dates clés et pièces requises | `epic-001` |
+| Formulaire de candidature (infos + paiement simulé + upload) | `epic-002` |
+| Génération de la référence `CAN-2026-X` | `epic-002` |
+| Email de confirmation après soumission | `epic-002` |
+| Suivi du dossier par référence + barre de progression | `epic-002` |
+| Question `deplacement_physique` obligatoire + persistance | `epic-002` |
+| Interface admin sécurisée (JWT) pour valider/rejeter un document | `epic-003` |
+| Email de notification validation/rejet | `epic-003` |
+| Remplacement d'un document rejeté depuis la page de suivi | `epic-003` |
+| Simulation de paiement MonCash/NatCash + référence transactionnelle | `epic-002` |
+
+### Should Have — important, non bloquant
+| Fonctionnalité | Cible |
+|---|---|
+| Notifications SMS | Post-MVP (WS-05) |
+
+### Won't Have — explicitement hors V1
+| Fonctionnalité | Raison |
+|---|---|
+| Transactions monétaires réelles | Déléguées à FDS Pay |
+| Espace étudiant complet (compte, historique) | Post-MVP |
+| Plateforme de cours | FDS Akademi, hors périmètre |
+| SSO institutionnel complet | Architecturalement préparé, non livré |
+| Export CSV/PDF des dossiers | Post-MVP |
+
+**Risque de confusion à nommer explicitement :** le candidat pourrait supposer qu'il paye réellement via MonCash. La simulation doit être visuellement claire (label "Simulation" dans l'UI) pour éviter les recours.
+
+---
+
+## Détail par Epic
+
+### `epic-001` — Socle & Portail public
+
+**Livrable :** un développeur peut pousser du code sur `main` et le voir déployé automatiquement. Le portail affiche les cursus. La base de données est provisionnée. Les tests d'architecture passent en CI.
+
+**Workstreams :** WS-01
+
+**But en une phrase :** *"Le portail est en ligne, les cursus sont visibles, et l'infrastructure de développement est opérationnelle."*
+
+**User stories principales :**
+- `US-001` — En tant que candidat, je veux consulter la liste des cursus depuis la page d'accueil.
+- `US-002` — En tant que candidat, je veux voir la fiche détaillée d'un cursus (description, dates, pièces requises).
+- `US-003` — En tant que développeur, je veux que `pytest tests/` passe en CI avant tout merge sur `main`.
+- `US-004` — En tant que développeur, je veux que le backend soit accessible sur Railway et le frontend sur Vercel.
+
+**Critère de sortie :** `GET /api/v1/cursus` retourne des données réelles. Le front affiche au moins deux fiches cursus. `test_architecture.py` passe. Pipeline CI/CD vert.
+
+---
+
+### `epic-002` — Candidature & Suivi
+
+**Livrable :** le Walking Skeleton complet côté candidat — de la décision de postuler jusqu'à la réception de la référence et la consultation du statut.
+
+**Workstreams :** WS-02, WS-03, WS-05
+
+**But en une phrase :** *"Un candidat peut soumettre un dossier complet depuis son téléphone et suivre son avancement sans jamais se déplacer."*
+
+**User stories principales :**
+- `US-005` — Formulaire multi-étapes (infos personnelles → paiement simulé → upload → soumission).
+- `US-006` — Upload sécurisé d'un document PDF/JPG ≤ 5 Mo avec vérification magic bytes.
+- `US-007` — Génération de la référence `CAN-2026-X` et affichage à l'écran.
+- `US-008` — Email de confirmation asynchrone non bloquant.
+- `US-009` — Page de suivi par référence avec barre de progression.
+- `US-010` — Question `deplacement_physique` obligatoire enregistrée en base.
+- `US-011` — Simulation paiement MonCash/NatCash avec référence transactionnelle.
+
+**Critère de sortie :** le Walking Skeleton du cahier des charges §5 s'exécute de bout en bout. `deplacement_physique` est enregistré. La référence est affichée et envoyée par email.
+
+---
+
+### `epic-003` — Administration & Audit
+
+**Livrable :** le secrétariat peut traiter les dossiers. La boucle candidat/admin est fermée.
+
+**Workstreams :** WS-04, WS-05
+
+**But en une phrase :** *"Un administrateur authentifié peut valider ou rejeter chaque document — le candidat est notifié immédiatement et peut corriger sans se déplacer."*
+
+**User stories principales :**
+- `US-012` — Authentification admin (email + mot de passe → JWT).
+- `US-013` — Tableau de bord admin : liste paginée des candidatures avec statuts et `deplacement_physique`.
+- `US-014` — Vue détaillée d'un dossier avec accès sécurisé aux documents via proxy.
+- `US-015` — Validation / rejet d'un document avec audit (`valide_par`, `date_validation`).
+- `US-016` — Email de notification validation/rejet au candidat (non bloquant).
+- `US-017` — Remplacement d'un document rejeté depuis la page de suivi (upsert, statut → `en_attente`).
+- `US-018` — Rate limiting sur `POST /api/v1/auth/token` (anti brute-force).
+
+**Critère de sortie :** tous les scénarios du plan de tests fonctionnels (`cahier_des_charges.md §12.2`) passent. Les critères de succès du PRD §11 sont mesurables (≥ 20 candidatures, ≥ 70 % sans déplacement).
+
+---
+
+## Prochaines étapes immédiates
+
+1. **Scaffold backend** (`epic-001`) — créer la structure `entities/`, `dal/`, `bll/`, `api/v1/`, `tests/`. Vérifier que `test_architecture.py` passe à vide.
+2. **Scaffold frontend** (`epic-001`) — Vite + React + TypeScript + FSD + Steiger. Confirmer que le linter d'architecture échoue sur un import ascendant volontaire avant de déclarer le scaffold valide.
+3. **Provisionner Railway + Vercel** — connecter GitHub, configurer les variables d'environnement, vérifier le premier déploiement automatique.
+4. **Livrer US-001 et US-002** — première page cursus réelle, données en base, CI vert.
+
+> Le statut quotidien (story en cours, bloquages) vit dans `project-docs/execution/` une fois le travail commencé — pas ici. Ce fichier ne change que si la séquence des Epics change.
+
+---
+
+*PLAN.md — FDS Portail — Bravetech · GL-EN3-2026*

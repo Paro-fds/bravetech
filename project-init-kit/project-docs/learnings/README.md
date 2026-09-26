@@ -3,39 +3,39 @@ created: 2026-09-10T19:30:13Z
 updated: 2026-09-11T17:10:20Z
 ---
 
-# `learnings/` — practice that transfers to your next project
+# `learnings/` — pratique transférable vers ton prochain projet
 
-A learning is **transferable practice**: something worth doing on any project, learned by doing it on this one. It is written for someone who will never read this codebase — including you, eighteen months from now, starting something else.
+Un apprentissage est une **pratique transférable** : quelque chose qui vaut la peine d'être fait sur n'importe quel projet, appris en le faisant sur celui-ci. Il est écrit pour quelqu'un qui ne lira jamais cette base de code — y compris toi, dans dix-huit mois, en démarrant quelque chose d'autre.
 
-## Which folder does this go in?
+## Dans quel dossier cela va-t-il ?
 
-Three destinations, one question each. Ask them in order and stop at the first yes.
+Trois destinations, une question chacune. Pose-les dans l'ordre et arrête-toi à la première réponse oui.
 
 | Question | Destination |
 |---|---|
-| Is it content the product itself teaches or ships? | wherever your product content lives — not here |
-| Is it a correction to what you believed about *this* code? | **`../reviews/`** — dated, tied to a file, written at the moment of the finding |
-| Is it practice that would help on a project unrelated to this one? | **here** |
+| Est-ce du contenu que le produit enseigne ou livre lui-même ? | où que vive le contenu du produit — pas ici |
+| Est-ce une correction de ce que tu croyais sur *ce* code ? | **`../reviews/`** — daté, lié à un fichier, écrit au moment de la découverte |
+| S'agit-il d'une pratique utile sur un projet sans lien avec celui-ci ? | **ici** |
 
-**Ask the second question honestly, because most findings belong there.** A learning that cannot survive having every project-specific name stripped out of it is a review that was filed in the wrong folder. The test: *remove every name specific to this project. Is anything left worth reading?*
+**Pose la deuxième question honnêtement, car la plupart des découvertes appartiennent là.** Un apprentissage qui ne peut pas survivre à l'enlèvement de tous les noms spécifiques au projet est une revue classée dans le mauvais dossier. Le test : *retire chaque nom propre à ce projet. Reste-t-il quelque chose d'intéressant à lire ?*
 
-**A review is where a learning comes from.** Later, a pass over `../reviews/` asks *is any of this true beyond this codebase?* — and when the answer is yes, it becomes a file here while **the review stays exactly where it is.** Extracting is not moving.
+**Une revue est la source d'un apprentissage.** Plus tard, un passage sur `../reviews/` demande : *est-ce vrai au-delà de cette base de code ?* — et si la réponse est oui, cela devient un fichier ici pendant que **la revue reste exactement là où elle est.** Extraire n'est pas déplacer.
 
-## Naming
+## Nommage
 
-`NN-<descriptive-kebab-case>.md`: `04-trusting-a-new-tool.md`, not `trusting_a_new_tool.md`. The number records **the order the learning entered this folder**, assigned once and never reassigned — not a reading order and not a priority, since these are looked up by subject. Same convention as `reviews/`, for the same reason. Files imported from another project get renumbered into your sequence rather than keeping that project's, which says nothing true here.
+`NN-<descriptive-kebab-case>.md` : `04-trusting-a-new-tool.md`, pas `trusting_a_new_tool.md`. Le nombre enregistre **l'ordre dans lequel l'apprentissage est entré dans ce dossier**, attribué une fois et jamais réattribué — pas un ordre de lecture et pas une priorité, puisque ces fichiers sont cherché par sujet. Même convention que `reviews/`, pour la même raison. Les fichiers importés d'un autre projet sont renumérotés selon votre séquence au lieu de conserver ceux du projet d'origine, car ils ne disent rien de vrai ici.
 
 ## Structure
 
-Whatever shape serves it, but these four sections earn their place, and one is non-negotiable:
+N'importe quelle forme qui le sert, mais ces quatre sections méritent leur place, et une est non négociable :
 
-- **`## Context`** — what this is, and why it is worth keeping rather than re-deriving.
-- **`## How this was learned`** — the trigger, then **the path**, then the gotchas. **The path must show the wrong turns as wrong turns.** "Tried Y, it broke because Z, corrected to X" — not smoothed into "we decided X". This is the whole value; a file that only records the clean final answer is not a learning, it is documentation.
-- **`## The Rule`** — the reusable guidance, generalised past the one incident that produced it.
-- **`## Common mistakes`** — a table of *real* corrections that happened. Never hypothetical ones.
+- **`## Context`** — ce que c'est, et pourquoi il vaut la peine de le conserver plutôt que de le redériver.
+- **`## How this was learned`** — le déclencheur, puis **le chemin**, puis les pièges. **Le chemin doit montrer les mauvais chemins comme des mauvais chemins.** « J'ai essayé Y, ça a cassé parce que Z, corrigé en X » — pas lissé en « nous avons décidé X ». C'est toute la valeur ; un fichier qui ne retient que la version finale propre n'est pas un apprentissage, c'est de la documentation.
+- **`## The Rule`** — le conseil réutilisable, généralisé au-delà de l'incident unique qui l'a produit.
+- **`## Common mistakes`** — un tableau de corrections *réelles* qui se sont produites. Jamais des hypothèses.
 
-If a piece of work genuinely had no wrong turns, write that in one line rather than manufacturing drama the work did not have.
+Si un travail n'a vraiment eu aucun mauvais détour, écris-le en une ligne au lieu de fabriquer du drame que le travail n'a pas eu.
 
 ---
 
-*Maintainer note, for whoever exports this kit:* the example learning files ship from the source project's own `learnings/` folder and are copied in at export time, so that there is one live copy rather than two that drift. The rules above are the part a student needs; the examples are illustration.
+*Note de mainteneur, pour qui exporte ce kit :* les fichiers d'apprentissage d'exemple viennent du propre dossier `learnings/` du projet source et sont copiés au moment de l'export, pour qu'il n'y ait qu'une seule copie vivante au lieu de deux qui dérivent. Les règles ci-dessus sont la partie que l'étudiant doit connaître ; les exemples servent d'illustration.

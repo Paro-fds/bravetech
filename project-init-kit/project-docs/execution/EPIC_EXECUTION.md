@@ -1,27 +1,49 @@
 ---
-created: 2026-09-08T17:38:40Z
-updated: 2026-09-11T14:49:25Z
+created: 2026-09-26T13:09:00Z
+updated: 2026-09-26T13:09:00Z
 ---
 
-# EPIC_EXECUTION.md — [Project Name]
+# EPIC_EXECUTION.md — FDS Portail
 
-**Answers:** What's the status of each story, right now?
-**Depends on:** `PLAN.md` for Epic names.
+**Répond à :** Quel est l'état de chaque story, en ce moment ?
+**Dépend de :** `PLAN.md` pour les noms d'Epics.
 
-> **Status: derived tracker, not authored by reflection.** This file fills itself in as `PLAN.md`'s Epics get worked and stories close — nothing to draft ahead of time here.
->
-> **Check to run, not content to imagine:**
-> 1. Is this table still true right now, or has a story's status changed without this file being updated?
-> 2. Does every Epic in `PLAN.md` have a matching section here, in the same order?
+> Cette table est la source de vérité du statut en temps réel. Mise à jour à chaque changement de statut d'une story — pas à la fin d'un Epic.
 
 ---
 
-## epic-001-\<name-to-confirm\>
+## Epic 1 — Socle & Portail public
 
-| Story | Title | Status |
-|---|---|---|
-| | | |
+**Workstream :** WS-01 Portail public
+**Status :** 🟡 In progress
+
+Établit le socle technique complet (CI/CD, déploiement Railway + Vercel, base de données PostgreSQL provisionnée, tests d'architecture verts) et livre la première page publique réelle avec données en base. Voir `execution/epic-001-socle/epic-001-refinement.md` pour les questions ouvertes et l'ordre de build.
+
+| Story | Titre | Statut | Spec |
+|---|---|---|---|
+| US-001 | Consulter la liste des cursus depuis l'accueil | 🔲 Backlog | [US-001.md](epic-001-socle/US-001.md) |
+| US-002 | Voir la fiche détaillée d'un cursus | 🔲 Backlog | [US-002.md](epic-001-socle/US-002.md) |
+| US-003 | Tests d'architecture en CI avant tout merge | 🔲 Backlog | [US-003.md](epic-001-socle/US-003.md) |
+| US-004 | Déploiement en environnement accessible | 🔲 Backlog | [US-004.md](epic-001-socle/US-004.md) |
 
 ---
 
-*EPIC_EXECUTION.md — [Project Name] — starter structure from `project-init-kit/`.*
+## Epic 2 — Candidature & Suivi
+
+**Workstream :** WS-02, WS-03, WS-05
+**Status :** ⏳ Not started
+
+*(Démarrera une fois epic-001 ✅ Done)*
+
+---
+
+## Epic 3 — Administration & Audit
+
+**Workstream :** WS-04, WS-05
+**Status :** ⏳ Not started
+
+*(Démarrera une fois epic-002 ✅ Done)*
+
+---
+
+*EPIC_EXECUTION.md — FDS Portail — Bravetech · GL-EN3-2026*

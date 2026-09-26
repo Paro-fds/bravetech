@@ -1,96 +1,136 @@
 ---
-created: 2026-09-08T17:38:40Z
-updated: 2026-09-11T17:10:20Z
+created: 2026-09-26T12:35:00Z
+updated: 2026-09-26T12:35:00Z
 ---
 
-# PROJECT_WORKFLOW.md — [Project Name]
+# PROJECT_WORKFLOW.md — FDS Portail
 
-**Answers:** How does work actually flow, and which document do I touch when?
-**Depends on:** everything before it — this is the connective tissue.
-
-> **Status: starter structure.**
+**Réponses :** Comment le travail circule-t-il réellement, et quel document faut-il toucher quand ?
+**Dépend de :** tout ce qui précède — c'est le tissu de raccord.
 
 ---
 
-## Which document to update, and when
+## Quel document mettre à jour, et quand
 
-*Generic — reuse this table as-is, only adjusting document names if they change.*
+*Générique — réutilise ce tableau tel quel.*
 
-| Document | Grain | Updated when |
+| Document | Granularité | Mis à jour quand |
 |---|---|---|
-| `project-docs/execution/EPIC_EXECUTION.md` | Per story | Continuously — every time a story's status changes |
-| `project-docs/functional-specs/`, `project-docs/technical-specs/` | Per Workstream | Incrementally, as a story ships |
-| `project-docs/reviews/` | **Per finding** | **The moment a belief turns out to be false** — not at the end of the work. See that folder's README; this is the row most often ignored, and the only one whose cost rises the longer you wait |
-| `project-docs/PLAN.md` | Per Epic | Only when a whole Epic starts or finishes |
-| `project-docs/PRD.md` | Per decision | Only when a real product/scope decision changes |
-| `project-docs/SOLUTION_DESIGN.md` (§ ADR) | Per architecture decision | When a real architecture choice is made or changes |
-| `project-docs/NFR.md` | Per requirement | When a quality requirement, risk, or dependency appears/changes |
-| `project-docs/GLOSSARY.md` | Per term | Before a new or ambiguous term gets used elsewhere |
-| `project-docs/learnings/` | Per reusable practice | When a review turns out to be true beyond this codebase. Written afterwards, deliberately — unlike a review |
-| `project-docs/PROJECT_WORKFLOW.md` | Per convention | When a process convention changes |
-| `CLAUDE.md` / `AGENTS.md` | Session-critical facts | When a fact every session needs to know changes |
-| `project-docs/execution/epic-NNN-*/epic-NNN-refinement.md` | Per Epic | Written at Refine before any story exists, updated while the Epic is open. **The one place an in-flight rule may live** — emptied into the documents above when the Epic closes |
-| `project-docs/exploration/` | Never updated | Written once, kept as it arrived, never tidied and never cited as a decision |
-
-> **Questions to ask:**
-> 1. For each document, what real-world event should trigger its update?
-> 2. Is a document being updated on a schedule instead of when its underlying fact actually changes — a sign it might not be the right owner of that fact?
-> 3. Which row here has never once fired? An untouched `reviews/` after real work does not mean nothing was learned; it means the findings went into a conversation that no longer exists.
-> 4. Take the last rule you applied. Which row above owns it, and is it actually written there — or is it only in a review, a commit message, or an agent's head? A rule the team cannot look up is a rule only one of you is following.
+| `project-docs/execution/EPIC_EXECUTION.md` | Par histoire | En continu — chaque fois que le statut d'une histoire change |
+| `project-docs/functional-specs/`, `project-docs/technical-specs/` | Par Workstream | De façon incrémentale, au moment où une histoire est livrée |
+| `project-docs/reviews/` | **Par découverte** | **Au moment où une croyance se révèle fausse** — pas à la fin du travail |
+| `project-docs/PLAN.md` | Par Epic | Seulement quand un Epic commence ou se termine |
+| `project-docs/PRD.md` | Par décision | Seulement quand une vraie décision produit/scope change |
+| `project-docs/SOLUTION_DESIGN.md` (§ ADR) | Par décision d'architecture | Quand un vrai choix d'architecture est fait ou change |
+| `project-docs/NFR.md` | Par exigence | Quand une exigence de qualité, un risque ou une dépendance apparaît ou change |
+| `project-docs/GLOSSARY.md` | Par terme | Avant qu'un nouveau terme ambigu ne soit utilisé ailleurs |
+| `project-docs/learnings/` | Par pratique réutilisable | Quand une revue s'avère vraie au-delà de cette base de code |
+| `project-docs/PROJECT_WORKFLOW.md` | Par convention | Quand une convention de processus change |
+| `CLAUDE.md` / `AGENTS.md` | Faits critiques pour la session | Quand un fait que chaque session doit connaître change |
+| `project-docs/execution/epic-NNN-*/epic-NNN-refinement.md` | Par Epic | Écrit au moment du Refine, vidé dans les documents ci-dessus à la clôture de l'Epic |
+| `project-docs/exploration/` | Jamais mis à jour | Écrit une fois, conservé tel quel, jamais cité comme décision |
 
 ---
 
-## Work Tracking (Tracker)
+## Suivi du travail (Tracker)
 
-*To generalize based on the tool actually used — GitHub Issues/Projects, or something simpler.*
+**Outil choisi : GitHub Issues + GitHub Projects.**
 
-> **Questions to ask:**
-> 1. What tool will actually track work — a board, a spreadsheet, just issues?
-> 2. What states does work move through, and who moves it?
-> 3. Are custom fields actually needed, or does the story format's own Status line already cover it?
+L'organisation du tracker suit la hiérarchie : Epic (Milestone GitHub) → User Story (Issue GitHub) → tâches (checklist dans l'Issue).
 
-*(To be written)*
+### États d'une User Story
 
----
+| État | Label GitHub | Signification |
+|---|---|---|
+| `backlog` | *(pas de label)* | Définie, pas encore planifiée dans un sprint |
+| `ready` | `ready` | Critères d'acceptation écrits, peut être démarrée |
+| `in-progress` | `in-progress` | Un développeur travaille dessus |
+| `in-review` | `in-review` | PR ouverte, en attente de review |
+| `done` | *(Issue fermée)* | Définition de fini respectée, mergée sur `main` |
 
-## User Story Format
+### Règles de création d'une Issue
 
-See `project-docs/templates/user-story.md` — copy of the same format, don't duplicate it here.
-
----
-
-## Definition of Done (Project Level)
-
-> 1. What's the universal bar every story must clear before Done, independent of that story's own Definition of Done?
-
-*(To be written)*
+- **Titre :** `US-NNN — [verbe] [objet]` (ex. `US-005 — Formulaire multi-étapes de candidature`).
+- **Corps :** utiliser le template `project-docs/templates/user-story.md`.
+- **Milestone :** assigner à l'Epic correspondant (`epic-001`, `epic-002`, `epic-003`).
+- **Assignee :** une seule personne responsable par Issue.
 
 ---
 
-## Vocabulary Reference
+## Format de user story
 
-Every term used in specs, this document, and in conversation must resolve in `GLOSSARY.md`.
-
-> **Question:** is every term used in the specs traceable to a Glossary entry?
+Voir [`project-docs/templates/user-story.md`](templates/user-story.md) — ne pas dupliquer ici.
 
 ---
 
-## Tracker Bootstrap Steps
+## Définition de fini (niveau projet)
 
-*To generalize once the tool above is chosen.*
+Chaque User Story doit satisfaire **tous** ces critères avant d'être marquée `done` :
 
-> **Question:** what are the one-time setup steps, in order, someone starting this fresh needs before the first story can be created?
+| Critère | Vérification |
+|---|---|
+| **Code mergé** | PR approuvée et mergée sur `main` |
+| **Tests verts** | `pytest tests/` passe en CI — dont `test_architecture.py` |
+| **Pas de régression** | Le build Vite (`npm run build`) passe sans erreur |
+| **Comportement vérifié** | Le scénario de la User Story a été testé manuellement ou couvert par un test d'intégration |
+| **Pas de logique métier dans Infrastructure** | Aucun import SQLAlchemy dans `entities/`, aucun appel métier dans `dal/` |
+| **Pas de secret en clair** | Aucune clé API, token ou mot de passe dans le code versionné |
+| **Document mis à jour si nécessaire** | Si la story change un contrat API, un schéma de données ou une décision d'architecture → le document correspondant est mis à jour avant de fermer l'Issue |
 
-**One step is fixed whatever the tracker turns out to be:**
+> **Différence entre « fonctionnel » et « fini » :** une story qui fonctionne localement mais dont les tests échouent en CI n'est **pas** finie. Une story qui passe en CI mais introduit une violation de la Règle de Dépendance n'est **pas** finie — `test_architecture.py` est le gardien automatique de cette règle.
 
+---
+
+## Référence de vocabulaire
+
+Chaque terme utilisé dans les spécifications, ce document et les conversations se résout dans [`GLOSSARY.md`](GLOSSARY.md).
+
+---
+
+## Étapes d'initialisation du tracker
+
+À effectuer **une seule fois** par développeur après un clone du dépôt :
+
+**1. Activer les hooks Git**
 ```bash
 git config core.hooksPath .githooks
 ```
+Active `.githooks/pre-commit`, qui inscrit `updated:` (UTC) sur chaque fichier Markdown indexé. Une date présente et fausse est lue comme vraie — ne pas ignorer cette étape.
 
-One command, once per clone. It enables `.githooks/pre-commit`, which stamps `updated:` on every staged markdown file in UTC. Skip it and the dates silently stop moving, which is worse than not having them — a date that is present and wrong is read as true.
+**2. Installer les dépendances backend**
+```bash
+cd backend
+python -m venv .venv
+.venv\Scripts\activate      # Windows
+pip install -r requirements.txt
+```
 
-*(The rest to be written once the tracker is chosen)*
+**3. Installer les dépendances frontend**
+```bash
+cd frontend
+npm install
+```
+
+**4. Copier et remplir les variables d'environnement**
+```bash
+cp .env.example .env
+# Remplir DATABASE_URL, CLOUDINARY_*, RESEND_API_KEY, SECRET_KEY
+```
+
+**5. Vérifier que les tests d'architecture passent**
+```bash
+pytest tests/unit/test_architecture.py -v
+```
+Si ce test est rouge sur un projet vide, c'est un problème de configuration — corriger avant d'écrire la moindre ligne de code métier.
+
+**6. Créer les Milestones GitHub**
+Dans GitHub → Issues → Milestones : créer `epic-001-socle`, `epic-002-candidature`, `epic-003-administration`.
 
 ---
 
-*PROJECT_WORKFLOW.md — [Project Name] — starter structure from `project-init-kit/`.*
+*PROJECT_WORKFLOW.md — FDS Portail — Bravetech · GL-EN3-2026*
+
+
+---
+
+*PROJECT_WORKFLOW.md — FDS Portail — Bravetech · GL-EN3-2026*

@@ -5,15 +5,15 @@ updated: 2026-09-11T14:49:25Z
 
 # technical-specs/
 
-**Answers:** How is a delivered Workstream actually built, from an implementation standpoint?
+**Réponses :** Comment un Workstream livré est-il réellement construit, d'un point de vue implémentation ?
 
-**No fixed template**, same logic as `functional-specs/` — sections decided per Workstream, incrementally, once there's a real implementation to document.
+**Pas de template fixe**, même logique que `functional-specs/` — les sections sont décidées par Workstream, de manière incrémentale, une fois qu'il existe une vraie implémentation à documenter.
 
-**Filename convention:** `ws-tech-NN-name.md`, same pairing as the functional side, matching the Workstream's ID.
+**Convention de nommage :** `ws-tech-NN-name.md`, même couplage que le côté fonctionnel, correspondant à l'identifiant du Workstream.
 
-> **Questions to ask to decide whether a section is needed:**
-> 1. What would a new engineer need to know to modify this safely without breaking an invariant?
-> 2. What's the exact data contract, schema, or naming rule, precise enough that two implementations wouldn't drift?
-> 3. What decision here was non-obvious enough that someone might "fix" it back to the wrong thing later?
+> **Questions à se poser pour décider si une section est nécessaire :**
+> 1. Qu'un nouvel ingénieur doit-il savoir pour modifier cela en sécurité sans casser un invariant ?
+> 2. Quel est le contrat exact de données, le schéma ou la règle de nommage, suffisamment précis pour qu'il n'y ait pas de dérive entre deux implémentations ?
+> 3. Quelle décision ici était non évidente au point que quelqu'un pourrait la « corriger » plus tard vers la mauvaise chose ?
 >
-> **Governing question for all of it: has a story in this Workstream actually closed yet? If not, wait.**
+> **Question directrice pour tout cela : une histoire de ce Workstream est-elle réellement clôturée ? Sinon, il faut attendre.**

@@ -3,478 +3,478 @@ created: 2026-09-08T17:38:40Z
 updated: 2026-09-16T19:53:40Z
 ---
 
-> **First learned:** 2026-08-13 18:04:50
-> **Last updated:** 2026-08-13 18:10:19
+> **Premier apprentissage :** 2026-08-13 18:04:50
+> **Dernière mise à jour :** 2026-08-13 18:10:19
 
-## Context
+## Contexte
 
-Annex to `01-documentation-structure-template.md`: that file teaches the shape (which document answers which question, in what order, physically laid out how); this file breaks each of those documents into its actual sections and gives 3-5 brainstorming questions per section, for whoever is starting a new project to reflect on — alone or talking it through with an agent — before or while drafting that section.
+Annexe à `01-documentation-structure-template.md` : ce fichier enseigne la forme (quel document répond à quelle question, dans quel ordre, disposé physiquement comment) ; le présent fichier décompose chacun de ces documents en ses sections réelles et donne 3 à 5 questions de réflexion par section, pour quiconque démarre un nouveau projet — seul ou en y réfléchissant avec un agent — avant ou pendant la rédaction de cette section.
 
-The intended use: a person starting a new project reads a section's questions, thinks or talks them through with an agent, and arrives at the session with enough clarity to fill that section in well, instead of staring at an empty template or asking an agent to invent the content for them. The questions are the scaffold; the answers have to be the person's own.
+L'usage prévu : une personne démarrant un nouveau projet lit les questions d'une section, y réfléchit ou les passe en revue avec un agent, et arrive à la session avec suffisamment de clarté pour bien remplir cette section, au lieu de fixer un modèle vide ou de demander à un agent d'en inventer le contenu. Les questions sont l'échafaudage ; les réponses doivent être celles de la personne.
 
-`.claude/skills/*/SKILL.md` is deliberately excluded: a skill is a procedure (how a recurring task gets executed), not something to reflect your way into the content of.
+`.claude/skills/*/SKILL.md` est délibérément exclu : une skill est une procédure (comment une tâche récurrente est exécutée), pas quelque chose dans lequel on se réfléchit pour en trouver le contenu.
 
-Also deliberately absent: reflection questions for a testing-strategy document, because no such document exists in `08`'s table to break down — which test framework(s) to use and how testing will actually work is left to emerge once there's real code to test, not decided speculatively upfront. See `01-documentation-structure-template.md`'s matching note for where that decision would land if a project reaches the point of needing it written down.
+Également délibérément absent : les questions de réflexion pour un document de stratégie de test, parce qu'un tel document n'existe pas dans le tableau du fichier `01` à décomposer — quel(s) framework(s) de test utiliser et comment les tests fonctionneront réellement est laissé à émerger une fois qu'il y a du code réel à tester, pas décidé de façon spéculative à l'avance. Voir la note correspondante dans `01-documentation-structure-template.md` pour savoir où cette décision atterrirait si un projet atteint le point où elle doit être consignée.
 
-## How this was learned
+## Comment cela a été appris
 
-**Trigger:** After `08` had a generic physical folder tree, the next layer down was requested: for each document in `08`'s dependency table, list its actual sections, sort each into "generic — reuse as-is" vs. "specific to this project — here's the generalized version," and attach 3-5 reflection questions per section. Extra care was asked for on `PRD.md` specifically, since it tends to have the most sections that only make sense for one particular kind of product.
+**Déclencheur :** Après que le fichier `01` a eu une arborescence physique générique, la couche suivante vers le bas a été demandée : pour chaque document dans le tableau de dépendances du fichier `01`, lister ses sections réelles, trier chacune en « générique — réutiliser telle quelle » vs. « spécifique à ce projet — voici la version généralisée », et attacher 3 à 5 questions de réflexion par section. Un soin particulier a été demandé pour `PRD.md` spécifiquement, puisqu'il tend à avoir le plus de sections qui n'ont de sens que pour un type particulier de produit.
 
-**The path:** Extracted the real section headers from every live document of a working project (`GLOSSARY.md`, `PRD.md`, `NFR.md`, `SOLUTION_DESIGN.md`, `PLAN.md`, `project-docs/execution/EPIC_EXECUTION.md`, `project-docs/functional-specs/`, `project-docs/technical-specs/`, a `US-NNN.md` story, `project-docs/PROJECT_WORKFLOW.md`, `CLAUDE.md`) rather than reconstructing them from memory, since a stale section list here would be worse than no list.
+**Le chemin :** Les en-têtes de section réels de chaque document vivant d'un projet en cours ont été extraits (`GLOSSARY.md`, `PRD.md`, `NFR.md`, `SOLUTION_DESIGN.md`, `PLAN.md`, `project-docs/execution/EPIC_EXECUTION.md`, `project-docs/functional-specs/`, `project-docs/technical-specs/`, une story `US-NNN.md`, `project-docs/PROJECT_WORKFLOW.md`, `CLAUDE.md`) plutôt que reconstruits de mémoire, car une liste de sections périmée ici serait pire que pas de liste.
 
-**Things to be aware of:**
-- Two documents don't fit the "list of fixed sections" shape at all, and are treated differently below rather than forced into it: `project-docs/execution/EPIC_EXECUTION.md` is a derived tracker, not authored via reflection — it's populated automatically as `PLAN.md`'s Epics get worked. `project-docs/functional-specs/` and `project-docs/technical-specs/` have no fixed template — their own README stubs confirm this — sections are decided per Workstream based on what actually needs documenting once real behavior/implementation exists, created incrementally, never upfront.
-- Some sections are genuinely conditional, not just "generalizable" — `PRD.md`'s Voice and Persona section, for instance, only applies if the product has a conversational or brand-voice component at all. Marking a section "N/A, skip" is itself a useful category, distinct from "generic, keep" and "specific, generalize."
-- `NFR.md` needed almost no generalization — ISO 25010 is already a project-agnostic quality model. That asymmetry (NFR barely changes, PRD changes a lot) is itself worth noticing: the more a document describes *what this specific product is*, the less portable its exact sections are; the more it describes *a quality bar or a process*, the more portable it is.
+**À avoir en tête :**
+- Deux documents ne correspondent pas du tout à la forme « liste de sections fixes » et sont traités différemment ci-dessous plutôt que forcés dans celle-ci : `project-docs/execution/EPIC_EXECUTION.md` est un suivi dérivé, pas rédigé via réflexion — il se remplit automatiquement au fur et à mesure que les Épiques de `PLAN.md` avancent. `project-docs/functional-specs/` et `project-docs/technical-specs/` n'ont pas de modèle fixe — leurs propres stubs README le confirment — les sections sont décidées par Workstream selon ce qui doit réellement être documenté une fois que le comportement/l'implémentation réel existe, créées progressivement, jamais à l'avance.
+- Certaines sections sont genuinement conditionnelles, pas seulement « généralisables » — la section Voix et Persona de `PRD.md`, par exemple, ne s'applique que si le produit a un composant conversationnel ou de voix de marque du tout. Marquer une section « N/A, passer » est lui-même une catégorie utile, distincte de « générique, garder » et « spécifique, généraliser ».
+- `NFR.md` n'a presque pas eu besoin de généralisation — ISO 25010 est déjà un modèle de qualité agnostique au projet. Cette asymétrie (NFR change à peine, PRD change beaucoup) vaut elle-même la peine d'être remarquée : plus un document décrit *ce qu'est ce produit spécifique*, moins ses sections exactes sont portables ; plus il décrit *un niveau de qualité ou un processus*, plus il est portable.
 
-## The Rule
+## La Règle
 
-Each entry below: the document, its purpose (from `08`'s table), its sections marked **Generic** (reuse the heading as-is), **Generalize** (a heading too specific to one product — a reusable version is given), or **Conditional** (only include if it applies to your product at all) — followed by reflection questions per generic/generalized section.
-
----
-
-### 1. `GLOSSARY.md` — what does this term mean?
-
-A glossary's category headers are shaped by whatever product it describes — don't copy category *names* from one product to another, copy the underlying pattern:
-
-| Category (generalized) | Example instantiation |
-|---|---|
-| **Actors and roles** — who or what interacts with the system in a distinct capacity | Agents, visitor profiles, operating modes |
-| **System components** — the independently-run or independently-deployable pieces | Frontends, backend services |
-| **Data stores** — where information actually persists | Databases, caches, file stores |
-| **Domain vocabulary** — process/content terms an outsider would misread | Content types, processes, auth/access terms |
-| **Workstream, Epic, and Milestone** — Generic, reuse verbatim | same |
-| **Project Documents** — Generic, pointer-only pattern | same |
-
-**Actors and roles**
-1. Who or what touches this system, and does each one need different capabilities, access, or trust level?
-2. Is there a word (like "user" or "agent") that could mean two different things depending on context here? Does it need splitting into two terms?
-3. Are there distinct modes or intents the same actor can be in, worth naming separately?
-
-**System components**
-1. What are the independently-run or independently-deployable pieces of this system?
-2. Do any two components have similar names that could be confused? What distinguishes each in one sentence?
-3. Is there a natural split worth naming as a category (public vs. private, always-on vs. on-demand)?
-
-**Data stores**
-1. Where does information actually persist, and how many distinct stores are there?
-2. Does any one store hold more than one kind of data that should be named separately?
-3. Which store, if lost, would be the most damaging?
-
-**Domain vocabulary**
-1. What recurring nouns or process names would an outsider misinterpret without a definition?
-2. Which terms get said constantly in conversation about this project that aren't obvious from the word alone?
-3. Is there a term borrowed from a wider field (e.g. "epic," "token") that means something narrower here?
-
-**Workstream, Epic, and Milestone**
-1. Does this project genuinely need all three axes — functional area / time-boxed sequential stage / shippable checkpoint — or is it small enough that two collapse into one?
-2. What are this project's actual Workstreams (functional areas), independent of when each will be worked?
-
-**Project Documents**
-1. Which single document is the canonical map of every other document, so this stays a pointer and never a second copy?
+Chaque entrée ci-dessous : le document, son objectif (du tableau du fichier `01`), ses sections marquées **Générique** (réutiliser l'en-tête tel quel), **Généraliser** (un en-tête trop spécifique à un produit — une version réutilisable est donnée), ou **Conditionnel** (inclure uniquement si cela s'applique à votre produit du tout) — suivies de questions de réflexion par section générique/généralisée.
 
 ---
 
-### 2. `PRD.md` — what are we building, for whom, why?
+### 1. `GLOSSARY.md` — que signifie ce terme ?
 
-The section most worth rethinking per-project. A conversational-agent product, a data-tracking app, and a CRUD dashboard need different subsets — generalize or flag conditional accordingly:
+Les en-têtes de catégorie d'un glossaire sont façonnés par le produit qu'il décrit — ne copiez pas les *noms* de catégorie d'un produit à un autre, copiez le pattern sous-jacent :
 
-| Section | Treatment |
+| Catégorie (généralisée) | Exemple d'instanciation |
 |---|---|
-| 1. Product Statement | Generic |
-| 2. Audience | Generic |
-| 3. Ideal End-to-End Scenario | Generic |
-| 4. Jobs to Be Done | Generic |
-| 5. Layered Product Experience | Generic (however many access/capability tiers actually exist — could be one, could be several) |
-| 6. What the Product Can Do | Generic |
-| 7. What the Product Must Never Do | Generic — valuable for any product with automated or sensitive-data components |
-| 8. Voice and Persona | **Conditional** — only if there's a conversational or brand-voice component at all; skip entirely otherwise |
-| 9. Access Model | Generic |
-| 10. Observability | Generic |
-| 11. Success Criteria | Generic |
-| 12. Failure Criteria / Go-Live Blockers | Generic |
-| 13. Out of Scope — V1 | Generic |
-| 14. Related Documents | Generic |
+| **Acteurs et rôles** — qui ou quoi interagit avec le système dans une capacité distincte | Agents, profils de visiteurs, modes de fonctionnement |
+| **Composants système** — les pièces exécutées ou déployées indépendamment | Frontends, services backend |
+| **Entrepôts de données** — où l'information persiste réellement | Bases de données, caches, stockages de fichiers |
+| **Vocabulaire du domaine** — termes de processus/contenu qu'un outsider mal interpréterait | Types de contenu, processus, termes d'auth/accès |
+| **Workstream, Épique et Milestone** — Générique, réutiliser verbatim | idem |
+| **Documents du Projet** — Générique, pattern uniquement avec pointeurs | idem |
 
-**Product Statement**
-1. In one or two sentences, what does this product actually do, and who is it for?
-2. What real problem does this solve? Is it solving more than one distinct problem for more than one distinct audience?
-3. Why does this need to exist now, for this person, rather than being solved another way?
+**Acteurs et rôles**
+1. Qui ou quoi touche ce système, et chacun a-t-il besoin de capacités, accès ou niveaux de confiance différents ?
+2. Y a-t-il un mot (comme « utilisateur » ou « agent ») qui pourrait signifier deux choses différentes selon le contexte ici ? Doit-il être scindé en deux termes ?
+3. Y a-t-il des modes ou intentions distincts dans lesquels le même acteur peut se trouver, qui méritent d'être nommés séparément ?
+
+**Composants système**
+1. Quels sont les composants exécutés ou déployés indépendamment de ce système ?
+2. Deux composants ont-ils des noms similaires qui pourraient être confondus ? Qu'est-ce qui distingue chacun en une phrase ?
+3. Y a-t-il une distinction naturelle qui mérite d'être nommée comme catégorie (public vs. privé, toujours actif vs. à la demande) ?
+
+**Entrepôts de données**
+1. Où l'information persiste-t-elle réellement, et combien d'entrepôts distincts y a-t-il ?
+2. Un entrepôt contient-il plus d'un type de données qui devrait être nommé séparément ?
+3. Quel entrepôt, s'il était perdu, serait le plus dommageable ?
+
+**Vocabulaire du domaine**
+1. Quels noms ou noms de processus récurrents un outsider mal interpréterait-il sans définition ?
+2. Quels termes sont constamment utilisés dans les conversations sur ce projet mais ne sont pas évidents à partir du seul mot ?
+3. Y a-t-il un terme emprunté à un domaine plus large (ex. « épique », « token ») qui signifie quelque chose de plus précis ici ?
+
+**Workstream, Épique et Milestone**
+1. Ce projet a-t-il genuinement besoin des trois axes — domaine fonctionnel / étape séquentielle limitée dans le temps / point de livraison — ou est-il assez petit pour que deux s'effondrent en un ?
+2. Quels sont les vrais Workstreams (domaines fonctionnels) de ce projet, indépendamment de l'ordre dans lequel chacun sera travaillé ?
+
+**Documents du Projet**
+1. Quel document unique est la carte canonique de chaque autre document, pour que ceci reste un pointeur et jamais une deuxième copie ?
+
+---
+
+### 2. `PRD.md` — que construisons-nous, pour qui, pourquoi ?
+
+La section qui mérite le plus d'être repensée par projet. Un produit d'agent conversationnel, une application de suivi de données et un tableau de bord CRUD ont besoin de sous-ensembles différents — généraliser ou marquer conditionnel en conséquence :
+
+| Section | Traitement |
+|---|---|
+| 1. Énoncé du Produit | Générique |
+| 2. Audience | Générique |
+| 3. Scénario Idéal de Bout en Bout | Générique |
+| 4. Jobs to Be Done | Générique |
+| 5. Expérience Produit en Couches | Générique (autant de niveaux d'accès/capacité qu'il en existe réellement — peut être un, peut être plusieurs) |
+| 6. Ce que le Produit Peut Faire | Générique |
+| 7. Ce que le Produit Ne Doit Jamais Faire | Générique — précieux pour tout produit avec des composants automatisés ou de données sensibles |
+| 8. Voix et Persona | **Conditionnel** — seulement s'il y a un composant conversationnel ou de voix de marque ; à omettre entièrement sinon |
+| 9. Modèle d'Accès | Générique |
+| 10. Observabilité | Générique |
+| 11. Critères de Succès | Générique |
+| 12. Critères d'Échec / Bloquants au Lancement | Générique |
+| 13. Hors Périmètre — V1 | Générique |
+| 14. Documents Liés | Générique |
+
+**Énoncé du Produit**
+1. En une ou deux phrases, que fait réellement ce produit, et pour qui est-il ?
+2. Quel problème réel résout-il ? Résout-il plus d'un problème distinct pour plus d'une audience distincte ?
+3. Pourquoi cela doit-il exister maintenant, pour cette personne, plutôt que d'être résolu d'une autre façon ?
 
 **Audience**
-1. Who will actually use or encounter this, in every distinct capacity, not just the "main" user?
-2. Is there a philosophy behind who gets access and who doesn't?
-3. Which audience matters most if their needs conflict with another audience's?
+1. Qui utilisera ou rencontrera réellement ceci, dans chaque capacité distincte, pas seulement l'utilisateur « principal » ?
+2. Y a-t-il une philosophie derrière qui obtient l'accès et qui ne l'obtient pas ?
+3. Quelle audience compte le plus si leurs besoins entrent en conflit avec ceux d'une autre audience ?
 
-**Ideal End-to-End Scenario**
-1. Walk through, step by step, the best possible experience a real person has, from first contact to the outcome they wanted.
-2. What has to be true at each step for that scenario to actually happen?
-3. Where in that walkthrough would the experience break down today if nothing further got built?
+**Scénario Idéal de Bout en Bout**
+1. Parcourez, étape par étape, la meilleure expérience possible qu'une vraie personne vit, du premier contact au résultat voulu.
+2. Qu'est-ce qui doit être vrai à chaque étape pour que ce scénario se produise réellement ?
+3. Où dans ce parcours l'expérience s'effondrerait-elle aujourd'hui si rien d'autre n'était construit ?
 
 **Jobs to Be Done**
-1. What is the user trying to accomplish, independent of any feature you might build?
-2. For each job, what does the user do today without this product?
-3. Which job, if left unsolved, makes the whole product pointless?
+1. Qu'est-ce que l'utilisateur essaie d'accomplir, indépendamment de toute fonctionnalité que vous pourriez construire ?
+2. Pour chaque job, que fait l'utilisateur aujourd'hui sans ce produit ?
+3. Quel job, s'il reste non résolu, rend tout le produit inutile ?
 
-**Layered Product Experience**
-1. Does this product have more than one tier of access or capability? How many, concretely?
-2. What can each tier see or do that the tier below it cannot?
-3. Is a tier boundary here about trust and security, or just about feature richness?
+**Expérience Produit en Couches**
+1. Ce produit a-t-il plus d'un niveau d'accès ou de capacité ? Combien, concrètement ?
+2. Que peut voir ou faire chaque niveau que le niveau en dessous ne peut pas ?
+3. Une limite de niveau ici concerne-t-elle la confiance et la sécurité, ou simplement la richesse des fonctionnalités ?
 
-**What the Product Can Do**
-1. List the concrete capabilities a user can invoke, one per line, in plain verbs.
-2. For each capability, what triggers it, and what's the actual output?
-3. Is there a capability everyone will assume exists that isn't actually planned? Worth stating as explicitly out of scope now.
+**Ce que le Produit Peut Faire**
+1. Listez les capacités concrètes qu'un utilisateur peut invoquer, une par ligne, en verbes simples.
+2. Pour chaque capacité, qu'est-ce qui la déclenche, et quel est le résultat réel ?
+3. Y a-t-il une capacité que tout le monde supposera existante qui n'est pas réellement prévue ? Vaut la peine de l'énoncer explicitement hors périmètre maintenant.
 
-**What the Product Must Never Do**
-1. What would be actively harmful, embarrassing, or unsafe if this product did it, even once?
-2. Are there topics, data, or actions that must always redirect to a human instead of being handled automatically?
-3. What's the worst plausible misuse, and does this document say what happens when someone tries it?
+**Ce que le Produit Ne Doit Jamais Faire**
+1. Qu'est-ce qui serait activement nuisible, embarrassant ou dangereux si ce produit le faisait, même une fois ?
+2. Y a-t-il des sujets, des données ou des actions qui doivent toujours être redirigés vers un humain plutôt que traités automatiquement ?
+3. Quel est le pire abus plausible, et ce document dit-il ce qui se passe quand quelqu'un l'essaie ?
 
-**Voice and Persona** *(skip if not applicable)*
-1. Does this product "speak" to anyone directly — chat, notifications, generated copy? If not, this section doesn't apply.
-2. If it does, whose voice is it: a company's, a persona's, the founder's own?
-3. What tone would feel wrong for this product even if factually accurate?
+**Voix et Persona** *(à omettre si non applicable)*
+1. Ce produit « parle-t-il » directement à quelqu'un — chat, notifications, copie générée ? Si non, cette section ne s'applique pas.
+2. Si oui, quelle voix est-ce : celle d'une entreprise, d'un persona, du fondateur lui-même ?
+3. Quel ton semblerait faux pour ce produit même s'il est factuellement exact ?
 
-**Access Model**
-1. How does someone go from "no access" to "has access"? Who approves it, if anyone?
-2. What's stored about who has access, and who can revoke it?
-3. Is there a difference between "logged in" and "trusted enough to see everything"?
+**Modèle d'Accès**
+1. Comment quelqu'un passe-t-il de « pas d'accès » à « a accès » ? Qui l'approuve, le cas échéant ?
+2. Qu'est-ce qui est stocké sur qui a accès, et qui peut le révoquer ?
+3. Y a-t-il une différence entre « connecté » et « suffisamment fiable pour tout voir » ?
 
-**Observability**
-1. Once this is live, what's the first question you'll want answered about how it's actually being used?
-2. What would you need to notice quickly if something started going wrong?
-3. Who looks at this data, and how often?
+**Observabilité**
+1. Une fois que c'est en ligne, quelle est la première question à laquelle vous voudrez répondre sur la façon dont c'est réellement utilisé ?
+2. Qu'auriez-vous besoin de remarquer rapidement si quelque chose commençait à mal tourner ?
+3. Qui consulte ces données, et à quelle fréquence ?
 
-**Success Criteria**
-1. How will you know, concretely, that this product is working as intended?
-2. Is success measured by usage, by an outcome for the user, or by your own judgment?
-3. What's the smallest version of "success" that would still make this worth having shipped?
+**Critères de Succès**
+1. Comment saurez-vous, concrètement, que ce produit fonctionne comme prévu ?
+2. Le succès est-il mesuré par l'utilisation, par un résultat pour l'utilisateur, ou par votre propre jugement ?
+3. Quelle est la version minimale du « succès » qui rendrait quand même cela valable d'avoir livré ?
 
-**Failure Criteria / Go-Live Blockers**
-1. What must be true before this is allowed to go live, non-negotiably?
-2. What would make you pull this back down after launch?
-3. Is there a difference here between "not perfect yet" and "actually blocking"?
+**Critères d'Échec / Bloquants au Lancement**
+1. Qu'est-ce qui doit être vrai avant que cela soit autorisé à aller en production, de façon non négociable ?
+2. Qu'est-ce qui vous ferait redescendre cela après le lancement ?
+3. Y a-t-il une différence ici entre « pas encore parfait » et « vraiment bloquant » ?
 
-**Out of Scope — V1**
-1. What are you deliberately not building yet, even though it's related?
-2. What would you say to someone who asks "why doesn't it do X" about each excluded item?
-3. Is anything excluded here likely to be assumed as included by a first-time reader?
+**Hors Périmètre — V1**
+1. Qu'est-ce que vous ne construisez délibérément pas encore, bien que ce soit lié ?
+2. Que diriez-vous à quelqu'un qui demande « pourquoi est-ce que ça ne fait pas X » pour chaque élément exclu ?
+3. Quelque chose d'exclu ici est-il susceptible d'être supposé inclus par un premier lecteur ?
 
-**Related Documents**
-1. What other documents does a new reader need, and in what order?
-2. Is there a single canonical map of every project document, or does this list risk becoming a second copy that drifts?
+**Documents Liés**
+1. De quels autres documents un nouveau lecteur a-t-il besoin, et dans quel ordre ?
+2. Y a-t-il une carte canonique unique de chaque document du projet, ou cette liste risque-t-elle de devenir une deuxième copie qui dérive ?
 
 ---
 
-### 3. `NFR.md` — what quality bar must it meet?
+### 3. `NFR.md` — quel niveau de qualité doit-il atteindre ?
 
-All Generic — ISO 25010 is a project-agnostic quality model. The only per-project edit is which regulatory regime actually applies in Compliance/Legal.
+Tout Générique — ISO 25010 est un modèle de qualité agnostique au projet. La seule modification par projet est quel régime réglementaire s'applique réellement dans Conformité/Légal.
 
 **Performance**
-1. What response time would feel broken to a real user?
-2. Is there a known peak-load moment (a launch, a specific hour)?
-3. What's actually being measured — page load, API latency, something else?
+1. Quel temps de réponse semblerait cassé à un vrai utilisateur ?
+2. Y a-t-il un moment de pic de charge connu (un lancement, une heure spécifique) ?
+3. Qu'est-ce qui est réellement mesuré — chargement de page, latence API, autre chose ?
 
-**Reliability / Availability**
-1. What does "down" mean for this product, precisely?
-2. Is any downtime acceptable, and when?
-3. What's the plan if a dependency this relies on goes down?
+**Fiabilité / Disponibilité**
+1. Que signifie « en panne » pour ce produit, précisément ?
+2. Un temps d'arrêt est-il acceptable, et quand ?
+3. Quel est le plan si une dépendance dont il dépend tombe en panne ?
 
-**Scalability**
-1. What happens if usage grows 10x overnight?
-2. Which resource runs out first?
-3. Is scale a real near-term risk here, or a hypothetical for V1?
+**Scalabilité**
+1. Que se passe-t-il si l'utilisation augmente de 10x du jour au lendemain ?
+2. Quelle ressource s'épuise en premier ?
+3. La scalabilité est-elle un risque réel à court terme ici, ou une hypothèse pour V1 ?
 
-**Security**
-1. What's the most sensitive thing this system holds?
-2. Who should never be able to access it?
-3. What's the worst-case breach scenario, and is it survivable?
+**Sécurité**
+1. Quelle est la chose la plus sensible que ce système détient ?
+2. Qui ne doit jamais pouvoir y accéder ?
+3. Quel est le scénario de violation dans le pire cas, et est-il surmontable ?
 
-**Usability / Accessibility**
-1. Who might struggle to use this as designed — device, language, ability?
-2. Is there a minimum accessibility standard being targeted?
-3. What's the simplest task a first-time user must be able to complete unaided?
+**Utilisabilité / Accessibilité**
+1. Qui pourrait avoir du mal à utiliser ceci tel que conçu — appareil, langue, capacité ?
+2. Y a-t-il un standard d'accessibilité minimum ciblé ?
+3. Quelle est la tâche la plus simple qu'un premier utilisateur doit pouvoir accomplir sans aide ?
 
-**Compatibility**
-1. What environments (browsers, devices, OS) must this actually work on?
-2. Is there an environment explicitly not supported?
-3. Does it need to interoperate with any existing system?
+**Compatibilité**
+1. Sur quels environnements (navigateurs, appareils, OS) cela doit-il réellement fonctionner ?
+2. Y a-t-il un environnement explicitement non supporté ?
+3. Doit-il interopérer avec un système existant ?
 
-**Compliance / Legal**
-1. What regulation applies to this data or this audience?
-2. What consent or disclosure is legally required before collecting data?
-3. Who is liable if this goes wrong?
+**Conformité / Légal**
+1. Quelle réglementation s'applique à ces données ou à cette audience ?
+2. Quel consentement ou divulgation est légalement requis avant de collecter des données ?
+3. Qui est responsable si quelque chose tourne mal ?
 
-**Maintainability**
-1. How easy is it for a future person, including future-you, to change this safely?
-2. What's the plan for keeping documentation in sync with code?
-3. Is there a test suite, and what does it actually cover?
+**Maintenabilité**
+1. Quelle est la facilité pour une personne future, y compris vous-même futur, de modifier ceci en toute sécurité ?
+2. Quel est le plan pour maintenir la documentation synchronisée avec le code ?
+3. Y a-t-il une suite de tests, et que couvre-t-elle réellement ?
 
-**Portability**
-1. Could this move to a different host or provider without a full rewrite?
-2. Is anything hard-coded to one vendor that shouldn't be?
+**Portabilité**
+1. Cela pourrait-il passer à un hôte ou fournisseur différent sans réécriture complète ?
+2. Y a-t-il quelque chose codé en dur pour un fournisseur qui ne devrait pas l'être ?
 
-**Observability / Monitoring**
-1. What would you want alerted on immediately if it broke?
-2. What's logged today versus what should be?
-3. Who's actually watching this?
+**Observabilité / Monitoring**
+1. Sur quoi voudriez-vous être alerté immédiatement si cela tombait en panne ?
+2. Qu'est-ce qui est consigné aujourd'hui par rapport à ce qui devrait l'être ?
+3. Qui surveille réellement ceci ?
 
-**Disaster Recovery / Backup**
-1. What's the worst data-loss scenario, and how would you recover from it?
-2. How often is data backed up, and has restore ever actually been tested?
-3. What's the acceptable amount of data loss (RPO) and downtime (RTO)?
+**Reprise après Sinistre / Sauvegarde**
+1. Quel est le pire scénario de perte de données, et comment vous en remettriez-vous ?
+2. À quelle fréquence les données sont-elles sauvegardées, et la restauration a-t-elle jamais été réellement testée ?
+3. Quelle est la quantité acceptable de perte de données (RPO) et de temps d'arrêt (RTO) ?
 
-**Risks and Mitigations**
-1. What's most likely to go wrong before this ships?
-2. For each risk, what's the plan if it happens anyway?
-3. Which risk, if realized, would be hardest to recover from?
+**Risques et Atténuations**
+1. Qu'est-ce qui est le plus susceptible de mal tourner avant que cela ne soit livré ?
+2. Pour chaque risque, quel est le plan s'il se produit quand même ?
+3. Quel risque, s'il se réalise, serait le plus difficile à surmonter ?
 
-**Dependencies**
-1. What external services, libraries, or people does this rely on to function?
-2. What happens if one becomes unavailable or changes its API?
-3. Is there a single point of failure among these?
+**Dépendances**
+1. De quels services externes, bibliothèques ou personnes cela dépend-il pour fonctionner ?
+2. Que se passe-t-il si l'un devient indisponible ou change son API ?
+3. Y a-t-il un point unique de défaillance parmi ceux-ci ?
 
 ---
 
-### 4. `SOLUTION_DESIGN.md` — how is it built, and what Workstreams does it decompose into?
+### 4. `SOLUTION_DESIGN.md` — comment est-il construit, et en quels Workstreams se décompose-t-il ?
 
-| Section | Treatment |
+| Section | Traitement |
 |---|---|
-| 1. Purpose and Scope | Generic |
-| 2. Workstreams | Generic — the canonical Workstream-ID definition |
-| 3. System Overview | Generic |
-| 4. Component Map (services/ports, diagram, tool list) | Generic pattern; the specific contents are always product-specific |
-| 5. Tech Stack | Generic |
-| 6. Data Layer | Generic pattern; the specific store breakdown is product-specific |
-| 7. Authentication and Authorization Flow | **Conditional** — only if the product has access control at all |
-| 8. Real-Time / Interactive Architecture | **Conditional** — only if there's a live or streaming layer |
-| 9-10. Automated Update or Feedback Loop | **Conditional** — only if content/behavior updates automatically rather than by manual edit |
-| 11. Deployment Overview | Generic |
-| 12. Assumptions | Generic |
-| 13. Out of Scope | Generic |
-| 14. Architecture Decision Records | Generic — reuse the ADR table pattern verbatim |
-| 15. Open Questions | Generic |
+| 1. Objectif et Périmètre | Générique |
+| 2. Workstreams | Générique — la définition canonique de l'ID de Workstream |
+| 3. Vue d'Ensemble du Système | Générique |
+| 4. Carte des Composants (services/ports, diagramme, liste d'outils) | Pattern générique ; les contenus spécifiques sont toujours propres au produit |
+| 5. Stack Technique | Générique |
+| 6. Couche de Données | Pattern générique ; le découpage des entrepôts spécifiques est propre au produit |
+| 7. Flux d'Authentification et d'Autorisation | **Conditionnel** — seulement si le produit a un contrôle d'accès du tout |
+| 8. Architecture Temps Réel / Interactive | **Conditionnel** — seulement s'il y a une couche live ou streaming |
+| 9-10. Boucle de Mise à Jour ou de Feedback Automatisée | **Conditionnel** — seulement si le contenu/comportement se met à jour automatiquement plutôt que par édition manuelle |
+| 11. Vue d'Ensemble du Déploiement | Générique |
+| 12. Hypothèses | Générique |
+| 13. Hors Périmètre | Générique |
+| 14. Architecture Decision Records | Générique — réutiliser le pattern de tableau ADR verbatim |
+| 15. Questions Ouvertes | Générique |
 
-**Purpose and Scope**
-1. What is this document responsible for deciding that no other document decides?
-2. What's explicitly out of this document's authority (e.g. product decisions belong in the PRD)?
+**Objectif et Périmètre**
+1. De quoi ce document est-il responsable de décider qu'aucun autre document ne décide ?
+2. Qu'est-ce qui est explicitement hors de l'autorité de ce document (ex. les décisions produit appartiennent au PRD) ?
 
 **Workstreams**
-1. What are the independent functional areas of this system, regardless of build order?
-2. Could two Workstreams ever be worked by different people at the same time without stepping on each other?
-3. Is there a Workstream hiding inside another one that deserves its own ID?
+1. Quels sont les domaines fonctionnels indépendants de ce système, indépendamment de l'ordre de construction ?
+2. Deux Workstreams pourraient-ils jamais être travaillés par des personnes différentes en même temps sans se marcher dessus ?
+3. Y a-t-il un Workstream caché dans un autre qui mérite son propre ID ?
 
-**System Overview**
-1. In a few sentences, how do the major pieces fit together end to end?
-2. What's the one diagram or flow that would explain this fastest to a new engineer?
+**Vue d'Ensemble du Système**
+1. En quelques phrases, comment les pièces majeures s'assemblent-elles de bout en bout ?
+2. Quel est le diagramme ou flux unique qui expliquerait ceci le plus rapidement à un nouvel ingénieur ?
 
-**Component Map**
-1. What are the actual runnable/deployable components, and what does each one own?
-2. What ports, URLs, or entry points does each expose?
-3. Is there a component here that's really two components pretending to be one?
+**Carte des Composants**
+1. Quels sont les composants réels exécutables/déployables, et que possède chacun ?
+2. Quels ports, URLs ou points d'entrée chacun expose-t-il ?
+3. Y a-t-il un composant ici qui est vraiment deux composants prétendant en être un ?
 
-**Tech Stack**
-1. What's the stack for each major part of the system, and why that choice specifically?
-2. Is there a piece of the stack that's a placeholder/guess rather than a real decision yet?
+**Stack Technique**
+1. Quelle est la stack pour chaque partie majeure du système, et pourquoi ce choix spécifiquement ?
+2. Y a-t-il un élément de la stack qui est un placeholder/approximation plutôt qu'une vraie décision encore ?
 
-**Data Layer**
-1. Where does each kind of data actually live, and in what shape?
-2. Which store is the source of truth if two stores could disagree?
-3. What's the schema or contract, precisely enough that two implementations wouldn't drift?
+**Couche de Données**
+1. Où chaque type de données vit-il réellement, et sous quelle forme ?
+2. Quel entrepôt est la source de vérité si deux entrepôts pouvaient être en désaccord ?
+3. Quel est le schéma ou contrat, suffisamment précis pour que deux implémentations ne dérivent pas ?
 
-**Authentication and Authorization Flow** *(skip if no access control)*
-1. Step by step, how does someone go from anonymous to authenticated to authorized for a specific action?
-2. What's issued (a token, a session, a key), and what does it actually prove?
+**Flux d'Authentification et d'Autorisation** *(à omettre s'il n'y a pas de contrôle d'accès)*
+1. Étape par étape, comment quelqu'un passe-t-il d'anonyme à authentifié à autorisé pour une action spécifique ?
+2. Qu'est-ce qui est émis (un token, une session, une clé), et qu'est-ce que cela prouve réellement ?
 
-**Real-time / interactive architecture** *(skip if nothing is live/streaming)*
-1. What has to happen in real time versus what can be request/response?
-2. What's the fallback if the real-time channel drops mid-interaction?
+**Architecture Temps Réel / Interactive** *(à omettre si rien n'est live/streaming)*
+1. Qu'est-ce qui doit se produire en temps réel par rapport à ce qui peut être requête/réponse ?
+2. Quel est le plan de secours si le canal temps réel se coupe en milieu d'interaction ?
 
-**Automated update or feedback loop** *(skip if content only changes by manual edit)*
-1. Does anything about this system update itself based on usage or new data? What triggers it?
-2. Who reviews an automated change before it goes live, if anyone?
-3. What's the worst thing an automated update loop could do if left unchecked?
+**Boucle de Mise à Jour ou de Feedback Automatisée** *(à omettre si le contenu ne change que par édition manuelle)*
+1. Est-ce que quelque chose à propos de ce système se met à jour lui-même en fonction de l'utilisation ou de nouvelles données ? Qu'est-ce qui le déclenche ?
+2. Qui révise un changement automatisé avant qu'il ne soit mis en production, le cas échéant ?
+3. Quelle est la pire chose qu'une boucle de mise à jour automatisée pourrait faire si laissée sans surveillance ?
 
-**Deployment Overview**
-1. Where does this actually run today, and where will it run at launch?
-2. What's the path from a local change to it being live?
-3. Is there a CI/CD step, and what does it actually gate?
+**Vue d'Ensemble du Déploiement**
+1. Où cela s'exécute-t-il réellement aujourd'hui, et où s'exécutera-t-il au lancement ?
+2. Quel est le chemin d'un changement local vers son entrée en vigueur ?
+3. Y a-t-il une étape CI/CD, et qu'est-ce qu'elle contrôle réellement ?
 
-**Assumptions**
-1. What is this design assuming is true that hasn't actually been verified yet?
-2. Which assumption, if wrong, would force a redesign rather than a patch?
+**Hypothèses**
+1. Qu'est-ce que cette conception suppose être vrai et qui n'a pas encore été réellement vérifié ?
+2. Quelle hypothèse, si elle s'avère fausse, forcerait une reconception plutôt qu'un patch ?
 
-**Out of Scope**
-1. What's architecturally excluded from this version, and why?
-2. Is there anything excluded here that a later Workstream will need to revisit?
+**Hors Périmètre**
+1. Qu'est-ce qui est architecturalement exclu de cette version, et pourquoi ?
+2. Y a-t-il quelque chose d'exclu ici qu'un Workstream ultérieur devra revisiter ?
 
 **Architecture Decision Records**
-1. What was decided that could plausibly have gone the other way?
-2. Why was the other option rejected, specifically enough that someone won't propose it again without knowing?
-3. Is this decision still current, or does it need a `Deprecated` entry with a reason?
+1. Qu'est-ce qui a été décidé et aurait pu aller dans l'autre sens de façon plausible ?
+2. Pourquoi l'autre option a-t-elle été rejetée, suffisamment précisément pour que quelqu'un ne la propose pas à nouveau sans le savoir ?
+3. Cette décision est-elle encore d'actualité, ou a-t-elle besoin d'une entrée `Deprecated` avec une raison ?
 
-**Open Questions**
-1. What's genuinely unresolved right now that shouldn't block starting, but shouldn't be forgotten either?
-2. Who or what would resolve each open question, and when?
-
----
-
-### 5. `PLAN.md` — in what order, grouped into what Epics?
-
-All sections Generic (sequencing/prioritization patterns, not product-specific content).
-
-**Epic Overview**
-1. In what order will functional areas actually get worked, and why that order?
-2. Is any Epic blocked on another finishing first?
-3. Could two Epics genuinely run in parallel, or is sequential truly required here — and why?
-
-**Jobs to Be Done — Reference**
-1. Does every Job to Be Done map to exactly one Epic, or does one job span several?
-2. Is this table still just a pointer to the PRD's real JTD definitions, or has content started duplicating there?
-
-**MoSCoW Prioritization**
-1. For each Job to Be Done, what's truly Must-have versus Should/Could/Won't for V1?
-2. What's the cost of being wrong about something marked Must-have that turns out not to be needed?
-3. Is anything marked Won't-have likely to get asked about anyway — worth stating explicitly rather than silently dropping?
-
-**Per-Epic detail sections**
-1. What does this Epic deliver that the previous one didn't?
-2. What Workstream(s) does it primarily touch?
-3. What's the one-sentence goal a stakeholder could repeat back correctly?
-
-**Immediate Next Steps**
-1. What's the very next concrete action, not a restatement of the whole roadmap?
-2. Is this section likely to go stale quickly — should day-to-day status live in a dedicated tracker instead?
+**Questions Ouvertes**
+1. Qu'est-ce qui est genuinement non résolu en ce moment qui ne devrait pas bloquer le démarrage, mais ne devrait pas non plus être oublié ?
+2. Qui ou quoi résoudrait chaque question ouverte, et quand ?
 
 ---
 
-### 6. `project-docs/execution/EPIC_EXECUTION.md` — what's the status of each story, right now?
+### 5. `PLAN.md` — dans quel ordre, regroupés en quels Épiques ?
 
-Not authored via reflection — this is a derived tracker, populated automatically as `PLAN.md`'s Epics get worked and stories close. No content to brainstorm; only a process check:
+Toutes les sections Génériques (patterns de séquencement/priorisation, pas de contenu propre au produit).
 
-1. Is this table still true right now, or has a story's status changed without this file being updated?
-2. Does every Epic in `PLAN.md` have a matching section here, in the same order?
+**Vue d'Ensemble des Épiques**
+1. Dans quel ordre les domaines fonctionnels seront-ils réellement travaillés, et pourquoi cet ordre ?
+2. Un Épique est-il bloqué par la fin d'un autre ?
+3. Deux Épiques peuvent-ils genuinement s'exécuter en parallèle, ou le séquentiel est-il vraiment requis ici — et pourquoi ?
 
----
+**Jobs to Be Done — Référence**
+1. Chaque Job to Be Done correspond-il à exactement un Épique, ou un job s'étend-il sur plusieurs ?
+2. Cette table est-elle encore juste un pointeur vers les vraies définitions JTD du PRD, ou le contenu a-t-il commencé à y être dupliqué ?
 
-### 7. `project-docs/functional-specs/` and `project-docs/technical-specs/` — what does a delivered Workstream actually do / how is it actually built?
+**Priorisation MoSCoW**
+1. Pour chaque Job to Be Done, qu'est-ce qui est vraiment Must-have par rapport à Should/Could/Won't pour V1 ?
+2. Quel est le coût d'avoir tort sur quelque chose marqué Must-have qui s'avère ne pas être nécessaire ?
+3. Quelque chose marqué Won't-have est-il susceptible d'être demandé de toute façon — vaut-il la peine de l'énoncer explicitement plutôt que de le supprimer silencieusement ?
 
-No fixed section template exists for either — confirmed by each folder's own README stub. Sections are decided per Workstream, incrementally, once real behavior or implementation exists to document; writing them upfront would be speculation. Use these questions to decide *whether a section is needed at all*, not to fill in a fixed list:
+**Sections de détail par Épique**
+1. Que livre cet Épique que le précédent ne livrait pas ?
+2. Quel(s) Workstream(s) touche-t-il principalement ?
+3. Quel est l'objectif en une phrase qu'une partie prenante pourrait répéter correctement ?
 
-**Functional spec (behavior)**
-1. What does a user or calling system observe now that they couldn't observe before this Workstream existed?
-2. What are the edge cases or refusal conditions someone building against this needs to know?
-3. Is there a rule here that isn't obvious from reading the code — a business rule, a confidentiality boundary, an ordering requirement?
-
-**Technical spec (implementation)**
-1. What would a new engineer need to know to modify this safely without breaking an invariant?
-2. What's the exact data contract, schema, or naming rule, precisely enough that two implementations wouldn't drift apart?
-3. What decision here was non-obvious enough that someone might "fix" it back to the wrong thing later?
-
-**Governing question for both:** has a story in this Workstream actually closed yet? If not, there's nothing real to document — wait.
-
----
-
-### 8. `project-docs/execution/epic-NNN-*/US-NNN.md` — what, specifically, was asked for and accepted for one unit of work?
-
-Already fully generic (the shared user-story format) — the only per-project tie is that "role" should be a real one from *your* Glossary, not an example project's.
-
-**As / I want / So that**
-1. Who specifically wants this — which named role from the Glossary, not just "a user"?
-2. What do they want to be able to do, in one sentence?
-3. Why does that outcome matter to them, not just to you as the builder?
-
-**Context**
-1. What already exists that this builds on?
-2. What should explicitly *not* be assumed as already done?
-
-**Acceptance criteria**
-1. What's the smallest testable statement that's unambiguously true or false once this is done?
-2. Is there an AC here that's actually a Task in disguise — an implementation step, not an observable outcome?
-
-**Out of scope**
-1. What's adjacent to this story that a reader might assume is included, but isn't?
-
-**Tasks**
-1. What's the concrete next action, in an order that could actually be followed start to finish?
-
-**Definition of done**
-1. What does the person who requested this actually check, with their own eyes, to accept it?
-
-**As-built notes**
-1. What changed between what was planned and what was actually built, and why?
+**Étapes Immédiates Suivantes**
+1. Quelle est la toute prochaine action concrète, pas une reformulation de toute la feuille de route ?
+2. Cette section est-elle susceptible de devenir périmée rapidement — le statut au jour le jour devrait-il vivre dans un suivi dédié à la place ?
 
 ---
 
-### 9. `project-docs/PROJECT_WORKFLOW.md` — how does work actually flow, and which doc do I touch when?
+### 6. `project-docs/execution/EPIC_EXECUTION.md` — quel est le statut de chaque story, en ce moment ?
 
-| Section | Treatment |
+Pas rédigé via réflexion — c'est un suivi dérivé, rempli automatiquement au fur et à mesure que les Épiques de `PLAN.md` avancent et que les stories se closent. Pas de contenu à brainstormer ; seulement une vérification de processus :
+
+1. Ce tableau est-il encore vrai en ce moment, ou le statut d'une story a-t-il changé sans que ce fichier soit mis à jour ?
+2. Chaque Épique dans `PLAN.md` a-t-il une section correspondante ici, dans le même ordre ?
+
+---
+
+### 7. `project-docs/functional-specs/` et `project-docs/technical-specs/` — que fait réellement un Workstream livré / comment est-il réellement construit ?
+
+Aucun modèle de section fixe n'existe pour l'un ou l'autre — confirmé par le stub README de chaque dossier. Les sections sont décidées par Workstream, progressivement, une fois que le comportement ou l'implémentation réel existe à documenter ; les écrire à l'avance serait de la spéculation. Utilisez ces questions pour décider *si une section est nécessaire du tout*, pas pour remplir une liste fixe :
+
+**Spec fonctionnelle (comportement)**
+1. Qu'est-ce qu'un utilisateur ou un système appelant observe maintenant qu'il ne pouvait pas observer avant que ce Workstream existe ?
+2. Quels sont les cas limites ou conditions de refus que quelqu'un construisant à partir de ceci doit connaître ?
+3. Y a-t-il une règle ici qui n'est pas évidente en lisant le code — une règle métier, une frontière de confidentialité, une exigence d'ordre ?
+
+**Spec technique (implémentation)**
+1. Que devrait savoir un nouvel ingénieur pour modifier ceci en toute sécurité sans casser un invariant ?
+2. Quel est le contrat de données exact, le schéma ou la règle de nommage, suffisamment précis pour que deux implémentations ne dérivent pas l'une de l'autre ?
+3. Quelle décision ici était suffisamment non évidente pour que quelqu'un pourrait la « corriger » en la rétablissant à la mauvaise chose plus tard ?
+
+**Question directrice pour les deux :** une story de ce Workstream a-t-elle réellement été close ? Si non, il n'y a rien de réel à documenter — attendre.
+
+---
+
+### 8. `project-docs/execution/epic-NNN-*/US-NNN.md` — qu'est-ce qui a été spécifiquement demandé et accepté pour une unité de travail ?
+
+Déjà entièrement générique (le format de user story partagé) — le seul lien par projet est que le « rôle » doit être un vrai rôle de *votre* Glossaire, pas celui d'un projet exemple.
+
+**En tant que / Je veux / Afin que**
+1. Qui veut spécifiquement ceci — quel rôle nommé du Glossaire, pas juste « un utilisateur » ?
+2. Que veulent-ils pouvoir faire, en une phrase ?
+3. Pourquoi ce résultat compte-t-il pour eux, pas seulement pour vous en tant que constructeur ?
+
+**Contexte**
+1. Qu'est-ce qui existe déjà sur quoi cela s'appuie ?
+2. Qu'est-ce qui ne devrait explicitement *pas* être supposé comme déjà fait ?
+
+**Critères d'acceptation**
+1. Quel est le plus petit énoncé testable qui est sans ambiguïté vrai ou faux une fois ceci fait ?
+2. Y a-t-il un CA ici qui est en réalité une Tâche déguisée — une étape d'implémentation, pas un résultat observable ?
+
+**Hors périmètre**
+1. Qu'est-ce qui est adjacent à cette story qu'un lecteur pourrait supposer inclus, mais qui ne l'est pas ?
+
+**Tâches**
+1. Quelle est la prochaine action concrète, dans un ordre qui pourrait réellement être suivi du début à la fin ?
+
+**Définition de Terminé**
+1. Que vérifie la personne qui a demandé ceci, de ses propres yeux, pour l'accepter ?
+
+**Notes telles que construites**
+1. Qu'est-ce qui a changé entre ce qui était prévu et ce qui a réellement été construit, et pourquoi ?
+
+---
+
+### 9. `project-docs/PROJECT_WORKFLOW.md` — comment le travail circule-t-il réellement, et quel document toucher quand ?
+
+| Section | Traitement |
 |---|---|
-| Which document to update, and when | Generic — the connective-tissue table |
-| Work Tracking | Generic pattern, conditional on which tool is actually used |
-| User Story Format | Generic — pointer to the shared template, see §8 above |
-| Definition of Done | Generic |
-| Vocabulary Reference | Generic |
-| Tracker Bootstrap Steps | Generic pattern |
+| Quel document mettre à jour, et quand | Générique — le tableau du tissu conjonctif |
+| Suivi du Travail | Pattern générique, conditionnel à l'outil réellement utilisé |
+| Format de User Story | Générique — pointeur vers le modèle partagé, voir §8 ci-dessus |
+| Définition de Terminé | Générique |
+| Référence Vocabulaire | Générique |
+| Étapes de Bootstrap du Suivi | Pattern générique |
 
-**Which document to update, and when**
-1. For each document, what real-world event should trigger updating it?
-2. Is any document being updated on a schedule instead of when its underlying fact actually changes — a sign it's the wrong owner for that fact?
+**Quel document mettre à jour, et quand**
+1. Pour chaque document, quel événement du monde réel devrait déclencher sa mise à jour ?
+2. Un document est-il mis à jour selon un calendrier au lieu de quand le fait sous-jacent change réellement — signe qu'il est le mauvais propriétaire de ce fait ?
 
-**Work Tracking**
-1. What tool will actually track work — a board, a spreadsheet, just issues?
-2. What are the states work moves through, and who moves them?
-3. Are custom fields actually needed, or does the story format's own Status line already cover it?
+**Suivi du Travail**
+1. Quel outil suivra réellement le travail — un tableau, une feuille de calcul, juste des tickets ?
+2. Quels sont les états par lesquels le travail passe, et qui les fait avancer ?
+3. Des champs personnalisés sont-ils vraiment nécessaires, ou la propre ligne Statut du format de story le couvre-t-elle déjà ?
 
-**Definition of Done (project-level)**
-1. What's the universal bar every story must clear before Done, independent of that story's own DoD checklist?
+**Définition de Terminé (niveau projet)**
+1. Quel est le niveau universel que chaque story doit atteindre avant Terminé, indépendamment du propre DoD checklist de cette story ?
 
-**Vocabulary Reference**
-1. Is every term used across specs traceable to a Glossary entry?
+**Référence Vocabulaire**
+1. Chaque terme utilisé dans les specs est-il traçable à une entrée du Glossaire ?
 
-**Tracker bootstrap steps**
-1. What are the one-time setup steps someone starting this fresh needs to do, in order, before the first story can be created?
+**Étapes de bootstrap du suivi**
+1. Quelles sont les étapes de configuration uniques que quelqu'un démarrant ceci depuis zéro doit faire, dans l'ordre, avant que la première story puisse être créée ?
 
 ---
 
-### 10. `CLAUDE.md` — what does every session need before touching anything?
+### 10. `CLAUDE.md` — que doit savoir chaque session avant de toucher quoi que ce soit ?
 
-All Generic — this is what `08`'s own "CLAUDE.md is built last" section already teaches; these questions are how to actually populate it.
+Tout Générique — c'est ce que la propre section « CLAUDE.md est construit en dernier » du fichier `01` enseigne déjà ; ces questions sont la façon de le remplir réellement.
 
-**What this project is**
-1. In 2-3 sentences, what is this and who is it for?
-2. What's the one architectural fact a fresh session absolutely must know before touching any file?
+**Ce qu'est ce projet**
+1. En 2-3 phrases, qu'est-ce que c'est et pour qui est-ce ?
+2. Quel est le fait architectural unique qu'une session fraîche doit absolument savoir avant de toucher un fichier ?
 
-**Folder map**
-1. What are the top-level folders, and what's the one-line reason each exists?
-2. Is there a naming convention that needs stating explicitly so it's never guessed at?
+**Carte des dossiers**
+1. Quels sont les dossiers de premier niveau, et quelle est la raison en une ligne pour laquelle chacun existe ?
+2. Y a-t-il une convention de nommage qui doit être énoncée explicitement pour ne jamais être devinée ?
 
-**Tech stack**
-1. What's the stack per major part of the system?
-2. Where's the canonical detail already documented, so this section stays a pointer instead of a restatement?
+**Stack technique**
+1. Quelle est la stack par partie majeure du système ?
+2. Où les détails canoniques sont-ils déjà documentés, pour que cette section reste un pointeur plutôt qu'une reformulation ?
 
 **Conventions**
-1. What's a mistake that's already happened once, that this section exists specifically to prevent?
-2. What naming or formatting rule would a new contributor get wrong without being told directly? For each language/layer actually in use: what's the casing rule for files, classes/components, variables/functions, booleans, and constants — stated explicitly, not left to be inferred from the first file that happened to set a precedent? (See `AGENTS.md`'s own "Naming conventions" section in this kit for the shape this should take.)
-3. Is there a service/module folder naming convention (once the project has more than one independently-run piece), and is it stated here rather than left implicit?
+1. Quelle est une erreur qui s'est déjà produite une fois, que cette section existe spécifiquement pour prévenir ?
+2. Quelle règle de nommage ou de formatage un nouveau contributeur se tromperait sans qu'on le lui dise directement ? Pour chaque langage/couche réellement utilisé : quelle est la règle de casse pour les fichiers, classes/composants, variables/fonctions, booléens et constantes — énoncer explicitement, ne pas laisser à inférer du premier fichier qui a accidentellement établi un précédent ? (Voir la propre section « Conventions de nommage » d'`AGENTS.md` dans ce kit pour la forme que cela devrait prendre.)
+3. Y a-t-il une convention de nommage des dossiers de service/module (une fois que le projet a plus d'une pièce exécutée indépendamment), et est-elle énoncée ici plutôt que laissée implicite ?
 
-**Confidentiality constraints**
-1. What must never be revealed, said, or invented, and what should happen instead when someone asks anyway?
-2. Is there anything cleared for use that used to be restricted — is the table actually current?
+**Contraintes de confidentialité**
+1. Qu'est-ce qui ne doit jamais être révélé, dit ou inventé, et que doit-il se passer à la place quand quelqu'un le demande quand même ?
+2. Y a-t-il quelque chose autorisé à l'utilisation qui était auparavant restreint — le tableau est-il réellement à jour ?
 
-**First-session checklist**
-1. What's the fastest path to being useful for someone who already knows this project, versus someone starting fresh?
-2. In what order should the core documents be read?
+**Checklist de première session**
+1. Quel est le chemin le plus rapide pour être utile à quelqu'un qui connaît déjà ce projet, par rapport à quelqu'un qui commence ?
+2. Dans quel ordre les documents principaux doivent-ils être lus ?
 
-**Pointers**
-1. For the handful of things that come up constantly mid-session, which single document is canonical for each?
+**Pointeurs**
+1. Pour la poignée de choses qui reviennent constamment en milieu de session, quel document unique est canonique pour chacune ?
 
-## Common mistakes table
+## Tableau des erreurs courantes
 
-| Mistake | Why it happens | The fix |
+| Erreur | Pourquoi ça arrive | La correction |
 |---|---|---|
-| Copying a document's exact section headings into a new project instead of the underlying pattern | The heading already exists, feels safe to reuse verbatim | Ask "generic, generalize, or conditional?" for every heading before reusing it — see the PRD entry above for what that looks like done properly |
-| Forcing a fixed section list onto a document type that's meant to be incremental (functional/technical specs) | Consistency feels like it should apply everywhere | Some documents are deliberately shaped by what's real yet, not by a template — writing sections before a story closes is speculation, not documentation |
-| Answering these reflection questions generically instead of with the actual project's specifics | Faster to write something plausible-sounding than to think it through | The questions are the scaffold, not the content — an answer that would fit any project didn't actually answer the question |
-| Treating a Conditional section as mandatory because it's in the list | The list looks complete, so skipping something in it feels like an omission | "Skip if not applicable" is itself the correct answer for a Conditional section on a project where it doesn't apply — don't force content into it |
+| Copier les en-têtes de section exacts d'un document dans un nouveau projet au lieu du pattern sous-jacent | L'en-tête existe déjà, semble sûr à réutiliser verbatim | Demandez « générique, généraliser ou conditionnel ? » pour chaque en-tête avant de le réutiliser — voir l'entrée PRD ci-dessus pour ce que ça donne fait correctement |
+| Imposer une liste de sections fixe sur un type de document qui est censé être incrémental (specs fonctionnelles/techniques) | La cohérence semble devoir s'appliquer partout | Certains documents sont délibérément façonnés par ce qui est réel encore, pas par un modèle — écrire des sections avant qu'une story se close est de la spéculation, pas de la documentation |
+| Répondre à ces questions de réflexion de façon générique au lieu des spécificités réelles du projet | Plus rapide d'écrire quelque chose de plausible que d'y réfléchir vraiment | Les questions sont l'échafaudage, pas le contenu — une réponse qui conviendrait à n'importe quel projet n'a pas réellement répondu à la question |
+| Traiter une section Conditionnelle comme obligatoire parce qu'elle est dans la liste | La liste semble complète, donc omettre quelque chose qu'elle contient semble une omission | « Passer si non applicable » est lui-même la bonne réponse pour une section Conditionnelle sur un projet où elle ne s'applique pas — ne forcez pas de contenu dedans |
