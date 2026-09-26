@@ -1,0 +1,52 @@
+{
+  "filiere": "Architecture",
+  "duree_annees": 3,
+  "niveaux": {
+    "AR1": [
+      { "item": 1, "titre": "Analyse Numérique", "heures": 30, "code": "AN0326" },
+      { "item": 2, "titre": "Topographie", "heures": 90, "code": "TO0335" },
+      { "item": 3, "titre": "Histoire de l'Architecture", "heures": 60, "code": "HA0335" },
+      { "item": 4, "titre": "Compléments de Mathématiques 1 (Analyse)", "heures": 60, "code": "CM1336" },
+      { "item": 5, "titre": "Compléments de Mathématiques 2 (Algèbre)", "heures": 60, "code": "CM2336" },
+      { "item": 6, "titre": "Dessin du Bâtiment", "heures": 90, "code": "DB0335" },
+      { "item": 7, "titre": "Mécanique des Fluides", "heures": 30, "code": "MF0311" },
+      { "item": 8, "titre": "Mécanique des Matériaux", "heures": 30, "code": "MM0311" },
+      { "item": 9, "titre": "Mécanique du Solide", "heures": 60, "code": "MS0337" },
+      { "item": 10, "titre": "Dessin à main Levée", "heures": 30, "code": "DL0311" },
+      { "item": 11, "titre": "Probabilités", "heures": 30, "code": "EP0316" },
+      { "item": 12, "titre": "Statistiques", "heures": 30, "code": "ES0326" },
+      { "item": 13, "titre": "Structures de Données et Algorithmes", "heures": 60, "code": "SD0336" },
+      { "item": 14, "titre": "Logements Sociaux et Habitat marginal", "heures": 60, "code": "LS0326" },
+      { "item": 15, "titre": "Projet d'Architecture 1, 2, 3", "heures": 150, "code": "PA0301" },
+      { "item": 16, "titre": "Méthodologie en Architecture", "heures": 100, "code": "MA0301" }
+    ],
+    "AR2": [
+      { "item": 1, "titre": "Espace Haïtien", "heures": 30, "code": "EH0415" },
+      { "item": 2, "titre": "Topographie", "heures": 90, "code": "TO0435" },
+      { "item": 3, "titre": "Théorie de l'Architecture", "heures": 60, "code": "TA0435" },
+      { "item": 4, "atelier": "Atelier d'Urbanisme", "heures": 60, "code": "AU0435" },
+      { "item": 5, "titre": "L'Architecture du XIX siècle", "heures": 60, "code": "AX0415" },
+      { "item": 6, "titre": "Dessin du Bâtiment", "heures": 90, "code": "DB0435" },
+      { "item": 7, "titre": "Le Mouvement Moderne", "heures": 30, "code": "MM0415" },
+      { "item": 8, "titre": "L'Architecture du XXème siècle", "heures": 30, "code": "AX0422" },
+      { "item": 9, "titre": "Calcul des Structures", "heures": 60, "code": "CS0415" },
+      { "item": 10, "titre": "Béton Armé", "heures": 30, "code": "BA0411" },
+      { "item": 11, "titre": "Matériaux de Construction", "heures": 30, "code": "MC0411" },
+      { "item": 12, "titre": "Constructions Civiles", "heures": 30, "code": "CC0415" },
+      { "item": 13, "titre": "Structures Métalliques", "heures": 60, "code": "SM0435" }
+    ],
+    "AR3": [
+      { "item": 1, "titre": "Gestion de l'environnement", "heures": 30, "code": "GE0326" },
+      { "item": 2, "titre": "Critique de L'Architecture", "heures": 90, "code": "MM0335" },
+      { "item": 3, "titre": "Projet d'Architecture 1, 2, 3", "heures": 60, "code": "R0335" },
+      { "item": 4, "titre": "Equipements Sportifs", "heures": 60, "code": "F1336" },
+      { "item": 5, "titre": "Logements Sociaux et Habitat Marginal", "heures": 60, "code": "D2336" },
+      { "item": 6, "titre": "Urbanisme", "heures": 90, "code": "OA0335" },
+      { "item": 7, "titre": "Béton Armé", "heures": 30, "code": "BA0311" },
+      { "item": 8, "titre": "Mécanique des Structures", "heures": 30, "code": "T0311" },
+      { "item": 9, "titre": "Adduction d'eau", "heures": 60, "code": "AE0337" },
+      { "item": 10, "titre": "Organisation de Chantier", "heures": 30, "code": "OC0327" },
+      { "item": 11, "titre": "Techniques de Gestion", "heures": 30, "code": "TG0327" }
+    ]
+  }
+}

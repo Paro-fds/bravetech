@@ -69,7 +69,7 @@ deviations from plan, decisions made along the way.]
 
 ## 3. GitHub Projects context
 
-If a GitHub Project (v2, board) is in use: **"[Tracker Project Name]"**, project number `[TRACKER_PROJECT_NUMBER]`, owner `Paro-fds` — `https://github.com/users/Paro-fds/projects/[TRACKER_PROJECT_NUMBER]`. Its `Status` single-select field typically has options like Backlog, To Do, In Progress, Review, Done. Every issue created via this skill's Create procedure (§ below) must be added to this project. Never set or change the `Status` field, and never move an issue between any board state — the project owner does that manually. This skill only ever creates issues, adds them to the project (leaving `Status` at whatever default the project applies), and edits the body/title; it does not touch board position or close issues except during an explicit delete (§ Delete below).
+If a GitHub Project (v2, board) is in use: **"Bavetech_Project"**, project number `2`, owner `Paro-fds` — `https://github.com/users/Paro-fds/projects/2`. Its `Status` single-select field typically has options like Backlog, To Do, In Progress, Review, Done. Every issue created via this skill's Create procedure (§ below) must be added to this project. Never set or change the `Status` field, and never move an issue between any board state — the project owner does that manually. This skill only ever creates issues, adds them to the project (leaving `Status` at whatever default the project applies), and edits the body/title; it does not touch board position or close issues except during an explicit delete (§ Delete below).
 
 ## 4. Definition of Done
 
@@ -92,7 +92,7 @@ Every term used in a story must resolve to a definition in `GLOSSARY.md` (Actors
    gh issue create --repo Paro-fds/bravetech --title "US-NNN: [Short title]" --body-file <tmp-file> --milestone "<exact milestone title>"
    ```
    Capture the returned issue URL/number.
-6. **Add the issue to the tracker project** (§3, if in use): `gh project item-add [TRACKER_PROJECT_NUMBER] --owner Paro-fds --url "<issue-url>"`. Do not set or touch the `Status` field — the project owner manages board position manually.
+6. **Add the issue to the tracker project** (§3, if in use): `gh project item-add 2 --owner Paro-fds --url "<issue-url>"`. Do not set or touch the `Status` field — the project owner manages board position manually.
 7. **Fill in the GitHub Issue line** in the spec file with the real link.
 8. **Add a row to `project-docs/execution/EPIC_EXECUTION.md`** in the matching Epic's table, status `🔲 Backlog`, linking to the new spec file.
 9. **Report** the new story number, spec file path, and issue URL, and confirm the issue was added to the project. Do not move or set the project's `Status` field for the new item.

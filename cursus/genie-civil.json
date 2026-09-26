@@ -1,0 +1,34 @@
+{
+  "filiere": "Génie Civil",
+  "duree_annees": 3,
+  "niveaux": {
+    "GC1": [
+      { "item": 1, "titre": "Analyse Numérique", "heures": 30, "code": "AN0326" },
+      { "item": 2, "titre": "Topographie", "heures": 90, "code": "CE0335" },
+      { "item": 3, "titre": "Compléments de Mathématiques 1 (Analyse)", "heures": 60, "code": "CM1336" },
+      { "item": 4, "titre": "Compléments de Mathématiques 2 (Algèbre)", "heures": 60, "code": "CM2336" },
+      { "item": 5, "titre": "Mécanique des Fluides", "heures": 30, "code": "MF0311" },
+      { "item": 6, "titre": "Mécanique des Matériaux", "heures": 30, "code": "MM0311" },
+      { "item": 7, "titre": "Mécanique du Solide", "heures": 60, "code": "MS0337" },
+      { "item": 8, "titre": "Métallurgie", "heures": 30, "code": "EM0327" },
+      { "item": 9, "titre": "Probabilités", "heures": 30, "code": "EP0316" },
+      { "item": 10, "titre": "Statistiques", "heures": 30, "code": "ES0326" },
+      { "item": 11, "titre": "Structures de Données et Algorithmes", "heures": 60, "code": "SD0336" },
+      { "item": 12, "titre": "Vibration", "heures": 30, "code": "EV0325" }
+    ],
+    "GC2": [
+      { "item": 1, "titre": "Mécanique des Sols", "heures": 30, "code": "MS0432" },
+      { "item": 2, "titre": "Béton Armé", "heures": 90, "code": "BA0411" },
+      { "item": 3, "titre": "Calcul des Structures", "heures": 60, "code": "CS0415" },
+      { "item": 4, "titre": "Hydraulique Générale", "heures": 60, "code": "HG0437" },
+      { "item": 5, "titre": "Hydrologie", "heures": 60, "code": "HY0437" },
+      { "item": 6, "titre": "Routes", "heures": 90, "code": "RO0432" },
+      { "item": 7, "titre": "Base de Données", "heures": 30, "code": "BD0426" },
+      { "item": 8, "titre": "Structures Métalliques", "heures": 30, "code": "SM0435" },
+      { "item": 9, "titre": "Transport", "heures": 60, "code": "TR0432" },
+      { "item": 10, "titre": "TP Mécanique des Sols", "heures": 30, "code": "TP0432" },
+      { "item": 11, "titre": "Dessin", "heures": 30, "code": "DE0415" },
+      { "item": 12, "titre": "Matériaux Routier", "heures": 30, "code": "MR0411" }
+    ]
+  }
+}

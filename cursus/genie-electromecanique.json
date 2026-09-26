@@ -1,0 +1,53 @@
+{
+  "filiere": "Génie Électromécanique",
+  "duree_annees": 3,
+  "niveaux": {
+    "EM1": [
+      { "item": 1, "titre": "Analyse Numérique", "heures": 30, "code": "AN0326" },
+      { "item": 2, "titre": "Circuits Electriques", "heures": 90, "code": "CE0335" },
+      { "item": 3, "titre": "Circuits Logiques", "heures": 60, "code": "CL0335" },
+      { "item": 4, "titre": "Compléments de Mathématiques 1 (Analyse)", "heures": 60, "code": "CM1336" },
+      { "item": 5, "titre": "Compléments de Mathématiques 2 (Algèbre)", "heures": 60, "code": "CM2336" },
+      { "item": 6, "titre": "Electronique Analogique", "heures": 90, "code": "EA0335" },
+      { "item": 7, "titre": "Mécanique des Fluides", "heures": 30, "code": "MF0311" },
+      { "item": 8, "titre": "Mécanique des Matériaux", "heures": 30, "code": "MM0311" },
+      { "item": 9, "titre": "Mécanique du Solide", "heures": 60, "code": "MS0337" },
+      { "item": 10, "titre": "Métallurgie", "heures": 30, "code": "EM0327" },
+      { "item": 11, "titre": "Probabilités", "heures": 30, "code": "EP0316" },
+      { "item": 12, "titre": "Statistiques", "heures": 30, "code": "ES0326" },
+      { "item": 13, "titre": "Structures de Données et Algorithmes", "heures": 60, "code": "SD0336" },
+      { "item": 14, "titre": "Travaux Pratique d'Electronique Analogique", "heures": 60, "code": "TP1335" },
+      { "item": 15, "titre": "Vibration", "heures": 30, "code": "EV0325" }
+    ],
+    "EM2": [
+      { "item": 1, "titre": "Asservissement", "heures": 60, "code": "AL0435" },
+      { "item": 2, "titre": "Base de données", "heures": 30, "code": "BD0426" },
+      { "item": 3, "titre": "C#", "heures": 60, "code": "EC0436" },
+      { "item": 4, "titre": "Electrotechnique 1", "heures": 30, "code": "EQ1415" },
+      { "item": 5, "titre": "Electronique de Puissance", "heures": 60, "code": "EP0435" },
+      { "item": 6, "titre": "Electrification", "heures": 30, "code": "ET1421" },
+      { "item": 7, "titre": "Éléments de Machine", "heures": 30, "code": "EM1421" },
+      { "item": 8, "titre": "Economie", "heures": 60, "code": "EE0436" },
+      { "item": 9, "titre": "Hydraulique Générale", "heures": 60, "code": "HG1437" },
+      { "item": 10, "titre": "Installation Electrique", "heures": 60, "code": "IE0435" },
+      { "item": 11, "titre": "Réseaux Electriques 1", "heures": 30, "code": "RE1421" },
+      { "item": 12, "titre": "TP Electronique de Puissance", "heures": 60, "code": "TP1432" },
+      { "item": 13, "titre": "Machine Electrique", "heures": 30, "code": "ME1421" },
+      { "item": 14, "titre": "Mécanique Appliquée", "heures": 60, "code": "MA1421" }
+    ],
+    "EM3": [
+      { "item": 1, "titre": "Asservissement", "heures": 60, "code": "AL0435" },
+      { "item": 2, "titre": "Mécanique des Matériaux et des structures", "heures": 30, "code": "MM436" },
+      { "item": 3, "titre": "Mécanique des Fluides", "heures": 60, "code": "EC0436" },
+      { "item": 4, "titre": "Electrotechnique 2", "heures": 30, "code": "EQ1415" },
+      { "item": 5, "titre": "Electronique de Puissance", "heures": 60, "code": "EP0435" },
+      { "item": 6, "titre": "Electrification II", "heures": 30, "code": "ET1421" },
+      { "item": 7, "titre": "Éléments de Machine", "heures": 30, "code": "EM1421" },
+      { "item": 8, "titre": "Climatisation", "heures": 60, "code": "EE0436" },
+      { "item": 9, "titre": "Recherche Opérationnelle", "heures": 60, "code": "RO1437" },
+      { "item": 10, "titre": "Installation Electrique", "heures": 60, "code": "IE0435" },
+      { "item": 11, "titre": "Réseaux Electriques 2", "heures": 30, "code": "RE1421" },
+      { "item": 12, "titre": "Eléments Finis", "heures": 60, "code": "TP1432" }
+    ]
+  }
+}

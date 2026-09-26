@@ -1,6 +1,7 @@
-# conftest.py — configuration globale pytest pour FDS Portail
-#
-# Ce fichier est chargé automatiquement par pytest avant l'exécution des tests.
-# Ajoutez ici les fixtures partagées entre les tests unitaires et d'intégration.
-#
-# Référence : project-docs/_ARCHITECTURE_EXPLAINED.md, Partie 1
+import sys
+from pathlib import Path
+
+# Ajouter la racine du projet au sys.path afin que les imports `backend.*` soient résolus
+ROOT_DIR = Path(__file__).resolve().parents[1]
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))

@@ -1,0 +1,32 @@
+{
+  "filiere": "Le premier cycle des études générales et techniques (MPC)",
+  "duree_annees": 2,
+  "niveaux": {
+    "MPC1": [
+      { "item": 1, "titre": "ANALYSE", "heures_theorie": 120, "heures_tp": 60 },
+      { "item": 2, "titre": "GEOMETRIE", "heures_theorie": 90, "heures_tp": 60 },
+      { "item": 3, "titre": "Algèbre", "heures_theorie": 90, "heures_tp": 60 },
+      { "item": 4, "titre": "Physique Conceptuelle", "heures_theorie": 120, "heures_tp": 60 },
+      { "item": 5, "titre": "Electricité", "heures_theorie": 40, "heures_tp": null },
+      { "item": 6, "titre": "Chimie Général et Organique", "heures_theorie": 90, "heures_tp": 60 },
+      { "item": 7, "titre": "Dessin technique", "heures_theorie": 60, "heures_tp": null },
+      { "item": 8, "titre": "Technique d'expression", "heures_theorie": 60, "heures_tp": null },
+      { "item": 9, "titre": "Mécanique du point/Thermodynamique", "heures_theorie": 50, "heures_tp": 20 },
+      { "item": 10, "titre": "Travaux pratiques de physique", "heures_theorie": null, "heures_tp": 40 }
+    ],
+    "MPC2": [
+      { "item": 1, "titre": "Analyse", "heures_theorie": 135, "heures_tp": 60 },
+      { "item": 2, "titre": "Algèbre Linéaire", "heures_theorie": 90, "heures_tp": 60 },
+      { "item": 3, "titre": "Informatique", "heures_theorie": 90, "heures_tp": null },
+      { "item": 4, "titre": "Mécanique", "heures_theorie": 80, "heures_tp": 60 },
+      { "item": 5, "titre": "Electromagnétisme", "heures_theorie": 90, "heures_tp": 60 },
+      { "item": 6, "titre": "Chimie", "heures_theorie": 90, "heures_tp": 60 },
+      { "item": 7, "titre": "Thermodynamique", "heures_theorie": 30, "heures_tp": 20 },
+      { "item": 8, "titre": "Travaux pratiques de chimie", "heures_theorie": null, "heures_tp": 30 },
+      { "item": 9, "titre": "Géologie", "heures_theorie": null, "heures_tp": null },
+      { "item": 10, "titre": "Dessin Technique", "heures_theorie": 40, "heures_tp": null },
+      { "item": 11, "titre": "Anglais", "heures_theorie": 45, "heures_tp": null },
+      { "item": 12, "titre": "Techniques d'expression", "heures_theorie": 40, "heures_tp": null }
+    ]
+  }
+}

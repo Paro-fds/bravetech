@@ -1,0 +1,54 @@
+{
+  "filiere": "Génie Électronique",
+  "duree_annees": 3,
+  "niveaux": {
+    "EN1": [
+      { "item": 1, "titre": "Analyse Numérique", "heures": 30, "code": "AN0326" },
+      { "item": 2, "titre": "Circuits Electriques", "heures": 90, "code": "CE0335" },
+      { "item": 3, "titre": "Circuits Logiques", "heures": 60, "code": "CL0335" },
+      { "item": 4, "titre": "Compléments de Mathématiques 1 (Analyse)", "heures": 60, "code": "CM1336" },
+      { "item": 5, "titre": "Compléments de Mathématiques 2 (Algèbre)", "heures": 60, "code": "CM2336" },
+      { "item": 6, "titre": "Electronique Analogique", "heures": 90, "code": "EA0335" },
+      { "item": 7, "titre": "Eléments de Matériaux", "heures": 30, "code": "EM0311" },
+      { "item": 8, "titre": "Probabilités", "heures": 30, "code": "EP0316" },
+      { "item": 9, "titie": "Statistiques", "heures": 30, "code": "ES0326" },
+      { "item": 10, "titre": "Structures de Données et Algorithmes", "heures": 60, "code": "SD0336" },
+      { "item": 11, "titre": "Travaux Pratique d'Electronique Analogique", "heures": 60, "code": "TP1335" },
+      { "item": 12, "titre": "Vibration", "heures": 30, "code": "EV0325" }
+    ],
+    "EN2": [
+      { "item": 1, "titre": "Asservissement", "heures": 60, "code": "AL1435" },
+      { "item": 2, "titre": "Base de données", "heures": 30, "code": "BD0437" },
+      { "item": 3, "titre": "C#", "heures": 60, "code": "CS0437" },
+      { "item": 4, "titre": "Electronique Analogique", "heures": 90, "code": "EA2432" },
+      { "item": 5, "titre": "Electronique de Puissance", "heures": 60, "code": "EP0435" },
+      { "item": 6, "titre": "Electronique Non Linéaire", "heures": 30, "code": "EN0432" },
+      { "item": 7, "titre": "Electrotechnique", "heures": 30, "code": "EQ1435" },
+      { "item": 8, "titre": "Micro Economie", "heures": 60, "code": "ME1437" },
+      { "item": 9, "titre": "Installation Electrique", "heures": 60, "code": "IE0435" },
+      { "item": 10, "titre": "Ligne de Transmission", "heures": 30, "code": "LT0415" },
+      { "item": 11, "titre": "Initiation aux Microprocesseurs", "heures": 30, "code": "IM0422" },
+      { "item": 12, "titre": "Théorie de l'Information", "heures": 30, "code": "TI0422" },
+      { "item": 13, "titre": "Initiation à la Télécommunication", "heures": 30, "code": "IT1422" },
+      { "item": 14, "titre": "Elément de Télévision", "heures": 30, "code": "ET1422" },
+      { "item": 15, "titre": "TP électronique Analogique", "heures": 60, "code": "TP2432" },
+      { "item": 16, "titre": "TP Electronique de Puissance", "heures": 60, "code": "TP1435" },
+      { "item": 17, "titre": "Théorie du Signal", "heures": 30, "code": "TS0415" },
+      { "item": 18, "titre": "Élément d'Antenne", "heures": 30, "code": "EA0422" }
+    ],
+    "EN3": [
+      { "item": 1, "titre": "Asservissement", "heures": 60, "code": "AL0435" },
+      { "item": 2, "titre": "Initiation à la TV", "heures": 30, "code": "TV2532" },
+      { "item": 3, "titre": "Recherche Opérationnelle", "heures": 60, "code": "RO0436" },
+      { "item": 4, "titre": "Système d' exploitation", "heures": 30, "code": "SE1415" },
+      { "item": 5, "titre": "Réseaux Informatique", "heures": 60, "code": "RI0435" },
+      { "item": 6, "titre": "Génie Logicielle", "heures": 30, "code": "GL1421" },
+      { "item": 7, "titre": "Micro Système", "heures": 30, "code": "MS1421" },
+      { "item": 8, "titre": "Méthodologie", "heures": 60, "code": "EM0436" },
+      { "item": 9, "titre": "Technique de Gestion", "heures": 60, "code": "TG1437" },
+      { "item": 10, "titre": "Telecom II", "heures": 60, "code": "TE0435" },
+      { "item": 11, "titre": "Assembleur", "heures": 30, "code": "EA1421" },
+      { "item": 12, "titre": "Cisco", "heures": 60, "code": "IC1432" }
+    ]
+  }
+}

@@ -2,3 +2,7 @@
 
 Règle absolue : aucune dépendance vers dal, bll, api, ni vers des frameworks externes (FastAPI, SQLAlchemy).
 """
+
+from backend.entities.cursus import Cursus, Matiere
+
+__all__ = ["Cursus", "Matiere"]
