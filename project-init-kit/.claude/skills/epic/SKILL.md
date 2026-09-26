@@ -7,7 +7,7 @@ updated: 2026-09-16T19:53:40Z
 
 # Epic Skill
 
-> **Setup, once, before first use:** replace `[OWNER]/[REPO]` below with your actual GitHub `owner/repo`. If you're not using GitHub Milestones, adapt the Create/Close procedures' GitHub steps to whatever tracker `project-docs/PROJECT_WORKFLOW.md` § Work Tracking names instead.
+> **Setup, once, before first use:** replace `Paro-fds/bravetech` below with your actual GitHub `owner/repo`. If you're not using GitHub Milestones, adapt the Create/Close procedures' GitHub steps to whatever tracker `project-docs/PROJECT_WORKFLOW.md` § Work Tracking names instead.
 
 ## 1. Overview
 
@@ -107,7 +107,7 @@ an incomplete close a year later.]
 3. **Create the folder**: `project-docs/execution/epic-NNN-slug/` (slug matches the Epic name, kebab-case).
 4. **Add the Epic Overview row and detail section to `PLAN.md`** (§2 above), status `⏳ Not started` or `🟡 In progress` if stories are being drafted immediately after.
 5. **Add the Epic section to `project-docs/execution/EPIC_EXECUTION.md`** (§3 above), with an empty story table (or populated, if Refine already ran and stories exist).
-6. **Create the GitHub Milestone**: `gh api repos/[OWNER]/[REPO]/milestones -f title="Epic N — Name"`. Confirm the exact title matches what's in `PLAN.md`/`EPIC_EXECUTION.md` verbatim — the `user-story` skill's Create procedure matches on this exact string.
+6. **Create the GitHub Milestone**: `gh api repos/Paro-fds/bravetech/milestones -f title="Epic N — Name"`. Confirm the exact title matches what's in `PLAN.md`/`EPIC_EXECUTION.md` verbatim — the `user-story` skill's Create procedure matches on this exact string.
 7. **Report** the new Epic number, folder, Milestone, and Workstream, and whether Refine (stories not yet drafted) or `user-story` Create (stories ready) should run next.
 
 ## Procedure: Refine an Epic
@@ -143,7 +143,7 @@ Epic Close Progress:
 
 **Step 1 — Confirm every story is actually Done.** Every row in this Epic's `EPIC_EXECUTION.md` table should be `✅ Done`. If any aren't, and the project owner still wants to close (e.g. splitting a straggler to Unscheduled), confirm explicitly which stories are being split out and why before proceeding.
 
-**Step 2 — Reconcile GitHub issue/Milestone state.** `gh api repos/[OWNER]/[REPO]/milestones/<N>` and check `open_issues == 0`. A story marked Done in the spec but whose issue is still open (can happen with PR-based merges that don't auto-close) needs reconciling: `gh issue close <N> --comment "..."` explaining the bookkeeping gap.
+**Step 2 — Reconcile GitHub issue/Milestone state.** `gh api repos/Paro-fds/bravetech/milestones/<N>` and check `open_issues == 0`. A story marked Done in the spec but whose issue is still open (can happen with PR-based merges that don't auto-close) needs reconciling: `gh issue close <N> --comment "..."` explaining the bookkeeping gap.
 
 **Step 3 — Write the closeout doc** (§4 above) at `project-docs/execution/epic-NNN-slug/epic-NNN-closeout.md`.
 
@@ -166,6 +166,6 @@ The reason is that **an existing spec is read as the account of its whole area, 
 
 **Step 6 — Update `EPIC_EXECUTION.md` and `PLAN.md`.** Status line → `✅ Done — closed YYYY-MM-DD`, with a pointer to the closeout doc. `PLAN.md`'s Epic Overview row and detail section get the same treatment (detail section becomes a closed pointer).
 
-**Step 7 — Close the GitHub Milestone**: `gh api -X PATCH repos/[OWNER]/[REPO]/milestones/<N> -f state=closed`, only once Step 2 confirms `open_issues == 0`.
+**Step 7 — Close the GitHub Milestone**: `gh api -X PATCH repos/Paro-fds/bravetech/milestones/<N> -f state=closed`, only once Step 2 confirms `open_issues == 0`.
 
 **Step 8 — Report.** Confirm every step above, explicitly call out whether Step 5 found anything in PRD.md/SOLUTION_DESIGN.md needing a follow-up edit (even if the answer is "checked, nothing stale"), **list every rule moved out of `epic-NNN-refinement.md` and the document each one landed in** — or say the file held none — and name the next Epic per `PLAN.md`'s Epic Overview. Don't start it; that's a separate, explicit instruction.

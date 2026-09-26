@@ -23,7 +23,7 @@ updated: 2026-09-26T13:09:00Z
 |---|---|---|---|
 | US-001 | Consulter la liste des cursus depuis l'accueil | 🔲 Backlog | [US-001.md](epic-001-socle/US-001.md) |
 | US-002 | Voir la fiche détaillée d'un cursus | 🔲 Backlog | [US-002.md](epic-001-socle/US-002.md) |
-| US-003 | Tests d'architecture en CI avant tout merge | 🔲 Backlog | [US-003.md](epic-001-socle/US-003.md) |
+| US-003 | Tests d'architecture en CI avant tout merge | 🟡 In progress | [US-003.md](epic-001-socle/US-003.md) |
 | US-004 | Déploiement en environnement accessible | 🔲 Backlog | [US-004.md](epic-001-socle/US-004.md) |
 
 ---

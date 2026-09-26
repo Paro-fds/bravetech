@@ -7,7 +7,7 @@ updated: 2026-09-16T19:53:40Z
 
 # User Story Skill
 
-> **Setup, once, before first use:** replace `[OWNER]/[REPO]` below with your actual GitHub `owner/repo`, and `[TRACKER_PROJECT_NUMBER]`/`[Tracker Project Name]` with your GitHub Project (v2) board's number and name, if you're using one. If you're not using GitHub Issues/Projects at all, adapt §3 and the Create/Update/Delete procedures to whatever tracker `project-docs/PROJECT_WORKFLOW.md` § Work Tracking names instead.
+> **Setup, once, before first use:** replace `Paro-fds/bravetech` below with your actual GitHub `owner/repo`, and `[TRACKER_PROJECT_NUMBER]`/`[Tracker Project Name]` with your GitHub Project (v2) board's number and name, if you're using one. If you're not using GitHub Issues/Projects at all, adapt §3 and the Create/Update/Delete procedures to whatever tracker `project-docs/PROJECT_WORKFLOW.md` § Work Tracking names instead.
 
 ## 1. Overview
 
@@ -24,7 +24,7 @@ Vocabulary used below (Workstream, Epic, Milestone) is defined in `GLOSSARY.md` 
 
 **Status:** 🔲 Backlog / ✅ Done / etc.
 **Milestone:** [exact GitHub Milestone title, e.g. "Epic 1 — <Name>"]
-**GitHub Issue:** [#N](https://github.com/[OWNER]/[REPO]/issues/N)
+**GitHub Issue:** [#N](https://github.com/Paro-fds/bravetech/issues/N)
 **Depends on:** US-XXX (optional — only if there's a real dependency)
 
 ---
@@ -69,7 +69,7 @@ deviations from plan, decisions made along the way.]
 
 ## 3. GitHub Projects context
 
-If a GitHub Project (v2, board) is in use: **"[Tracker Project Name]"**, project number `[TRACKER_PROJECT_NUMBER]`, owner `[OWNER]` — `https://github.com/users/[OWNER]/projects/[TRACKER_PROJECT_NUMBER]`. Its `Status` single-select field typically has options like Backlog, To Do, In Progress, Review, Done. Every issue created via this skill's Create procedure (§ below) must be added to this project. Never set or change the `Status` field, and never move an issue between any board state — the project owner does that manually. This skill only ever creates issues, adds them to the project (leaving `Status` at whatever default the project applies), and edits the body/title; it does not touch board position or close issues except during an explicit delete (§ Delete below).
+If a GitHub Project (v2, board) is in use: **"[Tracker Project Name]"**, project number `[TRACKER_PROJECT_NUMBER]`, owner `Paro-fds` — `https://github.com/users/Paro-fds/projects/[TRACKER_PROJECT_NUMBER]`. Its `Status` single-select field typically has options like Backlog, To Do, In Progress, Review, Done. Every issue created via this skill's Create procedure (§ below) must be added to this project. Never set or change the `Status` field, and never move an issue between any board state — the project owner does that manually. This skill only ever creates issues, adds them to the project (leaving `Status` at whatever default the project applies), and edits the body/title; it does not touch board position or close issues except during an explicit delete (§ Delete below).
 
 ## 4. Definition of Done
 
@@ -84,15 +84,15 @@ Every term used in a story must resolve to a definition in `GLOSSARY.md` (Actors
 ## Procedure: Create a new user story
 
 1. **Determine the next ID.** Scan `project-docs/execution/**/US-*.md`, take the highest `NNN`, use `NNN+1`. Never reuse or renumber existing stories.
-2. **Determine the Epic folder and Milestone.** Check `PLAN.md`'s Epic Overview for the currently active Epic (only one is ever active — Epics are sequential, never parallel, unless this project's `PLAN.md` explicitly says otherwise). If the story could plausibly serve more than one Epic, ask rather than guessing. Confirm the exact Milestone title against GitHub: `gh api repos/[OWNER]/[REPO]/milestones --jq '.[] | {number, title}'`. If no matching milestone exists yet, stop and ask — don't invent one. Note which Workstream(s) the story primarily touches (from `SOLUTION_DESIGN.md` §2's Workstreams table) — mention it in the story's Context if it's not obvious from the Epic alone.
+2. **Determine the Epic folder and Milestone.** Check `PLAN.md`'s Epic Overview for the currently active Epic (only one is ever active — Epics are sequential, never parallel, unless this project's `PLAN.md` explicitly says otherwise). If the story could plausibly serve more than one Epic, ask rather than guessing. Confirm the exact Milestone title against GitHub: `gh api repos/Paro-fds/bravetech/milestones --jq '.[] | {number, title}'`. If no matching milestone exists yet, stop and ask — don't invent one. Note which Workstream(s) the story primarily touches (from `SOLUTION_DESIGN.md` §2's Workstreams table) — mention it in the story's Context if it's not obvious from the Epic alone.
 3. **Write the spec file** at `project-docs/execution/<epic-folder>/US-NNN.md` using the format in §2. Status starts at `🔲 Backlog`. No `As-built notes` section yet. Leave the GitHub Issue line as a placeholder until step 5 returns a real number.
 4. **Draft the issue body** (title: `US-NNN: [Short title]`; body: story statement + Context + `**Spec:** project-docs/execution/<epic-folder>/US-NNN.md`, per §2's GitHub issue body convention).
 5. **Create the GitHub issue:**
    ```
-   gh issue create --repo [OWNER]/[REPO] --title "US-NNN: [Short title]" --body-file <tmp-file> --milestone "<exact milestone title>"
+   gh issue create --repo Paro-fds/bravetech --title "US-NNN: [Short title]" --body-file <tmp-file> --milestone "<exact milestone title>"
    ```
    Capture the returned issue URL/number.
-6. **Add the issue to the tracker project** (§3, if in use): `gh project item-add [TRACKER_PROJECT_NUMBER] --owner [OWNER] --url "<issue-url>"`. Do not set or touch the `Status` field — the project owner manages board position manually.
+6. **Add the issue to the tracker project** (§3, if in use): `gh project item-add [TRACKER_PROJECT_NUMBER] --owner Paro-fds --url "<issue-url>"`. Do not set or touch the `Status` field — the project owner manages board position manually.
 7. **Fill in the GitHub Issue line** in the spec file with the real link.
 8. **Add a row to `project-docs/execution/EPIC_EXECUTION.md`** in the matching Epic's table, status `🔲 Backlog`, linking to the new spec file.
 9. **Report** the new story number, spec file path, and issue URL, and confirm the issue was added to the project. Do not move or set the project's `Status` field for the new item.
