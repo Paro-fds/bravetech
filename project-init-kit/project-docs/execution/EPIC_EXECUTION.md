@@ -15,16 +15,16 @@ updated: 2026-09-26T13:09:00Z
 ## Epic 1 — Socle & Portail public
 
 **Workstream :** WS-01 Portail public
-**Status :** 🟡 In progress
+**Status :** ✅ Done — closed 2026-09-26, voir [epic-001-closeout.md](epic-001-socle/epic-001-closeout.md)
 
-Établit le socle technique complet (CI/CD, déploiement Railway + Vercel, base de données PostgreSQL provisionnée, tests d'architecture verts) et livre la première page publique réelle avec données en base. Voir `execution/epic-001-socle/epic-001-refinement.md` pour les questions ouvertes et l'ordre de build.
+Socle technique complet établi (Clean Architecture, CI GitHub Actions avec tests d'architecture, déploiement Docker Compose sur VM Linux Proxmox, catalogue officiel des cursus FDS en base de données PostgreSQL). Spécifications consolidées dans `functional-specs/ws-func-01-portail-public.md` et `technical-specs/ws-tech-01-portail-public.md`.
 
 | Story | Titre | Statut | Spec |
 |---|---|---|---|
 | US-001 | Consulter la liste des cursus depuis l'accueil | ✅ Done | [US-001.md](epic-001-socle/US-001.md) |
-| US-002 | Voir la fiche détaillée d'un cursus | 🔲 Backlog | [US-002.md](epic-001-socle/US-002.md) |
+| US-002 | Voir la fiche détaillée d'un cursus | ✅ Done | [US-002.md](epic-001-socle/US-002.md) |
 | US-003 | Tests d'architecture en CI avant tout merge | ✅ Done | [US-003.md](epic-001-socle/US-003.md) |
-| US-004 | Déploiement en environnement accessible | 🔲 Backlog | [US-004.md](epic-001-socle/US-004.md) |
+| US-004 | Déploiement en environnement accessible | ✅ Done | [US-004.md](epic-001-socle/US-004.md) |
 
 ---
 

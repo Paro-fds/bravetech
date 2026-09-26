@@ -17,7 +17,17 @@ export interface MatiereItem {
   heures_tp?: number | null;
 }
 
+export interface DocumentRequisItem {
+  id: string;
+  nom: string;
+  description: string;
+  format_accepte: string;
+  taille_max_mo: number;
+  est_obligatoire: boolean;
+}
+
 export interface CursusDetail extends CursusListItem {
   description_longue: string;
   niveaux: Record<string, MatiereItem[]>;
+  documents_requis: DocumentRequisItem[];
 }

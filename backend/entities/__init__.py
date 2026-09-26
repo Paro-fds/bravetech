@@ -4,5 +4,6 @@ Règle absolue : aucune dépendance vers dal, bll, api, ni vers des frameworks e
 """
 
 from backend.entities.cursus import Cursus, Matiere
+from backend.entities.document_requis import DocumentRequis
 
-__all__ = ["Cursus", "Matiere"]
+__all__ = ["Cursus", "Matiere", "DocumentRequis"]

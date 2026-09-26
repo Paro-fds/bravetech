@@ -1,18 +1,18 @@
 ---
 created: 2026-09-26T13:09:00Z
-updated: 2026-09-26T13:09:00Z
-status: open
+updated: 2026-09-26T15:23:00Z
+status: closed
 ---
 
-# epic-001-refinement.md — Socle & Portail public
+# epic-001-refinement.md — Socle & Portail public (Historique)
 
-> **Ce fichier est la source de vérité des règles en cours pour epic-001.**
-> Toute règle produite pendant cet Epic vit ici jusqu'à la clôture.
-> À la clôture : chaque règle est déplacée dans le document propriétaire, et ce fichier devient l'historique de l'Epic.
+> **Statut : Clos.**  
+> Cet Epic a été finalisé et clos le 2026-09-26. Ce fichier conserve l'historique des arbitrages et réflexions initiales.  
+> Les spécifications consolidées vivent dans [ws-func-01-portail-public.md](../../functional-specs/ws-func-01-portail-public.md) et [ws-tech-01-portail-public.md](../../technical-specs/ws-tech-01-portail-public.md). Le bilan de clôture vit dans [epic-001-closeout.md](epic-001-closeout.md).
 
 ---
 
-## Scope
+## Scope initial
 
 epic-001 livre le socle technique complet + la première page publique réelle (liste et fiche des cursus). La définition de fini de cet Epic : `GET /api/v1/cursus` retourne des données réelles, le frontend affiche au moins deux fiches cursus, `test_architecture.py` passe, et le pipeline CI/CD est vert.
 
@@ -24,61 +24,32 @@ epic-001 livre le socle technique complet + la première page publique réelle (
 
 | ID | Constat | Statut |
 |---|---|---|
-| E1-1 | La structure `tests/unit/test_architecture.py` est déjà créée et fonctionnelle — à inclure dans la CI dès le scaffold | ✅ Confirmé |
-| E1-2 | Le skill `scaffold-backend-service` est disponible dans `.claude/skills/` — à utiliser pour générer la structure Clean Arch | ✅ À utiliser |
-| E1-3 | Le skill `scaffold-frontend-app` est disponible — à utiliser pour générer la structure FSD | ✅ À utiliser |
-| E1-4 | Les données de cursus doivent être réelles (en base), pas hardcodées | ✅ Confirmé — table `documents_requis` et données initiales via seed |
+| E1-1 | La structure `tests/unit/test_architecture.py` est déjà créée et fonctionnelle — à inclure dans la CI dès le scaffold | ✅ Réalisé et vérifié en CI GitHub Actions |
+| E1-2 | Le skill `scaffold-backend-service` est disponible dans `.claude/skills/` — à utiliser pour générer la structure Clean Arch | ✅ Réalisé (couches entities, ports, bll, dal, api/v1) |
+| E1-3 | Le skill `scaffold-frontend-app` est disponible — à utiliser pour générer la structure FSD | ✅ Réalisé (React 19 + TypeScript + Vite + Tailwind 4) |
+| E1-4 | Les données de cursus doivent être réelles (en base), pas hardcodées | ✅ Réalisé via `cursus_loader.py` lisant les 5 JSON officiels de `cursus/` |
 
 ---
 
-## Questions ouvertes
+## Questions ouvertes & Résolutions finales
 
-| # | Question | Recommandation | Résolu ? |
-|---|---|---|---|
-| Q1 | Git repository déjà créé sur GitHub ? | — | ✅ Oui — repo existant |
-| Q2 | Plan Railway choisi (Starter / Pro) ? | Starter suffit pour le MVP | ⏳ Reporté — déploiement hors scope immédiat |
-| Q3 | Seed des données cursus : fichier SQL ou script Python ? | Script Python (`seed_db.py`) aligné sur la stack SQLAlchemy | ⏳ À confirmer au moment de US-001 |
-| Q4 | Domaine custom sur Vercel ou `*.vercel.app` suffit pour le MVP ? | `*.vercel.app` suffit — domaine custom avant lancement public | ⏳ Reporté — déploiement hors scope immédiat |
-
----
-
-## Stories — ordre de build
-
-Le déploiement Railway + Vercel (US-004) est **reporté** — on livre d'abord le contenu en local avec CI locale. US-004 sera repris avant la fin de l'Epic pour valider le déploiement.
-
-| Ordre | Story | Dépend de | Raison |
-|---|---|---|---|
-| 1 | **US-003** — Tests d'architecture en CI locale | — | Valider la structure avant d'écrire le moindre code métier |
-| 2 | **US-001** — Liste des cursus (backend + frontend) | US-003 | Endpoint + page réelle, CI locale verte |
-| 3 | **US-002** — Fiche détaillée d'un cursus | US-001 | S'appuie sur `/api/v1/cursus/:id` issu de US-001 |
-| 4 | **US-004** — Déploiement Railway + Vercel | US-001, US-002 | Reporté — à faire après que le contenu est stable |
-
-> **Note :** les IDs sont permanents. L'ordre d'exécution est 3 → 1 → 2 → 4.
+| # | Question | Décision / Résolution finale |
+|---|---|---|
+| Q1 | Git repository déjà créé sur GitHub ? | ✅ Oui — `Paro-fds/bravetech` actif et configuré avec GitHub Projects v2 et GitHub Actions |
+| Q2 | Hébergement / Infrastructure cible ? | ✅ Résolu par ADR-006 : conteneurisation Docker / Docker Compose sur VM Linux Proxmox sur site (FDS) |
+| Q3 | Seed des données cursus ? | ✅ Résolu : `cursus_loader.py` exploitant les fichiers officiels `cursus/*.json` avec persistance en tables `cursus` et `documents_requis` |
+| Q4 | Accès domaine / routage ? | ✅ Résolu : Nginx en reverse proxy Docker (`frontend/nginx.conf`) distribuant la SPA et routant `/api/` vers FastAPI |
 
 ---
 
-## Règles actives pendant cet Epic
+## Relocalisation des règles d'Epic
 
-*(Ces règles se déplacent dans le document propriétaire à la clôture de l'Epic)*
+Toutes les règles temporaires actives pendant epic-001 ont été transférées vers leurs documents de référence pérennes lors de la clôture :
 
-- **R1 :** Le seed de données ne doit jamais s'exécuter en production — protégé par `if settings.ENV == "development"`.
-- **R2 :** Toute variable d'environnement sensible (`DATABASE_URL`, `SECRET_KEY`) est dans `.env` (jamais commitée) et dans Railway/Vercel dashboard. Vérifier `.gitignore` avant le premier push.
-- **R3 :** `test_architecture.py` doit passer même sur un projet vide — si le test échoue à vide, c'est une erreur de configuration, pas de code.
-
----
-
-*epic-001-refinement.md — FDS Portail · GL-EN3-2026 — status: open*
+- **Règle R1 (Protection du seeding)** → Relocalisée dans [ws-tech-01-portail-public.md §4](../../technical-specs/ws-tech-01-portail-public.md#4-règles-architecturales--sécurité-relocalisées-de-epic-001-refinementmd)
+- **Règle R2 (Gestion stricte des secrets / `.env`)** → Relocalisée dans [ws-tech-01-portail-public.md §4](../../technical-specs/ws-tech-01-portail-public.md#4-règles-architecturales--sécurité-relocalisées-de-epic-001-refinementmd) et `SOLUTION_DESIGN.md`
+- **Règle R3 (Invariant Clean Architecture en CI)** → Relocalisée dans [ws-tech-01-portail-public.md §4](../../technical-specs/ws-tech-01-portail-public.md#4-règles-architecturales--sécurité-relocalisées-de-epic-001-refinementmd) et validée par `tests/unit/test_architecture.py`
 
 ---
 
-## Règles actives pendant cet Epic
-
-*(Ces règles se déplacent dans le document propriétaire à la clôture de l'Epic)*
-
-- **R1 :** Le seed de données ne doit jamais s'exécuter en production — protégé par `if settings.ENV == "development"`.
-- **R2 :** Toute variable d'environnement sensible (`DATABASE_URL`, `SECRET_KEY`) est dans `.env` (jamais commitée) et dans Railway/Vercel dashboard. Vérifier `.gitignore` avant le premier push.
-- **R3 :** `test_architecture.py` doit passer même sur un projet vide (0 fichiers dans `entities/`, `bll/`, `dal/`, `api/`) — si le test échoue à vide, c'est une erreur de configuration, pas de code.
-
----
-
-*epic-001-refinement.md — FDS Portail · GL-EN3-2026 — status: open*
+*epic-001-refinement.md — FDS Portail · GL-EN3-2026 — status: closed*

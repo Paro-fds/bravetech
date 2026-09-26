@@ -33,7 +33,7 @@ def test_lister_cursus():
     assert "est_ouvert" in premier
 
 
-def test_obtenir_cursus_existant():
+def test_obtenir_cursus_existant_avec_pieces_requises():
     response = client.get("/api/v1/cursus/genie-civil")
     assert response.status_code == 200
     data = response.json()
@@ -42,7 +42,21 @@ def test_obtenir_cursus_existant():
     assert "niveaux" in data
     assert "GC1" in data["niveaux"]
 
+    # Vérification des pièces requises (US-002)
+    assert "documents_requis" in data
+    assert isinstance(data["documents_requis"], list)
+    assert len(data["documents_requis"]) >= 4
+
+    premiere_piece = data["documents_requis"][0]
+    assert "id" in premiere_piece
+    assert "nom" in premiere_piece
+    assert "description" in premiere_piece
+    assert "format_accepte" in premiere_piece
+    assert "taille_max_mo" in premiere_piece
+    assert "est_obligatoire" in premiere_piece
+
 
 def test_obtenir_cursus_inexistant():
     response = client.get("/api/v1/cursus/filiere-inconnue")
     assert response.status_code == 404
+    assert "introuvable" in response.json()["detail"]

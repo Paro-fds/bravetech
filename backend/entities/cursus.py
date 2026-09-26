@@ -6,6 +6,7 @@ Aucun import de framework (FastAPI, SQLAlchemy), ni d'aucune couche externe (dal
 
 from dataclasses import dataclass, field
 from typing import Any
+from backend.entities.document_requis import DocumentRequis
 
 
 @dataclass
@@ -31,3 +32,4 @@ class Cursus:
     date_fermeture_inscription: str
     est_ouvert: bool = True
     niveaux: dict[str, list[dict[str, Any]]] = field(default_factory=dict)
+    documents_requis: list[DocumentRequis] = field(default_factory=list)

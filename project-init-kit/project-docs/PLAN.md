@@ -16,7 +16,7 @@ Les Epics sont **séquentiels** — chaque Epic doit être livrable et testable 
 
 | Epic | Nom | Workstreams | Bloqué par | Livrable clé |
 |---|---|---|---|---|
-| `epic-001-socle` | Socle & Portail public | WS-01 | — | 🟡 In progress — [suivi](execution/epic-001-socle/) |
+| `epic-001-socle` | Socle & Portail public | WS-01 | — | ✅ Done — closed 2026-09-26, voir [epic-001-closeout.md](execution/epic-001-socle/epic-001-closeout.md) |
 | `epic-002-candidature` | Candidature & Suivi | WS-02, WS-03, WS-05 | `epic-001` | Un candidat soumet un dossier complet et le suit via sa référence. |
 | `epic-003-administration` | Administration & Audit | WS-04, WS-05 | `epic-002` | Un admin valide/rejette des documents. Les emails de statut partent. Le candidat peut remplacer un document rejeté. |
 
@@ -84,19 +84,11 @@ Source : `PRD.md §6` (Must / Should / Won't). Consolidé ici pour le séquencem
 
 ### `epic-001` — Socle & Portail public
 
-**Livrable :** un développeur peut pousser du code sur `main` et le voir déployé automatiquement. Le portail affiche les cursus. La base de données est provisionnée. Les tests d'architecture passent en CI.
-
-**Workstreams :** WS-01
-
-**But en une phrase :** *"Le portail est en ligne, les cursus sont visibles, et l'infrastructure de développement est opérationnelle."*
-
-**User stories principales :**
-- `US-001` — En tant que candidat, je veux consulter la liste des cursus depuis la page d'accueil.
-- `US-002` — En tant que candidat, je veux voir la fiche détaillée d'un cursus (description, dates, pièces requises).
-- `US-003` — En tant que développeur, je veux que `pytest tests/` passe en CI avant tout merge sur `main`.
-- `US-004` — En tant que développeur, je veux que le backend soit accessible sur Railway et le frontend sur Vercel.
-
-**Critère de sortie :** `GET /api/v1/cursus` retourne des données réelles. Le front affiche au moins deux fiches cursus. `test_architecture.py` passe. Pipeline CI/CD vert.
+**Workstream :** WS-01  
+**Statut :** ✅ Done — closed 2026-09-26  
+**But en une phrase :** *"Le portail est en ligne, les cursus sont visibles, et l'infrastructure de développement et de déploiement est opérationnelle."*  
+**Détail & Bilan :** Voir [epic-001-closeout.md](execution/epic-001-socle/epic-001-closeout.md).  
+**Spécifications consolidées :** [ws-func-01-portail-public.md](functional-specs/ws-func-01-portail-public.md) et [ws-tech-01-portail-public.md](technical-specs/ws-tech-01-portail-public.md).
 
 ---
 

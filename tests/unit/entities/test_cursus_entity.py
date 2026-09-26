@@ -1,7 +1,8 @@
-"""Tests unitaires pour l'entité Cursus (Couche Domain).
+"""Tests unitaires pour les entités Cursus et DocumentRequis (Couche Domain).
 """
 
 from backend.entities.cursus import Cursus, Matiere
+from backend.entities.document_requis import DocumentRequis
 
 
 def test_creation_cursus():
@@ -19,6 +20,7 @@ def test_creation_cursus():
     assert cursus.duree_annees == 2
     assert cursus.est_ouvert is True
     assert isinstance(cursus.niveaux, dict)
+    assert isinstance(cursus.documents_requis, list)
 
 
 def test_creation_matiere():
@@ -31,3 +33,19 @@ def test_creation_matiere():
     assert matiere.item == 1
     assert matiere.titre == "Analyse"
     assert matiere.code == "AN01"
+
+
+def test_creation_document_requis():
+    doc = DocumentRequis(
+        id="doc-1",
+        cursus_id="mpc",
+        nom="Acte de naissance",
+        description="Extrait officiel",
+        format_accepte="PDF",
+        taille_max_mo=5,
+        est_obligatoire=True,
+    )
+    assert doc.id == "doc-1"
+    assert doc.cursus_id == "mpc"
+    assert doc.est_obligatoire is True
+    assert doc.taille_max_mo == 5

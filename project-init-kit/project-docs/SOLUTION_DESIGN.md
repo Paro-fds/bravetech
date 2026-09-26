@@ -18,7 +18,7 @@ updated: 2026-09-26T00:18:00Z
 - La stack technique retenue et les raisons de chaque choix.
 - Le modèle de données canonique (source de vérité : PostgreSQL).
 - Le flux d'authentification et d'autorisation.
-- La stratégie de déploiement (Vercel + Railway).
+- La stratégie de déploiement (Docker Compose sur infrastructure Proxmox Linux FDS — ADR-006).
 - Les ADRs structurants.
 
 **Hors périmètre de ce document :**
@@ -349,11 +349,15 @@ Pas de boucle autonome, pas de tâche planifiée, pas de risque de runaway en MV
 
 ## 11. Vue d'ensemble du déploiement
 
-> 1. Où ce système tourne-t-il réellement aujourd'hui, et où tournera-t-il au lancement ?
-> 2. Quel est le chemin d'un changement local jusqu'à ce qu'il soit en ligne ?
-> 3. Existe-t-il une étape CI/CD, et ce qu'elle valide réellement ?
-
-*(À rédiger)*
+1. **Environnement d'exécution :** Le système tourne au lancement sur une machine virtuelle Linux (Debian/Ubuntu Server) hébergée sur l'hyperviseur Proxmox de la Faculté des Sciences (ADR-006). L'architecture est entièrement conteneurisée via Docker et Docker Compose :
+   - `db` : Conteneur PostgreSQL 15 avec volume persistant `postgres_data`.
+   - `backend` : Conteneur Python 3.11-slim exécutant FastAPI via Uvicorn.
+   - `frontend` : Conteneur multi-stage (Node 20 Alpine pour le build Vite, Nginx Alpine pour servir les statiques et faire reverse-proxy vers `/api/`).
+2. **Cheminement d'un changement :** 
+   - Développement local avec tests unitaires, d'intégration et d'architecture.
+   - Push sur la branche `master` / pull request → déclenchement automatique du workflow GitHub Actions (`.github/workflows/ci.yml`).
+   - Déploiement sur le serveur cible via `docker compose up -d --build`.
+3. **CI/CD :** Pipeline GitHub Actions validant à chaque push l'exécution intégrale des tests pytest (tests unitaires, tests d'intégration API, et tests d'architecture Clean Architecture).
 
 ## 12. Hypothèses
 
@@ -375,7 +379,12 @@ Pas de boucle autonome, pas de tâche planifiée, pas de risque de runaway en MV
 
 | # | Décision | Alternative rejetée | Raison | Statut |
 |---|---|---|---|---|
-| | | | | |
+| ADR-001 | Architecture modulaire découplée (Clean Arch + FSD) | Monolithe Django / Rails classique | Découplage strict des règles métier, maintenabilité et testabilité | Accepté (2026-09-26) |
+| ADR-002 | PostgreSQL comme source unique de vérité | NoSQL (MongoDB) | Intégrité référentielle stricte, transactions ACID pour les candidatures | Accepté (2026-09-26) |
+| ADR-003 | Authentification stateless JWT | Sessions serveur (cookies stateful) | Compatibilité SPA Mobile, scalabilité horizontale et absence d'état serveur | Accepté (2026-09-26) |
+| ADR-004 | Stockage des pièces sur Cloudinary | Stockage direct sur disque serveur | URLs signées, mise à l'échelle automatique et absence de gestion de volumes disques locaux | Accepté (2026-09-26) |
+| ADR-005 | Emails transactionnels via Resend | Serveur SMTP local (Postfix) | Délivrabilité garantie, API REST asynchrone sans maintenance de serveur mail | Accepté (2026-09-26) |
+| ADR-006 | Déploiement conteneurisé (Docker Compose / Proxmox) | Dépendance exclusive à un PaaS propriétaire | Hébergement souverain sur l'infrastructure Linux de la faculté des sciences via Proxmox avec portabilité immédiate | Accepté (2026-09-26) |
 
 > **Questions à se poser, pour chaque nouvelle entrée :**
 > 1. Qu'a-t-on décidé qui aurait pu très bien aller dans l'autre sens ?

@@ -1,19 +1,20 @@
 import React from 'react';
 import type { CursusListItem } from '../model/types';
 import { Calendar, Clock, ArrowRight, Award, CheckCircle2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface CursusCardProps {
   cursus: CursusListItem;
   onSelect?: (cursus: CursusListItem) => void;
 }
 
-export const CursusCard: React.FC<CursusCardProps> = ({ cursus, onSelect }) => {
+export const CursusCard: React.FC<CursusCardProps> = ({ cursus }) => {
   const isMpc = cursus.id === 'mpc';
 
   return (
-    <div
-      onClick={() => onSelect?.(cursus)}
-      className={`group relative flex flex-col justify-between overflow-hidden rounded-2xl border transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer ${
+    <Link
+      to={`/cursus/${cursus.id}`}
+      className={`group relative flex flex-col justify-between overflow-hidden rounded-2xl border transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer block ${
         isMpc
           ? 'bg-gradient-to-br from-blue-900 to-indigo-950 text-white border-blue-700/50 shadow-blue-900/10'
           : 'bg-white border-slate-200/90 text-slate-900 hover:border-blue-400 shadow-slate-100'
@@ -95,7 +96,7 @@ export const CursusCard: React.FC<CursusCardProps> = ({ cursus, onSelect }) => {
               Niveau d'entrée :
             </span>
             <span className={`font-medium ${isMpc ? 'text-white' : 'text-slate-700'}`}>
-              {isMpc ? 'Baccalauréat / Fin d’études secondaires' : 'Admis MPC'}
+              {isMpc ? 'Baccalauréat / NS4' : 'Admis MPC'}
             </span>
           </div>
         </div>
@@ -106,14 +107,14 @@ export const CursusCard: React.FC<CursusCardProps> = ({ cursus, onSelect }) => {
             className={`w-full py-2.5 px-4 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-all ${
               isMpc
                 ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-900/40'
-                : 'bg-slate-100 hover:bg-blue-600 hover:text-white text-slate-800'
+                : 'bg-slate-100 group-hover:bg-blue-600 group-hover:text-white text-slate-800'
             }`}
           >
-            <span>Consulter la formation</span>
+            <span>Voir la fiche détaillée</span>
             <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };

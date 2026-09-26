@@ -1,0 +1,56 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: fds_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-fds_admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-fds_secret_pass}
+      POSTGRES_DB: ${POSTGRES_DB:-fds_portail}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-fds_admin} -d ${POSTGRES_DB:-fds_portail}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - fds_network
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: fds_backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-fds_admin}:${POSTGRES_PASSWORD:-fds_secret_pass}@db:5432/${POSTGRES_DB:-fds_portail}
+      ENVIRONMENT: production
+    networks:
+      - fds_network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: fds_frontend
+    restart: unless-stopped
+    ports:
+      - "${PORT:-80}:80"
+    depends_on:
+      - backend
+    networks:
+      - fds_network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  fds_network:
+    driver: bridge
