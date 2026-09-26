@@ -27,16 +27,19 @@ Le Workstream WS-01 est implémenté selon les principes de la **Clean Architect
                               │   ├── lister_cursus.py
                               │   └── obtenir_cursus_detail.py
                               ├── dal/repositories/
-                              │   └── sqlalchemy_cursus_repository.py
+                              │   └── cursus_repository_json.py (JsonCursusRepository)
                               └── entities/
                                   ├── cursus.py
                                   ├── matiere.py
                                   └── document_requis.py
                                             │
                                             ▼
-                               [PostgreSQL 15 (Port 5432)]
-                               ├── table: cursus
-                               └── table: documents_requis
+                               [Fichiers JSON Référence (cursus/*.json)]
+                               ├── mpc.json
+                               ├── genie-civil.json
+                               ├── genie-electronique.json
+                               ├── genie-electromecanique.json
+                               └── architecture.json
 ```
 
 ---
@@ -104,25 +107,21 @@ Le Workstream WS-01 est implémenté selon les principes de la **Clean Architect
 
 ---
 
-## 3. Schéma de données (PostgreSQL)
+## 3. Modèle de données & Source de vérité (Fichiers JSON `cursus/`)
 
-### 3.1 Table `cursus`
-- `id` : `VARCHAR(64)` PRIMARY KEY
-- `nom` : `VARCHAR(255)` NOT NULL
-- `departement` : `VARCHAR(128)` NOT NULL
-- `description` : `TEXT` NOT NULL
-- `duree_annees` : `INTEGER` NOT NULL
-- `semestres` : `INTEGER` NOT NULL
-- `credits_totaux` : `INTEGER` NOT NULL
-- `matieres_json` : `JSONB` NOT NULL (liste sérialisée des matières du cursus)
+Contrairement aux données transactionnelles (candidats, dossiers, pièces soumises gérés dans PostgreSQL à partir de l'Epic 2), l'offre académique des cursus et pièces requises constitue un **catalogue de référence statique**.
 
-### 3.2 Table `documents_requis`
-- `id` : `SERIAL` PRIMARY KEY
-- `cursus_id` : `VARCHAR(64)` REFERENCES `cursus(id)` ON DELETE CASCADE
-- `code` : `VARCHAR(64)` NOT NULL
-- `nom` : `VARCHAR(255)` NOT NULL
-- `description` : `TEXT`
-- `obligatoire` : `BOOLEAN` DEFAULT TRUE
+Les informations sont directement exploitées depuis les fichiers JSON officiels dans `cursus/` via `JsonCursusRepository` :
+- `cursus/mpc.json` : Tronc commun Math-Physique-Chimie (durée 2 ans, semestres S1-S4).
+- `cursus/genie-civil.json` : Filière Génie Civil (niveaux GC1 à GC3, semestres S5-S10).
+- `cursus/genie-electronique.json` : Filière Génie Électronique (niveaux GEL1 à GEL3, semestres S5-S10).
+- `cursus/genie-electromecanique.json` : Filière Génie Électromécanique (niveaux GIN1 à GIN3, semestres S5-S10).
+- `cursus/architecture.json` : Filière Architecture (niveaux ARC1 à ARC3, semestres S5-S10).
+
+**Avantages architecturaux :**
+- Aucune migration de table SQL requise pour mettre à jour les descriptions ou programmes académiques.
+- Versionnage direct sous Git dans le dépôt de code.
+- Disponibilité immédiate et mise en cache mémoire via `JsonCursusRepository`.
 
 ---
 
@@ -130,9 +129,8 @@ Le Workstream WS-01 est implémenté selon les principes de la **Clean Architect
 
 Les règles suivantes, actives durant l'Epic 1, sont désormais pérennes dans le socle technique :
 
-1. **Règle R1 — Protection du Seeding en production** :
-   - Le chargement initial ou la réinitialisation des cursus (`cursus_loader.py`) ne doit jamais écraser silencieusement des données de production.
-   - En environnement de production, l'initialisation doit être protégée ou déclenchée explicitement via script d'administration ou migration sécurisée.
+1. **Règle R1 — Source de vérité Cursus en fichiers JSON** :
+   - Les cursus et documents requis sont gérés sous forme de fichiers JSON locaux versionnés. Aucune table SQL n'est utilisée pour ces données statiques de référence.
 2. **Règle R2 — Gestion stricte des secrets et variables d'environnement** :
    - Tout secret (`DATABASE_URL`, identifiants de connexion, futures clés JWT) doit être déclaré dans `.env` et proscrit de tout commit Git.
    - Un fichier modèle `.env.example` sans aucun secret réel documente les variables requises.

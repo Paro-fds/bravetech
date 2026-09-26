@@ -45,11 +45,12 @@ updated: 2026-09-26T00:35:00Z
 
 | Terme | Définition |
 |---|---|
-| **PostgreSQL** | **Source de vérité unique.** Hébergé sur Railway. Contient toutes les tables (`candidats`, `documents_requis`, `documents_soumis`, `utilisateurs`). Backup quotidien automatique. Perte = perte de dossiers. |
+| **Fichiers JSON (`cursus/`)** | **Source de vérité pour l'offre académique.** Fichiers JSON officiels décrivant les filières, matières et pièces requises par cursus (`mpc.json`, `genie-civil.json`, etc.). Données de référence statiques versionnées avec le code, sans nécessité de table SQL. |
+| **PostgreSQL** | **Source de vérité des dossiers candidats.** Conteneurisé sous Docker sur VM Linux / Proxmox (ADR-006). Contient les tables transactionnelles (`candidats`, `candidatures`, `documents_soumis`, `utilisateurs`). Backup régulier. Perte = perte de dossiers. |
 | **Cloudinary** | Stockage des fichiers physiques (PDF, JPG) uploadés par les candidats. Stockage secondaire — les fichiers survivent si PostgreSQL est perdu, mais les dossiers associés ne peuvent pas être reconstitués sans la base. URLs signées, accès via proxy admin. |
-| **Mémoire application** | L'API FastAPI est **stateless** — aucun état persisté entre les requêtes. Aucun cache en mémoire en V1. |
+| **Mémoire application** | L'API FastAPI est **stateless** — aucun état de session persisté entre les requêtes. Cache en mémoire pour la lecture des fichiers JSON de cursus. |
 
-> **Règle absolue :** les URLs Cloudinary et les statuts d'email ne remplacent jamais les données PostgreSQL. Si les deux divergent, PostgreSQL a raison.
+> **Règle absolue :** Les URLs Cloudinary et les statuts d'email ne remplacent jamais les données PostgreSQL. Les informations académiques des cursus émanent directement des fichiers JSON officiels.
 
 ---
 

@@ -4,16 +4,18 @@
 from fastapi import APIRouter, HTTPException, Depends
 from backend.bll.lister_cursus import ListerCursusUseCase
 from backend.bll.obtenir_cursus_detail import ObtenirCursusDetailUseCase
-from backend.dal.cursus_repository_sql import SQLAlchemyCursusRepository
+from backend.dal.cursus_repository_json import JsonCursusRepository
 from backend.ports.cursus_repository import ICursusRepository
 from backend.api.v1.dto.cursus_dto import CursusListItemResponse, CursusDetailResponse
 
 router = APIRouter(prefix="/cursus", tags=["Cursus & Formations"])
 
+_json_repo = JsonCursusRepository()
+
 
 def get_cursus_repository() -> ICursusRepository:
-    """Fournisseur de dépendance pour le repository des cursus."""
-    return SQLAlchemyCursusRepository()
+    """Fournisseur de dépendance pour le repository des cursus (basé sur fichiers JSON)."""
+    return _json_repo
 
 
 @router.get("", response_model=list[CursusListItemResponse], summary="Lister les cursus disponibles")

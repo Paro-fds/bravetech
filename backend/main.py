@@ -4,7 +4,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.api.v1 import api_v1_router
-from backend.dal.cursus_repository_sql import SQLAlchemyCursusRepository
 
 app = FastAPI(
     title="FDS Portail API — Faculté des Sciences (UEH)",
@@ -25,12 +24,6 @@ app.add_middleware(
 
 # Inclusion des routes v1
 app.include_router(api_v1_router)
-
-
-@app.on_event("startup")
-def on_startup():
-    """Initialise le repository et la base de données au démarrage."""
-    SQLAlchemyCursusRepository()
 
 
 @app.get("/", tags=["Santé & Info"])

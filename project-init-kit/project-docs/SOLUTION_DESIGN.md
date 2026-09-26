@@ -132,22 +132,23 @@ Organisé selon la **Clean Architecture** (`_ARCHITECTURE_EXPLAINED.md`, Partie 
 
 ## 6. Couche de données
 
-**Source de vérité unique : PostgreSQL.**
-Les URLs Cloudinary et les statuts email ne remplacent jamais les données en base — ce sont des effets de bord, pas des états.
+**Deux sources de données selon la nature de l'information :**
+1. **Fichiers JSON (`cursus/*.json`) :** Catalogue académique de référence (cursus, programmes semestriels, pièces justificatives requises). Données statiques institutionnelles versionnées sous Git, exploitées via `JsonCursusRepository`. Aucune table SQL pour les cursus.
+2. **PostgreSQL : Source de vérité unique pour les données transactionnelles et candidates.**
+   Les URLs Cloudinary et les statuts email ne remplacent jamais les données en base — ce sont des effets de bord, pas des états.
 
-### Entités principales
+### Entités principales (PostgreSQL)
 
 | Entité | Table | Clé |
 |---|---|---|
 | `Candidat` | `candidats` | `reference_dossier` (UNIQUE) |
-| `DocumentRequis` | `documents_requis` | `id` (UUID) |
-| `DocumentSoumis` | `documents_soumis` | `(candidat_id, document_requis_id)` (UNIQUE) |
+| `DocumentSoumis` | `documents_soumis` | `(candidat_id, document_type)` (UNIQUE) |
 | `Utilisateur` | `utilisateurs` | `email` (UNIQUE) — consommé depuis FDS SYS |
 
 ### Contrat critique
 - `DocumentSoumis.statut_validation` ∈ `{en_attente, valide, rejete}` — alimente la barre de progression.
 - `candidats.deplacement_physique` ∈ `{true, false, NULL}` — mesure de l'hypothèse §3.4.
-- Contrainte UNIQUE `(candidat_id, document_requis_id)` → upsert sans doublon lors d'un remplacement.
+- Contrainte UNIQUE `(candidat_id, document_type)` → upsert sans doublon lors d'un remplacement.
 - `valide_par` + `date_validation` → audit immuable de chaque décision admin.
 
 Schéma SQL complet : `cahier_des_charges.md §9.3`.

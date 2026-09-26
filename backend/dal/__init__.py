@@ -2,7 +2,6 @@
 """
 
 from backend.dal.database import get_db, SessionLocal, Base, engine
-from backend.dal.models import CursusModel
-from backend.dal.cursus_repository_sql import SQLAlchemyCursusRepository
+from backend.dal.cursus_repository_json import JsonCursusRepository
 
-__all__ = ["get_db", "SessionLocal", "Base", "engine", "CursusModel", "SQLAlchemyCursusRepository"]
+__all__ = ["get_db", "SessionLocal", "Base", "engine", "JsonCursusRepository"]
