@@ -17,7 +17,7 @@ Les Epics sont **séquentiels** — chaque Epic doit être livrable et testable 
 | Epic | Nom | Workstreams | Bloqué par | Livrable clé |
 |---|---|---|---|---|
 | `epic-001-socle` | Socle & Portail public | WS-01 | — | ✅ Done — closed 2026-09-26, voir [epic-001-closeout.md](execution/epic-001-socle/epic-001-closeout.md) |
-| `epic-002-candidature` | Candidature & Suivi | WS-02, WS-03, WS-05 | `epic-001` | Un candidat soumet un dossier complet et le suit via sa référence. |
+| `epic-002-candidature` | Candidature & Suivi | WS-02, WS-03, WS-05 | `epic-001` | 🟡 In progress — [suivi](execution/epic-002-candidature/epic-002-refinement.md) |
 | `epic-003-administration` | Administration & Audit | WS-04, WS-05 | `epic-002` | Un admin valide/rejette des documents. Les emails de statut partent. Le candidat peut remplacer un document rejeté. |
 
 **Pourquoi cet ordre ?**

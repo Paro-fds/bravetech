@@ -30,10 +30,18 @@ Socle technique complet établi (Clean Architecture, CI GitHub Actions avec test
 
 ## Epic 2 — Candidature & Suivi
 
-**Workstream :** WS-02, WS-03, WS-05
-**Status :** ⏳ Not started
+**Workstream :** WS-02 Candidature, WS-03 Suivi de dossier, WS-05 Notifications
+**Status :** 🟡 In progress — [refinement](epic-002-candidature/epic-002-refinement.md)
 
-*(Démarrera une fois epic-001 ✅ Done)*
+Walking Skeleton complet côté candidat : formulaire multi-étapes avec saisie des informations personnelles, réponse à la question de déplacement physique, simulation de paiement MonCash/NatCash, téléversement sécurisé des pièces jointes, attribution de la référence `CAN-2026-XXXX`, email de confirmation et page de suivi du dossier.
+
+| Story | Titre | Statut | Spec |
+|---|---|---|---|
+| US-005 | Formulaire d'inscription & question `deplacement_physique` | 🔲 Backlog | [US-005.md](epic-002-candidature/US-005.md) |
+| US-006 | Simulation de paiement MonCash / NatCash | 🔲 Backlog | [US-006.md](epic-002-candidature/US-006.md) |
+| US-007 | Téléversement sécurisé des pièces requises | 🔲 Backlog | [US-007.md](epic-002-candidature/US-007.md) |
+| US-008 | Finalisation de candidature & notification de confirmation | 🔲 Backlog | [US-008.md](epic-002-candidature/US-008.md) |
+| US-009 | Consultation et suivi de dossier par référence | 🔲 Backlog | [US-009.md](epic-002-candidature/US-009.md) |
 
 ---
 
