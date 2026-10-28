@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T00:30:00Z
-updated: 2026-09-30T16:04:08Z
+updated: 2026-10-28T14:18:55Z
 ---
 
 # PLAN.md — FDS Portail
@@ -101,13 +101,12 @@ Source : `PRD.md §6` (Must / Should / Won't). Consolidé ici pour le séquencem
 **But en une phrase :** *"Un candidat peut soumettre un dossier complet depuis son téléphone et suivre son avancement sans jamais se déplacer."*
 
 **User stories principales :**
-- `US-005` — Formulaire multi-étapes (infos personnelles → paiement simulé → upload → soumission).
-- `US-006` — Upload sécurisé d'un document PDF/JPG ≤ 5 Mo avec vérification magic bytes.
-- `US-007` — Génération de la référence `CAN-2026-X` et affichage à l'écran.
-- `US-008` — Email de confirmation asynchrone non bloquant.
-- `US-009` — Page de suivi par référence avec barre de progression.
-- `US-010` — Question `deplacement_physique` obligatoire enregistrée en base.
-- `US-011` — Simulation paiement MonCash/NatCash avec référence transactionnelle.
+- `US-005` — Formulaire d'inscription & question `deplacement_physique` (infos personnelles, question obligatoire enregistrée en base).
+- `US-006` — Simulation de paiement MonCash / NatCash avec référence transactionnelle.
+- `US-007` — Téléversement sécurisé des pièces requises (PDF/JPG ≤ 5 Mo, vérification magic bytes).
+- `US-008` — Finalisation de candidature & notification de confirmation (référence `CAN-2026-X` affichée, email asynchrone non bloquant).
+- `US-009` — Consultation et suivi de dossier par référence (barre de progression).
+- `US-010` — Remplacement d'un document rejeté depuis la page de suivi.
 
 **Critère de sortie :** le Walking Skeleton du cahier des charges §5 s'exécute de bout en bout. `deplacement_physique` est enregistré. La référence est affichée et envoyée par email.
 
@@ -122,13 +121,10 @@ Source : `PRD.md §6` (Must / Should / Won't). Consolidé ici pour le séquencem
 **But en une phrase :** *"Un administrateur authentifié peut valider ou rejeter chaque document — le candidat est notifié immédiatement et peut corriger sans se déplacer."*
 
 **User stories principales :**
-- `US-012` — Authentification admin (email + mot de passe → JWT).
-- `US-013` — Tableau de bord admin : liste paginée des candidatures avec statuts et `deplacement_physique`.
-- `US-014` — Vue détaillée d'un dossier avec accès sécurisé aux documents via proxy.
-- `US-015` — Validation / rejet d'un document avec audit (`valide_par`, `date_validation`).
-- `US-016` — Email de notification validation/rejet au candidat (non bloquant).
-- `US-017` — Remplacement d'un document rejeté depuis la page de suivi (upsert, statut → `en_attente`).
-- `US-018` — Rate limiting sur `POST /api/v1/auth/token` (anti brute-force).
+- `US-011` — Authentification de l'administrateur (email + mot de passe → JWT + RBAC).
+- `US-012` — Dashboard admin : liste paginée et consultation des candidatures avec statuts et `deplacement_physique`.
+- `US-013` — Validation ou rejet d'un document avec audit (`valide_par`, `date_validation` immuables).
+- `US-014` — Notification email déclenchée par une décision admin (validation/rejet, non bloquant).
 
 **Critère de sortie :** tous les scénarios du plan de tests fonctionnels (`cahier_des_charges.md §12.2`) passent. Les critères de succès du PRD §11 sont mesurables (≥ 20 candidatures, ≥ 70 % sans déplacement).
 
@@ -136,10 +132,12 @@ Source : `PRD.md §6` (Must / Should / Won't). Consolidé ici pour le séquencem
 
 ## Prochaines étapes immédiates
 
-1. **Scaffold backend** (`epic-001`) — créer la structure `entities/`, `dal/`, `bll/`, `api/v1/`, `tests/`. Vérifier que `test_architecture.py` passe à vide.
-2. **Scaffold frontend** (`epic-001`) — Vite + React + TypeScript + FSD + Steiger. Confirmer que le linter d'architecture échoue sur un import ascendant volontaire avant de déclarer le scaffold valide.
-3. **Provisionner Railway + Vercel** — connecter GitHub, configurer les variables d'environnement, vérifier le premier déploiement automatique.
-4. **Livrer US-001 et US-002** — première page cursus réelle, données en base, CI vert.
+> `epic-001` est clôturé (socle, scaffold back/front, déploiement, US-001 à US-004). `epic-002` est ouvert, aucune story commencée.
+
+1. **Refine `US-005`** (`epic-002`) — Formulaire d'inscription & question `deplacement_physique`. Passer par le skill `user-story` (Refine) : lever les questions ouvertes de la spec avant tout code. C'est la première story de l'Epic et il n'existe pas d'ordre de build explicite documenté.
+2. **Construire `US-005`** — formulaire d'infos personnelles + question `deplacement_physique` obligatoire persistée en base (métrique principale du MVP, cible ≥ 70 % à `false`).
+3. **Enchaîner `US-006` → `US-010`** dans l'ordre de l'Epic : simulation de paiement, téléversement sécurisé, finalisation + email, suivi par référence, remplacement d'un document rejeté.
+4. **Documenter l'ordre de build** de l'Epic 2 dans sa section `EPIC_EXECUTION.md` si l'on dévie de l'ordre séquentiel par ID.
 
 > Le statut quotidien (story en cours, bloquages) vit dans `project-docs/execution/` une fois le travail commencé — pas ici. Ce fichier ne change que si la séquence des Epics change.
 
