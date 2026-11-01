@@ -76,8 +76,23 @@ class ListerCandidaturesUseCase:
     ) -> PageCandidatures:
         page = max(page, 1)
         limit = min(max(limit, 1), LIMITE_MAX)
-        total_pieces = len(pieces_admission())
+        lignes = self._toutes_les_lignes()
+        statistiques = Statistiques(
+            dossiers_soumis=len(lignes),
+            sans_deplacement=sum(1 for l in lignes if l.candidature.deplacement_physique is False),
+            pieces_a_examiner=sum(l.pieces_en_attente for l in lignes),
+            pieces_deposees=sum(l.pieces_en_attente + l.pieces_validees + l.pieces_rejetees for l in lignes),
+            pieces_refusees=sum(l.pieces_rejetees for l in lignes),
+        )
 
+        retenues = [l for l in lignes if self._correspond(l, recherche, statut, deplacement_physique)]
+        debut = (page - 1) * limit
+        return PageCandidatures(
+            total=len(retenues), page=page, limit=limit, items=retenues[debut:debut + limit], statistiques=statistiques
+        )
+
+    def _toutes_les_lignes(self) -> list[LigneCandidature]:
+        total_pieces = len(pieces_admission())
         soumises = self._candidatures.lister_soumises()
         documents = self._documents.lister_par_candidats([candidat.id for candidat, _ in soumises])
 
@@ -94,20 +109,18 @@ class ListerCandidaturesUseCase:
                 pieces_rejetees=rejetees,
                 statut_global=statut_global_depuis_comptes(validees, rejetees, total_pieces),
             ))
+        return lignes
 
-        statistiques = Statistiques(
-            dossiers_soumis=len(lignes),
-            sans_deplacement=sum(1 for l in lignes if l.candidature.deplacement_physique is False),
-            pieces_a_examiner=sum(l.pieces_en_attente for l in lignes),
-            pieces_deposees=sum(l.pieces_en_attente + l.pieces_validees + l.pieces_rejetees for l in lignes),
-            pieces_refusees=sum(l.pieces_rejetees for l in lignes),
-        )
-
-        retenues = [l for l in lignes if self._correspond(l, recherche, statut, deplacement_physique)]
-        debut = (page - 1) * limit
-        return PageCandidatures(
-            total=len(retenues), page=page, limit=limit, items=retenues[debut:debut + limit], statistiques=statistiques
-        )
+    def filtrer(
+        self,
+        recherche: str | None = None,
+        statut: str | None = None,
+        deplacement_physique: bool | None = None,
+    ) -> list[LigneCandidature]:
+        """Tous les dossiers correspondant aux critères, sans pagination (export)."""
+        return [
+            l for l in self._toutes_les_lignes() if self._correspond(l, recherche, statut, deplacement_physique)
+        ]
 
     @staticmethod
     def _correspond(ligne: LigneCandidature, recherche: str | None, statut: str | None, deplacement: bool | None) -> bool:

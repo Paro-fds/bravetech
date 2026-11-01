@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Download } from 'lucide-react';
 import {
   BADGES_DOSSIER,
   dossierAdminApi,
@@ -34,6 +35,30 @@ export const AdminCandidaturesPage: React.FC = () => {
   const [filtres, setFiltres] = useState<FiltresDossiers>({ page: 1, q: '', statut: '', deplacement: '' });
   const [resultat, setResultat] = useState<Resultat | null>(null);
   const [rechargement, setRechargement] = useState(0);
+  const [exportEnCours, setExportEnCours] = useState<'csv' | 'pdf' | null>(null);
+  const [erreurExport, setErreurExport] = useState(false);
+
+  /** Exporte tous les dossiers correspondant aux filtres actuels (pas seulement la page affichée). */
+  const exporter = async (format: 'csv' | 'pdf') => {
+    if (!session) return;
+    setExportEnCours(format);
+    setErreurExport(false);
+    try {
+      const { blob, nom } = await dossierAdminApi.exporter(session, filtres, format);
+      const url = URL.createObjectURL(blob);
+      const lien = document.createElement('a');
+      lien.href = url;
+      lien.download = nom;
+      document.body.appendChild(lien);
+      lien.click();
+      lien.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 10_000);
+    } catch {
+      setErreurExport(true);
+    } finally {
+      setExportEnCours(null);
+    }
+  };
 
   // La recherche part 300 ms après la dernière frappe
   useEffect(() => {
@@ -74,7 +99,27 @@ export const AdminCandidaturesPage: React.FC = () => {
         <button type="button" onClick={() => setRechargement((n) => n + 1)} className="min-h-11 px-2 text-sm font-semibold text-fds-navy underline">
           Actualiser
         </button>
+        {(['csv', 'pdf'] as const).map((format) => (
+          <button
+            key={format}
+            type="button"
+            disabled={exportEnCours !== null}
+            onClick={() => void exporter(format)}
+            className="min-h-11 px-4 rounded-lg border-2 border-fds-navy bg-white text-fds-navy font-semibold flex items-center gap-2 disabled:opacity-60"
+          >
+            <Download className="w-4 h-4" aria-hidden="true" />
+            {exportEnCours === format ? 'Préparation…' : `Exporter ${format.toUpperCase()}`}
+          </button>
+        ))}
       </div>
+      {erreurExport && (
+        <p role="alert" className="rounded-[10px] border border-[#efb1ab] bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
+          L'export n'a pas pu être téléchargé. Vérifiez votre connexion puis réessayez.
+        </p>
+      )}
+      <p className="text-xs text-fds-mute -mt-3">
+        L'export reprend les filtres ci-dessous et contient tous les dossiers correspondants, pas seulement cette page. Il ne contient ni email ni téléphone.
+      </p>
 
       <div className="grid gap-4 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
         <Indicateur libelle="Dossiers soumis" valeur={stats?.dossiers_soumis ?? '–'} />
