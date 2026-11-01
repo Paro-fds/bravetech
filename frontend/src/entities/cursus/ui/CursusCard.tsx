@@ -9,7 +9,7 @@ interface CursusCardProps {
 }
 
 export const CursusCard: React.FC<CursusCardProps> = ({ cursus }) => {
-  const isMpc = cursus.id === 'mpc';
+  const isMpc = cursus.est_admission;
 
   return (
     <Link
@@ -54,6 +54,12 @@ export const CursusCard: React.FC<CursusCardProps> = ({ cursus }) => {
             {cursus.duree_annees} ans d'études
           </span>
         </div>
+
+        {isMpc && (
+          <span className="inline-flex self-start items-center px-2.5 py-0.5 mb-3 rounded-full text-[11px] font-bold uppercase tracking-wide bg-amber-400 text-slate-900">
+            Vous candidatez ici
+          </span>
+        )}
 
         {/* Title */}
         <h3
@@ -110,7 +116,7 @@ export const CursusCard: React.FC<CursusCardProps> = ({ cursus }) => {
                 : 'bg-slate-100 group-hover:bg-blue-600 group-hover:text-white text-slate-800'
             }`}
           >
-            <span>Voir la fiche détaillée</span>
+            <span>{isMpc ? 'Voir la fiche et les pièces' : 'Voir la fiche détaillée'}</span>
             <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
           </div>
         </div>

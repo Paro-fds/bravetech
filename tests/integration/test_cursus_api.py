@@ -23,6 +23,10 @@ def test_lister_cursus():
     # Vérification que le premier élément est MPC (selon notre règle métier)
     assert data[0]["id"] == "mpc"
 
+    # Admission unique (ADR-008) : seul le MPC est le cursus d'admission
+    assert data[0]["est_admission"] is True
+    assert [c["id"] for c in data if c["est_admission"]] == ["mpc"]
+
     # Vérification des champs requis par US-001
     premier = data[0]
     assert "id" in premier
@@ -33,19 +37,38 @@ def test_lister_cursus():
     assert "est_ouvert" in premier
 
 
-def test_obtenir_cursus_existant_avec_pieces_requises():
+def test_obtenir_branche_sans_pieces_requises():
     response = client.get("/api/v1/cursus/genie-civil")
     assert response.status_code == 200
     data = response.json()
     assert data["id"] == "genie-civil"
     assert data["nom"] == "Génie Civil"
+    assert data["est_admission"] is False
     assert "niveaux" in data
     assert "GC1" in data["niveaux"]
 
-    # Vérification des pièces requises (US-002)
+    # Admission unique (ADR-008) : une branche n'exige aucune pièce
+    assert data["documents_requis"] == []
+
+
+def test_obtenir_mpc_avec_les_cinq_pieces_requises():
+    response = client.get("/api/v1/cursus/mpc")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["id"] == "mpc"
+    assert data["est_admission"] is True
+    assert "MPC1" in data["niveaux"]
+
+    # Liste unique de 5 pièces obligatoires (US-002, US-018)
     assert "documents_requis" in data
     assert isinstance(data["documents_requis"], list)
-    assert len(data["documents_requis"]) >= 4
+    assert len(data["documents_requis"]) == 5
+    assert all(p["est_obligatoire"] for p in data["documents_requis"])
+
+    texte = " ".join(p["nom"] for p in data["documents_requis"]).lower()
+    assert "cin" in texte
+    assert "bonne vie" not in texte
+    assert "médical" not in texte
 
     premiere_piece = data["documents_requis"][0]
     assert "id" in premiere_piece

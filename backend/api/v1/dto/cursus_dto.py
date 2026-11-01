@@ -26,6 +26,7 @@ class CursusListItemResponse(BaseModel):
     date_ouverture_inscription: str
     date_fermeture_inscription: str
     est_ouvert: bool
+    est_admission: bool
 
     model_config = ConfigDict(from_attributes=True)
 
