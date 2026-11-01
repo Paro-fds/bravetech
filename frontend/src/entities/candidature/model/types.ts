@@ -30,8 +30,25 @@ export interface Brouillon {
   informations: InformationsPersonnelles;
 }
 
+/** Statut d'une pièce requise : « manquant » tant qu'aucun fichier n'est déposé. */
+export type StatutPiece = 'manquant' | 'en_attente' | 'valide' | 'rejete';
+
+/** Pièce requise d'admission avec l'état du fichier déposé. */
+export interface PieceDossier {
+  id: string;
+  nom: string;
+  description: string;
+  format_accepte: string;
+  taille_max_mo: number;
+  est_obligatoire: boolean;
+  statut: StatutPiece;
+  nom_fichier: string | null;
+  taille_octets: number | null;
+  motif_rejet: string | null;
+}
+
 export type ErreursChamps = Partial<
-  Record<keyof InformationsPersonnelles | 'deplacement_physique' | 'methode_paiement' | 'numero_telephone', string>
+  Record<keyof InformationsPersonnelles | 'deplacement_physique' | 'methode_paiement' | 'numero_telephone' | 'fichier', string>
 >;
 
 export const DEPARTEMENTS = [

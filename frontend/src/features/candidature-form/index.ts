@@ -4,3 +4,5 @@ export * from './ui/StepProgress';
 export * from './ui/StepInformations';
 export * from './ui/StepAdmission';
 export * from './ui/StepPaiement';
+export * from './ui/StepPieces';
+export * from './lib/fichiers';

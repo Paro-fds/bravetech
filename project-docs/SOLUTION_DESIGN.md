@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T00:18:00Z
-updated: 2026-11-01T17:08:47Z
+updated: 2026-11-01T17:34:29Z
 ---
 
 # SOLUTION_DESIGN.md — FDS Portail
@@ -384,9 +384,10 @@ Pas de boucle autonome, pas de tâche planifiée, pas de risque de runaway en MV
 | ADR-001 | Architecture modulaire découplée (Clean Arch + FSD) | Monolithe Django / Rails classique | Découplage strict des règles métier, maintenabilité et testabilité | Accepté (2026-09-26) |
 | ADR-002 | PostgreSQL comme source unique de vérité | NoSQL (MongoDB) | Intégrité référentielle stricte, transactions ACID pour les candidatures | Accepté (2026-09-26) |
 | ADR-003 | Authentification stateless JWT | Sessions serveur (cookies stateful) | Compatibilité SPA Mobile, scalabilité horizontale et absence d'état serveur | Accepté (2026-09-26) |
-| ADR-004 | Stockage des pièces sur Cloudinary | Stockage direct sur disque serveur | URLs signées, mise à l'échelle automatique et absence de gestion de volumes disques locaux | Accepté (2026-09-26) |
+| ADR-004 | Stockage des pièces sur Cloudinary | Stockage direct sur disque serveur | URLs signées, mise à l'échelle automatique et absence de gestion de volumes disques locaux | Accepté (2026-09-26), complété par ADR-007 |
 | ADR-005 | Emails transactionnels via Resend | Serveur SMTP local (Postfix) | Délivrabilité garantie, API REST asynchrone sans maintenance de serveur mail | Accepté (2026-09-26) |
 | ADR-006 | Déploiement conteneurisé (Docker Compose / Proxmox) | Dépendance exclusive à un PaaS propriétaire | Hébergement souverain sur l'infrastructure Linux de la faculté des sciences via Proxmox avec portabilité immédiate | Accepté (2026-09-26) |
+| ADR-007 | Stockage des pièces derrière un port `IStockageFichiers`, avec un volume local persistant par défaut ; Cloudinary reste un adaptateur optionnel | Cloudinary obligatoire (ADR-004 seul) | Autonomie sur la VM Proxmox (ADR-006) et développement sans clé d'API externe. Le port permet d'ajouter Cloudinary sans toucher au métier. Arbitrage de l'Epic 2 (Q1) ; adaptateur local livré avec US-007 (2026-11-01), adaptateur Cloudinary non écrit | Accepté (2026-09-27) |
 | ADR-008 | Admission unique au MPC : la candidature ne porte ni `cursus_slug` ni filière ; les pièces requises forment une liste unique de 5 | Une candidature par cursus, avec pièces variables selon le cursus (modèle initial : `UNIQUE (email, cursus_slug, campagne)`) | Règle institutionnelle (2026-10-31) : tout candidat entre en MPC (2 ans), puis choisit sa branche (3 ans) hors du portail. Un champ cursus à la candidature serait trompeur et obligerait à le migrer. Contrainte d'unicité : `(email, campagne)`. Voir `reviews/01-admission-unique-mpc.md` | Accepté (2026-10-31) |
 
 > **Questions à se poser, pour chaque nouvelle entrée :**

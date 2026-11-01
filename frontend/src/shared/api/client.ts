@@ -2,6 +2,11 @@
 // `??` (et non `||`) pour qu'une valeur vide reste vide au lieu de retomber sur localhost.
 const API_BASE_URL = import.meta.env.VITE_API_URL ?? '';
 
+/** Construit l'URL complète d'un point d'accès de l'API (utile pour XMLHttpRequest, qui permet de suivre un envoi). */
+export function urlApi(endpoint: string): string {
+  return endpoint.startsWith('http') ? endpoint : `${API_BASE_URL}${endpoint}`;
+}
+
 /** Erreur HTTP de l'API, avec le statut et le corps de réponse décodé (JSON si possible). */
 export class ApiError extends Error {
   status: number;
@@ -16,7 +21,7 @@ export class ApiError extends Error {
 }
 
 export async function apiClient<T>(endpoint: string, options?: RequestInit): Promise<T> {
-  const url = endpoint.startsWith('http') ? endpoint : `${API_BASE_URL}${endpoint}`;
+  const url = urlApi(endpoint);
 
   const response = await fetch(url, {
     ...options,

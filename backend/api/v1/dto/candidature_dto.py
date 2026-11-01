@@ -52,3 +52,17 @@ class BrouillonResponse(BaseModel):
     reference_paiement: str | None  # référence SIMULÉE : aucun montant réel n'est prélevé
     montant_htg: int
     informations: InformationsPersonnellesResponse
+
+
+class PieceDossierResponse(BaseModel):
+    """Une pièce requise avec l'état du fichier déposé ('manquant' tant que rien n'est déposé)."""
+    id: str
+    nom: str
+    description: str
+    format_accepte: str
+    taille_max_mo: int
+    est_obligatoire: bool
+    statut: str  # manquant | en_attente | valide | rejete
+    nom_fichier: str | None = None
+    taille_octets: int | None = None
+    motif_rejet: str | None = None

@@ -1,5 +1,11 @@
-import { apiClient, ApiError } from '../../../shared/api/client';
-import type { Brouillon, ErreursChamps, InformationsPersonnelles, MethodePaiement } from '../model/types';
+import { apiClient, ApiError, urlApi } from '../../../shared/api/client';
+import type {
+  Brouillon,
+  ErreursChamps,
+  InformationsPersonnelles,
+  MethodePaiement,
+  PieceDossier,
+} from '../model/types';
 
 const BASE = '/api/v1/candidatures';
 
@@ -11,6 +17,43 @@ export const candidatureApi = {
 
   modifierInformations: (id: string, informations: InformationsPersonnelles): Promise<Brouillon> =>
     apiClient<Brouillon>(`${BASE}/${id}/informations`, { method: 'PUT', body: JSON.stringify(informations) }),
+
+  /** Liste les pièces requises avec l'état de chaque dépôt. */
+  listerPieces: (id: string): Promise<PieceDossier[]> => apiClient<PieceDossier[]>(`${BASE}/${id}/documents`),
+
+  /**
+   * Téléverse (ou remplace) une pièce. XMLHttpRequest plutôt que fetch : seul moyen de suivre la progression
+   * de l'envoi, utile sur une connexion 3G lente. Rejette avec une `ApiError` si le serveur refuse le fichier.
+   */
+  televerserPiece: (
+    id: string,
+    pieceId: string,
+    fichier: File,
+    onProgression?: (pourcentage: number) => void,
+  ): Promise<PieceDossier> =>
+    new Promise((resolve, reject) => {
+      const corps = new FormData();
+      corps.append('fichier', fichier);
+
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', urlApi(`${BASE}/${id}/documents/${pieceId}`));
+      xhr.upload.onprogress = (e) => {
+        if (e.lengthComputable && onProgression) onProgression(Math.round((e.loaded / e.total) * 100));
+      };
+      xhr.onload = () => {
+        let decode: unknown = xhr.responseText;
+        try {
+          decode = JSON.parse(xhr.responseText);
+        } catch {
+          // corps non JSON : on garde le texte brut
+        }
+        if (xhr.status >= 200 && xhr.status < 300) resolve(decode as PieceDossier);
+        else reject(new ApiError(xhr.status, decode, `Erreur API (${xhr.status}): ${xhr.responseText}`));
+      };
+      xhr.onerror = () => reject(new TypeError('Envoi interrompu'));
+      xhr.ontimeout = () => reject(new TypeError('Envoi interrompu'));
+      xhr.send(corps);
+    }),
 
   /** Simule le paiement des frais de dossier : aucun montant réel n'est prélevé. */
   simulerPaiement: (id: string, methode: MethodePaiement, numeroTelephone: string): Promise<Brouillon> =>
