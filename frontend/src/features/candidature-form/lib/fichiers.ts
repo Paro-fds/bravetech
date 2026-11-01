@@ -34,7 +34,10 @@ export function attributAccept(formatAccepte: string): string {
  * Contrôle rapide côté client avant l'envoi (retour immédiat, sans consommer de données mobiles).
  * Le serveur reste l'autorité : il revérifie la taille, l'extension et les octets d'en-tête du fichier.
  */
-export function validerFichierLocal(fichier: File, piece: PieceDossier): string | undefined {
+export function validerFichierLocal(
+  fichier: File,
+  piece: Pick<PieceDossier, 'taille_max_mo' | 'format_accepte'>,
+): string | undefined {
   if (fichier.size === 0) return 'Ce fichier est vide. Choisissez un autre fichier.';
   if (fichier.size > piece.taille_max_mo * OCTETS_PAR_MO) {
     return `Ce fichier fait ${formaterTaille(fichier.size)}. La limite est de ${piece.taille_max_mo} Mo. Choisissez un fichier plus léger ou reprenez une photo.`;

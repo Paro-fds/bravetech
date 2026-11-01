@@ -192,15 +192,8 @@ const VueDossier: React.FC<{ suivi: SuiviDossier }> = ({ suivi }) => {
         <div role="alert" className="flex gap-2.5 items-start rounded-[10px] border border-[#efb1ab] bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
           <TriangleAlert className="w-5 h-5 shrink-0" aria-hidden="true" />
           <span>
-            <strong>{refusees > 1 ? `${refusees} pièces ont été refusées.` : 'Une pièce a été refusée.'}</strong> Le motif est indiqué
-            ci-dessous. Pour la remplacer,{' '}
-            <a
-              className="underline font-semibold"
-              href={`mailto:${EMAIL_FACULTE}?subject=${encodeURIComponent(`Dossier ${suivi.reference_dossier} : pièce à remplacer`)}`}
-            >
-              contactez la Faculté
-            </a>
-            .
+            <strong>{refusees > 1 ? `${refusees} pièces ont été refusées.` : 'Une pièce a été refusée.'}</strong> Remplacez-
+            {refusees > 1 ? 'les' : 'la'} ci-dessous, sans vous déplacer.
           </span>
         </div>
       )}
@@ -224,6 +217,14 @@ const VueDossier: React.FC<{ suivi: SuiviDossier }> = ({ suivi }) => {
                   <p className="rounded-[10px] border border-[#efb1ab] bg-fds-bad-bg px-3 py-2 text-sm text-fds-bad">
                     <strong>Motif :</strong> {piece.motif_rejet}
                   </p>
+                )}
+                {piece.statut === 'rejete' && (
+                  <Link
+                    to={`/suivi/${suivi.reference_dossier}/remplacer/${piece.id}`}
+                    className="min-h-12 px-4 rounded-lg bg-fds-navy hover:bg-fds-navy-d text-white font-semibold flex items-center justify-center"
+                  >
+                    Remplacer ce document
+                  </Link>
                 )}
               </div>
             </li>

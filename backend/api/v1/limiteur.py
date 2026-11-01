@@ -77,6 +77,10 @@ def limiter_suivi(request: Request) -> None:
         )
 
 
+# Remplacement d'une pièce (US-010) : 5 échecs d'identité (référence + email) par minute et par IP, comme la connexion
+limiteur_identite = LimiteurDebit(max_requetes=5)
+
+
 def limiter_envois(request: Request) -> None:
     """Dépendance FastAPI : refuse (429) un client qui dépasse la limite d'envois."""
     if not limiteur_envois.autoriser(adresse_client(request)):

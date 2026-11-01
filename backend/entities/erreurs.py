@@ -77,6 +77,14 @@ class DocumentDejaDecide(ErreurMetier):
     """Le document a déjà fait l'objet d'une décision : elle est définitive."""
 
 
+class IdentiteNonVerifiee(ErreurMetier):
+    """Référence inconnue ou email qui ne correspond pas au dossier (jamais précisé à l'appelant)."""
+
+
+class RemplacementNonAutorise(ErreurMetier):
+    """Seule une pièce refusée peut être remplacée par le candidat."""
+
+
 class IdentifiantsInvalides(ErreurMetier):
     """Email ou mot de passe incorrect, ou compte désactivé (jamais précisé à l'appelant)."""
 

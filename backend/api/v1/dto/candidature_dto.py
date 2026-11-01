@@ -61,6 +61,8 @@ class PieceSuiviResponse(BaseModel):
     id: str
     nom: str
     statut: str  # manquant | en_attente | valide | rejete
+    format_accepte: str  # utile au formulaire de remplacement d'une pièce refusée
+    taille_max_mo: int
     motif_rejet: str | None = None
     depose_le: datetime | None = None  # UTC
     valide_le: datetime | None = None  # UTC

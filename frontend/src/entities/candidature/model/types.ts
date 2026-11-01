@@ -59,6 +59,9 @@ export interface PieceSuivi {
   id: string;
   nom: string;
   statut: StatutPiece;
+  /** Formats acceptés (« PDF, JPG, PNG ») et taille maximale, pour le formulaire de remplacement. */
+  format_accepte: string;
+  taille_max_mo: number;
   motif_rejet: string | null;
   depose_le: string | null;
   valide_le: string | null;
