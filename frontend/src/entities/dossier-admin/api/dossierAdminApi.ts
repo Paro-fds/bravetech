@@ -25,6 +25,21 @@ export const dossierAdminApi = {
     ),
 
   /**
+   * Télécharge la liste filtrée des dossiers (tous, pas seulement la page affichée) en CSV ou PDF. Même principe que
+   * les pièces : fetch avec l'en-tête d'authentification, puis le fichier est enregistré depuis une URL locale.
+   */
+  exporter: async (session: Session, filtres: FiltresDossiers, format: 'csv' | 'pdf'): Promise<{ blob: Blob; nom: string }> => {
+    const params = new URLSearchParams({ format });
+    if (filtres.q.trim()) params.set('q', filtres.q.trim());
+    if (filtres.statut) params.set('statut', filtres.statut);
+    if (filtres.deplacement) params.set('deplacement_physique', filtres.deplacement === 'oui' ? 'true' : 'false');
+    const reponse = await fetch(urlApi(`${BASE}/candidatures/export?${params}`), { headers: enteteAuth(session) });
+    if (!reponse.ok) return surSessionRefusee(new ApiError(reponse.status, null, `Erreur API (${reponse.status})`));
+    const nom = /filename="([^"]+)"/.exec(reponse.headers.get('content-disposition') ?? '')?.[1] ?? `candidatures.${format}`;
+    return { blob: await reponse.blob(), nom };
+  },
+
+  /**
    * Valide ou refuse une pièce. La décision est définitive. Rejette avec une `ApiError` : 422 (`detail.erreurs.motif`)
    * si le motif d'un refus manque, 409 si la pièce a déjà reçu une décision.
    */

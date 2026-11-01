@@ -4,6 +4,8 @@ Toutes les routes de ce routeur exigent un jeton valide (`get_current_admin`) : 
 donc une future route ajoutée ici ne peut pas l'oublier.
 """
 
+import logging
+from datetime import datetime, timezone
 from urllib.parse import quote
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, Response
@@ -33,6 +35,7 @@ from backend.bll.consulter_candidatures import (
     ObtenirDossierAdminUseCase,
 )
 from backend.bll.decider_document import DeciderDocumentUseCase
+from backend.bll.exporter_candidatures import generer_csv, vers_lignes
 from backend.bll.notifier_decision import NotifierDecisionUseCase
 from backend.bll.televerser_document import trouver_piece
 from backend.bll.obtenir_statut_candidature import (
@@ -40,6 +43,7 @@ from backend.bll.obtenir_statut_candidature import (
     STATUT_GLOBAL_COMPLET,
     STATUT_GLOBAL_EN_EXAMEN,
 )
+from backend.dal.export_pdf import generer_pdf
 from backend.entities.candidature import FRAIS_DOSSIER_HTG
 from backend.entities.document_soumis import DocumentSoumis
 from backend.entities.erreurs import (
@@ -55,6 +59,8 @@ from backend.ports.document_repository import IDocumentRepository
 from backend.ports.email_sender import IEmailSender
 from backend.ports.stockage_fichiers import IStockageFichiers
 from backend.ports.utilisateur_repository import IUtilisateurRepository
+
+_journal = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/admin", tags=["Administration"], dependencies=[Depends(get_current_admin)])
 
@@ -105,6 +111,57 @@ def lister_candidatures(
             )
             for l in resultat.items
         ],
+    )
+
+
+_LIBELLES_FILTRE_STATUT = {"en_examen": "à examiner", "action_requise": "action du candidat", "complet": "complets"}
+
+
+@router.get(
+    "/candidatures/export",
+    summary="Exporter la liste filtrée des dossiers (CSV ou PDF)",
+    response_class=Response,
+    responses={200: {"content": {"text/csv": {}, "application/pdf": {}}}},
+)
+def exporter_candidatures(
+    format: str = Query("csv", pattern="^(csv|pdf)$"),
+    q: str | None = Query(None, max_length=100),
+    statut: str | None = Query(None, pattern=_STATUTS),
+    deplacement_physique: bool | None = Query(None),
+    utilisateur: Utilisateur = Depends(get_current_admin),
+    repo: ICandidatureRepository = Depends(get_candidature_repository),
+    documents: IDocumentRepository = Depends(get_document_repository),
+):
+    """Télécharge tous les dossiers correspondant aux filtres (pas de pagination), avec les colonnes minimales.
+
+    Sans `statut`, tous les dossiers soumis sont exportés. Ni email, ni téléphone ne sont inclus.
+    """
+    dossiers = ListerCandidaturesUseCase(repo, documents).filtrer(q, statut, deplacement_physique)
+    maintenant = datetime.now(timezone.utc)
+    # Trace de l'accès à des données personnelles en masse : qui, quoi, combien (sans aucune donnée personnelle)
+    _journal.info("Export %s de %d dossier(s) par l'utilisateur %s.", format, len(dossiers), utilisateur.id)
+
+    nom_fichier = f"candidatures-{maintenant:%Y-%m-%d}.{format}"
+    if format == "csv":
+        contenu, type_mime = generer_csv(dossiers), "text/csv; charset=utf-8"
+    else:
+        criteres = [f"statut : {_LIBELLES_FILTRE_STATUT[statut]}"] if statut else []
+        if deplacement_physique is not None:
+            criteres.append(f"déplacement : {'oui' if deplacement_physique else 'non'}")
+        if q and q.strip():
+            criteres.append(f"recherche : « {q.strip()} »")
+        contenu = generer_pdf(
+            "Candidatures — Premier cycle MPC", ", ".join(criteres) or "tous les dossiers soumis", vers_lignes(dossiers), maintenant
+        )
+        type_mime = "application/pdf"
+    return Response(
+        content=contenu,
+        media_type=type_mime,
+        headers={
+            "Content-Disposition": f'attachment; filename="{nom_fichier}"',
+            "Cache-Control": "private, no-store",
+            "X-Content-Type-Options": "nosniff",
+        },
     )
 
 
