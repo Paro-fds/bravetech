@@ -69,6 +69,10 @@ class CandidatureDejaSoumise(ErreurMetier):
     """La candidature est déjà soumise : ses informations ne sont plus modifiables."""
 
 
+class DocumentIntrouvable(ErreurMetier):
+    """Aucun document soumis ne correspond à cet identifiant."""
+
+
 class IdentifiantsInvalides(ErreurMetier):
     """Email ou mot de passe incorrect, ou compte désactivé (jamais précisé à l'appelant)."""
 

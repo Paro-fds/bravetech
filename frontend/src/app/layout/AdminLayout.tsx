@@ -1,10 +1,11 @@
 import React from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
-import { LogOut } from 'lucide-react';
+import { Navigate, NavLink, Outlet } from 'react-router-dom';
+import { FileText, LogOut } from 'lucide-react';
 import { sessionValide, useSessionStore } from '../../entities/session';
 
 /**
- * Mise en page de l'espace administration. Barrière d'accès côté navigateur : sans session valide on renvoie vers la
+ * Mise en page de l'espace administration (maquettes « Administration ») : barre latérale marine, contenu à droite ;
+ * sur mobile la barre passe au-dessus. Barrière d'accès côté navigateur : sans session valide on renvoie vers la
  * connexion. La vraie protection reste côté serveur (`get_current_admin` sur chaque route `/admin/`).
  */
 export const AdminLayout: React.FC = () => {
@@ -17,21 +18,35 @@ export const AdminLayout: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#f4f6fa] font-fds-sans text-fds-ink">
-      <header className="bg-fds-navy text-white">
-        <div className="max-w-5xl mx-auto flex items-center gap-3 px-4 py-2.5">
-          <img src="/logo-fds.png" alt="" width={36} height={36} className="rounded" />
-          <span className="flex-1 leading-tight">
-            <span className="block font-semibold text-[15px]">Administration</span>
-            <span className="block text-xs text-[#cfe0f5] break-all">{session.email}</span>
-          </span>
-          <button type="button" onClick={fermer} className="min-h-11 px-3 rounded-lg border border-white/40 flex items-center gap-2 text-sm font-semibold">
-            <LogOut className="w-4 h-4" aria-hidden="true" />
-            Se déconnecter
-          </button>
+    <div className="flex flex-wrap min-h-screen bg-[#f4f6fa] font-fds-sans text-fds-ink">
+      <aside className="flex-[1_1_240px] lg:max-w-60 bg-fds-navy text-white p-4 flex flex-col gap-1.5">
+        <div className="flex items-center gap-2.5 pb-4 px-2">
+          <img src="/logo-fds.png" alt="Logo FDS" width={40} height={40} className="rounded" />
+          <div className="leading-tight">
+            <div className="font-semibold">FDS Admin</div>
+            <div className="text-xs text-[#cfe0f5]">{session.role === 'admin' ? 'Administrateur' : 'Agent'}</div>
+          </div>
         </div>
-      </header>
-      <main className="flex-1 flex flex-col">
+        <NavLink
+          to="/admin"
+          end={false}
+          className={({ isActive }) =>
+            `min-h-11 px-3 rounded-lg flex items-center gap-2.5 font-semibold ${isActive ? 'bg-white/15' : 'hover:bg-white/10'}`
+          }
+        >
+          <FileText className="w-5 h-5" aria-hidden="true" />
+          Candidatures
+        </NavLink>
+        <div className="flex-1" />
+        <div className="px-2 py-2 text-[13px] text-[#cfe0f5]">
+          Connecté : <b className="text-white break-all">{session.email}</b>
+        </div>
+        <button type="button" onClick={fermer} className="min-h-11 px-3 rounded-lg flex items-center gap-2.5 font-semibold hover:bg-white/10">
+          <LogOut className="w-5 h-5" aria-hidden="true" />
+          Se déconnecter
+        </button>
+      </aside>
+      <main className="flex-[999_1_640px] min-w-0 p-4 sm:p-8 flex flex-col gap-6">
         <Outlet />
       </main>
     </div>

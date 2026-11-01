@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { RootLayout } from './layout/RootLayout';
 import { FlowLayout } from './layout/FlowLayout';
 import { HomePage } from '../pages/home';
@@ -7,7 +7,8 @@ import { ApplyPage } from '../pages/apply';
 import { SuiviPage } from '../pages/suivi';
 import { AdminLayout } from './layout/AdminLayout';
 import { AdminLoginPage } from '../pages/admin-login';
-import { AdminAccueilPage } from '../pages/admin-accueil';
+import { AdminCandidaturesPage } from '../pages/admin-candidatures';
+import { AdminDossierPage } from '../pages/admin-dossier';
 
 export const router = createBrowserRouter([
   {
@@ -51,6 +52,10 @@ export const router = createBrowserRouter([
   {
     path: '/admin',
     element: <AdminLayout />,
-    children: [{ index: true, element: <AdminAccueilPage /> }],
+    children: [
+      { index: true, element: <AdminCandidaturesPage /> },
+      { path: 'dashboard', element: <Navigate to="/admin" replace /> },
+      { path: 'candidatures/:reference', element: <AdminDossierPage /> },
+    ],
   },
 ]);

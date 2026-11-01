@@ -22,6 +22,12 @@ class FakeDocumentRepository:
     def lister(self, candidat_id):
         return [deepcopy(d) for (c, _), d in self.documents.items() if c == candidat_id]
 
+    def obtenir_par_id(self, document_id):
+        return next((deepcopy(d) for d in self.documents.values() if d.id == document_id), None)
+
+    def lister_par_candidats(self, candidat_ids):
+        return {identifiant: self.lister(identifiant) for identifiant in candidat_ids}
+
     def enregistrer(self, document):
         self.documents[(document.candidat_id, document.document_requis_id)] = deepcopy(document)
 

@@ -47,6 +47,24 @@ class SqlDocumentRepository(IDocumentRepository):
     def lister(self, candidat_id: str) -> list[DocumentSoumis]:
         return [_vers_entite(m) for m in self._requete(candidat_id).order_by(DocumentSoumisModel.soumis_le).all()]
 
+    def obtenir_par_id(self, document_id: str) -> DocumentSoumis | None:
+        modele = self._session.get(DocumentSoumisModel, document_id)
+        return _vers_entite(modele) if modele else None
+
+    def lister_par_candidats(self, candidat_ids: list[str]) -> dict[str, list[DocumentSoumis]]:
+        resultat: dict[str, list[DocumentSoumis]] = {identifiant: [] for identifiant in candidat_ids}
+        if not candidat_ids:
+            return resultat
+        modeles = (
+            self._session.query(DocumentSoumisModel)
+            .filter(DocumentSoumisModel.candidat_id.in_(candidat_ids))
+            .order_by(DocumentSoumisModel.soumis_le)
+            .all()
+        )
+        for modele in modeles:
+            resultat[modele.candidat_id].append(_vers_entite(modele))
+        return resultat
+
     def enregistrer(self, document: DocumentSoumis) -> None:
         """Upsert sur (candidat_id, document_requis_id) : jamais deux lignes pour la même pièce."""
         modele = (
