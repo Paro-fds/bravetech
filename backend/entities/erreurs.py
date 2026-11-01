@@ -73,6 +73,10 @@ class DocumentIntrouvable(ErreurMetier):
     """Aucun document soumis ne correspond à cet identifiant."""
 
 
+class DocumentDejaDecide(ErreurMetier):
+    """Le document a déjà fait l'objet d'une décision : elle est définitive."""
+
+
 class IdentifiantsInvalides(ErreurMetier):
     """Email ou mot de passe incorrect, ou compte désactivé (jamais précisé à l'appelant)."""
 

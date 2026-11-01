@@ -51,6 +51,22 @@ class PieceAdminResponse(BaseModel):
     date_validation: datetime | None = None  # UTC
 
 
+class DecisionRequest(BaseModel):
+    statut: str  # valide | rejete
+    motif: str | None = None  # obligatoire pour un refus
+
+    model_config = {"extra": "forbid"}
+
+
+class DecisionHistoriqueResponse(BaseModel):
+    piece_id: str
+    piece_nom: str
+    statut: str
+    motif: str | None
+    decide_par: str  # email du membre du personnel
+    decide_le: datetime  # UTC
+
+
 class DossierAdminResponse(BaseModel):
     reference_dossier: str
     statut: str  # en_examen | action_requise | complet
@@ -70,3 +86,4 @@ class DossierAdminResponse(BaseModel):
     reference_paiement: str | None
     montant_htg: int
     pieces: list[PieceAdminResponse]
+    decisions: list[DecisionHistoriqueResponse]

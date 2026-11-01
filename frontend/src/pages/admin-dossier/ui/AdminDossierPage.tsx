@@ -5,6 +5,7 @@ import { ApiError } from '../../../shared/api/client';
 import { BADGES_DOSSIER, dossierAdminApi, type DossierAdmin, type PieceAdmin } from '../../../entities/dossier-admin';
 import { useSessionStore, type Session } from '../../../entities/session';
 import { formaterHorodatage, formaterJourCourt, formaterTaille } from '../../../features/candidature-form';
+import { PanneauDecision } from './PanneauDecision';
 
 type Resultat = { reference: string; etat: 'ok'; dossier: DossierAdmin } | { reference: string; etat: 'introuvable' | 'erreur' };
 type Apercu = { documentId: string; url: string; type: string } | { documentId: string; erreur: true };
@@ -82,7 +83,7 @@ const ApercuPiece: React.FC<{ session: Session; piece: PieceAdmin }> = ({ sessio
   );
 };
 
-/** Détail d'un dossier (maquette « Administration validation d'un dossier », sans les boutons de décision : US-013). */
+/** Détail d'un dossier et décisions sur les pièces (maquette « Administration validation d'un dossier »). */
 export const AdminDossierPage: React.FC = () => {
   const { reference = '' } = useParams();
   const session = useSessionStore((s) => s.session);
@@ -104,6 +105,25 @@ export const AdminDossierPage: React.FC = () => {
       annule = true;
     };
   }, [session, reference]);
+
+  /** Enregistre la décision, recharge le dossier (statuts, historique) et passe à la pièce suivante à examiner. */
+  const decider = async (documentId: string, statut: 'valide' | 'rejete', motif?: string) => {
+    if (!session) return;
+    try {
+      await dossierAdminApi.decider(session, documentId, statut, motif);
+    } catch (erreur) {
+      // 409 : un autre agent a décidé entre-temps ; on actualise pour montrer l'état réel avant de signaler l'erreur
+      if (erreur instanceof ApiError && erreur.status === 409) {
+        setResultat({ reference, etat: 'ok', dossier: await dossierAdminApi.obtenir(session, reference) });
+      }
+      throw erreur;
+    }
+    const dossier = await dossierAdminApi.obtenir(session, reference);
+    setResultat({ reference, etat: 'ok', dossier });
+    const courante = dossier.pieces.findIndex((p) => p.document_id === documentId);
+    const suivante = [...dossier.pieces.slice(courante + 1), ...dossier.pieces.slice(0, courante)].find((p) => p.statut === 'en_attente');
+    if (suivante) setChoisie(suivante.id);
+  };
 
   const retour = (
     <Link to="/admin" className="flex items-center gap-2 min-h-11 font-semibold text-fds-navy">
@@ -211,8 +231,38 @@ export const AdminDossierPage: React.FC = () => {
             </p>
           )}
           <ApercuPiece session={session} piece={piece} />
+          {piece.statut === 'en_attente' && piece.document_id && (
+            // `key` : changer de pièce réinitialise le motif saisi et les confirmations en cours
+            <PanneauDecision key={piece.document_id} nomPiece={piece.nom} onDecider={(statut, motif) => decider(piece.document_id!, statut, motif)} />
+          )}
+          {piece.statut === 'valide' && piece.date_validation && (
+            <p className="text-sm text-fds-ok font-semibold">Pièce validée le {formaterHorodatage(piece.date_validation)}. Décision définitive.</p>
+          )}
+          {piece.statut === 'rejete' && (
+            <p className="text-sm text-fds-mute">
+              Pièce refusée : décision définitive. Elle pourra recevoir une nouvelle décision si le candidat la remplace.
+            </p>
+          )}
         </section>
       </div>
+
+      <section className="rounded-xl border border-fds-line bg-[#f8fafd] p-4 flex flex-col gap-2" aria-label="Historique des décisions">
+        <h2 className="font-semibold text-base">Historique des décisions</h2>
+        {d.decisions.length === 0 ? (
+          <p className="text-sm text-fds-mute">Aucune décision pour le moment.</p>
+        ) : (
+          <ul className="flex flex-col gap-1.5">
+            {d.decisions.map((h) => (
+              <li key={`${h.piece_id}-${h.decide_le}`} className="text-sm">
+                {h.piece_nom} : <strong>{h.statut === 'valide' ? 'validé' : 'refusé'}</strong> par <strong>{h.decide_par}</strong>,{' '}
+                {formaterHorodatage(h.decide_le)}
+                {h.motif && <span className="block text-fds-mute">Motif : {h.motif}</span>}
+              </li>
+            ))}
+          </ul>
+        )}
+        <p className="text-xs text-fds-mute">Une décision enregistrée ne peut plus être modifiée.</p>
+      </section>
     </>
   );
 };

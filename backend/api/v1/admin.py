@@ -11,31 +11,42 @@ from pydantic import BaseModel
 
 from backend.api.v1.candidatures import get_candidature_repository, get_document_repository, get_stockage_fichiers
 from backend.api.v1.dto.admin_dto import (
+    DecisionHistoriqueResponse,
+    DecisionRequest,
     DossierAdminResponse,
     LigneCandidatureResponse,
     PageCandidaturesResponse,
     PieceAdminResponse,
     StatistiquesResponse,
 )
-from backend.api.v1.securite import get_current_admin
+from backend.api.v1.securite import get_current_admin, get_utilisateur_repository
 from backend.bll.consulter_candidatures import (
     LIMITE_MAX,
     ListerCandidaturesUseCase,
     ObtenirContenuDocumentUseCase,
     ObtenirDossierAdminUseCase,
 )
+from backend.bll.decider_document import DeciderDocumentUseCase
+from backend.bll.televerser_document import trouver_piece
 from backend.bll.obtenir_statut_candidature import (
     STATUT_GLOBAL_ACTION_REQUISE,
     STATUT_GLOBAL_COMPLET,
     STATUT_GLOBAL_EN_EXAMEN,
 )
 from backend.entities.candidature import FRAIS_DOSSIER_HTG
-from backend.entities.erreurs import CandidatureIntrouvable, DocumentIntrouvable
+from backend.entities.document_soumis import DocumentSoumis
+from backend.entities.erreurs import (
+    CandidatureIntrouvable,
+    DocumentDejaDecide,
+    DocumentIntrouvable,
+    InformationsInvalides,
+)
 from backend.entities.pieces_admission import NOM_ADMISSION
 from backend.entities.utilisateur import Utilisateur
 from backend.ports.candidature_repository import ICandidatureRepository
 from backend.ports.document_repository import IDocumentRepository
 from backend.ports.stockage_fichiers import IStockageFichiers
+from backend.ports.utilisateur_repository import IUtilisateurRepository
 
 router = APIRouter(prefix="/admin", tags=["Administration"], dependencies=[Depends(get_current_admin)])
 
@@ -94,12 +105,18 @@ def obtenir_dossier(
     reference: str,
     repo: ICandidatureRepository = Depends(get_candidature_repository),
     documents: IDocumentRepository = Depends(get_document_repository),
+    utilisateurs: IUtilisateurRepository = Depends(get_utilisateur_repository),
 ):
     try:
         dossier = ObtenirDossierAdminUseCase(repo, documents).executer(reference)
     except CandidatureIntrouvable:
         raise HTTPException(status_code=404, detail="Dossier introuvable.")
     c, cand = dossier.candidat, dossier.candidature
+    emails: dict[str, str] = {}
+    for decision in dossier.decisions:
+        if decision.decide_par not in emails:
+            auteur = utilisateurs.obtenir(decision.decide_par)
+            emails[decision.decide_par] = auteur.email if auteur else "compte supprimé"
     return DossierAdminResponse(
         reference_dossier=cand.reference_dossier,
         statut=dossier.statut_global,
@@ -134,6 +151,17 @@ def obtenir_dossier(
             )
             for p in dossier.pieces
         ],
+        decisions=[
+            DecisionHistoriqueResponse(
+                piece_id=d.document_requis_id,
+                piece_nom=trouver_piece(d.document_requis_id).nom,
+                statut=d.statut,
+                motif=d.motif,
+                decide_par=emails[d.decide_par],
+                decide_le=d.decide_le,
+            )
+            for d in dossier.decisions
+        ],
     )
 
 
@@ -159,3 +187,48 @@ def proxy_document(
             "Cache-Control": "private, no-store",
         },
     )
+
+
+def _piece_apres_decision(document: DocumentSoumis) -> PieceAdminResponse:
+    return PieceAdminResponse(
+        id=document.document_requis_id,
+        nom=trouver_piece(document.document_requis_id).nom,
+        statut=document.statut_validation,
+        document_id=document.id,
+        nom_fichier=document.nom_fichier,
+        type_mime=document.type_mime,
+        taille_octets=document.taille_octets,
+        depose_le=document.soumis_le,
+        motif_rejet=document.motif_rejet,
+        valide_par=document.valide_par,
+        date_validation=document.date_validation,
+    )
+
+
+@router.put(
+    "/documents/{document_id}/statut",
+    response_model=PieceAdminResponse,
+    summary="Valider ou refuser une pièce (décision définitive, enregistrée avec son auteur)",
+)
+def decider_document(
+    document_id: str,
+    payload: DecisionRequest,
+    utilisateur: Utilisateur = Depends(get_current_admin),
+    repo: ICandidatureRepository = Depends(get_candidature_repository),
+    documents: IDocumentRepository = Depends(get_document_repository),
+):
+    """Enregistre `valide_par` et `date_validation` ; un refus exige un motif, que le candidat verra.
+
+    Une décision ne se modifie pas : 409 si la pièce a déjà été validée ou refusée (jusqu'à son remplacement).
+    """
+    try:
+        document, _ = DeciderDocumentUseCase(repo, documents).executer(
+            document_id, payload.statut, payload.motif, utilisateur
+        )
+    except InformationsInvalides as erreur:
+        raise HTTPException(status_code=422, detail={"erreurs": erreur.erreurs})
+    except DocumentIntrouvable:
+        raise HTTPException(status_code=404, detail="Document introuvable.")
+    except DocumentDejaDecide:
+        raise HTTPException(status_code=409, detail="Cette pièce a déjà fait l'objet d'une décision, qui est définitive.")
+    return _piece_apres_decision(document)
