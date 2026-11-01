@@ -1,6 +1,6 @@
 ---
 created: 2026-09-24T20:42:00Z
-updated: 2026-09-30T16:04:08Z
+updated: 2026-11-01T15:51:55Z
 ---
 
 # PRD.md — FDS Portail
@@ -16,16 +16,20 @@ updated: 2026-09-30T16:04:08Z
 
 Il existe parce que les informations sur les cursus circulent via des canaux informels (WhatsApp, bouche-à-oreille), et qu'un candidat hors de Port-au-Prince doit aujourd'hui obligatoirement se déplacer physiquement pour obtenir une information fiable ou déposer une candidature — créant une inégalité d'accès structurelle.
 
+**Modèle d'admission.** L'admission est **unique** : tout candidat est admis au **Premier cycle MPC** (2 ans). Il choisit ensuite sa branche d'ingénierie — Génie Civil, Génie Électromécanique, Génie Électronique ou Architecture (3 ans) — au terme du MPC, soit **5 ans au total**. Le portail ne recueille donc **aucun choix de cursus** à la candidature ; les branches sont présentées à titre d'information sur le parcours. La liste des pièces à fournir est la même pour tous les candidats (voir `GLOSSARY.md`, « Pièces requises d'admission »).
+
 ## 2. Public
 
 **Candidat (public principal)** — lycéen, souvent hors de Port-au-Prince, smartphone Android, connexion 3G intermittente. Son accès est entièrement public : aucun compte requis pour postuler ou suivre son dossier (il utilise sa référence dossier).
 
 **Administrateur FDS (public secondaire)** — agent du secrétariat qui traite les dossiers reçus. Son accès est authentifié (email + mot de passe, JWT). Il a priorité sur le candidat en cas de conflit de besoin (ex. traçabilité vs simplicité).
 
+**Langues.** Interface en français, avec un sélecteur Kreyòl (FR / KR). Les contenus créoles sont fournis ou validés par la Faculté avant publication.
+
 ## 3. Scénario idéal de bout en bout
 
-1. Louismy ouvre le portail sur son Android et consulte la fiche du cursus Génie Informatique (dates, prérequis, pièces requises).
-2. Il clique « Postuler », saisit ses informations personnelles et répond à la question sur le déplacement physique.
+1. Louismy ouvre le portail sur son Android et consulte la fiche du Premier cycle MPC (parcours en 5 ans, dates, pièces requises).
+2. Il clique « Postuler », saisit ses informations personnelles, confirme son admission au MPC et répond à la question sur le déplacement physique.
 3. Il simule le paiement des frais (MonCash/NatCash) — une référence transactionnelle est générée.
 4. Il uploade ses pièces justificatives (PDF/JPG, max 5 Mo chacune).
 5. Le système génère la référence `CAN-2026-0089` et lui envoie un email de confirmation avec un lien de suivi.
@@ -66,8 +70,9 @@ La frontière est de **sécurité** : un candidat ne doit jamais voir le dossier
 
 | Capacité | Déclencheur | Résultat réel |
 |---|---|---|
-| **Consulter les fiches cursus** | Candidat clique sur un cursus depuis l'accueil | Page affichant description, dates clés et liste des pièces requises |
-| **Postuler** | Candidat clique « Postuler » et complète le formulaire en 3 étapes | Dossier créé en base, référence `CAN-2026-X` générée, email de confirmation envoyé |
+| **Consulter les fiches du parcours** | Candidat clique sur le MPC ou une branche depuis l'accueil | Fiche MPC : parcours en 5 ans, programme, dates clés et les 5 pièces requises. Fiche branche : programme et accès après le MPC |
+| **Consulter l'histoire et les contacts** | Candidat ouvre « Histoire » ou « Contact » | Pages institutionnelles : histoire de la Faculté, adresse (Delmas 33), moyens de contact |
+| **Postuler** | Candidat clique « Postuler » et complète le formulaire en 4 étapes (informations, admission MPC et déplacement, paiement simulé, pièces) | Dossier créé en base, référence `CAN-2026-X` générée, email de confirmation envoyé |
 | **Simuler le paiement** | Candidat confirme la simulation MonCash/NatCash | `statut_paiement` et `reference_paiement` enregistrés, accès à l'étape upload débloqué |
 | **Uploader une pièce** | Candidat attache un fichier PDF/JPG ≤ 5 Mo | Fichier stocké sur Cloudinary, `DocumentSoumis` créé avec statut `en_attente` |
 | **Suivre son dossier** | Candidat saisit sa référence sur la page de suivi | Barre de progression affichant le statut de chaque document |
@@ -134,6 +139,8 @@ La plus petite version valide : **un candidat soumet un dossier complet et reço
 | Espace étudiant complet (compte, historique) | Le suivi par référence suffit pour le MVP ; un compte complet est post-MVP | Non |
 | Plateforme de cours (FDS Akademi) | Module séparé, hors périmètre Bravetech | Non |
 | SSO institutionnel complet (FDS SYS) | Architecturalement préparé, pas livré en V1 | Non |
+| Choix de la branche (Génie Civil, etc.) | L'orientation se fait après le MPC, hors du portail ; l'admission est unique | **Oui** — un candidat pourrait supposer qu'il choisit sa filière en postulant |
+| Décision d'admission (Admis / Non admis) dans le portail | Le portail ne valide que les pièces ; aucune décision finale n'est affichée en V1 | Oui |
 | Notifications SMS | Should Have — prévu mais non bloquant pour le MVP | Non |
 | Export CSV/PDF des dossiers | Could Have — utile pour les commissions, pas critique pour le lancement | Non |
 | Mode sombre | Could Have — confort, pas accessibilité de base | Non |

@@ -1,3 +1,8 @@
+---
+created: 2026-11-01T15:51:55Z
+updated: 2026-11-01T15:51:55Z
+---
+
 # Cahier des Charges — FDS Portail (Remanié)
 **GL-EN3-2026 · Équipe Bravetech · M2 FDS Portail**
 
@@ -23,7 +28,7 @@ La Faculté des Sciences (FDS) de l'UEH forme l'élite de l'ingénierie en Haït
 
 ## §3. Le persona
 
-**Louismy, 17 ans**, élève en Terminale à Pétion-Ville. Il possède un smartphone Android avec une connexion 3G intermittente. Il souhaite s'inscrire en génie informatique à la FDS, mais ne trouve pas facilement d'informations officielles sur les dates, les modalités d'admission et les prérequis.
+**Louismy, 17 ans**, élève en Terminale à Pétion-Ville. Il possède un smartphone Android avec une connexion 3G intermittente. Il souhaite s'inscrire à la FDS (admission au MPC, puis choix d'une branche d'ingénierie), mais ne trouve pas facilement d'informations officielles sur les dates, les modalités d'admission et les prérequis.
 
 ---
 
@@ -103,7 +108,7 @@ Le JTBD ci-dessus fonde l'hypothèse suivante :
 
 ### 🟢 Must Have — Requis pour le MVP
 
-- Pages de présentation des cursus (Informatique, Physique, etc.) et dates clés.
+- Pages de présentation du parcours (Premier cycle MPC puis branches d'ingénierie) et dates clés.
 - Formulaire de candidature en ligne avec upload de pièces justificatives (PDF/JPG).
 - Génération d'un numéro de référence de dossier (ex : `CAN-2026-X`).
 - Suivi du dossier en ligne par le candidat via sa référence.
@@ -131,7 +136,7 @@ Le JTBD ci-dessus fonde l'hypothèse suivante :
 
 ## §9. Walking Skeleton
 
-> Louismy ouvre le portail FDS sur son téléphone Android. Il consulte la page du cursus Ingénierie Informatique. Il clique sur « Postuler » et renseigne ses informations personnelles, puis répond à la question obligatoire sur le déplacement physique. Il accède à l'interface de simulation de paiement (MonCash/NatCash) : une fois le paiement virtuel validé, il uploade ses pièces justificatives. Le système lui affiche immédiatement sa référence `CAN-2026-0089` et lui envoie un email de confirmation contenant cette référence et un lien vers la page de suivi.
+> Louismy ouvre le portail FDS sur son téléphone Android. Il consulte la page du Premier cycle MPC. Il clique sur « Postuler », renseigne ses informations personnelles et confirme son admission au MPC, puis répond à la question obligatoire sur le déplacement physique. Il accède à l'interface de simulation de paiement (MonCash/NatCash) : une fois le paiement virtuel validé, il uploade ses pièces justificatives. Le système lui affiche immédiatement sa référence `CAN-2026-0089` et lui envoie un email de confirmation contenant cette référence et un lien vers la page de suivi.
 >
 > Plus tard, Louismy retrouve son dossier via la page `/suivi`. Il voit une barre de progression indiquant que son dossier est « En attente de validation ». L'administration valide ou rejette un document — Louismy reçoit immédiatement un email de statut. Si un document est rejeté, la page affiche « Correction requise » et il peut remplacer le document directement depuis cette page.
 
@@ -241,9 +246,9 @@ sequenceDiagram
 Le modèle respecte deux principes fondamentaux :
 
 1. **Langage Ubiquitaire (DDD) :** Les noms des entités (`Candidat`, `DocumentSoumis`) reprennent le vocabulaire exact du secrétariat FDS.
-2. **Normalisation 3NF :** La distinction entre *ce qui est exigé* (catalogue des pièces, issu du référentiel JSON des cursus) et *ce qui est fourni* (`DocumentSoumis`) évite la redondance.
+2. **Normalisation 3NF :** La distinction entre *ce qui est exigé* (catalogue des pièces, défini côté backend) et *ce qui est fourni* (`DocumentSoumis`) évite la redondance.
 
-> **Note :** La liste des documents requis par cursus est gérée via le référentiel JSON officiel des cursus (`JsonCursusRepository`), pas via une table SQL dédiée. `DocumentSoumis` référence la pièce par son nom canonique issu du catalogue JSON.
+> **Note :** L'admission est unique (Premier cycle MPC) : la liste des pièces requises est la même pour tous les candidats (acte de naissance, Bac II, relevé de notes, deux photos d'identité, CIN). Elle est définie côté backend, pas via une table SQL dédiée. `DocumentSoumis` référence la pièce par son nom canonique.
 
 ### 12.1 Diagramme de classes
 
@@ -263,7 +268,6 @@ classDiagram
         +String nom
         +String prenom
         +String email
-        +String cursus_slug
         +Integer campagne
         +String statut_paiement
         +String methode_paiement
@@ -290,7 +294,7 @@ classDiagram
 ### 12.2 Contraintes métier
 
 - Chaque dossier possède une référence unique (`CAN-2026-XXXX`).
-- Un candidat peut re-candidater d'une année à l'autre — la contrainte d'unicité est `(email, cursus_slug, campagne)`, pas `email` seul.
+- Un candidat peut re-candidater d'une année à l'autre — la contrainte d'unicité est `(email, campagne)`, pas `email` seul. La candidature ne porte aucun cursus : l'admission est unique (MPC).
 - Les formats autorisés : PDF, JPG, JPEG. Taille max : 5 Mo.
 - Le backend vérifie le type MIME réel (magic bytes) avant enregistrement.
 - La soumission nécessite un statut de paiement simulé validé.
@@ -315,14 +319,13 @@ CREATE TABLE candidats (
     nom VARCHAR(100) NOT NULL,
     prenom VARCHAR(100) NOT NULL,
     email VARCHAR(255) NOT NULL,
-    cursus_slug VARCHAR(100) NOT NULL,
     campagne SMALLINT NOT NULL DEFAULT 2026,
     statut_paiement VARCHAR(50) DEFAULT 'en_attente',
     methode_paiement VARCHAR(50),
     reference_paiement VARCHAR(100),
     deplacement_physique BOOLEAN,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE (email, cursus_slug, campagne)
+    UNIQUE (email, campagne)
 );
 
 CREATE TABLE documents_soumis (

@@ -1,6 +1,6 @@
 ---
 created: 2026-09-27T12:28:00Z
-updated: 2026-09-30T16:04:08Z
+updated: 2026-11-01T15:51:55Z
 status: open
 ---
 
@@ -20,6 +20,8 @@ L'Epic 2 implémente le **Walking Skeleton complet côté candidat** : de la sai
 - L'espace d'évaluation et de validation administrative par les agents FDS (Epic 3 — WS-04).
 - Le remplacement d'un document rejeté suite à notification administrative (Epic 3 — US-017).
 - Les paiements monétaires réels (hors périmètre V1 — délégués à FDS Pay).
+- Le choix de la branche (Génie Civil, etc.) : il a lieu après le MPC, hors du portail (admission unique, ADR-008).
+- Une décision d'admission (Admis / Non admis) : le portail ne valide que les pièces.
 
 ---
 
@@ -27,11 +29,14 @@ L'Epic 2 implémente le **Walking Skeleton complet côté candidat** : de la sai
 
 | ID | Constat | Statut |
 |---|---|---|
-| E2-1 | L'offre académique et les pièces requises par cursus sont déjà disponibles via `JsonCursusRepository` sans nécessiter de tables SQL. | ✅ Confirmé (Epic 1) |
+| E2-1 | L'offre académique est disponible via `JsonCursusRepository` sans tables SQL. Les pièces requises sont générées par `backend/dal/cursus_loader.py`, **par cursus** (4 pièces, plus une attestation MPC hors MPC) : écart avec E2-6 et E2-7. | ⚠️ Partiel — voir E2-6, E2-7 |
 | E2-2 | Les tables relationnelles PostgreSQL sont vierges et doivent accueillir les entités candidates (`candidats`, `candidatures`, `documents_soumis`). | ✅ Prêt pour scaffold DAL |
 | E2-3 | Pour respecter l'autonomie sur serveur Proxmox (ADR-006) et éviter tout blocage d'API externe en dev, le stockage de fichiers doit fonctionner en volume local persistant avec adaptateur Cloudinary optionnel. | ✅ Recommandé |
 | E2-4 | L'envoi d'email doit être asynchrone et non-bloquant : un échec d'email ne doit sous aucun prétexte annuler ou bloquer une candidature valide. | ✅ Règle absolue du PRD §7 |
 | E2-5 | La question `deplacement_physique` est un KPI central du PRD (§11) et doit obligatoirement être saisie et persistée. | ✅ Exigence stricte |
+| E2-6 | **L'admission est unique (Premier cycle MPC).** Le candidat ne choisit aucun cursus à la candidature ; il choisit sa branche après 2 ans de MPC. Le modèle initial (`cursus_slug` sur `Candidat`, étape « choix de filière ») était faux. Voir `reviews/01-admission-unique-mpc.md` et ADR-008. | ✅ Confirmé (2026-10-31) |
+| E2-7 | **Pièces requises : liste unique de 5** (acte de naissance, Bac II, relevé de notes, deux photos d'identité, CIN). Pas de certificat de bonne vie et mœurs ni de certificat médical. | ✅ Confirmé (2026-10-31) |
+| E2-8 | Le tunnel de candidature compte **4 étapes** (informations, admission MPC + déplacement, paiement simulé, pièces) puis un écran de confirmation, selon les maquettes. | ✅ Confirmé (2026-10-31) |
 
 ---
 
@@ -52,10 +57,10 @@ Les 5 User Stories de l'Epic 2 sont ordonnées pour garantir un flux d'intégrat
 
 | Ordre | Story | Titre | Dépend de | Description |
 |---|---|---|---|---|
-| 1 | **US-005** | Formulaire d'inscription & question `deplacement_physique` | Socle Epic 1 | Entités du domaine, tables PostgreSQL, Étape 1 du formulaire mobile (infos personnelles + question déplacement). |
-| 2 | **US-006** | Simulation de paiement MonCash / NatCash | US-005 | Étape 2 du formulaire : choix opérateur, calcul des frais, validation simulée, génération `PAY-SIM-2026-XXXX`. |
-| 3 | **US-007** | Téléversement sécurisé des pièces requises | US-005, US-006 | Étape 3 : upload avec jauge ≤ 5 Mo, contrôle MIME/magic bytes, stockage sécurisé des fichiers. |
-| 4 | **US-008** | Finalisation de candidature & notification de confirmation | US-007 | Étape 4 : persistance finale, attribution de la référence `CAN-2026-XXXX`, email asynchrone non-bloquant. |
+| 1 | **US-005** | Formulaire d'inscription & question `deplacement_physique` | Socle Epic 1 | Entités du domaine, tables PostgreSQL, Étapes 1 et 2 du formulaire mobile (infos personnelles ; admission MPC + question déplacement). |
+| 2 | **US-006** | Simulation de paiement MonCash / NatCash | US-005 | Étape 3 du formulaire : choix opérateur, calcul des frais, validation simulée, génération `PAY-SIM-2026-XXXX`. |
+| 3 | **US-007** | Téléversement sécurisé des pièces requises | US-005, US-006 | Étape 4 : upload des 5 pièces avec jauge ≤ 5 Mo, contrôle MIME/magic bytes, stockage sécurisé des fichiers. |
+| 4 | **US-008** | Finalisation de candidature & notification de confirmation | US-007 | Écran de confirmation : persistance finale, attribution de la référence `CAN-2026-XXXX`, email asynchrone non-bloquant. |
 | 5 | **US-009** | Consultation et suivi de dossier par référence | US-008 | Page `/suivi`, consultation publique par référence `CAN-XXXX`, barre de progression et état des pièces. |
 
 ---
@@ -68,6 +73,8 @@ Les 5 User Stories de l'Epic 2 sont ordonnées pour garantir un flux d'intégrat
 - **R2 (Contrôle magic bytes) :** Tout fichier reçu sur l'endpoint d'upload doit être validé par ses octets d'en-tête (magic bytes) et limité strictement à 5 Mo.
 - **R3 (Mesure déplacement physique) :** Le champ `deplacement_physique` (`boolean`) est obligatoire dans le contrat de soumission de dossier.
 - **R4 (Étanchéité des données) :** La consultation de suivi par référence `GET /api/v1/candidatures/{ref}` ne retourne que le statut public du dossier et la liste des documents, sans exposer de données personnelles confidentielles d'autres candidats.
+- **R5 (Admission unique) :** Aucune candidature ne porte de `cursus_slug` ni de filière ; le formulaire ne propose aucun choix de cursus et `/postuler` ne lit aucun paramètre `cursus`. La contrainte d'unicité d'un candidat est `(email, campagne)`.
+- **R6 (Pièces requises uniques) :** La liste des pièces est la même pour tous : acte de naissance, Bac II, relevé de notes, deux photos d'identité, CIN. Elle est définie côté backend et alimente les écrans d'upload, de suivi et d'administration.
 
 ---
 

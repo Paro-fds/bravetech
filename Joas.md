@@ -1,6 +1,6 @@
 ---
 created: 2026-10-28T14:18:55Z
-updated: 2026-10-28T14:18:55Z
+updated: 2026-11-01T15:51:55Z
 ---
 
 # Répartition du travail — Joas
@@ -13,7 +13,7 @@ Prendre en charge le parcours candidat depuis le formulaire jusqu'à la confirma
 
 | Story | Travail à réaliser | Dépendances |
 |---|---|---|
-| **US-005 — Formulaire d'inscription** | Créer les entités `Candidat` et `Candidature`, leurs modèles de persistance et DTO; réaliser l'étape d'informations personnelles et de choix de cursus; rendre obligatoire et persister `deplacement_physique`; ajouter tests unitaires et d'intégration. | Catalogue des cursus (Epic 1) |
+| **US-005 — Formulaire d'inscription** | Créer les entités `Candidat` et `Candidature`, leurs modèles de persistance et DTO; réaliser l'étape d'informations personnelles et l'étape d'admission au MPC (aucun choix de cursus, voir ADR-008); rendre obligatoire et persister `deplacement_physique`; ajouter tests unitaires et d'intégration. | Catalogue des cursus (Epic 1) |
 | **US-006 — Simulation de paiement** | Ajouter le choix MonCash/NatCash, le montant de 500 HTG, la validation du numéro haïtien, la référence simulée `PAY-SIM-2026-XXXX` et la persistance du statut de paiement. Afficher clairement qu'aucun argent réel n'est prélevé. | US-005 |
 | **US-008 — Finalisation et confirmation** | Enregistrer le dossier complet, générer une référence unique `CAN-2026-XXXX`, afficher l'écran de confirmation et envoyer l'email de confirmation sans bloquer la candidature en cas d'échec. | US-005, US-006, US-007 |
 | **US-014 — Emails après décision administrative** | Ajouter les emails de validation et de rejet, avec le motif de rejet et le lien de remplacement si nécessaire. Un échec email ne doit pas annuler la décision administrative; il doit être journalisé. | US-008 (port email), US-013 |

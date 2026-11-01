@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T15:23:00Z
-updated: 2026-09-30T16:04:08Z
+updated: 2026-11-01T15:51:55Z
 workstream: WS-01
 ---
 
@@ -109,7 +109,9 @@ Le Workstream WS-01 est implémenté selon les principes de la **Clean Architect
 
 ## 3. Modèle de données & Source de vérité (Fichiers JSON `cursus/`)
 
-Contrairement aux données transactionnelles (candidats, dossiers, pièces soumises gérés dans PostgreSQL à partir de l'Epic 2), l'offre académique des cursus et pièces requises constitue un **catalogue de référence statique**.
+Contrairement aux données transactionnelles (candidats, dossiers, pièces soumises gérés dans PostgreSQL à partir de l'Epic 2), l'offre académique (filières, durée, programmes) constitue un **catalogue de référence statique**. Les **pièces requises d'admission** forment une liste unique de 5 pièces (ADR-008) définie côté backend (`backend/dal/cursus_loader.py`), et non dans les fichiers JSON.
+
+> **Écart code / règle (2026-10-31) :** `_creer_documents_requis_par_defaut` génère aujourd'hui 4 pièces et ajoute une « attestation de validation du cycle MPC » pour les cursus hors MPC. La règle d'admission unique demande une liste unique de 5 pièces (ajout de la CIN, photos d'identité, retrait de l'attestation MPC) et la fin de la distinction par cursus. À traiter avec US-005 / US-007.
 
 Les informations sont directement exploitées depuis les fichiers JSON officiels dans `cursus/` via `JsonCursusRepository` :
 - `cursus/mpc.json` : Tronc commun Math-Physique-Chimie (durée 2 ans, semestres S1-S4).
@@ -130,7 +132,7 @@ Les informations sont directement exploitées depuis les fichiers JSON officiels
 Les règles suivantes, actives durant l'Epic 1, sont désormais pérennes dans le socle technique :
 
 1. **Règle R1 — Source de vérité Cursus en fichiers JSON** :
-   - Les cursus et documents requis sont gérés sous forme de fichiers JSON locaux versionnés. Aucune table SQL n'est utilisée pour ces données statiques de référence.
+   - Les cursus (filières, durée, programmes) sont gérés sous forme de fichiers JSON locaux versionnés. Aucune table SQL n'est utilisée pour ces données statiques de référence. La liste des pièces requises est unique et définie côté backend (voir §3).
 2. **Règle R2 — Gestion stricte des secrets et variables d'environnement** :
    - Tout secret (`DATABASE_URL`, identifiants de connexion, futures clés JWT) doit être déclaré dans `.env` et proscrit de tout commit Git.
    - Un fichier modèle `.env.example` sans aucun secret réel documente les variables requises.

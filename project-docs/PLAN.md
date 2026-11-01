@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T00:30:00Z
-updated: 2026-10-28T14:18:55Z
+updated: 2026-11-01T15:51:55Z
 ---
 
 # PLAN.md — FDS Portail
@@ -51,7 +51,7 @@ Source : `PRD.md §6` (Must / Should / Won't). Consolidé ici pour le séquencem
 ### Must Have — bloquant pour le lancement
 | Fonctionnalité | Epic |
 |---|---|
-| Pages cursus avec dates clés et pièces requises | `epic-001` |
+| Pages parcours : fiche MPC (parcours en 5 ans, dates clés, 5 pièces requises) et fiches des branches | `epic-001` (fiche MPC et accueil à aligner sur l'admission unique) |
 | Formulaire de candidature (infos + paiement simulé + upload) | `epic-002` |
 | Génération de la référence `CAN-2026-X` | `epic-002` |
 | Email de confirmation après soumission | `epic-002` |
@@ -65,6 +65,8 @@ Source : `PRD.md §6` (Must / Should / Won't). Consolidé ici pour le séquencem
 ### Should Have — important, non bloquant
 | Fonctionnalité | Cible |
 |---|---|
+| Pages Histoire et Contact (desktop et mobile) | À planifier (évolution de WS-01) |
+| Interface en Kreyòl (sélecteur FR / KR) | À planifier, contenu à valider par la Faculté |
 | Notifications SMS | Post-MVP (WS-05) |
 
 ### Won't Have — explicitement hors V1
@@ -101,7 +103,7 @@ Source : `PRD.md §6` (Must / Should / Won't). Consolidé ici pour le séquencem
 **But en une phrase :** *"Un candidat peut soumettre un dossier complet depuis son téléphone et suivre son avancement sans jamais se déplacer."*
 
 **User stories principales :**
-- `US-005` — Formulaire d'inscription & question `deplacement_physique` (infos personnelles, question obligatoire enregistrée en base).
+- `US-005` — Formulaire d'inscription & question `deplacement_physique` (infos personnelles, admission unique au MPC, question obligatoire enregistrée en base).
 - `US-006` — Simulation de paiement MonCash / NatCash avec référence transactionnelle.
 - `US-007` — Téléversement sécurisé des pièces requises (PDF/JPG ≤ 5 Mo, vérification magic bytes).
 - `US-008` — Finalisation de candidature & notification de confirmation (référence `CAN-2026-X` affichée, email asynchrone non bloquant).
@@ -138,6 +140,7 @@ Source : `PRD.md §6` (Must / Should / Won't). Consolidé ici pour le séquencem
 2. **Construire `US-005`** — formulaire d'infos personnelles + question `deplacement_physique` obligatoire persistée en base (métrique principale du MVP, cible ≥ 70 % à `false`).
 3. **Enchaîner `US-006` → `US-010`** dans l'ordre de l'Epic : simulation de paiement, téléversement sécurisé, finalisation + email, suivi par référence, remplacement d'un document rejeté.
 4. **Documenter l'ordre de build** de l'Epic 2 dans sa section `EPIC_EXECUTION.md` si l'on dévie de l'ordre séquentiel par ID.
+5. **Aligner WS-01 sur l'admission unique** (ADR-008) : accueil avec carte MPC mise en avant, fiche MPC (parcours en 5 ans, 5 pièces), fiches des branches sans pièces, et liste de pièces unique dans `backend/dal/cursus_loader.py`. À planifier comme story dédiée, en parallèle d'`US-005` ; créer aussi les stories Histoire / Contact et Kreyòl si elles sont retenues.
 
 > Le statut quotidien (story en cours, bloquages) vit dans `project-docs/execution/` une fois le travail commencé — pas ici. Ce fichier ne change que si la séquence des Epics change.
 

@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T13:09:00Z
-updated: 2026-09-30T16:04:08Z
+updated: 2026-11-01T15:51:55Z
 ---
 
 # EPIC_EXECUTION.md — FDS Portail
@@ -32,6 +32,8 @@ Socle technique complet établi (Clean Architecture, CI GitHub Actions avec test
 
 **Workstream :** WS-02 Candidature, WS-03 Suivi de dossier
 **Status :** 🟡 In progress — [refinement](epic-002-candidature/epic-002-refinement.md)
+
+Règle d'admission (2026-10-31) : l'admission est unique (Premier cycle MPC), sans choix de cursus ; liste unique de 5 pièces — voir [epic-002-refinement.md](epic-002-candidature/epic-002-refinement.md) (E2-6, E2-7, R5, R6) et ADR-008.
 
 Walking Skeleton complet côté candidat : formulaire multi-étapes, question `deplacement_physique`, simulation de paiement MonCash/NatCash, téléversement sécurisé des pièces, attribution de la référence `CAN-2026-XXXX`, email de confirmation, page de suivi du dossier et remplacement d'un document rejeté.
 

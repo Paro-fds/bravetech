@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T00:35:00Z
-updated: 2026-09-30T16:04:08Z
+updated: 2026-11-01T15:51:55Z
 ---
 
 # GLOSSARY.md — FDS Portail
@@ -45,7 +45,7 @@ updated: 2026-09-30T16:04:08Z
 
 | Terme | Définition |
 |---|---|
-| **Fichiers JSON (`cursus/`)** | **Source de vérité pour l'offre académique.** Fichiers JSON officiels décrivant les filières, matières et pièces requises par cursus (`mpc.json`, `genie-civil.json`, etc.). Données de référence statiques versionnées avec le code, sans nécessité de table SQL. |
+| **Fichiers JSON (`cursus/`)** | **Source de vérité pour l'offre académique.** Fichiers JSON officiels décrivant les filières, leur durée et leurs matières par niveau (`mpc.json`, `genie-civil.json`, etc.). Données de référence statiques versionnées avec le code, sans nécessité de table SQL. |
 | **PostgreSQL** | **Source de vérité des dossiers candidats.** Conteneurisé sous Docker sur VM Linux / Proxmox (ADR-006). Contient les tables transactionnelles (`candidats`, `candidatures`, `documents_soumis`, `utilisateurs`). Backup régulier. Perte = perte de dossiers. |
 | **Cloudinary** | Stockage des fichiers physiques (PDF, JPG) uploadés par les candidats. Stockage secondaire — les fichiers survivent si PostgreSQL est perdu, mais les dossiers associés ne peuvent pas être reconstitués sans la base. URLs signées, accès via proxy admin. |
 | **Mémoire application** | L'API FastAPI est **stateless** — aucun état de session persisté entre les requêtes. Cache en mémoire pour la lecture des fichiers JSON de cursus. |
@@ -60,9 +60,14 @@ updated: 2026-09-30T16:04:08Z
 
 | Terme | Définition |
 |---|---|
+| **Admission unique** | Règle institutionnelle : tout candidat est admis au Premier cycle MPC. Il n'existe pas de candidature par cursus — la branche se choisit après le MPC, hors du portail. Aucun champ « cursus » dans la candidature. |
+| **MPC** | Premier cycle des études générales et techniques (Math-Physique-Chimie). 2 ans. Porte d'entrée unique de la FDS ; programme dans `cursus/mpc.json`. |
+| **Branche** | Filière d'ingénierie suivie après le MPC : Génie Civil, Génie Électromécanique, Génie Électronique ou Architecture. 3 ans. Choisie par l'étudiant après le MPC ; affichée sur le portail à titre d'information uniquement. |
+| **Parcours en 5 ans** | MPC (2 ans) puis branche (3 ans). Durée totale de la formation. |
+| **Pièces requises d'admission** | Liste unique de 5 pièces obligatoires : acte de naissance (ou extrait d'archives), certificat de fin d'études secondaires (Bac II), relevé de notes officiel, deux photos d'identité récentes, pièce d'identité (CIN). Ni certificat de bonne vie et mœurs, ni certificat médical. |
 | **Référence dossier** | Identifiant unique d'une candidature, format `CAN-YYYY-NNNN` (ex. `CAN-2026-0089`). Générée par le backend au moment de la soumission. Sert de clé d'accès public au suivi — remplace un login pour le Candidat. |
 | **Dossier** | L'ensemble des informations et documents soumis par un Candidat pour une candidature. Synonyme de "candidature" dans les conversations courantes — mais dans le code, c'est l'entité `Candidat` qui porte le dossier. |
-| **Document requis** | Pièce justificative exigée par la FDS pour une candidature (ex. diplôme, pièce d'identité). Défini dans la table `documents_requis`. Référence : ce que le candidat *doit* fournir. |
+| **Document requis** | Pièce justificative exigée par la FDS pour une candidature (ex. diplôme, pièce d'identité). Liste unique pour tous les candidats (voir *Pièces requises d'admission*), définie côté backend — pas de table SQL, pas de variante par cursus. Référence : ce que le candidat *doit* fournir. |
 | **Document soumis** | Fichier effectivement uploadé par un Candidat pour satisfaire un Document requis. Entité `DocumentSoumis` en base. Un Document soumis remplace le précédent en cas de rejet (upsert — jamais deux lignes pour le même `(candidat_id, document_requis_id)`). |
 | **Statut de validation** | État d'un Document soumis. Trois valeurs possibles : `en_attente` (uploadé, pas encore traité), `valide` (approuvé par un Admin), `rejete` (refusé par un Admin). Alimente la barre de progression du suivi. |
 | **Déplacement physique** | Champ booléen `deplacement_physique` sur l'entité `Candidat`. Indique si le candidat a dû se déplacer physiquement pour compléter sa candidature. Valeur cible : `false` pour ≥ 70 % des dossiers (critère de succès PRD §11). |

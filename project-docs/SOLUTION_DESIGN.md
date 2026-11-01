@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T00:18:00Z
-updated: 2026-09-30T16:04:08Z
+updated: 2026-11-01T15:51:55Z
 ---
 
 # SOLUTION_DESIGN.md — FDS Portail
@@ -73,7 +73,7 @@ Candidat / Admin
 ### 4.1 Frontend (Vercel)
 - **Framework :** React 19 + Vite + TypeScript
 - **Structure :** Feature-Sliced Design (FSD) — couches `app/`, `pages/`, `features/`, `entities/`, `shared/`
-- **Points d'entrée publics :** `/`, `/cursus/:id`, `/postuler`, `/suivi`, `/contact`, `/admin/login`, `/admin/dashboard`
+- **Points d'entrée publics :** `/`, `/cursus/:id`, `/postuler`, `/suivi`, `/histoire`, `/contact`, `/admin/login`, `/admin/dashboard`
 - **État serveur :** TanStack Query (cache, retry, invalidation)
 - **État client :** Zustand (formulaire multi-étapes en cours)
 
@@ -133,7 +133,7 @@ Organisé selon la **Clean Architecture** (`_ARCHITECTURE_EXPLAINED.md`, Partie 
 ## 6. Couche de données
 
 **Deux sources de données selon la nature de l'information :**
-1. **Fichiers JSON (`cursus/*.json`) :** Catalogue académique de référence (cursus, programmes semestriels, pièces justificatives requises). Données statiques institutionnelles versionnées sous Git, exploitées via `JsonCursusRepository`. Aucune table SQL pour les cursus.
+1. **Fichiers JSON (`cursus/*.json`) :** Catalogue académique de référence (filières, durée, programmes par niveau). Les pièces requises d'admission, identiques pour tous les candidats, sont définies côté backend et non dans ces fichiers. Données statiques institutionnelles versionnées sous Git, exploitées via `JsonCursusRepository`. Aucune table SQL pour les cursus.
 2. **PostgreSQL : Source de vérité unique pour les données transactionnelles et candidates.**
    Les URLs Cloudinary et les statuts email ne remplacent jamais les données en base — ce sont des effets de bord, pas des états.
 
@@ -386,6 +386,7 @@ Pas de boucle autonome, pas de tâche planifiée, pas de risque de runaway en MV
 | ADR-004 | Stockage des pièces sur Cloudinary | Stockage direct sur disque serveur | URLs signées, mise à l'échelle automatique et absence de gestion de volumes disques locaux | Accepté (2026-09-26) |
 | ADR-005 | Emails transactionnels via Resend | Serveur SMTP local (Postfix) | Délivrabilité garantie, API REST asynchrone sans maintenance de serveur mail | Accepté (2026-09-26) |
 | ADR-006 | Déploiement conteneurisé (Docker Compose / Proxmox) | Dépendance exclusive à un PaaS propriétaire | Hébergement souverain sur l'infrastructure Linux de la faculté des sciences via Proxmox avec portabilité immédiate | Accepté (2026-09-26) |
+| ADR-008 | Admission unique au MPC : la candidature ne porte ni `cursus_slug` ni filière ; les pièces requises forment une liste unique de 5 | Une candidature par cursus, avec pièces variables selon le cursus (modèle initial : `UNIQUE (email, cursus_slug, campagne)`) | Règle institutionnelle (2026-10-31) : tout candidat entre en MPC (2 ans), puis choisit sa branche (3 ans) hors du portail. Un champ cursus à la candidature serait trompeur et obligerait à le migrer. Contrainte d'unicité : `(email, campagne)`. Voir `reviews/01-admission-unique-mpc.md` | Accepté (2026-10-31) |
 
 > **Questions à se poser, pour chaque nouvelle entrée :**
 > 1. Qu'a-t-on décidé qui aurait pu très bien aller dans l'autre sens ?

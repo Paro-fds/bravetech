@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T12:52:00Z
-updated: 2026-09-30T16:04:08Z
+updated: 2026-11-01T15:51:55Z
 ---
 
 # AGENTS.md — FDS Portail
@@ -167,6 +167,8 @@ Règle complémentaire : **jamais de logique métier dans `dal/`, jamais d'impor
 7. **Les routes `/api/v1/admin/` sont protégées par JWT** — `get_current_admin()` à chaque endpoint, jamais seulement à la connexion.
 
 8. **La simulation de paiement doit être visuellement claire** — le candidat ne doit pas croire qu'il paye réellement (risque de recours).
+
+9. **L'admission est unique : Premier cycle MPC.** Aucun champ « cursus » ni « filière » dans la candidature : le candidat choisit sa branche (Génie Civil, Électromécanique, Électronique, Architecture) après le MPC, hors du portail. Parcours total : 2 + 3 = 5 ans. Les pièces requises sont une liste unique de 5 (acte de naissance, Bac II, relevé de notes, deux photos d'identité, CIN) — ni bonne vie et mœurs, ni certificat médical. Voir ADR-008.
 
 ---
 

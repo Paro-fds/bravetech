@@ -1,6 +1,6 @@
 ---
 created: 2026-09-25T20:42:00Z
-updated: 2026-09-30T16:04:08Z
+updated: 2026-11-01T15:51:55Z
 ---
 
 # NFR.md — FDS Portail
@@ -13,7 +13,7 @@ updated: 2026-09-30T16:04:08Z
 ## Performance
 
 **1. Temps cassé pour un vrai utilisateur ?**
-**3 secondes** sur connexion 3G simulée. Au-delà, un candidat sur réseau intermittent suppose que le site est mort et abandonne. Cette limite s'applique aux pages publiques critiques (accueil, fiche cursus, formulaire, suivi de dossier). Les pages admin n'ont pas de contrainte aussi stricte.
+**3 secondes** sur connexion 3G simulée. Au-delà, un candidat sur réseau intermittent suppose que le site est mort et abandonne. Cette limite s'applique aux pages publiques critiques (accueil, fiche cursus, formulaire, suivi de dossier). Les pages admin n'ont pas de contrainte aussi stricte. Sur mobile, les images (photos, illustrations) restent légères (environ 100 Ko, format WebP, chargement différé) ; les pages de formulaire, de paiement simulé et de suivi n'en contiennent aucune.
 
 **2. Moment de pic de charge connu ?**
 Les **14 premiers jours de la période d'inscription** concentrent l'essentiel des candidatures (seuil de validation de l'hypothèse : ≥ 20 dossiers en 14 jours — cf. `PRD.md §11`). La charge reste modeste en volume absolu pour le MVP.
