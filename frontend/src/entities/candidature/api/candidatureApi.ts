@@ -18,6 +18,12 @@ export const candidatureApi = {
   modifierInformations: (id: string, informations: InformationsPersonnelles): Promise<Brouillon> =>
     apiClient<Brouillon>(`${BASE}/${id}/informations`, { method: 'PUT', body: JSON.stringify(informations) }),
 
+  /**
+   * Soumet définitivement le dossier et renvoie la référence officielle. Idempotent : soumettre deux fois
+   * renvoie la même référence. Rejette avec une `ApiError` 409 (`detail.manques`) si le dossier est incomplet.
+   */
+  soumettre: (id: string): Promise<Brouillon> => apiClient<Brouillon>(`${BASE}/${id}/soumission`, { method: 'POST' }),
+
   /** Liste les pièces requises avec l'état de chaque dépôt. */
   listerPieces: (id: string): Promise<PieceDossier[]> => apiClient<PieceDossier[]>(`${BASE}/${id}/documents`),
 
@@ -74,4 +80,11 @@ export function extraireErreursChamps(erreur: unknown): ErreursChamps | null {
   if (!(erreur instanceof ApiError) || erreur.status !== 422) return null;
   const detail = (erreur.body as { detail?: { erreurs?: ErreursChamps } } | null)?.detail;
   return detail?.erreurs ?? null;
+}
+
+/** Liste des éléments manquants d'un dossier incomplet (réponse 409 de la soumission), ou null. */
+export function extraireManques(erreur: unknown): string[] | null {
+  if (!(erreur instanceof ApiError) || erreur.status !== 409) return null;
+  const detail = (erreur.body as { detail?: { manques?: string[] } } | null)?.detail;
+  return Array.isArray(detail?.manques) ? detail.manques : null;
 }

@@ -2,16 +2,19 @@ import React, { useEffect, useState } from 'react';
 import {
   candidatureApi,
   STATUT_PAIEMENT_SIMULE,
+  STATUT_SOUMISE,
   type Brouillon,
   type InformationsPersonnelles,
   type MethodePaiement,
 } from '../../../entities/candidature';
 import {
+  EcranConfirmation,
   StepAdmission,
   StepInformations,
   StepPaiement,
   StepPieces,
   StepProgress,
+  StepRecapitulatif,
   useCandidatureStore,
   type EtapeCandidature,
 } from '../../../features/candidature-form';
@@ -19,14 +22,15 @@ import { ApiError } from '../../../shared/api/client';
 
 /** Étape du tunnel que le serveur autorise, d'après l'état du brouillon (le serveur est la source de vérité). */
 function etapeAutorisee(brouillon: Brouillon): EtapeCandidature {
+  if (brouillon.statut === STATUT_SOUMISE) return 6;
   if (brouillon.statut_paiement === STATUT_PAIEMENT_SIMULE) return 4;
   if (brouillon.deplacement_physique !== null) return 3;
   return 2;
 }
 
 /**
- * Tunnel de candidature (maquettes) : étapes 1 (informations), 2 (admission MPC + déplacement physique),
- * 3 (paiement simulé), 4 (dépôt des pièces, US-007) ; la finalisation du dossier arrive avec US-008.
+ * Tunnel de candidature (maquettes) : 1 informations, 2 admission MPC + déplacement physique, 3 paiement simulé,
+ * 4 dépôt des pièces, 5 récapitulatif, 6 confirmation avec la référence officielle (dossier soumis).
  */
 export const ApplyPage: React.FC = () => {
   const {
@@ -36,6 +40,7 @@ export const ApplyPage: React.FC = () => {
     deplacementPhysique,
     montantHtg,
     paiement,
+    soumission,
     methodePaiementChoisie,
     numeroPaiement,
     setInformations,
@@ -57,7 +62,9 @@ export const ApplyPage: React.FC = () => {
       .then((brouillon) => {
         if (annule) return;
         appliquerBrouillon(brouillon);
-        allerEtape(etapeAutorisee(brouillon));
+        // On ne ramène jamais en arrière quelqu'un qui était déjà au récapitulatif
+        const autorisee = etapeAutorisee(brouillon);
+        allerEtape(autorisee === 4 && etape === 5 ? 5 : autorisee);
       })
       .catch((erreur) => {
         // Brouillon disparu côté serveur : on repart d'un formulaire vide. Autre erreur : on garde la saisie locale.
@@ -95,15 +102,26 @@ export const ApplyPage: React.FC = () => {
     allerEtape(4);
   };
 
+  const soumettreDossier = async () => {
+    if (!candidatureId) return;
+    // Le serveur enregistre le dossier AVANT d'envoyer l'email : la référence est toujours renvoyée
+    const brouillon = await candidatureApi.soumettre(candidatureId);
+    appliquerBrouillon(brouillon);
+    allerEtape(6);
+  };
+
   // Garde-fous : on n'affiche jamais une étape dont les préalables ne sont pas remplis
   let etapeAffichee: EtapeCandidature = etape;
   if (etapeAffichee > 1 && !candidatureId) etapeAffichee = 1;
   if (etapeAffichee > 2 && deplacementPhysique === null) etapeAffichee = 2;
   if (etapeAffichee > 3 && !paiement) etapeAffichee = 3;
+  if (etapeAffichee > 4 && etapeAffichee < 6 && !paiement) etapeAffichee = 3;
+  if (soumission) etapeAffichee = 6; // un dossier soumis n'est plus modifiable : on ne montre que la confirmation
+  if (etapeAffichee === 6 && !soumission) etapeAffichee = 5;
 
   return (
     <>
-      <StepProgress etape={etapeAffichee} />
+      {etapeAffichee !== 6 && <StepProgress etape={Math.min(etapeAffichee, 4)} />}
       <div className="max-w-xl w-full mx-auto px-4 pt-6 flex-1 flex flex-col">
         {reprise ? (
           <p className="text-fds-mute" role="status">
@@ -127,11 +145,32 @@ export const ApplyPage: React.FC = () => {
             onSoumettre={soumettrePaiement}
             onRetour={() => allerEtape(2)}
           />
-        ) : (
+        ) : etapeAffichee === 4 ? (
           <StepPieces
             candidatureId={candidatureId!}
             referencePaiement={paiement?.reference ?? null}
             onRetour={() => allerEtape(3)}
+            onContinuer={() => allerEtape(5)}
+          />
+        ) : etapeAffichee === 5 ? (
+          <StepRecapitulatif
+            candidatureId={candidatureId!}
+            informations={informations}
+            deplacementPhysique={deplacementPhysique}
+            paiement={paiement}
+            montantHtg={montantHtg}
+            onRetour={() => allerEtape(4)}
+            onSoumettre={soumettreDossier}
+          />
+        ) : (
+          <EcranConfirmation
+            prenom={informations.prenom}
+            email={informations.email}
+            reference={soumission!.reference}
+            soumiseLe={soumission!.soumiseLe}
+            montantHtg={montantHtg}
+            referencePaiement={paiement?.reference ?? null}
+            onNouvelleCandidature={reinitialiser}
           />
         )}
       </div>

@@ -1,6 +1,6 @@
 ---
 created: 2026-09-27T12:28:00Z
-updated: 2026-11-01T15:51:55Z
+updated: 2026-11-01T17:44:15Z
 status: open
 ---
 
@@ -69,7 +69,7 @@ Les 5 User Stories de l'Epic 2 sont ordonnées pour garantir un flux d'intégrat
 
 *(Ces règles seront relocalisées dans les documents pérennes à la clôture de l'Epic 2)*
 
-- **R1 (Non-bloquage notification) :** L'échec d'envoi d'un email de confirmation ne doit jamais déclencher une exception HTTP 500 ni annuler une transaction de candidature validée.
+- **R1 (Non-bloquage notification, appliquée par US-008) :** L'échec d'envoi d'un email de confirmation ne doit jamais déclencher une exception HTTP 500 ni annuler une transaction de candidature validée.
 - **R2 (Contrôle magic bytes) :** Tout fichier reçu sur l'endpoint d'upload doit être validé par ses octets d'en-tête (magic bytes) et limité strictement à 5 Mo.
 - **R3 (Mesure déplacement physique) :** Le champ `deplacement_physique` (`boolean`) est obligatoire dans le contrat de soumission de dossier.
 - **R4 (Étanchéité des données) :** La consultation de suivi par référence `GET /api/v1/candidatures/{ref}` ne retourne que le statut public du dossier et la liste des documents, sans exposer de données personnelles confidentielles d'autres candidats.

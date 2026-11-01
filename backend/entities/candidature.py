@@ -36,3 +36,4 @@ class Candidature:
     methode_paiement: str | None = None
     reference_paiement: str | None = None  # PAY-SIM-AAAA-NNNN
     numero_paiement: str | None = None  # numéro mobile fourni pour la simulation, format +509XXXXXXXX
+    soumise_le: datetime | None = None  # horodatage UTC de la soumission définitive (US-008)

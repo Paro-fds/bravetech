@@ -36,6 +36,10 @@ class ICandidatureRepository(ABC):
         """Indique si une référence de paiement simulé est déjà attribuée."""
 
     @abstractmethod
+    def prochain_numero_reference(self, campagne: int) -> int:
+        """Retourne le prochain numéro séquentiel de référence de dossier pour la campagne (1 si aucun)."""
+
+    @abstractmethod
     def enregistrer_candidat(self, candidat: Candidat) -> None:
         """Met à jour un candidat existant.
 
@@ -44,4 +48,7 @@ class ICandidatureRepository(ABC):
 
     @abstractmethod
     def enregistrer_candidature(self, candidature: Candidature) -> None:
-        """Met à jour une candidature existante."""
+        """Met à jour une candidature existante.
+
+        Lève `ReferenceDejaAttribuee` si une référence unique entre en conflit.
+        """

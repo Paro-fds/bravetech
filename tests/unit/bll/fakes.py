@@ -35,6 +35,15 @@ class FakeCandidatureRepository(ICandidatureRepository):
     def reference_paiement_existe(self, reference: str) -> bool:
         return any(c.reference_paiement == reference for c in self.candidatures.values())
 
+    def prochain_numero_reference(self, campagne: int) -> int:
+        prefixe = f"CAN-{campagne}-"
+        numeros = [
+            int(c.reference_dossier[len(prefixe):])
+            for c in self.candidatures.values()
+            if c.reference_dossier and c.reference_dossier.startswith(prefixe)
+        ]
+        return max(numeros, default=0) + 1
+
     def enregistrer_candidat(self, candidat: Candidat) -> None:
         self.candidats[candidat.id] = deepcopy(candidat)
 

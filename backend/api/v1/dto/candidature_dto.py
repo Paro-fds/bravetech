@@ -1,7 +1,7 @@
 """DTOs (Data Transfer Objects) des candidatures — Couche Présentation / API (US-005).
 """
 
-from datetime import date
+from datetime import date, datetime
 
 from pydantic import BaseModel, ConfigDict, Field, StrictBool
 
@@ -51,6 +51,8 @@ class BrouillonResponse(BaseModel):
     methode_paiement: str | None
     reference_paiement: str | None  # référence SIMULÉE : aucun montant réel n'est prélevé
     montant_htg: int
+    reference_dossier: str | None  # CAN-AAAA-NNNN, attribuée à la soumission
+    soumise_le: datetime | None  # UTC
     informations: InformationsPersonnellesResponse
 
 

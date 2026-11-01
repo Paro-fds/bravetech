@@ -3,6 +3,8 @@
 Aucune logique métier ici : uniquement la traduction entre entité du domaine et ligne en base.
 """
 
+from datetime import datetime, timezone
+
 from sqlalchemy.orm import Session
 
 from backend.dal.models import DocumentSoumisModel
@@ -15,8 +17,18 @@ _CHAMPS = (
 )
 
 
+def _en_utc(valeur: datetime | None) -> datetime | None:
+    """SQLite restitue des dates sans fuseau : on les ramène en UTC."""
+    if valeur is not None and valeur.tzinfo is None:
+        return valeur.replace(tzinfo=timezone.utc)
+    return valeur
+
+
 def _vers_entite(modele: DocumentSoumisModel) -> DocumentSoumis:
-    return DocumentSoumis(id=modele.id, **{champ: getattr(modele, champ) for champ in _CHAMPS})
+    valeurs = {champ: getattr(modele, champ) for champ in _CHAMPS}
+    valeurs["soumis_le"] = _en_utc(valeurs["soumis_le"])
+    valeurs["date_validation"] = _en_utc(valeurs["date_validation"])
+    return DocumentSoumis(id=modele.id, **valeurs)
 
 
 class SqlDocumentRepository(IDocumentRepository):

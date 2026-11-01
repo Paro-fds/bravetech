@@ -3,12 +3,14 @@ import { createJSONStorage, persist, type StateStorage } from 'zustand/middlewar
 import {
   INFORMATIONS_VIDES,
   STATUT_PAIEMENT_SIMULE,
+  STATUT_SOUMISE,
   type Brouillon,
   type InformationsPersonnelles,
   type MethodePaiement,
 } from '../../../entities/candidature';
 
-export type EtapeCandidature = 1 | 2 | 3 | 4;
+/** 1 informations, 2 admission, 3 paiement, 4 pièces, 5 récapitulatif, 6 confirmation (dossier soumis). */
+export type EtapeCandidature = 1 | 2 | 3 | 4 | 5 | 6;
 
 /** Montant des frais de dossier tant que le serveur ne l'a pas renvoyé (la valeur de référence vient de l'API). */
 export const FRAIS_DOSSIER_PAR_DEFAUT = 500;
@@ -16,6 +18,12 @@ export const FRAIS_DOSSIER_PAR_DEFAUT = 500;
 export interface PaiementSimule {
   reference: string;
   methode: MethodePaiement | null;
+}
+
+/** Dossier soumis : référence officielle et horodatage UTC. */
+export interface Soumission {
+  reference: string;
+  soumiseLe: string;
 }
 
 interface CandidatureState {
@@ -27,6 +35,8 @@ interface CandidatureState {
   montantHtg: number;
   /** Renseigné une fois le paiement simulé enregistré. */
   paiement: PaiementSimule | null;
+  /** Renseigné une fois le dossier soumis. */
+  soumission: Soumission | null;
   /** Saisie en cours de l'étape 3, conservée si l'on change d'écran. */
   methodePaiementChoisie: MethodePaiement | null;
   numeroPaiement: string;
@@ -46,6 +56,7 @@ const etatInitial = {
   deplacementPhysique: null,
   montantHtg: FRAIS_DOSSIER_PAR_DEFAUT,
   paiement: null,
+  soumission: null,
   methodePaiementChoisie: null,
   numeroPaiement: '',
 };
@@ -89,6 +100,10 @@ export const useCandidatureStore = create<CandidatureState>()(
           paiement:
             brouillon.statut_paiement === STATUT_PAIEMENT_SIMULE && brouillon.reference_paiement
               ? { reference: brouillon.reference_paiement, methode: brouillon.methode_paiement }
+              : null,
+          soumission:
+            brouillon.statut === STATUT_SOUMISE && brouillon.reference_dossier && brouillon.soumise_le
+              ? { reference: brouillon.reference_dossier, soumiseLe: brouillon.soumise_le }
               : null,
         }),
       setDeplacementPhysique: (deplacementPhysique) => set({ deplacementPhysique }),
