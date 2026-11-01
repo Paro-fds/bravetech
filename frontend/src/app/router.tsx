@@ -5,6 +5,9 @@ import { HomePage } from '../pages/home';
 import { CursusDetailPage } from '../pages/cursus-detail';
 import { ApplyPage } from '../pages/apply';
 import { SuiviPage } from '../pages/suivi';
+import { AdminLayout } from './layout/AdminLayout';
+import { AdminLoginPage } from '../pages/admin-login';
+import { AdminAccueilPage } from '../pages/admin-accueil';
 
 export const router = createBrowserRouter([
   {
@@ -42,5 +45,12 @@ export const router = createBrowserRouter([
       { index: true, element: <SuiviPage /> },
       { path: ':reference', element: <SuiviPage /> },
     ],
+  },
+  // Espace administration (US-011) : connexion publique, le reste exige une session
+  { path: '/admin/login', element: <AdminLoginPage /> },
+  {
+    path: '/admin',
+    element: <AdminLayout />,
+    children: [{ index: true, element: <AdminAccueilPage /> }],
   },
 ]);

@@ -67,3 +67,15 @@ class ReferenceDejaAttribuee(ErreurMetier):
 
 class CandidatureDejaSoumise(ErreurMetier):
     """La candidature est déjà soumise : ses informations ne sont plus modifiables."""
+
+
+class IdentifiantsInvalides(ErreurMetier):
+    """Email ou mot de passe incorrect, ou compte désactivé (jamais précisé à l'appelant)."""
+
+
+class JetonInvalide(ErreurMetier):
+    """Jeton de session absent, falsifié ou expiré."""
+
+
+class AccesInterdit(ErreurMetier):
+    """Utilisateur authentifié mais dont le rôle ne permet pas l'action."""
