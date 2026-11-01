@@ -10,6 +10,7 @@ import { formaterDateNaissance } from '../lib/dates';
 import { formaterTaille } from '../lib/fichiers';
 import type { PaiementSimule } from '../model/useCandidatureStore';
 import { BarreAction, CLASSE_BOUTON_PRIMAIRE } from './BarreAction';
+import { useNomDepartement, useNomPiece, useT } from '../../../shared/i18n/useT';
 
 interface StepRecapitulatifProps {
   candidatureId: string;
@@ -39,6 +40,9 @@ export const StepRecapitulatif: React.FC<StepRecapitulatifProps> = ({
   onRetour,
   onSoumettre,
 }) => {
+  const t = useT();
+  const nomPiece = useNomPiece();
+  const nomDepartement = useNomDepartement();
   const [pieces, setPieces] = useState<PieceDossier[] | null>(null);
   const [erreur, setErreur] = useState<string | null>(null);
   const [manques, setManques] = useState<string[]>([]);
@@ -69,11 +73,9 @@ export const StepRecapitulatif: React.FC<StepRecapitulatifProps> = ({
       const liste = extraireManques(e);
       if (liste) {
         setManques(liste);
-        setErreur('Votre dossier est incomplet. Il manque :');
+        setErreur(t('recap.incomplet'));
       } else {
-        setErreur(
-          "Impossible d'envoyer votre dossier pour le moment. Vérifiez votre connexion et réessayez : vos informations sont conservées.",
-        );
+        setErreur(t('recap.erreurEnvoi'));
       }
     } finally {
       setEnCours(false);
@@ -82,60 +84,60 @@ export const StepRecapitulatif: React.FC<StepRecapitulatifProps> = ({
 
   return (
     <div className="flex flex-col gap-4 flex-1">
-      <h1 className="font-fds-serif text-2xl font-bold text-fds-navy-d">Vérifiez votre dossier</h1>
-      <p className="text-sm text-fds-mute">Relisez ces informations : après l'envoi, votre dossier ne sera plus modifiable.</p>
+      <h1 className="font-fds-serif text-2xl font-bold text-fds-navy-d">{t('recap.titre')}</h1>
+      <p className="text-sm text-fds-mute">{t('recap.consigne')}</p>
 
-      <section className="rounded-xl border border-fds-line bg-white p-4" aria-label="Vos informations">
-        <h2 className="font-fds-serif text-lg font-bold text-fds-navy-d mb-1">Vos informations</h2>
+      <section className="rounded-xl border border-fds-line bg-white p-4" aria-label={t('recap.secInfos')}>
+        <h2 className="font-fds-serif text-lg font-bold text-fds-navy-d mb-1">{t('recap.secInfos')}</h2>
         <dl>
-          <Ligne libelle="Nom">
+          <Ligne libelle={t('recap.nom')}>
             {informations.prenom} {informations.nom}
           </Ligne>
-          <Ligne libelle="Naissance">{formaterDateNaissance(informations.date_naissance)}</Ligne>
-          <Ligne libelle="Email">{informations.email}</Ligne>
-          <Ligne libelle="Téléphone">{informations.telephone}</Ligne>
-          <Ligne libelle="Résidence">
-            {informations.commune}, {informations.departement}
+          <Ligne libelle={t('recap.naissance')}>{formaterDateNaissance(informations.date_naissance)}</Ligne>
+          <Ligne libelle={t('recap.email')}>{informations.email}</Ligne>
+          <Ligne libelle={t('recap.tel')}>{informations.telephone}</Ligne>
+          <Ligne libelle={t('recap.residence')}>
+            {informations.commune}, {nomDepartement(informations.departement)}
           </Ligne>
         </dl>
       </section>
 
-      <section className="rounded-xl border border-fds-line bg-white p-4" aria-label="Admission et paiement">
-        <h2 className="font-fds-serif text-lg font-bold text-fds-navy-d mb-1">Admission</h2>
+      <section className="rounded-xl border border-fds-line bg-white p-4" aria-label={t('recap.secAdmissionAria')}>
+        <h2 className="font-fds-serif text-lg font-bold text-fds-navy-d mb-1">{t('recap.admTitre')}</h2>
         <dl>
-          <Ligne libelle="Admission">Premier cycle MPC</Ligne>
-          <Ligne libelle="Déplacement">
-            {deplacementPhysique === null ? '—' : deplacementPhysique ? "Oui, j'ai dû me déplacer" : 'Non, tout a été fait en ligne'}
+          <Ligne libelle={t('recap.admTitre')}>{t('adm.mpc')}</Ligne>
+          <Ligne libelle={t('recap.deplacement')}>
+            {deplacementPhysique === null ? '—' : deplacementPhysique ? t('adm.optOui') : t('adm.optNon')}
           </Ligne>
-          <Ligne libelle="Frais">
-            {montantHtg} HTG (simulation){paiement ? ` · ${paiement.reference}` : ''}
+          <Ligne libelle={t('recap.frais')}>
+            {t('recap.fraisValeur', { montant: montantHtg })}{paiement ? ` · ${paiement.reference}` : ''}
           </Ligne>
         </dl>
       </section>
 
-      <section className="rounded-xl border border-fds-line bg-white p-4" aria-label="Vos pièces">
-        <h2 className="font-fds-serif text-lg font-bold text-fds-navy-d mb-1">Vos pièces</h2>
+      <section className="rounded-xl border border-fds-line bg-white p-4" aria-label={t('recap.secPieces')}>
+        <h2 className="font-fds-serif text-lg font-bold text-fds-navy-d mb-1">{t('recap.secPieces')}</h2>
         {pieces ? (
           <ul className="flex flex-col gap-1.5 text-sm">
             {pieces.map((p) => (
               <li key={p.id} className="flex gap-2">
-                <span className="flex-1">{p.nom}</span>
+                <span className="flex-1">{nomPiece(p.id, p.nom)}</span>
                 <span className="text-fds-mute text-right break-all">
-                  {p.nom_fichier ? `${p.nom_fichier}${p.taille_octets ? ` (${formaterTaille(p.taille_octets)})` : ''}` : 'Manquant'}
+                  {p.nom_fichier ? `${p.nom_fichier}${p.taille_octets ? ` (${formaterTaille(p.taille_octets)})` : ''}` : t('recap.manquant')}
                 </span>
               </li>
             ))}
           </ul>
         ) : (
           <p className="text-sm text-fds-mute" role="status">
-            Chargement…
+            {t('recap.chargement')}
           </p>
         )}
       </section>
 
       <div className="flex gap-2.5 items-start rounded-[10px] border border-[#b9cbe3] bg-fds-navy-t px-3.5 py-3 text-sm text-fds-navy-d">
         <Info className="w-5 h-5 shrink-0" aria-hidden="true" />
-        <span>Le paiement est une simulation : aucun argent n'a été prélevé.</span>
+        <span>{t('recap.simulNote')}</span>
       </div>
 
       {erreur && (
@@ -154,10 +156,10 @@ export const StepRecapitulatif: React.FC<StepRecapitulatifProps> = ({
       <BarreAction>
         <button type="button" onClick={() => void soumettre()} disabled={enCours} className={CLASSE_BOUTON_PRIMAIRE}>
           <ShieldCheck className="w-5 h-5" aria-hidden="true" />
-          <span>{enCours ? 'Envoi en cours…' : 'Confirmer et soumettre mon dossier'}</span>
+          <span>{enCours ? t('recap.enCours') : t('recap.confirmer')}</span>
         </button>
         <button type="button" onClick={onRetour} disabled={enCours} className="min-h-11 text-fds-navy font-semibold underline">
-          Retour
+          {t('commun.retour')}
         </button>
       </BarreAction>
     </div>

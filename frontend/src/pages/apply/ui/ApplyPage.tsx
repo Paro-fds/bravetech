@@ -19,6 +19,7 @@ import {
   type EtapeCandidature,
 } from '../../../features/candidature-form';
 import { ApiError } from '../../../shared/api/client';
+import { useT } from '../../../shared/i18n/useT';
 
 /** Étape du tunnel que le serveur autorise, d'après l'état du brouillon (le serveur est la source de vérité). */
 function etapeAutorisee(brouillon: Brouillon): EtapeCandidature {
@@ -33,6 +34,7 @@ function etapeAutorisee(brouillon: Brouillon): EtapeCandidature {
  * 4 dépôt des pièces, 5 récapitulatif, 6 confirmation avec la référence officielle (dossier soumis).
  */
 export const ApplyPage: React.FC = () => {
+  const t = useT();
   const {
     candidatureId,
     etape,
@@ -125,7 +127,7 @@ export const ApplyPage: React.FC = () => {
       <div className="max-w-xl w-full mx-auto px-4 pt-6 flex-1 flex flex-col">
         {reprise ? (
           <p className="text-fds-mute" role="status">
-            Reprise de votre candidature…
+            {t('cand.reprise')}
           </p>
         ) : etapeAffichee === 1 ? (
           <StepInformations valeurs={informations} onChange={setInformations} onSoumettre={soumettreInformations} />

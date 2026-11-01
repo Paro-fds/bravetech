@@ -17,7 +17,7 @@ export const router = createBrowserRouter([
     // Tunnel de candidature : mise en page des maquettes, sans menu ni pied de page
     path: '/postuler',
     element: <FlowLayout />,
-    handle: { titre: 'Candidature' },
+    handle: { titre: 'flux.titreCandidature' },
     children: [
       {
         index: true,
@@ -39,7 +39,7 @@ export const router = createBrowserRouter([
     // Suivi par référence : même mise en page que le tunnel (maquettes « Suivi » et « Dossier »)
     path: '/suivi',
     element: <FlowLayout />,
-    handle: { titre: 'Suivi de dossier' },
+    handle: { titre: 'flux.titreSuivi' },
     children: [
       { index: true, element: <SuiviPage /> },
       { path: ':reference', element: <SuiviPage /> },

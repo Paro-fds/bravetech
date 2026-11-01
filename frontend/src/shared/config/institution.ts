@@ -4,8 +4,8 @@
  * Une valeur à `null` n'est PAS affichée : elle reste à fournir ou à confirmer par la Faculté (US-019). Ne jamais mettre
  * ici une valeur supposée. Dès qu'elle est confirmée, la renseigner suffit à la publier.
  */
+// L'adresse est dans les dictionnaires (clé `marque.adresse`) : elle se traduit.
 export const INSTITUTION = {
-  adresse: 'Faculté des Sciences, Delmas 33, Haïti',
   telephone: null as string | null,
   email: null as string | null,
   horaires: null as string | null,

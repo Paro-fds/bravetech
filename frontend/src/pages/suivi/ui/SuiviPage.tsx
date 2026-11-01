@@ -10,23 +10,25 @@ import {
 } from '../../../entities/candidature';
 import { formaterJour } from '../../../features/candidature-form';
 import { ApiError } from '../../../shared/api/client';
+import { traduireMaintenant as tr, useT } from '../../../shared/i18n/useT';
+import type { Cle } from '../../../shared/i18n/fr';
 
 // Adresse déjà affichée dans le pied de page du site ; à confirmer avec la Faculté.
 const EMAIL_FACULTE = 'admission@fds.ueh.edu.ht';
 
 type Resultat = { reference: string; etat: 'ok'; suivi: SuiviDossier } | { reference: string; etat: 'introuvable' | 'limite' | 'erreur' };
 
-const BADGES_GLOBAUX: Record<StatutGlobal, { libelle: string; classe: string }> = {
-  en_examen: { libelle: 'En examen', classe: 'bg-fds-navy-t text-fds-navy' },
-  action_requise: { libelle: 'Action requise', classe: 'bg-fds-warn-bg text-fds-warn' },
-  complet: { libelle: 'Dossier complet', classe: 'bg-fds-ok-bg text-fds-ok' },
+const BADGES_GLOBAUX: Record<StatutGlobal, { cle: Cle; classe: string }> = {
+  en_examen: { cle: 'suivi.enExamen', classe: 'bg-fds-navy-t text-fds-navy' },
+  action_requise: { cle: 'suivi.actionRequise', classe: 'bg-fds-warn-bg text-fds-warn' },
+  complet: { cle: 'suivi.complet', classe: 'bg-fds-ok-bg text-fds-ok' },
 };
 
-const BADGES_PIECES: Record<PieceSuivi['statut'], { libelle: string; classe: string }> = {
-  manquant: { libelle: 'À fournir', classe: 'bg-fds-warn-bg text-fds-warn' },
-  en_attente: { libelle: 'En examen', classe: 'bg-fds-navy-t text-fds-navy' },
-  valide: { libelle: 'Validé', classe: 'bg-fds-ok-bg text-fds-ok' },
-  rejete: { libelle: 'Refusé', classe: 'bg-fds-bad-bg text-fds-bad' },
+const BADGES_PIECES: Record<PieceSuivi['statut'], { cle: Cle; classe: string }> = {
+  manquant: { cle: 'suivi.pieceAFournir', classe: 'bg-fds-warn-bg text-fds-warn' },
+  en_attente: { cle: 'suivi.enExamen', classe: 'bg-fds-navy-t text-fds-navy' },
+  valide: { cle: 'suivi.pieceValide', classe: 'bg-fds-ok-bg text-fds-ok' },
+  rejete: { cle: 'suivi.pieceRefuse', classe: 'bg-fds-bad-bg text-fds-bad' },
 };
 
 function normaliser(saisie: string): string {
@@ -35,6 +37,7 @@ function normaliser(saisie: string): string {
 
 /** Formulaire de recherche (maquette « Suivi »). */
 const RechercheReference: React.FC<{ valeurInitiale?: string; message?: string }> = ({ valeurInitiale = '', message }) => {
+  const t = useT();
   const navigate = useNavigate();
   const [saisie, setSaisie] = useState(valeurInitiale);
   const [erreurFormat, setErreurFormat] = useState(false);
@@ -53,14 +56,14 @@ const RechercheReference: React.FC<{ valeurInitiale?: string; message?: string }
   return (
     <>
       <section className="flex flex-col gap-2">
-        <h1 className="font-fds-serif text-2xl font-bold text-fds-navy-d">Suivre mon dossier</h1>
-        <p className="text-fds-mute">Entrez la référence reçue à la fin de votre candidature et dans votre email.</p>
+        <h1 className="font-fds-serif text-2xl font-bold text-fds-navy-d">{t('accueil.suivre')}</h1>
+        <p className="text-fds-mute">{t('suivi.intro')}</p>
       </section>
 
       <form onSubmit={rechercher} noValidate className="rounded-xl border border-fds-line bg-white p-4 flex flex-col gap-3.5">
         <div className="flex flex-col gap-1.5">
           <label htmlFor="reference" className="text-[15px] font-semibold">
-            Référence du dossier
+            {t('suivi.refLabel')}
           </label>
           <input
             id="reference"
@@ -75,7 +78,7 @@ const RechercheReference: React.FC<{ valeurInitiale?: string; message?: string }
             className={`w-full min-h-12 rounded-lg border-[1.5px] bg-white px-3 text-lg tracking-wide text-fds-ink focus:outline-none focus:ring-2 focus:ring-fds-navy ${erreurFormat ? 'border-fds-bad' : 'border-fds-field'}`}
           />
           <p id="reference-aide" role={erreurFormat ? 'alert' : undefined} className={`text-[13px] ${erreurFormat ? 'font-semibold text-fds-bad' : 'text-fds-mute'}`}>
-            {erreurFormat ? 'Cette référence n’a pas le bon format. Exemple : CAN-2026-0089.' : 'Format : CAN-2026-0000'}
+            {erreurFormat ? t('suivi.formatErreur') : t('suivi.formatAide')}
           </p>
         </div>
         <button
@@ -83,7 +86,7 @@ const RechercheReference: React.FC<{ valeurInitiale?: string; message?: string }
           className="min-h-12 px-4 rounded-lg bg-fds-navy hover:bg-fds-navy-d text-white font-semibold flex items-center justify-center gap-2 transition-colors"
         >
           <Search className="w-5 h-5" aria-hidden="true" />
-          Voir mon dossier
+          {t('suivi.voir')}
         </button>
       </form>
 
@@ -95,13 +98,13 @@ const RechercheReference: React.FC<{ valeurInitiale?: string; message?: string }
       )}
 
       <section className="rounded-xl border border-[#b9cbe3] bg-fds-navy-t p-4 flex flex-col gap-2">
-        <h2 className="font-semibold">Vous avez perdu votre référence ?</h2>
-        <p className="text-sm">Écrivez-nous avec votre nom et votre email de candidature. Nous vous la renverrons.</p>
+        <h2 className="font-semibold">{t('suivi.perdueTitre')}</h2>
+        <p className="text-sm">{t('suivi.perdueTexte')}</p>
         <a
-          href={`mailto:${EMAIL_FACULTE}?subject=${encodeURIComponent('Référence de dossier perdue')}`}
+          href={`mailto:${EMAIL_FACULTE}?subject=${encodeURIComponent(t('suivi.mailSujet'))}`}
           className="min-h-12 rounded-lg border-2 border-fds-navy bg-white text-fds-navy font-semibold flex items-center justify-center"
         >
-          Nous contacter
+          {t('suivi.contacter')}
         </a>
       </section>
     </>
@@ -124,56 +127,57 @@ const IconePiece: React.FC<{ statut: PieceSuivi['statut'] }> = ({ statut }) => {
 };
 
 function detailPiece(piece: PieceSuivi): string | null {
-  if (piece.statut === 'valide' && piece.valide_le) return `Validé le ${formaterJour(piece.valide_le)}`;
-  if (piece.statut === 'en_attente' && piece.depose_le) return `Reçu le ${formaterJour(piece.depose_le)}`;
+  if (piece.statut === 'valide' && piece.valide_le) return tr('suivi.valideLe', { date: formaterJour(piece.valide_le) });
+  if (piece.statut === 'en_attente' && piece.depose_le) return tr('suivi.recuLe', { date: formaterJour(piece.depose_le) });
   return null;
 }
 
 /** Vue d'un dossier (maquette « Dossier »). */
 const VueDossier: React.FC<{ suivi: SuiviDossier }> = ({ suivi }) => {
+  const t = useT();
   const badge = BADGES_GLOBAUX[suivi.statut_global];
   const pourcentage = suivi.pieces_total ? Math.round((suivi.pieces_validees / suivi.pieces_total) * 100) : 0;
   const refusees = suivi.pieces.filter((p) => p.statut === 'rejete').length;
   const resume =
     suivi.statut_global === 'complet'
-      ? 'Toutes vos pièces sont validées.'
-      : `${suivi.pieces_validees} pièce${suivi.pieces_validees > 1 ? 's' : ''} validée${suivi.pieces_validees > 1 ? 's' : ''} sur ${suivi.pieces_total}.` +
-        (refusees ? ` ${refusees > 1 ? `${refusees} pièces sont à remplacer.` : 'Une pièce est à remplacer.'}` : '');
+      ? t('suivi.resumeComplet')
+      : t(suivi.pieces_validees > 1 ? 'suivi.resumePlus' : 'suivi.resumeUn', { n: suivi.pieces_validees, total: suivi.pieces_total }) +
+        (refusees ? (refusees > 1 ? t('suivi.aRemplacerPlus', { n: refusees }) : t('suivi.aRemplacerUne')) : '');
 
   return (
     <>
       <Link to="/suivi" className="flex items-center gap-2 min-h-11 font-semibold text-fds-navy">
         <ArrowLeft className="w-5 h-5" aria-hidden="true" />
-        Autre dossier
+        {t('suivi.autre')}
       </Link>
 
-      <section className="rounded-xl border border-fds-line bg-white p-4 flex flex-col gap-2.5" aria-label="Dossier">
-        <div className="text-sm text-fds-mute">Dossier</div>
+      <section className="rounded-xl border border-fds-line bg-white p-4 flex flex-col gap-2.5" aria-label={t('suivi.dossier')}>
+        <div className="text-sm text-fds-mute">{t('suivi.dossier')}</div>
         <div className="font-fds-serif text-[28px] leading-tight font-bold text-fds-navy-d break-all" data-testid="reference-dossier">
           {suivi.reference_dossier}
         </div>
         <div className="flex gap-3 text-sm">
-          <span className="flex-1 text-fds-mute">Candidat</span>
+          <span className="flex-1 text-fds-mute">{t('suivi.candidat')}</span>
           <strong>
             {suivi.prenom} {suivi.initiale_nom}.
           </strong>
         </div>
         <div className="flex gap-3 text-sm">
-          <span className="flex-1 text-fds-mute">Admission</span>
-          <strong>{suivi.admission}</strong>
+          <span className="flex-1 text-fds-mute">{t('suivi.admission')}</span>
+          <strong>{t('adm.mpc')}</strong>
         </div>
         {suivi.soumise_le && (
           <div className="flex gap-3 text-sm">
-            <span className="flex-1 text-fds-mute">Envoyé le</span>
+            <span className="flex-1 text-fds-mute">{t('suivi.envoyeLe')}</span>
             <strong>{formaterJour(suivi.soumise_le)}</strong>
           </div>
         )}
       </section>
 
-      <section className="flex flex-col gap-2.5" aria-label="Avancement">
+      <section className="flex flex-col gap-2.5" aria-label={t('suivi.avancement')}>
         <div className="flex items-center gap-2">
-          <h2 className="font-fds-serif text-xl font-bold text-fds-navy-d flex-1">Avancement</h2>
-          <span className={`rounded-full px-2.5 py-0.5 text-[13px] font-semibold whitespace-nowrap ${badge.classe}`}>{badge.libelle}</span>
+          <h2 className="font-fds-serif text-xl font-bold text-fds-navy-d flex-1">{t('suivi.avancement')}</h2>
+          <span className={`rounded-full px-2.5 py-0.5 text-[13px] font-semibold whitespace-nowrap ${badge.classe}`}>{t(badge.cle)}</span>
         </div>
         <div
           className="h-2.5 rounded bg-fds-line overflow-hidden"
@@ -181,7 +185,7 @@ const VueDossier: React.FC<{ suivi: SuiviDossier }> = ({ suivi }) => {
           aria-valuenow={pourcentage}
           aria-valuemin={0}
           aria-valuemax={100}
-          aria-label="Pièces validées"
+          aria-label={t('suivi.progAria')}
         >
           <div className="h-full bg-fds-ok" style={{ width: `${pourcentage}%` }} />
         </div>
@@ -192,13 +196,13 @@ const VueDossier: React.FC<{ suivi: SuiviDossier }> = ({ suivi }) => {
         <div role="alert" className="flex gap-2.5 items-start rounded-[10px] border border-[#efb1ab] bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
           <TriangleAlert className="w-5 h-5 shrink-0" aria-hidden="true" />
           <span>
-            <strong>{refusees > 1 ? `${refusees} pièces ont été refusées.` : 'Une pièce a été refusée.'}</strong> Remplacez-
-            {refusees > 1 ? 'les' : 'la'} ci-dessous, sans vous déplacer.
+            <strong>{refusees > 1 ? t('suivi.refuseePlus', { n: refusees }) : t('suivi.refuseeUne')}</strong>
+            {refusees > 1 ? t('suivi.remplacezPlus') : t('suivi.remplacezUne')}
           </span>
         </div>
       )}
 
-      <ul className="rounded-xl border border-fds-line bg-white p-4 flex flex-col gap-4" aria-label="Statut de chaque pièce">
+      <ul className="rounded-xl border border-fds-line bg-white p-4 flex flex-col gap-4" aria-label={t('suivi.statutPieces')}>
         {suivi.pieces.map((piece) => {
           const badgePiece = BADGES_PIECES[piece.statut];
           const detail = detailPiece(piece);
@@ -209,13 +213,13 @@ const VueDossier: React.FC<{ suivi: SuiviDossier }> = ({ suivi }) => {
                 <div className="flex items-center gap-2">
                   <span className="font-semibold flex-1">{piece.nom}</span>
                   <span className={`rounded-full px-2.5 py-0.5 text-[13px] font-semibold whitespace-nowrap ${badgePiece.classe}`}>
-                    {badgePiece.libelle}
+                    {t(badgePiece.cle)}
                   </span>
                 </div>
                 {detail && <div className="text-xs text-fds-mute">{detail}</div>}
                 {piece.statut === 'rejete' && piece.motif_rejet && (
                   <p className="rounded-[10px] border border-[#efb1ab] bg-fds-bad-bg px-3 py-2 text-sm text-fds-bad">
-                    <strong>Motif :</strong> {piece.motif_rejet}
+                    <strong>{t('suivi.motif')}</strong> {piece.motif_rejet}
                   </p>
                 )}
                 {piece.statut === 'rejete' && (
@@ -223,7 +227,7 @@ const VueDossier: React.FC<{ suivi: SuiviDossier }> = ({ suivi }) => {
                     to={`/suivi/${suivi.reference_dossier}/remplacer/${piece.id}`}
                     className="min-h-12 px-4 rounded-lg bg-fds-navy hover:bg-fds-navy-d text-white font-semibold flex items-center justify-center"
                   >
-                    Remplacer ce document
+                    {t('suivi.remplacer')}
                   </Link>
                 )}
               </div>
@@ -232,7 +236,7 @@ const VueDossier: React.FC<{ suivi: SuiviDossier }> = ({ suivi }) => {
         })}
       </ul>
 
-      <p className="text-xs text-fds-mute">Cette page affiche toujours l’état le plus récent de votre dossier.</p>
+      <p className="text-xs text-fds-mute">{t('suivi.note')}</p>
     </>
   );
 };
@@ -242,6 +246,7 @@ const VueDossier: React.FC<{ suivi: SuiviDossier }> = ({ suivi }) => {
  * `/suivi/CAN-2026-0089` affiche le dossier ; `/suivi?ref=CAN-2026-0089` redirige vers cette adresse.
  */
 export const SuiviPage: React.FC = () => {
+  const t = useT();
   const { reference: paramReference } = useParams();
   const [recherche] = useSearchParams();
   const refDansUrl = recherche.get('ref');
@@ -274,20 +279,20 @@ export const SuiviPage: React.FC = () => {
   if (!reference) {
     contenu = <RechercheReference />;
   } else if (!FORMAT_REFERENCE.test(reference)) {
-    contenu = <RechercheReference valeurInitiale={reference} message="Cette référence n’a pas le bon format. Exemple : CAN-2026-0089." />;
+    contenu = <RechercheReference valeurInitiale={reference} message={t('suivi.formatErreur')} />;
   } else if (!resultat || resultat.reference !== reference) {
     contenu = (
       <p className="text-fds-mute" role="status">
-        Recherche de votre dossier…
+        {t('suivi.recherche')}
       </p>
     );
   } else if (resultat.etat === 'ok') {
     contenu = <VueDossier suivi={resultat.suivi} />;
   } else {
     const messages = {
-      introuvable: 'Aucun dossier trouvé pour cette référence. Vérifiez les chiffres, ou contactez-nous.',
-      limite: 'Trop de recherches en peu de temps. Patientez une minute puis réessayez.',
-      erreur: 'Impossible de joindre le serveur. Vérifiez votre connexion puis réessayez.',
+      introuvable: t('suivi.introuvable'),
+      limite: t('suivi.limite'),
+      erreur: t('suivi.reseau'),
     } as const;
     contenu = <RechercheReference valeurInitiale={reference} message={messages[resultat.etat]} />;
   }
