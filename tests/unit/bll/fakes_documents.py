@@ -15,6 +15,7 @@ class FakeDocumentRepository:
 
     def __init__(self) -> None:
         self.documents = {}
+        self.decisions = []
 
     def obtenir(self, candidat_id, document_requis_id):
         return deepcopy(self.documents.get((candidat_id, document_requis_id)))
@@ -27,6 +28,19 @@ class FakeDocumentRepository:
 
     def lister_par_candidats(self, candidat_ids):
         return {identifiant: self.lister(identifiant) for identifiant in candidat_ids}
+
+    def enregistrer_decision(self, document, decision):
+        from backend.entities.document_soumis import STATUT_EN_ATTENTE
+        from backend.entities.erreurs import DocumentDejaDecide
+
+        actuel = self.documents[(document.candidat_id, document.document_requis_id)]
+        if actuel.statut_validation != STATUT_EN_ATTENTE:
+            raise DocumentDejaDecide()
+        self.documents[(document.candidat_id, document.document_requis_id)] = deepcopy(document)
+        self.decisions.append(deepcopy(decision))
+
+    def lister_decisions(self, candidat_id):
+        return [deepcopy(d) for d in self.decisions if d.candidat_id == candidat_id]
 
     def enregistrer(self, document):
         self.documents[(document.candidat_id, document.document_requis_id)] = deepcopy(document)

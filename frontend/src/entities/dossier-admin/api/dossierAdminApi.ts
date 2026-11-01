@@ -1,6 +1,6 @@
 import { apiClient, ApiError, urlApi } from '../../../shared/api/client';
 import { enteteAuth, useSessionStore, type Session } from '../../session';
-import { TAILLE_PAGE, type DossierAdmin, type FiltresDossiers, type PageDossiers } from '../model/types';
+import { TAILLE_PAGE, type DossierAdmin, type FiltresDossiers, type PageDossiers, type PieceAdmin } from '../model/types';
 
 const BASE = '/api/v1/admin';
 
@@ -23,6 +23,17 @@ export const dossierAdminApi = {
     apiClient<DossierAdmin>(`${BASE}/candidatures/${encodeURIComponent(reference)}`, { headers: enteteAuth(session) }).catch(
       surSessionRefusee,
     ),
+
+  /**
+   * Valide ou refuse une pièce. La décision est définitive. Rejette avec une `ApiError` : 422 (`detail.erreurs.motif`)
+   * si le motif d'un refus manque, 409 si la pièce a déjà reçu une décision.
+   */
+  decider: (session: Session, documentId: string, statut: 'valide' | 'rejete', motif?: string): Promise<PieceAdmin> =>
+    apiClient<PieceAdmin>(`${BASE}/documents/${encodeURIComponent(documentId)}/statut`, {
+      method: 'PUT',
+      headers: enteteAuth(session),
+      body: JSON.stringify({ statut, ...(motif !== undefined ? { motif } : {}) }),
+    }).catch(surSessionRefusee),
 
   /**
    * Télécharge une pièce déposée. Un <img> ou <iframe> ne peut pas envoyer l'en-tête d'authentification : on récupère

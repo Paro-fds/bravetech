@@ -36,6 +36,10 @@ class ICandidatureRepository(ABC):
         """Retourne le candidat et la candidature portant cette référence de dossier `CAN-AAAA-NNNN`, ou None."""
 
     @abstractmethod
+    def obtenir_par_candidat(self, candidat_id: str) -> Candidature | None:
+        """Retourne la candidature d'un candidat, ou None."""
+
+    @abstractmethod
     def lister_soumises(self) -> list[tuple[Candidat, Candidature]]:
         """Retourne tous les dossiers soumis (candidat, candidature), du plus ancien au plus récent."""
 

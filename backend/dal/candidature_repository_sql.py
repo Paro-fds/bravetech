@@ -98,6 +98,10 @@ class SqlCandidatureRepository(ICandidatureRepository):
         candidat = self._session.get(CandidatModel, modele.candidat_id)
         return _vers_candidat(candidat), _vers_candidature(modele)
 
+    def obtenir_par_candidat(self, candidat_id: str) -> Candidature | None:
+        modele = self._session.query(CandidatureModel).filter(CandidatureModel.candidat_id == candidat_id).first()
+        return _vers_candidature(modele) if modele else None
+
     def lister_soumises(self) -> list[tuple[Candidat, Candidature]]:
         lignes = (
             self._session.query(CandidatureModel, CandidatModel)

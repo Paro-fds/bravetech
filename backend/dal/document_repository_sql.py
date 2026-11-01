@@ -7,8 +7,10 @@ from datetime import datetime, timezone
 
 from sqlalchemy.orm import Session
 
-from backend.dal.models import DocumentSoumisModel
-from backend.entities.document_soumis import DocumentSoumis
+from backend.dal.models import DecisionDocumentModel, DocumentSoumisModel
+from backend.entities.decision_document import DecisionDocument
+from backend.entities.document_soumis import STATUT_EN_ATTENTE, DocumentSoumis
+from backend.entities.erreurs import DocumentDejaDecide
 from backend.ports.document_repository import IDocumentRepository
 
 _CHAMPS = (
@@ -78,3 +80,54 @@ class SqlDocumentRepository(IDocumentRepository):
         for champ in _CHAMPS:
             setattr(modele, champ, getattr(document, champ))
         self._session.commit()
+
+    def enregistrer_decision(self, document: DocumentSoumis, decision: DecisionDocument) -> None:
+        # Mise à jour conditionnelle : si un autre agent a décidé entre-temps, aucune ligne n'est touchée
+        modifiees = (
+            self._session.query(DocumentSoumisModel)
+            .filter(DocumentSoumisModel.id == document.id, DocumentSoumisModel.statut_validation == STATUT_EN_ATTENTE)
+            .update(
+                {
+                    "statut_validation": document.statut_validation,
+                    "motif_rejet": document.motif_rejet,
+                    "valide_par": document.valide_par,
+                    "date_validation": document.date_validation,
+                },
+                synchronize_session=False,
+            )
+        )
+        if modifiees != 1:
+            self._session.rollback()
+            raise DocumentDejaDecide()
+        self._session.add(DecisionDocumentModel(
+            id=decision.id,
+            document_id=decision.document_id,
+            candidat_id=decision.candidat_id,
+            document_requis_id=decision.document_requis_id,
+            statut=decision.statut,
+            motif=decision.motif,
+            decide_par=decision.decide_par,
+            decide_le=decision.decide_le,
+        ))
+        self._session.commit()  # document et historique sont écrits ensemble ou pas du tout
+
+    def lister_decisions(self, candidat_id: str) -> list[DecisionDocument]:
+        modeles = (
+            self._session.query(DecisionDocumentModel)
+            .filter(DecisionDocumentModel.candidat_id == candidat_id)
+            .order_by(DecisionDocumentModel.decide_le)
+            .all()
+        )
+        return [
+            DecisionDocument(
+                id=m.id,
+                document_id=m.document_id,
+                candidat_id=m.candidat_id,
+                document_requis_id=m.document_requis_id,
+                statut=m.statut,
+                motif=m.motif,
+                decide_par=m.decide_par,
+                decide_le=_en_utc(m.decide_le),
+            )
+            for m in modeles
+        ]

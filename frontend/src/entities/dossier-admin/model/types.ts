@@ -55,6 +55,17 @@ export interface PieceAdmin {
   date_validation: string | null;
 }
 
+/** Une décision du personnel sur une pièce ; l'historique est en ajout seul. */
+export interface DecisionHistorique {
+  piece_id: string;
+  piece_nom: string;
+  statut: 'valide' | 'rejete';
+  motif: string | null;
+  /** Email du membre du personnel. */
+  decide_par: string;
+  decide_le: string;
+}
+
 export interface DossierAdmin {
   reference_dossier: string;
   statut: StatutDossier;
@@ -74,6 +85,7 @@ export interface DossierAdmin {
   reference_paiement: string | null;
   montant_htg: number;
   pieces: PieceAdmin[];
+  decisions: DecisionHistorique[];
 }
 
 /** Libellé et couleur d'un statut de dossier (maquette « Administration liste des dossiers »). */
@@ -84,3 +96,7 @@ export const BADGES_DOSSIER: Record<StatutDossier, { libelle: string; classe: st
 };
 
 export const TAILLE_PAGE = 20;
+
+/** Longueur minimale du motif d'un refus (alignée sur le serveur). */
+export const MOTIF_MIN = 5;
+export const MOTIF_MAX = 500;

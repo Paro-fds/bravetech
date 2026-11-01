@@ -38,6 +38,9 @@ class FakeCandidatureRepository(ICandidatureRepository):
                 return deepcopy(self.candidats[candidature.candidat_id]), deepcopy(candidature)
         return None
 
+    def obtenir_par_candidat(self, candidat_id: str) -> Candidature | None:
+        return next((deepcopy(c) for c in self.candidatures.values() if c.candidat_id == candidat_id), None)
+
     def lister_soumises(self) -> list[tuple[Candidat, Candidature]]:
         soumises = [c for c in self.candidatures.values() if c.statut == "soumise"]
         soumises.sort(key=lambda c: (c.soumise_le, c.reference_dossier))

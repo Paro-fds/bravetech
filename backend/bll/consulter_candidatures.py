@@ -14,6 +14,7 @@ from backend.bll.obtenir_statut_candidature import statut_global_depuis_comptes
 from backend.bll.televerser_document import ListerPiecesDossierUseCase, PieceDossier
 from backend.entities.candidat import Candidat
 from backend.entities.candidature import STATUT_SOUMISE, Candidature
+from backend.entities.decision_document import DecisionDocument
 from backend.entities.document_soumis import STATUT_EN_ATTENTE, STATUT_REJETE, STATUT_VALIDE, DocumentSoumis
 from backend.entities.erreurs import CandidatureIntrouvable, DocumentIntrouvable
 from backend.entities.pieces_admission import pieces_admission
@@ -133,6 +134,7 @@ class DossierAdmin:
     candidature: Candidature
     pieces: list[PieceDossier]
     statut_global: str
+    decisions: list[DecisionDocument]
 
 
 class ObtenirDossierAdminUseCase:
@@ -150,6 +152,7 @@ class ObtenirDossierAdminUseCase:
             candidat=candidat,
             candidature=candidature,
             pieces=pieces,
+            decisions=self._documents.lister_decisions(candidat.id),
             statut_global=statut_global_depuis_comptes(
                 sum(1 for p in pieces if p.statut == STATUT_VALIDE),
                 sum(1 for p in pieces if p.statut == STATUT_REJETE),

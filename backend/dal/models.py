@@ -89,3 +89,20 @@ class UtilisateurModel(Base):
     role = Column(String(20), nullable=False)
     est_actif = Column(Boolean, nullable=False, default=True)
     created_at = Column(DateTime(timezone=True), nullable=False)
+
+
+class DecisionDocumentModel(Base):
+    """Table `decisions_documents` : historique des décisions du personnel, en ajout seul (jamais modifié ni supprimé).
+
+    Le document porte l'état courant ; cette table garde la trace de chaque décision, même après un remplacement.
+    """
+    __tablename__ = "decisions_documents"
+
+    id = Column(String(36), primary_key=True)
+    document_id = Column(String(36), nullable=False, index=True)
+    candidat_id = Column(String(36), ForeignKey("candidats.id", ondelete="CASCADE"), nullable=False, index=True)
+    document_requis_id = Column(String(100), nullable=False)
+    statut = Column(String(20), nullable=False)  # valide | rejete
+    motif = Column(Text, nullable=True)
+    decide_par = Column(String(36), ForeignKey("utilisateurs.id"), nullable=False)
+    decide_le = Column(DateTime(timezone=True), nullable=False)

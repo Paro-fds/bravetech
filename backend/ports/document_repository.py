@@ -3,6 +3,7 @@
 
 from abc import ABC, abstractmethod
 
+from backend.entities.decision_document import DecisionDocument
 from backend.entities.document_soumis import DocumentSoumis
 
 
@@ -28,3 +29,14 @@ class IDocumentRepository(ABC):
     @abstractmethod
     def enregistrer(self, document: DocumentSoumis) -> None:
         """Crée ou remplace (upsert) le document pour le couple (candidat, pièce requise)."""
+
+    @abstractmethod
+    def enregistrer_decision(self, document: DocumentSoumis, decision: DecisionDocument) -> None:
+        """Enregistre en une seule transaction la décision (historique) et le nouveau statut du document.
+
+        Lève `DocumentDejaDecide` si le document n'est plus en attente au moment de l'écriture (deux agents simultanés).
+        """
+
+    @abstractmethod
+    def lister_decisions(self, candidat_id: str) -> list[DecisionDocument]:
+        """Retourne l'historique des décisions d'un candidat, de la plus ancienne à la plus récente."""
