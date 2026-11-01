@@ -25,5 +25,9 @@ class CandidatureDejaExistante(ErreurMetier):
     """Une candidature existe déjà pour cet email et cette campagne (unicité (email, campagne))."""
 
 
+class EtapePrecedenteIncomplete(ErreurMetier):
+    """Une étape antérieure du tunnel de candidature n'est pas terminée."""
+
+
 class CandidatureDejaSoumise(ErreurMetier):
     """La candidature est déjà soumise : ses informations ne sont plus modifiables."""

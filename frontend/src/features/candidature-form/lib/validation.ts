@@ -11,6 +11,14 @@ const RE_EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 const RE_TELEPHONE = /^(?:\+?509)?[234]\d{7}$/;
 const RE_LETTRE = /\p{L}/u;
 
+/** Valide un numéro mobile haïtien (8 chiffres, indicatif +509 facultatif). Retourne un message d'erreur ou undefined. */
+export function validerNumeroHaitien(valeur: string): string | undefined {
+  const numero = valeur.replace(/[\s.-]/g, '');
+  if (!numero) return 'Numéro obligatoire.';
+  if (!RE_TELEPHONE.test(numero)) return 'Numéro haïtien invalide (8 chiffres, ex. 37 12 34 56).';
+  return undefined;
+}
+
 function age(naissance: Date, aujourdhui: Date): number {
   let a = aujourdhui.getFullYear() - naissance.getFullYear();
   const avantAnniversaire =

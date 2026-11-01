@@ -23,6 +23,12 @@ class DeplacementPhysiqueRequest(BaseModel):
     deplacement_physique: StrictBool
 
 
+class PaiementSimuleRequest(BaseModel):
+    """Simulation de paiement : opérateur choisi et numéro mobile (les règles sont validées par la BLL)."""
+    methode: str = Field(max_length=20)
+    numero_telephone: str = Field(max_length=50)
+
+
 class InformationsPersonnellesResponse(BaseModel):
     nom: str
     prenom: str
@@ -41,4 +47,8 @@ class BrouillonResponse(BaseModel):
     candidature_id: str
     statut: str
     deplacement_physique: bool | None
+    statut_paiement: str
+    methode_paiement: str | None
+    reference_paiement: str | None  # référence SIMULÉE : aucun montant réel n'est prélevé
+    montant_htg: int
     informations: InformationsPersonnellesResponse

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Info } from 'lucide-react';
 import {
   DEPARTEMENTS,
   extraireErreursChamps,
@@ -8,6 +8,7 @@ import {
 } from '../../../entities/candidature';
 import { ApiError } from '../../../shared/api/client';
 import { validerInformations } from '../lib/validation';
+import { BarreAction, CLASSE_BOUTON_PRIMAIRE } from './BarreAction';
 import { ChampTexte } from './ChampTexte';
 
 interface StepInformationsProps {
@@ -17,7 +18,7 @@ interface StepInformationsProps {
   onSoumettre: (valeurs: InformationsPersonnelles) => Promise<void>;
 }
 
-/** Étape 1 : informations personnelles. */
+/** Étape 1 : informations personnelles (maquette « Candidature 1/4 - Identité »). */
 export const StepInformations: React.FC<StepInformationsProps> = ({ valeurs, onChange, onSoumettre }) => {
   const [erreurs, setErreurs] = useState<ErreursChamps>({});
   const [messageGlobal, setMessageGlobal] = useState<string | null>(null);
@@ -60,8 +61,8 @@ export const StepInformations: React.FC<StepInformationsProps> = ({ valeurs, onC
   };
 
   return (
-    <form onSubmit={soumettre} noValidate className="flex flex-col gap-5">
-      <h1 className="text-2xl font-extrabold text-slate-900">Qui êtes-vous ?</h1>
+    <form onSubmit={soumettre} noValidate className="flex flex-col gap-[18px] flex-1">
+      <h1 className="font-fds-serif text-2xl font-bold text-fds-navy-d">Qui êtes-vous ?</h1>
 
       <ChampTexte id="nom" libelle="Nom" erreur={erreurs.nom}>
         {(p) => <input {...p} type="text" autoComplete="family-name" value={valeurs.nom} onChange={maj('nom')} />}
@@ -148,24 +149,23 @@ export const StepInformations: React.FC<StepInformationsProps> = ({ valeurs, onC
         {(p) => <input {...p} type="text" autoComplete="address-level2" value={valeurs.commune} onChange={maj('commune')} />}
       </ChampTexte>
 
-      <p className="rounded-xl bg-blue-50 border border-blue-200 px-3.5 py-3 text-sm text-blue-900">
-        Vos réponses sont enregistrées à chaque étape. Si votre connexion coupe, vous reprenez là où vous étiez.
-      </p>
+      <div className="flex gap-2.5 items-start rounded-[10px] border border-[#b9cbe3] bg-fds-navy-t px-3.5 py-3 text-sm text-fds-navy-d">
+        <Info className="w-5 h-5 shrink-0" aria-hidden="true" />
+        <span>Vos réponses sont enregistrées à chaque étape. Si votre connexion coupe, vous reprenez là où vous étiez.</span>
+      </div>
 
       {messageGlobal && (
-        <p role="alert" className="rounded-xl bg-rose-50 border border-rose-200 px-3.5 py-3 text-sm text-rose-800">
+        <p role="alert" className="rounded-[10px] border border-[#efb1ab] bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
           {messageGlobal}
         </p>
       )}
 
-      <button
-        type="submit"
-        disabled={enCours}
-        className="min-h-12 rounded-xl bg-blue-700 hover:bg-blue-600 disabled:opacity-60 text-white font-bold flex items-center justify-center gap-2 transition-colors"
-      >
-        <span>{enCours ? 'Enregistrement…' : 'Continuer'}</span>
-        {!enCours && <ArrowRight className="w-4 h-4" />}
-      </button>
+      <BarreAction>
+        <button type="submit" disabled={enCours} className={CLASSE_BOUTON_PRIMAIRE}>
+          <span>{enCours ? 'Enregistrement…' : 'Continuer'}</span>
+          {!enCours && <ArrowRight className="w-5 h-5" aria-hidden="true" />}
+        </button>
+      </BarreAction>
     </form>
   );
 };

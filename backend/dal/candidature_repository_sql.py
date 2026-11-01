@@ -15,7 +15,10 @@ from backend.ports.candidature_repository import ICandidatureRepository
 _CHAMPS_CANDIDAT = (
     "nom", "prenom", "date_naissance", "sexe", "telephone", "email", "departement", "commune", "campagne",
 )
-_CHAMPS_CANDIDATURE = ("deplacement_physique", "statut_paiement", "reference_dossier", "statut")
+_CHAMPS_CANDIDATURE = (
+    "deplacement_physique", "statut_paiement", "reference_dossier", "statut",
+    "methode_paiement", "reference_paiement", "numero_paiement",
+)
 
 
 def _vers_candidat(modele: CandidatModel) -> Candidat:
@@ -71,6 +74,14 @@ class SqlCandidatureRepository(ICandidatureRepository):
             .first()
         )
         return _vers_candidat(modele) if modele else None
+
+    def reference_paiement_existe(self, reference: str) -> bool:
+        return (
+            self._session.query(CandidatureModel.id)
+            .filter(CandidatureModel.reference_paiement == reference)
+            .first()
+            is not None
+        )
 
     def enregistrer_candidat(self, candidat: Candidat) -> None:
         modele = self._session.get(CandidatModel, candidat.id)

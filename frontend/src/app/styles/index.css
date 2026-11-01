@@ -1,5 +1,31 @@
 @import "tailwindcss";
 
+/* Charte des maquettes (couleurs issues du logo FDS-UEH). Utilisation : bg-fds-navy, text-fds-navy-d, font-fds-serif... */
+@theme {
+  --color-fds-navy: #01346d;
+  --color-fds-navy-d: #022552;
+  --color-fds-navy-t: #e6edf6;
+  --color-fds-gold: #f0b429;
+  --color-fds-line: #d5dce8;
+  --color-fds-field: #8796b0;
+  --color-fds-ink: #13233f;
+  --color-fds-mute: #475873;
+  --color-fds-ok: #14653c;
+  --color-fds-ok-bg: #e3f4ea;
+  --color-fds-bad: #a8231a;
+  --color-fds-bad-bg: #fbe7e5;
+  --color-fds-warn: #6b4300;
+  --color-fds-warn-bg: #fdf1d6;
+  --font-fds-serif: 'Source Serif 4', Georgia, serif;
+  --font-fds-sans: 'Source Sans 3', system-ui, sans-serif;
+}
+
+/* Bandeau hachuré « PAIEMENT SIMULÉ » : doit être visuellement impossible à confondre avec un vrai paiement. */
+.bandeau-simulation {
+  background: repeating-linear-gradient(135deg, #fdf1d6, #fdf1d6 12px, #fbe7b0 12px, #fbe7b0 24px);
+  border: 2px dashed #b27a00;
+}
+
 @layer base {
   :root {
     --primary: #1e3a8a;
