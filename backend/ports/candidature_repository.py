@@ -32,6 +32,10 @@ class ICandidatureRepository(ABC):
         """Retourne le candidat d'une campagne pour un email donné, ou None."""
 
     @abstractmethod
+    def reference_paiement_existe(self, reference: str) -> bool:
+        """Indique si une référence de paiement simulé est déjà attribuée."""
+
+    @abstractmethod
     def enregistrer_candidat(self, candidat: Candidat) -> None:
         """Met à jour un candidat existant.
 

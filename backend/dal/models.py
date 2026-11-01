@@ -40,6 +40,9 @@ class CandidatureModel(Base):
     candidat_id = Column(String(36), ForeignKey("candidats.id", ondelete="CASCADE"), nullable=False, unique=True)
     deplacement_physique = Column(Boolean, nullable=True)  # NULL tant que la question n'est pas répondue
     statut_paiement = Column(String(50), nullable=False, default="en_attente")
+    methode_paiement = Column(String(20), nullable=True)  # MONCASH | NATCASH (paiement simulé, US-006)
+    reference_paiement = Column(String(30), unique=True, nullable=True)  # PAY-SIM-AAAA-NNNN
+    numero_paiement = Column(String(20), nullable=True)
     reference_dossier = Column(String(20), unique=True, nullable=True)
     statut = Column(String(20), nullable=False, default="brouillon")
     created_at = Column(DateTime(timezone=True), nullable=False)

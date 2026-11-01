@@ -22,6 +22,13 @@ def _nettoyer_texte(valeur: Any) -> str:
     return re.sub(r"\s+", " ", str(valeur or "")).strip()
 
 
+def normaliser_telephone_haitien(valeur: Any) -> str | None:
+    """Retourne le numéro au format +509XXXXXXXX, ou None s'il n'est pas un numéro haïtien valide."""
+    brut = re.sub(r"[\s.\-]", "", str(valeur or ""))
+    correspondance = _RE_TELEPHONE.fullmatch(brut)
+    return f"+509{correspondance.group(1)}" if correspondance else None
+
+
 def _age(naissance: date, aujourdhui: date) -> int:
     avant_anniversaire = (aujourdhui.month, aujourdhui.day) < (naissance.month, naissance.day)
     return aujourdhui.year - naissance.year - (1 if avant_anniversaire else 0)
@@ -62,13 +69,13 @@ def valider_informations(donnees: dict[str, Any], aujourdhui: date | None = None
         erreurs["sexe"] = "Sexe obligatoire (M ou F)."
     propres["sexe"] = sexe
 
-    telephone = re.sub(r"[\s.\-]", "", str(donnees.get("telephone") or ""))
-    correspondance = _RE_TELEPHONE.fullmatch(telephone)
+    telephone = _nettoyer_texte(donnees.get("telephone"))
+    telephone_normalise = normaliser_telephone_haitien(telephone)
     if not telephone:
         erreurs["telephone"] = "Téléphone obligatoire."
-    elif not correspondance:
+    elif telephone_normalise is None:
         erreurs["telephone"] = "Numéro haïtien invalide (8 chiffres, ex. 37 12 34 56)."
-    propres["telephone"] = f"+509{correspondance.group(1)}" if correspondance else telephone
+    propres["telephone"] = telephone_normalise or telephone
 
     email = _nettoyer_texte(donnees.get("email")).lower()
     if not email:

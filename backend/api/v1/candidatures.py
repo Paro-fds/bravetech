@@ -12,18 +12,21 @@ from backend.api.v1.dto.candidature_dto import (
     DeplacementPhysiqueRequest,
     InformationsPersonnellesRequest,
     InformationsPersonnellesResponse,
+    PaiementSimuleRequest,
 )
 from backend.bll.definir_deplacement_physique import DefinirDeplacementPhysiqueUseCase
 from backend.bll.enregistrer_informations import EnregistrerInformationsUseCase, MettreAJourInformationsUseCase
 from backend.bll.obtenir_brouillon import ObtenirBrouillonUseCase
+from backend.bll.simuler_paiement import SimulerPaiementUseCase
 from backend.dal.candidature_repository_sql import SqlCandidatureRepository
 from backend.dal.database import get_db
 from backend.entities.candidat import Candidat
-from backend.entities.candidature import Candidature
+from backend.entities.candidature import FRAIS_DOSSIER_HTG, Candidature
 from backend.entities.erreurs import (
     CandidatureDejaExistante,
     CandidatureDejaSoumise,
     CandidatureIntrouvable,
+    EtapePrecedenteIncomplete,
     InformationsInvalides,
 )
 from backend.ports.candidature_repository import ICandidatureRepository
@@ -43,6 +46,10 @@ def _reponse(candidat: Candidat, candidature: Candidature) -> BrouillonResponse:
         candidature_id=candidature.id,
         statut=candidature.statut,
         deplacement_physique=candidature.deplacement_physique,
+        statut_paiement=candidature.statut_paiement,
+        methode_paiement=candidature.methode_paiement,
+        reference_paiement=candidature.reference_paiement,
+        montant_htg=FRAIS_DOSSIER_HTG,
         informations=InformationsPersonnellesResponse.model_validate(candidat),
     )
 
@@ -55,6 +62,8 @@ def _vers_http(erreur: Exception) -> HTTPException:
         return HTTPException(status_code=404, detail=_MESSAGE_INTROUVABLE)
     if isinstance(erreur, CandidatureDejaExistante):
         return HTTPException(status_code=409, detail="Une candidature existe déjà pour cet email.")
+    if isinstance(erreur, EtapePrecedenteIncomplete):
+        return HTTPException(status_code=409, detail="Répondez d'abord aux étapes précédentes de la candidature.")
     if isinstance(erreur, CandidatureDejaSoumise):
         return HTTPException(status_code=409, detail="Cette candidature est déjà soumise et n'est plus modifiable.")
     raise erreur
@@ -115,5 +124,24 @@ def definir_deplacement_physique(
         candidature = DefinirDeplacementPhysiqueUseCase(repo).executer(candidature_id, payload.deplacement_physique)
         candidat, candidature = ObtenirBrouillonUseCase(repo).executer(candidature.id)
     except (InformationsInvalides, CandidatureIntrouvable, CandidatureDejaSoumise) as erreur:
+        raise _vers_http(erreur)
+    return _reponse(candidat, candidature)
+
+
+@router.post(
+    "/{candidature_id}/paiement",
+    response_model=BrouillonResponse,
+    summary="Simuler le paiement des frais de dossier (aucun montant réel prélevé)",
+)
+def simuler_paiement(
+    candidature_id: str,
+    payload: PaiementSimuleRequest,
+    repo: ICandidatureRepository = Depends(get_candidature_repository),
+):
+    """Enregistre un paiement SIMULÉ MonCash ou NatCash et attribue la référence `PAY-SIM-AAAA-NNNN`."""
+    try:
+        candidature = SimulerPaiementUseCase(repo).executer(candidature_id, payload.methode, payload.numero_telephone)
+        candidat, candidature = ObtenirBrouillonUseCase(repo).executer(candidature.id)
+    except (InformationsInvalides, CandidatureIntrouvable, EtapePrecedenteIncomplete, CandidatureDejaSoumise) as erreur:
         raise _vers_http(erreur)
     return _reponse(candidat, candidature)

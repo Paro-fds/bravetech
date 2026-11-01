@@ -32,6 +32,9 @@ class FakeCandidatureRepository(ICandidatureRepository):
                 return deepcopy(candidat)
         return None
 
+    def reference_paiement_existe(self, reference: str) -> bool:
+        return any(c.reference_paiement == reference for c in self.candidatures.values())
+
     def enregistrer_candidat(self, candidat: Candidat) -> None:
         self.candidats[candidat.id] = deepcopy(candidat)
 
