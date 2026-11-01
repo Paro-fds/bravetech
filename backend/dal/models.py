@@ -5,7 +5,7 @@ Note : Les informations de cursus sont des données de référence statiques sto
 fichiers JSON dans `cursus/` et ne nécessitent pas de tables SQL (cf. JsonCursusRepository).
 Les pièces requises d'admission sont définies par le domaine (`pieces_admission`).
 
-Modèles introduits : `candidats` et `candidatures` (US-005), `documents_soumis` (US-007).
+Modèles introduits : `candidats` et `candidatures` (US-005), `documents_soumis` (US-007) ; `candidatures.soumise_le` (US-008).
 `utilisateurs` suivra avec US-011.
 """
 
@@ -54,8 +54,9 @@ class CandidatureModel(Base):
     methode_paiement = Column(String(20), nullable=True)  # MONCASH | NATCASH (paiement simulé, US-006)
     reference_paiement = Column(String(30), unique=True, nullable=True)  # PAY-SIM-AAAA-NNNN
     numero_paiement = Column(String(20), nullable=True)
-    reference_dossier = Column(String(20), unique=True, nullable=True)
+    reference_dossier = Column(String(20), unique=True, nullable=True)  # CAN-AAAA-NNNN, attribuée à la soumission
     statut = Column(String(20), nullable=False, default="brouillon")
+    soumise_le = Column(DateTime(timezone=True), nullable=True)
     created_at = Column(DateTime(timezone=True), nullable=False)
 
 

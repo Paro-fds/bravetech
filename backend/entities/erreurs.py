@@ -53,5 +53,17 @@ class EtapePrecedenteIncomplete(ErreurMetier):
     """Une étape antérieure du tunnel de candidature n'est pas terminée."""
 
 
+class DossierIncomplet(ErreurMetier):
+    """Le dossier ne peut pas être soumis : des étapes ou des pièces manquent."""
+
+    def __init__(self, manques: list[str]) -> None:
+        super().__init__("Dossier incomplet.")
+        self.manques = manques
+
+
+class ReferenceDejaAttribuee(ErreurMetier):
+    """Une référence (de dossier ou de paiement) est déjà prise : il faut en tirer une autre."""
+
+
 class CandidatureDejaSoumise(ErreurMetier):
     """La candidature est déjà soumise : ses informations ne sont plus modifiables."""

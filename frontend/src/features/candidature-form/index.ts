@@ -6,3 +6,6 @@ export * from './ui/StepAdmission';
 export * from './ui/StepPaiement';
 export * from './ui/StepPieces';
 export * from './lib/fichiers';
+export * from './ui/StepRecapitulatif';
+export * from './ui/EcranConfirmation';
+export * from './lib/dates';

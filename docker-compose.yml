@@ -32,6 +32,11 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER:-fds_admin}:${POSTGRES_PASSWORD:-fds_secret_pass}@db:5432/${POSTGRES_DB:-fds_portail}
       ENVIRONMENT: production
       UPLOAD_DIR: /app/uploads
+      # Email de confirmation (US-008) : sans RESEND_API_KEY, les emails sont écrits dans les journaux
+      RESEND_API_KEY: "${RESEND_API_KEY:-}"
+      EMAIL_FROM: "${EMAIL_FROM:-FDS Portail <onboarding@resend.dev>}"
+      # URL publique du portail, utilisée pour le lien de suivi des emails
+      APP_BASE_URL: "${APP_BASE_URL:-http://localhost}"
     volumes:
       - uploads_data:/app/uploads
     networks:

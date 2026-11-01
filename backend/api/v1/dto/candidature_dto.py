@@ -1,7 +1,7 @@
 """DTOs (Data Transfer Objects) des candidatures — Couche Présentation / API (US-005).
 """
 
-from datetime import date
+from datetime import date, datetime
 
 from pydantic import BaseModel, ConfigDict, Field, StrictBool
 
@@ -51,7 +51,32 @@ class BrouillonResponse(BaseModel):
     methode_paiement: str | None
     reference_paiement: str | None  # référence SIMULÉE : aucun montant réel n'est prélevé
     montant_htg: int
+    reference_dossier: str | None  # CAN-AAAA-NNNN, attribuée à la soumission
+    soumise_le: datetime | None  # UTC
     informations: InformationsPersonnellesResponse
+
+
+class PieceSuiviResponse(BaseModel):
+    """Statut public d'une pièce : ni nom de fichier, ni clé de stockage."""
+    id: str
+    nom: str
+    statut: str  # manquant | en_attente | valide | rejete
+    motif_rejet: str | None = None
+    depose_le: datetime | None = None  # UTC
+    valide_le: datetime | None = None  # UTC
+
+
+class SuiviDossierResponse(BaseModel):
+    """Vue publique d'un dossier soumis (US-009) : prénom et initiale du nom seulement."""
+    reference_dossier: str
+    prenom: str
+    initiale_nom: str
+    admission: str
+    soumise_le: datetime | None  # UTC
+    statut_global: str  # en_examen | action_requise | complet
+    pieces_validees: int
+    pieces_total: int
+    pieces: list[PieceSuiviResponse]
 
 
 class PieceDossierResponse(BaseModel):

@@ -8,7 +8,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from backend.api.v1.candidatures import get_stockage_fichiers
-from backend.api.v1.limiteur import limiteur_envois
+from backend.api.v1.limiteur import limiteur_envois, limiteur_suivi
 from backend.dal import models  # noqa: F401  (enregistre les tables)
 from backend.dal.database import Base, get_db
 from backend.dal.stockage_local import StockageLocal
@@ -39,7 +39,9 @@ def client(session_factory, dossier_uploads):
 
     app.dependency_overrides[get_db] = _db
     app.dependency_overrides[get_stockage_fichiers] = lambda: StockageLocal(dossier_uploads)
-    limiteur_envois.reinitialiser()  # chaque test repart avec un compteur de débit vide
+    limiteur_envois.reinitialiser()  # chaque test repart avec des compteurs de débit vides
+    limiteur_suivi.reinitialiser()
     yield TestClient(app)
     app.dependency_overrides.clear()
     limiteur_envois.reinitialiser()
+    limiteur_suivi.reinitialiser()

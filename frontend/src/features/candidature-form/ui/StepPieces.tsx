@@ -9,6 +9,8 @@ interface StepPiecesProps {
   candidatureId: string;
   referencePaiement: string | null;
   onRetour: () => void;
+  /** Passe au récapitulatif, une fois les 5 pièces reçues. */
+  onContinuer: () => void;
 }
 
 /** État d'un envoi en cours ou en échec pour une pièce (les pièces reçues viennent du serveur). */
@@ -33,7 +35,7 @@ const BADGES: Record<PieceDossier['statut'], { libelle: string; classe: string }
 };
 
 /** Étape 4 : dépôt des pièces justificatives (maquette « Candidature 4/4 - Pièces »). */
-export const StepPieces: React.FC<StepPiecesProps> = ({ candidatureId, referencePaiement, onRetour }) => {
+export const StepPieces: React.FC<StepPiecesProps> = ({ candidatureId, referencePaiement, onRetour, onContinuer }) => {
   const [pieces, setPieces] = useState<PieceDossier[] | null>(null);
   const [erreurChargement, setErreurChargement] = useState(false);
   const [envois, setEnvois] = useState<Record<string, Envoi>>({});
@@ -213,12 +215,11 @@ export const StepPieces: React.FC<StepPiecesProps> = ({ candidatureId, reference
       <BarreAction>
         <p className="text-xs text-fds-mute text-center" aria-live="polite">
           {complet
-            ? "Toutes vos pièces sont reçues. L'envoi du dossier sera disponible très prochainement."
+            ? 'Toutes vos pièces sont reçues. Vous pouvez vérifier votre dossier.'
             : `${recues} pièce${recues > 1 ? 's' : ''} reçue${recues > 1 ? 's' : ''} sur ${total} obligatoires`}
         </p>
-        {/* La finalisation du dossier arrive avec US-008 : le bouton reste inactif d'ici là */}
-        <button type="button" disabled className={CLASSE_BOUTON_PRIMAIRE}>
-          Envoyer mon dossier
+        <button type="button" disabled={!complet} onClick={onContinuer} className={CLASSE_BOUTON_PRIMAIRE}>
+          Vérifier mon dossier
         </button>
         <button type="button" onClick={onRetour} className="min-h-11 text-fds-navy font-semibold underline">
           Retour

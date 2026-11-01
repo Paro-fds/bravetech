@@ -52,6 +52,20 @@ def _adresse_client(request: Request) -> str:
     return request.client.host if request.client else "inconnu"
 
 
+# Consultation de dossier (US-009) : les références sont séquentielles, donc devinables ; on freine l'énumération
+limiteur_suivi = LimiteurDebit(max_requetes=20)
+
+
+def limiter_suivi(request: Request) -> None:
+    """Dépendance FastAPI : refuse (429) un client qui multiplie les consultations de dossier."""
+    if not limiteur_suivi.autoriser(_adresse_client(request)):
+        raise HTTPException(
+            status_code=429,
+            detail="Trop de recherches en peu de temps. Patientez une minute puis réessayez.",
+            headers={"Retry-After": "60"},
+        )
+
+
 def limiter_envois(request: Request) -> None:
     """Dépendance FastAPI : refuse (429) un client qui dépasse la limite d'envois."""
     if not limiteur_envois.autoriser(_adresse_client(request)):

@@ -1,6 +1,7 @@
 """Point d'entrée de l'application FastAPI — FDS Portail.
 """
 
+import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -8,6 +9,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from backend.api.v1 import api_v1_router
 from backend.dal import models  # noqa: F401  (enregistre les tables dans Base.metadata)
 from backend.dal.database import Base, engine
+
+
+# Sans cette configuration, uvicorn n'affiche pas les messages INFO de l'application : en mode console
+# (sans RESEND_API_KEY), l'email de confirmation serait « envoyé » dans le vide.
+logging.basicConfig(level=logging.INFO, format="%(levelname)s [%(name)s] %(message)s")
 
 
 @asynccontextmanager

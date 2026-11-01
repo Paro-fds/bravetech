@@ -11,6 +11,7 @@ from backend.entities.document_requis import DocumentRequis
 
 # Identifiant du cursus auquel on candidate (Premier cycle MPC)
 ID_CURSUS_ADMISSION = "mpc"
+NOM_ADMISSION = "Premier cycle MPC"
 
 
 def pieces_admission() -> list[DocumentRequis]:

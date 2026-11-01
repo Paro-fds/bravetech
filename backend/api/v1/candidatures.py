@@ -4,10 +4,12 @@ Le candidat n'a pas de compte : son brouillon est identifié par un identifiant 
 conservé par son navigateur pour reprendre le formulaire après une coupure de connexion.
 """
 
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
+import os
+
+from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, UploadFile
 from sqlalchemy.orm import Session
 
-from backend.api.v1.limiteur import limiter_envois
+from backend.api.v1.limiteur import limiter_envois, limiter_suivi
 from backend.api.v1.dto.candidature_dto import (
     BrouillonResponse,
     DeplacementPhysiqueRequest,
@@ -15,11 +17,16 @@ from backend.api.v1.dto.candidature_dto import (
     InformationsPersonnellesResponse,
     PaiementSimuleRequest,
     PieceDossierResponse,
+    PieceSuiviResponse,
+    SuiviDossierResponse,
 )
+from backend.bll.obtenir_statut_candidature import ObtenirStatutCandidatureUseCase
+from backend.entities.pieces_admission import NOM_ADMISSION
 from backend.bll.definir_deplacement_physique import DefinirDeplacementPhysiqueUseCase
 from backend.bll.enregistrer_informations import EnregistrerInformationsUseCase, MettreAJourInformationsUseCase
 from backend.bll.obtenir_brouillon import ObtenirBrouillonUseCase
 from backend.bll.simuler_paiement import SimulerPaiementUseCase
+from backend.bll.soumettre_candidature import NotifierConfirmationUseCase, SoumettreCandidatureUseCase
 from backend.bll.televerser_document import (
     ListerPiecesDossierUseCase,
     PieceDossier,
@@ -29,6 +36,7 @@ from backend.bll.televerser_document import (
 from backend.dal.candidature_repository_sql import SqlCandidatureRepository
 from backend.dal.database import get_db
 from backend.dal.document_repository_sql import SqlDocumentRepository
+from backend.dal.email_adapters import creer_email_sender
 from backend.dal.stockage_local import StockageLocal, racine_uploads
 from backend.entities.candidat import Candidat
 from backend.entities.candidature import FRAIS_DOSSIER_HTG, Candidature
@@ -38,6 +46,7 @@ from backend.entities.erreurs import (
     CandidatureIntrouvable,
     DocumentDejaValide,
     DocumentRequisInconnu,
+    DossierIncomplet,
     EtapePrecedenteIncomplete,
     FichierInvalide,
     FichierTropVolumineux,
@@ -45,6 +54,7 @@ from backend.entities.erreurs import (
 )
 from backend.ports.candidature_repository import ICandidatureRepository
 from backend.ports.document_repository import IDocumentRepository
+from backend.ports.email_sender import IEmailSender
 from backend.ports.stockage_fichiers import IStockageFichiers
 from backend.bll.validation_fichier import OCTETS_PAR_MO
 
@@ -67,6 +77,8 @@ def _reponse(candidat: Candidat, candidature: Candidature) -> BrouillonResponse:
         methode_paiement=candidature.methode_paiement,
         reference_paiement=candidature.reference_paiement,
         montant_htg=FRAIS_DOSSIER_HTG,
+        reference_dossier=candidature.reference_dossier,
+        soumise_le=candidature.soumise_le,
         informations=InformationsPersonnellesResponse.model_validate(candidat),
     )
 
@@ -79,6 +91,11 @@ def _vers_http(erreur: Exception) -> HTTPException:
         return HTTPException(status_code=404, detail=_MESSAGE_INTROUVABLE)
     if isinstance(erreur, CandidatureDejaExistante):
         return HTTPException(status_code=409, detail="Une candidature existe déjà pour cet email.")
+    if isinstance(erreur, DossierIncomplet):
+        return HTTPException(
+            status_code=409,
+            detail={"message": "Votre dossier est incomplet.", "manques": erreur.manques},
+        )
     if isinstance(erreur, DocumentRequisInconnu):
         return HTTPException(status_code=404, detail="Pièce requise inconnue.")
     if isinstance(erreur, FichierTropVolumineux):
@@ -251,3 +268,88 @@ async def televerser_document(
     ) as erreur:
         raise _vers_http(erreur)
     return _reponse_piece(PieceDossier(piece, document))
+
+
+# --- US-008 : soumission définitive et email de confirmation -----------------------------------
+
+def get_email_sender() -> IEmailSender:
+    """Fournisseur de dépendance pour l'envoi d'emails (Resend si `RESEND_API_KEY`, sinon console)."""
+    return creer_email_sender()
+
+
+def get_url_base_portail() -> str:
+    """URL publique du portail, utilisée pour le lien de suivi des emails (`APP_BASE_URL`)."""
+    return os.getenv("APP_BASE_URL", "http://localhost:5173")
+
+
+@router.post(
+    "/{candidature_id}/soumission",
+    response_model=BrouillonResponse,
+    summary="Soumettre définitivement le dossier et obtenir la référence CAN-AAAA-NNNN",
+)
+def soumettre_candidature(
+    candidature_id: str,
+    taches: BackgroundTasks,
+    repo: ICandidatureRepository = Depends(get_candidature_repository),
+    documents: IDocumentRepository = Depends(get_document_repository),
+    email_sender: IEmailSender = Depends(get_email_sender),
+    url_base: str = Depends(get_url_base_portail),
+):
+    """Vérifie que le dossier est complet, attribue la référence et le verrouille.
+
+    L'email de confirmation part en tâche de fond APRÈS l'enregistrement : s'il échoue, la candidature reste
+    enregistrée et la référence est renvoyée normalement (jamais d'erreur 500 à cause de l'email).
+    """
+    try:
+        candidat, candidature, vient_d_etre_soumise = SoumettreCandidatureUseCase(repo, documents).executer(
+            candidature_id
+        )
+    except (CandidatureIntrouvable, DossierIncomplet) as erreur:
+        raise _vers_http(erreur)
+    if vient_d_etre_soumise:
+        taches.add_task(NotifierConfirmationUseCase(email_sender, url_base).executer, candidat, candidature)
+    return _reponse(candidat, candidature)
+
+
+# --- US-009 : suivi public d'un dossier par sa référence ----------------------------------------
+
+@router.get(
+    "/{reference}/statut",
+    response_model=SuiviDossierResponse,
+    summary="Suivre un dossier soumis par sa référence CAN-AAAA-NNNN (public)",
+    dependencies=[Depends(limiter_suivi)],
+)
+def obtenir_statut(
+    reference: str,
+    repo: ICandidatureRepository = Depends(get_candidature_repository),
+    documents: IDocumentRepository = Depends(get_document_repository),
+):
+    """Statut du dossier et de chaque pièce. N'expose ni email, ni téléphone, ni nom de fichier.
+
+    Référence inconnue, mal formée ou d'un simple brouillon : même réponse 404, pour ne rien révéler.
+    """
+    try:
+        suivi = ObtenirStatutCandidatureUseCase(repo, documents).executer(reference)
+    except CandidatureIntrouvable:
+        raise HTTPException(status_code=404, detail="Aucun dossier trouvé pour cette référence.")
+    return SuiviDossierResponse(
+        reference_dossier=suivi.reference,
+        prenom=suivi.prenom,
+        initiale_nom=suivi.initiale_nom,
+        admission=NOM_ADMISSION,
+        soumise_le=suivi.soumise_le,
+        statut_global=suivi.statut_global,
+        pieces_validees=suivi.pieces_validees,
+        pieces_total=len(suivi.pieces),
+        pieces=[
+            PieceSuiviResponse(
+                id=p.piece.id,
+                nom=p.piece.nom,
+                statut=p.statut,
+                motif_rejet=p.document.motif_rejet if p.document else None,
+                depose_le=p.document.soumis_le if p.document else None,
+                valide_le=p.document.date_validation if p.document else None,
+            )
+            for p in suivi.pieces
+        ],
+    )
