@@ -6,7 +6,7 @@ fichiers JSON dans `cursus/` et ne nécessitent pas de tables SQL (cf. JsonCursu
 Les pièces requises d'admission sont définies par le domaine (`pieces_admission`).
 
 Modèles introduits : `candidats` et `candidatures` (US-005), `documents_soumis` (US-007) ; `candidatures.soumise_le` (US-008).
-`utilisateurs` suivra avec US-011.
+`utilisateurs` (US-011).
 """
 
 from sqlalchemy import (
@@ -77,3 +77,15 @@ class DocumentSoumisModel(Base):
     soumis_le = Column(DateTime(timezone=True), nullable=False)
     valide_par = Column(String(36), nullable=True)  # deviendra une clé étrangère vers `utilisateurs` (US-011)
     date_validation = Column(DateTime(timezone=True), nullable=True)
+
+
+class UtilisateurModel(Base):
+    """Table `utilisateurs` : comptes du personnel (admin, agent). Email unique, mot de passe haché (bcrypt)."""
+    __tablename__ = "utilisateurs"
+
+    id = Column(String(36), primary_key=True)
+    email = Column(String(255), nullable=False, unique=True, index=True)
+    mot_de_passe_hash = Column(String(255), nullable=False)
+    role = Column(String(20), nullable=False)
+    est_actif = Column(Boolean, nullable=False, default=True)
+    created_at = Column(DateTime(timezone=True), nullable=False)

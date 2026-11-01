@@ -1,4 +1,4 @@
-"""Limitation de débit des envois de fichiers — Couche Présentation / API (US-007).
+"""Limitation de débit — Couche Présentation / API (US-007, US-009, US-011).
 
 PRD §7 : 10 requêtes par fenêtre de 60 s et par IP sur le téléversement, pour empêcher d'épuiser le stockage.
 Le compteur est en mémoire du processus : suffisant pour un seul conteneur, à remplacer par un stockage partagé
@@ -26,15 +26,26 @@ class LimiteurDebit:
         self._horloge = horloge
         self._appels: dict[str, deque[float]] = defaultdict(deque)
 
-    def autoriser(self, cle: str) -> bool:
-        """Enregistre l'appel et retourne False si la limite est atteinte."""
+    def _purger(self, cle: str) -> deque[float]:
         maintenant = self._horloge()
         appels = self._appels[cle]
         while appels and maintenant - appels[0] >= self._fenetre:
             appels.popleft()
-        if len(appels) >= self._max:
+        return appels
+
+    def est_atteint(self, cle: str) -> bool:
+        """Indique si la limite est atteinte, sans enregistrer d'appel."""
+        return len(self._purger(cle)) >= self._max
+
+    def enregistrer(self, cle: str) -> None:
+        """Compte un appel (par exemple une tentative de connexion échouée)."""
+        self._purger(cle).append(self._horloge())
+
+    def autoriser(self, cle: str) -> bool:
+        """Enregistre l'appel et retourne False si la limite est atteinte."""
+        if self.est_atteint(cle):
             return False
-        appels.append(maintenant)
+        self.enregistrer(cle)
         return True
 
     def reinitialiser(self) -> None:
@@ -44,7 +55,7 @@ class LimiteurDebit:
 limiteur_envois = LimiteurDebit()
 
 
-def _adresse_client(request: Request) -> str:
+def adresse_client(request: Request) -> str:
     # Derrière Nginx, l'adresse réelle du visiteur est dans X-Forwarded-For (premier élément)
     transmis = request.headers.get("x-forwarded-for", "")
     if transmis:
@@ -58,7 +69,7 @@ limiteur_suivi = LimiteurDebit(max_requetes=20)
 
 def limiter_suivi(request: Request) -> None:
     """Dépendance FastAPI : refuse (429) un client qui multiplie les consultations de dossier."""
-    if not limiteur_suivi.autoriser(_adresse_client(request)):
+    if not limiteur_suivi.autoriser(adresse_client(request)):
         raise HTTPException(
             status_code=429,
             detail="Trop de recherches en peu de temps. Patientez une minute puis réessayez.",
@@ -68,7 +79,7 @@ def limiter_suivi(request: Request) -> None:
 
 def limiter_envois(request: Request) -> None:
     """Dépendance FastAPI : refuse (429) un client qui dépasse la limite d'envois."""
-    if not limiteur_envois.autoriser(_adresse_client(request)):
+    if not limiteur_envois.autoriser(adresse_client(request)):
         raise HTTPException(
             status_code=429,
             detail="Trop d'envois en peu de temps. Patientez une minute puis réessayez.",
