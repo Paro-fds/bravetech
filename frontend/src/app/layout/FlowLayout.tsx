@@ -1,8 +1,12 @@
 import React from 'react';
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useMatches } from 'react-router-dom';
 
-/** Mise en page du tunnel de candidature (maquettes) : en-tête marine allégé, sans menu ni pied de page. */
+/**
+ * Mise en page du tunnel de candidature et du suivi (maquettes) : en-tête marine allégé, sans menu ni pied de page.
+ * Le titre de l'en-tête vient du `handle.titre` de la route.
+ */
 export const FlowLayout: React.FC = () => {
+  const titre = useMatches().reduce<string>((acc, m) => (m.handle as { titre?: string } | undefined)?.titre ?? acc, 'Candidature');
   return (
     <div className="flex flex-col min-h-screen bg-[#f4f6fa] font-fds-sans text-fds-ink">
       <header className="bg-fds-navy text-white">
@@ -16,7 +20,7 @@ export const FlowLayout: React.FC = () => {
               className="rounded"
             />
             <span className="leading-tight">
-              <span className="block font-semibold text-[15px]">Candidature</span>
+              <span className="block font-semibold text-[15px]">{titre}</span>
               <span className="block text-xs text-[#cfe0f5]">Faculté des Sciences, UEH</span>
             </span>
           </Link>

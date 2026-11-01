@@ -4,6 +4,7 @@ import { FlowLayout } from './layout/FlowLayout';
 import { HomePage } from '../pages/home';
 import { CursusDetailPage } from '../pages/cursus-detail';
 import { ApplyPage } from '../pages/apply';
+import { SuiviPage } from '../pages/suivi';
 
 export const router = createBrowserRouter([
   {
@@ -24,11 +25,22 @@ export const router = createBrowserRouter([
     // Tunnel de candidature : mise en page des maquettes, sans menu ni pied de page
     path: '/postuler',
     element: <FlowLayout />,
+    handle: { titre: 'Candidature' },
     children: [
       {
         index: true,
         element: <ApplyPage />,
       },
+    ],
+  },
+  {
+    // Suivi par référence : même mise en page que le tunnel (maquettes « Suivi » et « Dossier »)
+    path: '/suivi',
+    element: <FlowLayout />,
+    handle: { titre: 'Suivi de dossier' },
+    children: [
+      { index: true, element: <SuiviPage /> },
+      { path: ':reference', element: <SuiviPage /> },
     ],
   },
 ]);

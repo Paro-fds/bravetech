@@ -9,7 +9,7 @@ import os
 from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, UploadFile
 from sqlalchemy.orm import Session
 
-from backend.api.v1.limiteur import limiter_envois
+from backend.api.v1.limiteur import limiter_envois, limiter_suivi
 from backend.api.v1.dto.candidature_dto import (
     BrouillonResponse,
     DeplacementPhysiqueRequest,
@@ -17,7 +17,11 @@ from backend.api.v1.dto.candidature_dto import (
     InformationsPersonnellesResponse,
     PaiementSimuleRequest,
     PieceDossierResponse,
+    PieceSuiviResponse,
+    SuiviDossierResponse,
 )
+from backend.bll.obtenir_statut_candidature import ObtenirStatutCandidatureUseCase
+from backend.entities.pieces_admission import NOM_ADMISSION
 from backend.bll.definir_deplacement_physique import DefinirDeplacementPhysiqueUseCase
 from backend.bll.enregistrer_informations import EnregistrerInformationsUseCase, MettreAJourInformationsUseCase
 from backend.bll.obtenir_brouillon import ObtenirBrouillonUseCase
@@ -305,3 +309,47 @@ def soumettre_candidature(
     if vient_d_etre_soumise:
         taches.add_task(NotifierConfirmationUseCase(email_sender, url_base).executer, candidat, candidature)
     return _reponse(candidat, candidature)
+
+
+# --- US-009 : suivi public d'un dossier par sa référence ----------------------------------------
+
+@router.get(
+    "/{reference}/statut",
+    response_model=SuiviDossierResponse,
+    summary="Suivre un dossier soumis par sa référence CAN-AAAA-NNNN (public)",
+    dependencies=[Depends(limiter_suivi)],
+)
+def obtenir_statut(
+    reference: str,
+    repo: ICandidatureRepository = Depends(get_candidature_repository),
+    documents: IDocumentRepository = Depends(get_document_repository),
+):
+    """Statut du dossier et de chaque pièce. N'expose ni email, ni téléphone, ni nom de fichier.
+
+    Référence inconnue, mal formée ou d'un simple brouillon : même réponse 404, pour ne rien révéler.
+    """
+    try:
+        suivi = ObtenirStatutCandidatureUseCase(repo, documents).executer(reference)
+    except CandidatureIntrouvable:
+        raise HTTPException(status_code=404, detail="Aucun dossier trouvé pour cette référence.")
+    return SuiviDossierResponse(
+        reference_dossier=suivi.reference,
+        prenom=suivi.prenom,
+        initiale_nom=suivi.initiale_nom,
+        admission=NOM_ADMISSION,
+        soumise_le=suivi.soumise_le,
+        statut_global=suivi.statut_global,
+        pieces_validees=suivi.pieces_validees,
+        pieces_total=len(suivi.pieces),
+        pieces=[
+            PieceSuiviResponse(
+                id=p.piece.id,
+                nom=p.piece.nom,
+                statut=p.statut,
+                motif_rejet=p.document.motif_rejet if p.document else None,
+                depose_le=p.document.soumis_le if p.document else None,
+                valide_le=p.document.date_validation if p.document else None,
+            )
+            for p in suivi.pieces
+        ],
+    )

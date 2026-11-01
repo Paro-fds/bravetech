@@ -13,6 +13,13 @@ export function formaterDateNaissance(valeur: string): string {
   });
 }
 
+/** « 27 octobre 2026 » à partir d'un horodatage ISO-8601 en UTC, au jour d'Haïti. */
+export function formaterJour(iso: string): string {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return iso;
+  return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: FUSEAU_AFFICHAGE });
+}
+
 /** « 1 novembre 2026 à 13:45 (heure d'Haïti) » à partir d'un horodatage ISO-8601 en UTC. */
 export function formaterHorodatage(iso: string): string {
   const date = new Date(iso);

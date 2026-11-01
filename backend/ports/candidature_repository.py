@@ -32,6 +32,10 @@ class ICandidatureRepository(ABC):
         """Retourne le candidat d'une campagne pour un email donné, ou None."""
 
     @abstractmethod
+    def trouver_par_reference(self, reference: str) -> tuple[Candidat, Candidature] | None:
+        """Retourne le candidat et la candidature portant cette référence de dossier `CAN-AAAA-NNNN`, ou None."""
+
+    @abstractmethod
     def reference_paiement_existe(self, reference: str) -> bool:
         """Indique si une référence de paiement simulé est déjà attribuée."""
 

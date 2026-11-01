@@ -56,6 +56,29 @@ class BrouillonResponse(BaseModel):
     informations: InformationsPersonnellesResponse
 
 
+class PieceSuiviResponse(BaseModel):
+    """Statut public d'une pièce : ni nom de fichier, ni clé de stockage."""
+    id: str
+    nom: str
+    statut: str  # manquant | en_attente | valide | rejete
+    motif_rejet: str | None = None
+    depose_le: datetime | None = None  # UTC
+    valide_le: datetime | None = None  # UTC
+
+
+class SuiviDossierResponse(BaseModel):
+    """Vue publique d'un dossier soumis (US-009) : prénom et initiale du nom seulement."""
+    reference_dossier: str
+    prenom: str
+    initiale_nom: str
+    admission: str
+    soumise_le: datetime | None  # UTC
+    statut_global: str  # en_examen | action_requise | complet
+    pieces_validees: int
+    pieces_total: int
+    pieces: list[PieceSuiviResponse]
+
+
 class PieceDossierResponse(BaseModel):
     """Une pièce requise avec l'état du fichier déposé ('manquant' tant que rien n'est déposé)."""
     id: str

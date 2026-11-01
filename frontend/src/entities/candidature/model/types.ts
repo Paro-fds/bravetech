@@ -54,6 +54,34 @@ export interface PieceDossier {
   motif_rejet: string | null;
 }
 
+/** Statut public d'une pièce dans la page de suivi (« manquant » n'arrive que si le dépôt a été purgé). */
+export interface PieceSuivi {
+  id: string;
+  nom: string;
+  statut: StatutPiece;
+  motif_rejet: string | null;
+  depose_le: string | null;
+  valide_le: string | null;
+}
+
+export type StatutGlobal = 'en_examen' | 'action_requise' | 'complet';
+
+/** Vue publique d'un dossier soumis : prénom et initiale du nom seulement, aucune coordonnée. */
+export interface SuiviDossier {
+  reference_dossier: string;
+  prenom: string;
+  initiale_nom: string;
+  admission: string;
+  soumise_le: string | null;
+  statut_global: StatutGlobal;
+  pieces_validees: number;
+  pieces_total: number;
+  pieces: PieceSuivi[];
+}
+
+/** Format d'une référence de dossier : CAN-AAAA-NNNN. */
+export const FORMAT_REFERENCE = /^CAN-\d{4}-\d{4,}$/;
+
 export type ErreursChamps = Partial<
   Record<keyof InformationsPersonnelles | 'deplacement_physique' | 'methode_paiement' | 'numero_telephone' | 'fichier', string>
 >;

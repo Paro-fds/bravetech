@@ -87,6 +87,17 @@ class SqlCandidatureRepository(ICandidatureRepository):
         )
         return _vers_candidat(modele) if modele else None
 
+    def trouver_par_reference(self, reference: str) -> tuple[Candidat, Candidature] | None:
+        modele = (
+            self._session.query(CandidatureModel)
+            .filter(CandidatureModel.reference_dossier == reference)
+            .first()
+        )
+        if modele is None:
+            return None
+        candidat = self._session.get(CandidatModel, modele.candidat_id)
+        return _vers_candidat(candidat), _vers_candidature(modele)
+
     def reference_paiement_existe(self, reference: str) -> bool:
         return (
             self._session.query(CandidatureModel.id)

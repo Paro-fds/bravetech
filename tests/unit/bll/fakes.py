@@ -32,6 +32,12 @@ class FakeCandidatureRepository(ICandidatureRepository):
                 return deepcopy(candidat)
         return None
 
+    def trouver_par_reference(self, reference: str) -> tuple[Candidat, Candidature] | None:
+        for candidature in self.candidatures.values():
+            if candidature.reference_dossier == reference:
+                return deepcopy(self.candidats[candidature.candidat_id]), deepcopy(candidature)
+        return None
+
     def reference_paiement_existe(self, reference: str) -> bool:
         return any(c.reference_paiement == reference for c in self.candidatures.values())
 

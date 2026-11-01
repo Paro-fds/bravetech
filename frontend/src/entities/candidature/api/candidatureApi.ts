@@ -5,6 +5,7 @@ import type {
   InformationsPersonnelles,
   MethodePaiement,
   PieceDossier,
+  SuiviDossier,
 } from '../model/types';
 
 const BASE = '/api/v1/candidatures';
@@ -60,6 +61,13 @@ export const candidatureApi = {
       xhr.ontimeout = () => reject(new TypeError('Envoi interrompu'));
       xhr.send(corps);
     }),
+
+  /**
+   * Suivi public d'un dossier soumis. Rejette avec une `ApiError` 404 si la référence est inconnue,
+   * 429 si trop de recherches ont été faites en une minute.
+   */
+  obtenirSuivi: (reference: string): Promise<SuiviDossier> =>
+    apiClient<SuiviDossier>(`${BASE}/${encodeURIComponent(reference)}/statut`),
 
   /** Simule le paiement des frais de dossier : aucun montant réel n'est prélevé. */
   simulerPaiement: (id: string, methode: MethodePaiement, numeroTelephone: string): Promise<Brouillon> =>
