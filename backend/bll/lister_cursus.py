@@ -16,5 +16,5 @@ class ListerCursusUseCase:
     def executer(self) -> list[Cursus]:
         """Exécute le cas d'utilisation et retourne la liste triée des cursus."""
         cursus_liste = self._repository.lister_tous()
-        # On peut appliquer des règles métier, comme placer le tronc commun MPC en premier
-        return sorted(cursus_liste, key=lambda c: (0 if c.id == "mpc" else 1, c.nom))
+        # Règle métier : le cursus d'admission (MPC) est présenté en premier, puis les branches
+        return sorted(cursus_liste, key=lambda c: (0 if c.est_admission else 1, c.nom))

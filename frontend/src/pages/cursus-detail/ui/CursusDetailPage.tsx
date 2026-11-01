@@ -93,7 +93,7 @@ export const CursusDetailPage: React.FC = () => {
               Inscriptions Ouvertes 2026
             </span>
             <span className="text-xs font-medium text-slate-400">
-              FDS-UEH · Cycle Officiel
+              {cursus.est_admission ? 'FDS-UEH · Admission unique' : 'FDS-UEH · Branche, après le MPC'}
             </span>
           </div>
 
@@ -133,9 +133,11 @@ export const CursusDetailPage: React.FC = () => {
             <div>
               <span className="text-slate-400 block mb-1 flex items-center gap-1">
                 <FileCheck2 className="w-3.5 h-3.5 text-emerald-400" />
-                Pièces exigées :
+                {cursus.est_admission ? 'Pièces exigées :' : 'Accès :'}
               </span>
-              <strong className="text-sm font-bold text-white">{cursus.documents_requis?.length || 0} documents</strong>
+              <strong className="text-sm font-bold text-white">
+                {cursus.est_admission ? `${cursus.documents_requis?.length || 0} documents` : 'Après le MPC'}
+              </strong>
             </div>
           </div>
         </div>
@@ -146,6 +148,27 @@ export const CursusDetailPage: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column : Maquette Académique (2 cols) */}
           <div className="lg:col-span-2 space-y-6">
+            {cursus.est_admission && (
+              <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+                <h2 className="text-xl font-bold text-slate-900 mb-4">Votre parcours en 5 ans</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="rounded-2xl border-2 border-blue-600 bg-blue-50 p-4">
+                    <span className="inline-block text-[11px] font-bold uppercase tracking-wide bg-amber-400 text-slate-900 px-2.5 py-0.5 rounded-full mb-2">
+                      Vous candidatez ici
+                    </span>
+                    <div className="font-bold text-slate-900">Années 1 et 2 : MPC</div>
+                    <p className="text-sm text-slate-600 mt-1">Tout le monde commence par ce cycle d'études générales et techniques.</p>
+                  </div>
+                  <div className="rounded-2xl border border-slate-200 p-4">
+                    <div className="font-bold text-slate-900">Années 3 à 5 : votre branche</div>
+                    <p className="text-sm text-slate-600 mt-1">
+                      Génie Civil, Génie Électromécanique, Génie Électronique ou Architecture, choisie après le MPC.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
               <div className="flex items-center justify-between mb-6">
                 <div>
@@ -226,13 +249,31 @@ export const CursusDetailPage: React.FC = () => {
 
           {/* Right Column : Pièces Justificatives Exigées (US-002) */}
           <div className="space-y-6">
+            {!cursus.est_admission && (
+              <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm sticky top-24">
+                <h3 className="text-xl font-bold text-slate-900 mb-2">Cette branche s'ouvre après le MPC</h3>
+                <p className="text-sm text-slate-600 mb-6">
+                  Vous ne candidatez pas directement à une branche : l'admission se fait une seule fois, au Premier cycle MPC.
+                  Vous choisirez votre branche à la fin du MPC.
+                </p>
+                <Link
+                  to="/cursus/mpc"
+                  className="w-full py-3.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm flex items-center justify-center gap-2 transition-colors"
+                >
+                  <span>Voir l'admission au MPC</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            )}
+
+            {cursus.est_admission && (
             <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm sticky top-24">
               <div className="flex items-center gap-2 text-xl font-bold text-slate-900 mb-2">
                 <FileCheck2 className="w-5 h-5 text-emerald-600" />
                 <h3>Pièces à fournir</h3>
               </div>
               <p className="text-xs text-slate-500 mb-6">
-                Documents obligatoires au format numérique pour valider votre dossier de concours.
+                Documents obligatoires au format numérique pour valider votre dossier d'admission.
               </p>
 
               <div className="space-y-3.5 mb-8">
@@ -262,20 +303,20 @@ export const CursusDetailPage: React.FC = () => {
 
               {/* Action Button */}
               <div className="pt-4 border-t border-slate-100">
-                <button
-                  disabled
-                  className="w-full py-3.5 px-4 rounded-xl bg-blue-600/50 text-white font-bold text-sm flex items-center justify-center gap-2 cursor-not-allowed"
-                  title="Le formulaire de candidature sera ouvert dans Epic 2"
+                <Link
+                  to="/postuler"
+                  className="w-full py-3.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm flex items-center justify-center gap-2 transition-colors"
                 >
-                  <span>Postuler à ce cursus</span>
+                  <span>Déposer ma candidature</span>
                   <ArrowRight className="w-4 h-4" />
-                </button>
+                </Link>
                 <p className="text-[11px] text-slate-400 text-center mt-2 flex items-center justify-center gap-1">
                   <HelpCircle className="w-3.5 h-3.5" />
-                  <span>Dépôt dématérialisé (Epic 2)</span>
+                  <span>Sans déplacement. Sans compte à créer.</span>
                 </p>
               </div>
             </div>
+            )}
           </div>
         </div>
       </div>

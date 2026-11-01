@@ -19,6 +19,10 @@ export const HomePage: React.FC = () => {
     queryFn: cursusApi.getList,
   });
 
+  // Admission unique : le MPC est le cursus d'entrée, les autres sont les branches choisies ensuite
+  const admission = cursusList.find((c) => c.est_admission);
+  const branches = cursusList.filter((c) => !c.est_admission);
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* 1. HERO SECTION */}
@@ -83,8 +87,8 @@ export const HomePage: React.FC = () => {
             <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1">Ans de tradition académique</div>
           </div>
           <div className="p-3">
-            <div className="text-3xl font-extrabold text-blue-900 tracking-tight">5</div>
-            <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1">Filières d'ingénierie & d'art</div>
+            <div className="text-3xl font-extrabold text-blue-900 tracking-tight">5 ans</div>
+            <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1">MPC puis votre branche</div>
           </div>
           <div className="p-3">
             <div className="text-3xl font-extrabold text-blue-900 tracking-tight">100%</div>
@@ -92,7 +96,7 @@ export const HomePage: React.FC = () => {
           </div>
           <div className="p-3">
             <div className="text-3xl font-extrabold text-emerald-600 tracking-tight">Ouvert</div>
-            <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1">Concours d'admission 2026</div>
+            <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1">Admissions 2026</div>
           </div>
         </div>
       </section>
@@ -106,15 +110,15 @@ export const HomePage: React.FC = () => {
               <span>Programmes Académiques</span>
             </div>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-              Nos Formations Officielles
+              Une admission, puis votre branche
             </h2>
             <p className="text-base text-slate-600 max-w-2xl mt-2">
-              Sélectionnez une filière pour consulter sa maquette pédagogique complète (volume horaire, matières par niveau et prérequis).
+              Tout candidat entre par le Premier cycle MPC (2 ans), puis choisit sa branche d'ingénierie ou d'architecture (3 ans).
             </p>
           </div>
 
           <div className="text-xs text-slate-500 bg-slate-100 px-3.5 py-2 rounded-xl self-start md:self-auto font-medium">
-            Source de données : Base relationnelle FDS
+            Parcours complet : 5 ans
           </div>
         </div>
 
@@ -152,14 +156,32 @@ export const HomePage: React.FC = () => {
 
         {/* Cursus Grid */}
         {!isLoading && !isError && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {cursusList.map((cursus) => (
-              <CursusCard
-                key={cursus.id}
-                cursus={cursus}
-                onSelect={(c) => setSelectedCursus(c)}
-              />
-            ))}
+          <div className="space-y-12">
+            {admission && (
+              <div className="max-w-xl">
+                <CursusCard cursus={admission} onSelect={(c) => setSelectedCursus(c)} />
+              </div>
+            )}
+
+            {branches.length > 0 && (
+              <div>
+                <h3 className="text-lg font-bold text-slate-900 mb-1">
+                  Ensuite, vous choisissez votre branche (3 ans)
+                </h3>
+                <p className="text-sm text-slate-600 mb-6">
+                  Le choix de la branche se fait après le MPC : il n'est pas demandé au moment de la candidature.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {branches.map((cursus) => (
+                    <CursusCard
+                      key={cursus.id}
+                      cursus={cursus}
+                      onSelect={(c) => setSelectedCursus(c)}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </section>
@@ -181,9 +203,9 @@ export const HomePage: React.FC = () => {
               <span className="w-10 h-10 rounded-xl bg-blue-600 text-white font-extrabold flex items-center justify-center text-lg mb-6 shadow-md shadow-blue-600/30">
                 1
               </span>
-              <h3 className="text-lg font-bold mb-2">Consultez les filières</h3>
+              <h3 className="text-lg font-bold mb-2">Découvrez le parcours</h3>
               <p className="text-sm text-slate-400 leading-relaxed">
-                Prenez connaissance des prérequis académiques et vérifiez les dates limites d'inscription propres à chaque département.
+                Consultez la fiche du Premier cycle MPC, les pièces à fournir et les dates limites d'inscription.
               </p>
             </div>
 
@@ -193,7 +215,7 @@ export const HomePage: React.FC = () => {
               </span>
               <h3 className="text-lg font-bold mb-2">Déposez votre dossier</h3>
               <p className="text-sm text-slate-400 leading-relaxed">
-                Remplissez le formulaire en ligne et téléversez vos pièces justificatives (acte de naissance, relevés, photo) au format PDF/JPG.
+                Remplissez le formulaire en ligne et téléversez vos pièces justificatives (acte de naissance, Bac II, relevé de notes, photos, CIN) au format PDF/JPG.
               </p>
             </div>
 
@@ -203,7 +225,7 @@ export const HomePage: React.FC = () => {
               </span>
               <h3 className="text-lg font-bold mb-2">Suivez votre statut</h3>
               <p className="text-sm text-slate-400 leading-relaxed">
-                Grâce à votre numéro de référence unique, suivez l'instruction de votre candidature et recevez vos convocations aux épreuves.
+                Grâce à votre numéro de référence unique, suivez l'instruction de votre candidature et recevez un email à chaque décision.
               </p>
             </div>
           </div>

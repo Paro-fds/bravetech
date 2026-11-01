@@ -31,5 +31,6 @@ class Cursus:
     date_ouverture_inscription: str
     date_fermeture_inscription: str
     est_ouvert: bool = True
+    est_admission: bool = False  # True pour le cursus auquel on candidate (MPC, admission unique)
     niveaux: dict[str, list[dict[str, Any]]] = field(default_factory=dict)
     documents_requis: list[DocumentRequis] = field(default_factory=list)

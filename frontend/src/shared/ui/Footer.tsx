@@ -22,7 +22,7 @@ export const Footer: React.FC = () => {
             <div className="flex flex-col gap-2 text-xs text-slate-400">
               <div className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-blue-400 shrink-0" />
-                <span>Angle Rues Mgr Guilloux et Joseph Janvier, Port-au-Prince, Haïti</span>
+                <span>Delmas 33, Haïti</span>
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-blue-400 shrink-0" />

@@ -6,6 +6,8 @@ export interface CursusListItem {
   date_ouverture_inscription: string;
   date_fermeture_inscription: string;
   est_ouvert: boolean;
+  /** True pour le cursus auquel on candidate (MPC, admission unique). */
+  est_admission: boolean;
 }
 
 export interface MatiereItem {
