@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T00:18:00Z
-updated: 2026-11-01T15:51:55Z
+updated: 2026-11-01T17:08:47Z
 ---
 
 # SOLUTION_DESIGN.md — FDS Portail
@@ -141,7 +141,8 @@ Organisé selon la **Clean Architecture** (`_ARCHITECTURE_EXPLAINED.md`, Partie 
 
 | Entité | Table | Clé |
 |---|---|---|
-| `Candidat` | `candidats` | `reference_dossier` (UNIQUE) |
+| `Candidat` | `candidats` | `(email, campagne)` (UNIQUE) |
+| `Candidature` | `candidatures` | `candidat_id` (UNIQUE), `reference_dossier` (UNIQUE, attribuée à la soumission) |
 | `DocumentSoumis` | `documents_soumis` | `(candidat_id, document_type)` (UNIQUE) |
 | `Utilisateur` | `utilisateurs` | `email` (UNIQUE) — consommé depuis FDS SYS |
 

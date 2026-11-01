@@ -1,6 +1,6 @@
 ---
 created: 2026-11-01T15:51:55Z
-updated: 2026-11-01T15:51:55Z
+updated: 2026-11-01T17:08:47Z
 ---
 
 # Cahier des Charges — FDS Portail (Remanié)
@@ -290,6 +290,8 @@ classDiagram
     Candidat "1" -- "N" DocumentSoumis : possède
     Utilisateur "1" -- "N" DocumentSoumis : valide
 ```
+
+> **Note (2026-11-01, US-005) :** à l'implémentation, le modèle ci-dessus est scindé en deux tables : `candidats` (identité, `campagne`, unicité `(email, campagne)`) et `candidatures` (`candidat_id`, `deplacement_physique`, `statut_paiement`, `reference_dossier`, `statut`). Les contraintes métier ci-dessous restent valables.
 
 ### 12.2 Contraintes métier
 
