@@ -3,11 +3,11 @@
   "duree_annees": 2,
   "niveaux": {
     "MPC1": [
-      { "item": 1, "titre": "ANALYSE", "heures_theorie": 120, "heures_tp": 60 },
-      { "item": 2, "titre": "GEOMETRIE", "heures_theorie": 90, "heures_tp": 60 },
+      { "item": 1, "titre": "Analyse", "heures_theorie": 120, "heures_tp": 60 },
+      { "item": 2, "titre": "Géométrie", "heures_theorie": 90, "heures_tp": 60 },
       { "item": 3, "titre": "Algèbre", "heures_theorie": 90, "heures_tp": 60 },
       { "item": 4, "titre": "Physique Conceptuelle", "heures_theorie": 120, "heures_tp": 60 },
-      { "item": 5, "titre": "Electricité", "heures_theorie": 40, "heures_tp": null },
+      { "item": 5, "titre": "Électricité", "heures_theorie": 40, "heures_tp": null },
       { "item": 6, "titre": "Chimie Général et Organique", "heures_theorie": 90, "heures_tp": 60 },
       { "item": 7, "titre": "Dessin technique", "heures_theorie": 60, "heures_tp": null },
       { "item": 8, "titre": "Technique d'expression", "heures_theorie": 60, "heures_tp": null },

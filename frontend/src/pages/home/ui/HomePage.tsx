@@ -1,20 +1,21 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { cursusApi, CursusCard, CursusDetailModal, type CursusListItem } from '../../../entities/cursus';
-import { 
-  Sparkles, 
-  GraduationCap, 
-  ShieldCheck, 
-  Smartphone, 
-  ArrowRight, 
-  Compass, 
-  RefreshCw
-} from 'lucide-react';
+import { cursusApi, CursusCard } from '../../../entities/cursus';
 
+const ETAPES = [
+  { titre: 'Découvrez le parcours', texte: 'Lisez la fiche du MPC, les pièces à fournir et les dates clés.' },
+  { titre: 'Remplissez le formulaire', texte: 'Vos informations, en quelques minutes.' },
+  { titre: 'Payez les frais (simulation)', texte: "MonCash ou NatCash. Aucun argent réel n'est prélevé pendant cette phase." },
+  { titre: 'Déposez vos pièces', texte: 'Photographiez ou importez vos documents (PDF ou JPG, 5 Mo max).' },
+  { titre: 'Suivez votre dossier', texte: 'Une référence vous est remise. Pas besoin de compte.' },
+];
+
+const CLASSE_BOUTON = 'min-h-12 px-5 rounded-lg font-semibold flex items-center justify-center text-center transition-colors';
+
+/** Accueil du portail (maquettes « Accueil » mobile et bureau). */
 export const HomePage: React.FC = () => {
-  const [selectedCursus, setSelectedCursus] = useState<CursusListItem | null>(null);
-
-  const { data: cursusList = [], isLoading, isError, error, refetch } = useQuery({
+  const { data: cursusList = [], isLoading, isError, refetch } = useQuery({
     queryKey: ['cursus'],
     queryFn: cursusApi.getList,
   });
@@ -24,219 +25,101 @@ export const HomePage: React.FC = () => {
   const branches = cursusList.filter((c) => !c.est_admission);
 
   return (
-    <div className="flex flex-col min-h-screen">
-      {/* 1. HERO SECTION */}
-      <section className="relative overflow-hidden hero-gradient text-white pt-20 pb-28 lg:pt-28 lg:pb-36">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="max-w-3xl">
-            {/* Pill Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-400/20 text-blue-300 text-xs font-semibold uppercase tracking-wider mb-6 backdrop-blur-md">
-              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-              <span>Session d'Admission Officielle · FDS-UEH</span>
-            </div>
-
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.15] mb-6">
-              L'excellence en <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-sky-300 to-amber-300">Ingénierie & Architecture</span> à votre portée.
-            </h1>
-
-            <p className="text-lg sm:text-xl text-slate-300 leading-relaxed font-light mb-8 max-w-2xl">
-              Consultez les maquettes pédagogiques de la Faculté des Sciences et postulez directement depuis votre smartphone, sans obligation de déplacement physique.
-            </p>
-
-            <div className="flex flex-wrap items-center gap-4">
-              <a
-                href="#catalogue"
-                className="px-7 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm shadow-xl shadow-blue-600/30 transition-all hover:scale-105 flex items-center gap-2"
-              >
-                <span>Découvrir les formations</span>
-                <ArrowRight className="w-4 h-4" />
-              </a>
-
-              <a
-                href="#processus"
-                className="px-6 py-3.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 border border-slate-700/80 font-semibold text-sm backdrop-blur-md transition-all"
-              >
-                Guide des inscriptions
-              </a>
-            </div>
-
-            {/* Quick highlights */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 mt-12 pt-10 border-t border-slate-800/80 text-xs text-slate-400">
-              <div className="flex items-center gap-2.5">
-                <Smartphone className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span>Candidature mobile 100% en ligne</span>
-              </div>
-              <div className="flex items-center gap-2.5">
-                <ShieldCheck className="w-4 h-4 text-blue-400 shrink-0" />
-                <span>Données officielles garanties</span>
-              </div>
-              <div className="flex items-center gap-2.5 col-span-2 sm:col-span-1">
-                <Compass className="w-4 h-4 text-amber-400 shrink-0" />
-                <span>Suivi de dossier transparent</span>
-              </div>
-            </div>
+    <>
+      <section className="bg-fds-navy text-white">
+        <div className="max-w-5xl mx-auto px-4 py-8 md:py-14">
+          <div className="flex flex-col gap-4 md:max-w-3xl">
+          <span className="self-start rounded-full bg-white/15 px-2.5 py-0.5 text-[13px] font-semibold">Admissions ouvertes</span>
+          <h1 className="font-fds-serif text-[30px] md:text-[44px] leading-tight font-bold">
+            Candidatez à la Faculté des Sciences, sans vous déplacer.
+          </h1>
+          <p className="text-[#dbe6f5] md:text-lg">
+            Consultez les cursus, déposez votre dossier et suivez son traitement depuis votre téléphone.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 pt-1">
+            <Link to="/postuler" className={`${CLASSE_BOUTON} bg-fds-gold text-fds-navy-d hover:brightness-95`}>
+              Postuler maintenant
+            </Link>
+            <Link to="/suivi" className={`${CLASSE_BOUTON} border-2 border-white text-white hover:bg-white/10`}>
+              Suivre mon dossier
+            </Link>
+          </div>
           </div>
         </div>
       </section>
 
-      {/* 2. STATS BANNER */}
-      <section className="bg-white border-y border-slate-200/80 py-8 relative -mt-8 mx-4 sm:mx-8 lg:max-w-6xl lg:mx-auto rounded-2xl shadow-xl shadow-slate-200/50 z-20">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center divide-y md:divide-y-0 md:divide-x divide-slate-100">
-          <div className="p-3">
-            <div className="text-3xl font-extrabold text-blue-900 tracking-tight">120+</div>
-            <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1">Ans de tradition académique</div>
-          </div>
-          <div className="p-3">
-            <div className="text-3xl font-extrabold text-blue-900 tracking-tight">5 ans</div>
-            <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1">MPC puis votre branche</div>
-          </div>
-          <div className="p-3">
-            <div className="text-3xl font-extrabold text-blue-900 tracking-tight">100%</div>
-            <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1">Procédure dématérialisée</div>
-          </div>
-          <div className="p-3">
-            <div className="text-3xl font-extrabold text-emerald-600 tracking-tight">Ouvert</div>
-            <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1">Admissions 2026</div>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. CATALOGUE / CURSUS LIST (US-001 CORE) */}
-      <section id="catalogue" className="py-20 lg:py-28 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
-          <div>
-            <div className="inline-flex items-center gap-1.5 text-xs font-bold tracking-widest text-blue-600 uppercase mb-2">
-              <GraduationCap className="w-4 h-4" />
-              <span>Programmes Académiques</span>
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-              Une admission, puis votre branche
-            </h2>
-            <p className="text-base text-slate-600 max-w-2xl mt-2">
-              Tout candidat entre par le Premier cycle MPC (2 ans), puis choisit sa branche d'ingénierie ou d'architecture (3 ans).
-            </p>
-          </div>
-
-          <div className="text-xs text-slate-500 bg-slate-100 px-3.5 py-2 rounded-xl self-start md:self-auto font-medium">
-            Parcours complet : 5 ans
-          </div>
-        </div>
-
-        {/* Loading state */}
-        {isLoading && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="h-96 rounded-2xl bg-white border border-slate-200 animate-pulse p-6 flex flex-col justify-between">
+      <div className="max-w-5xl w-full mx-auto px-4 py-6 md:py-10 flex flex-col gap-8 md:gap-12">
+        <section className="flex flex-col gap-4" aria-labelledby="comment">
+          <h2 id="comment" className="font-fds-serif text-2xl font-bold text-fds-navy-d">
+            Comment ça marche
+          </h2>
+          <ol className="rounded-xl border border-fds-line bg-white p-4 md:p-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {ETAPES.map((etape, i) => (
+              <li key={etape.titre} className="flex gap-3 items-start">
+                <span className="w-8 h-8 rounded-full bg-fds-navy text-white font-bold flex items-center justify-center shrink-0" aria-hidden="true">
+                  {i + 1}
+                </span>
                 <div>
-                  <div className="h-4 bg-slate-200 rounded w-1/3 mb-4" />
-                  <div className="h-6 bg-slate-200 rounded w-3/4 mb-3" />
-                  <div className="h-4 bg-slate-200 rounded w-full mb-2" />
-                  <div className="h-4 bg-slate-200 rounded w-4/5" />
+                  <div className="font-semibold">{etape.titre}</div>
+                  <div className="text-sm text-fds-mute">{etape.texte}</div>
                 </div>
-                <div className="h-10 bg-slate-200 rounded-xl" />
-              </div>
+              </li>
             ))}
-          </div>
-        )}
+          </ol>
+        </section>
 
-        {/* Error state */}
-        {isError && (
-          <div className="rounded-2xl bg-rose-50 border border-rose-200 p-8 text-center max-w-lg mx-auto">
-            <p className="text-rose-800 font-semibold mb-2">Impossible de charger les cursus pour le moment.</p>
-            <p className="text-xs text-rose-600 mb-4">{error instanceof Error ? error.message : 'Erreur inconnue'}</p>
-            <button
-              onClick={() => refetch()}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-rose-600 text-white text-xs font-semibold hover:bg-rose-700 transition-colors"
-            >
-              <RefreshCw className="w-3.5 h-3.5" />
-              Réessayer
-            </button>
-          </div>
-        )}
+        <section className="flex flex-col gap-4" aria-labelledby="cursus">
+          <h2 id="cursus" className="font-fds-serif text-2xl font-bold text-fds-navy-d">
+            Une admission, puis votre branche
+          </h2>
 
-        {/* Cursus Grid */}
-        {!isLoading && !isError && (
-          <div className="space-y-12">
-            {admission && (
-              <div className="max-w-xl">
-                <CursusCard cursus={admission} onSelect={(c) => setSelectedCursus(c)} />
-              </div>
-            )}
-
-            {branches.length > 0 && (
-              <div>
-                <h3 className="text-lg font-bold text-slate-900 mb-1">
-                  Ensuite, vous choisissez votre branche (3 ans)
-                </h3>
-                <p className="text-sm text-slate-600 mb-6">
-                  Le choix de la branche se fait après le MPC : il n'est pas demandé au moment de la candidature.
-                </p>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {branches.map((cursus) => (
-                    <CursusCard
-                      key={cursus.id}
-                      cursus={cursus}
-                      onSelect={(c) => setSelectedCursus(c)}
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-      </section>
-
-      {/* 4. PROCESSUS D'ADMISSION */}
-      <section id="processus" className="py-20 bg-slate-900 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="text-3xl font-extrabold tracking-tight mb-4">
-              Comment postuler à la FDS ?
-            </h2>
-            <p className="text-slate-400 text-sm sm:text-base">
-              Une procédure transparente et dématérialisée, conçue pour vous éviter tout déplacement inutile.
+          {isLoading && (
+            <p className="text-fds-mute" role="status">
+              Chargement des cursus…
             </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="p-8 rounded-2xl bg-slate-800/80 border border-slate-700/80 relative">
-              <span className="w-10 h-10 rounded-xl bg-blue-600 text-white font-extrabold flex items-center justify-center text-lg mb-6 shadow-md shadow-blue-600/30">
-                1
-              </span>
-              <h3 className="text-lg font-bold mb-2">Découvrez le parcours</h3>
-              <p className="text-sm text-slate-400 leading-relaxed">
-                Consultez la fiche du Premier cycle MPC, les pièces à fournir et les dates limites d'inscription.
-              </p>
+          )}
+          {isError && (
+            <div role="alert" className="rounded-[10px] border border-[#efb1ab] bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad flex flex-col gap-2">
+              <span>Impossible de charger les cursus pour le moment. Vérifiez votre connexion.</span>
+              <button type="button" onClick={() => void refetch()} className="self-start min-h-11 font-semibold underline">
+                Réessayer
+              </button>
             </div>
+          )}
 
-            <div className="p-8 rounded-2xl bg-slate-800/80 border border-slate-700/80 relative">
-              <span className="w-10 h-10 rounded-xl bg-blue-600 text-white font-extrabold flex items-center justify-center text-lg mb-6 shadow-md shadow-blue-600/30">
-                2
-              </span>
-              <h3 className="text-lg font-bold mb-2">Déposez votre dossier</h3>
-              <p className="text-sm text-slate-400 leading-relaxed">
-                Remplissez le formulaire en ligne et téléversez vos pièces justificatives (acte de naissance, Bac II, relevé de notes, photos, CIN) au format PDF/JPG.
-              </p>
-            </div>
+          {admission && <CursusCard cursus={admission} />}
 
-            <div className="p-8 rounded-2xl bg-slate-800/80 border border-slate-700/80 relative">
-              <span className="w-10 h-10 rounded-xl bg-blue-600 text-white font-extrabold flex items-center justify-center text-lg mb-6 shadow-md shadow-blue-600/30">
-                3
-              </span>
-              <h3 className="text-lg font-bold mb-2">Suivez votre statut</h3>
-              <p className="text-sm text-slate-400 leading-relaxed">
-                Grâce à votre numéro de référence unique, suivez l'instruction de votre candidature et recevez un email à chaque décision.
-              </p>
-            </div>
-          </div>
+          {branches.length > 0 && (
+            <>
+              <h3 className="font-fds-serif text-lg font-bold text-fds-navy-d pt-2">Ensuite, vous choisissez votre branche (3 ans)</h3>
+              <div className="grid gap-4 md:grid-cols-2">
+                {branches.map((c) => (
+                  <CursusCard key={c.id} cursus={c} />
+                ))}
+              </div>
+            </>
+          )}
+        </section>
+
+        <div className="grid gap-6 md:grid-cols-2">
+          <section className="rounded-xl border border-[#b9cbe3] bg-fds-navy-t p-4 md:p-6 flex flex-col gap-2.5">
+            <h2 className="font-semibold text-lg">Déjà candidat ?</h2>
+            <p className="text-sm">Entrez votre référence (par exemple CAN-2026-0089) pour voir où en est votre dossier.</p>
+            <Link to="/suivi" className={`${CLASSE_BOUTON} bg-fds-navy hover:bg-fds-navy-d text-white mt-auto`}>
+              Suivre mon dossier
+            </Link>
+          </section>
+          <section className="rounded-xl border border-fds-line bg-white p-4 md:p-6 flex flex-col gap-2.5">
+            <h2 className="font-semibold text-lg">Une institution historique</h2>
+            <p className="text-sm text-fds-mute">
+              Fondée en 1902, la Faculté des Sciences est l'un des plus anciens établissements d'enseignement supérieur d'Haïti.
+            </p>
+            <Link to="/histoire" className={`${CLASSE_BOUTON} border-2 border-fds-navy bg-white text-fds-navy mt-auto`}>
+              Lire notre histoire
+            </Link>
+          </section>
         </div>
-      </section>
-
-      {/* Modal Détail Cursus */}
-      <CursusDetailModal
-        cursus={selectedCursus}
-        onClose={() => setSelectedCursus(null)}
-      />
-    </div>
+      </div>
+    </>
   );
 };

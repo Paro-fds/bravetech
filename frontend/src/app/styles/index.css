@@ -48,15 +48,4 @@
   }
 }
 
-.glass-nav {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
-}
 
-.hero-gradient {
-  background: radial-gradient(circle at top right, rgba(59, 130, 246, 0.12), transparent 40%),
-              radial-gradient(circle at bottom left, rgba(217, 119, 6, 0.08), transparent 40%),
-              #0f172a;
-}

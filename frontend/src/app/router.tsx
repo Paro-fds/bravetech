@@ -1,5 +1,4 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
-import { RootLayout } from './layout/RootLayout';
 import { FlowLayout } from './layout/FlowLayout';
 import { HomePage } from '../pages/home';
 import { CursusDetailPage } from '../pages/cursus-detail';
@@ -15,20 +14,6 @@ import { AdminDossierPage } from '../pages/admin-dossier';
 
 export const router = createBrowserRouter([
   {
-    path: '/',
-    element: <RootLayout />,
-    children: [
-      {
-        index: true,
-        element: <HomePage />,
-      },
-      {
-        path: 'cursus/:id',
-        element: <CursusDetailPage />,
-      },
-    ],
-  },
-  {
     // Tunnel de candidature : mise en page des maquettes, sans menu ni pied de page
     path: '/postuler',
     element: <FlowLayout />,
@@ -41,9 +26,11 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    // Pages institutionnelles (maquettes « Histoire » et « Contact »)
+    // Pages publiques (maquettes « Accueil », « Cursus », « Histoire » et « Contact »)
     element: <SiteLayout />,
     children: [
+      { path: '/', element: <HomePage /> },
+      { path: '/cursus/:id', element: <CursusDetailPage /> },
       { path: '/histoire', element: <HistoryPage /> },
       { path: '/contact', element: <ContactPage /> },
     ],
