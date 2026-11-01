@@ -98,6 +98,16 @@ class SqlCandidatureRepository(ICandidatureRepository):
         candidat = self._session.get(CandidatModel, modele.candidat_id)
         return _vers_candidat(candidat), _vers_candidature(modele)
 
+    def lister_soumises(self) -> list[tuple[Candidat, Candidature]]:
+        lignes = (
+            self._session.query(CandidatureModel, CandidatModel)
+            .join(CandidatModel, CandidatModel.id == CandidatureModel.candidat_id)
+            .filter(CandidatureModel.statut == "soumise")
+            .order_by(CandidatureModel.soumise_le, CandidatureModel.reference_dossier)
+            .all()
+        )
+        return [(_vers_candidat(candidat), _vers_candidature(candidature)) for candidature, candidat in lignes]
+
     def reference_paiement_existe(self, reference: str) -> bool:
         return (
             self._session.query(CandidatureModel.id)

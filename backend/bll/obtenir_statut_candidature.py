@@ -41,13 +41,21 @@ class SuiviDossier:
     pieces: list[PieceDossier]
 
 
-def statut_global(pieces: list[PieceDossier]) -> str:
+def statut_global_depuis_comptes(validees: int, rejetees: int, total: int) -> str:
     """Complet si toutes les pièces sont validées ; action requise dès qu'une pièce est refusée ; sinon en examen."""
-    if any(p.statut == STATUT_REJETE for p in pieces):
+    if rejetees:
         return STATUT_GLOBAL_ACTION_REQUISE
-    if pieces and all(p.statut == STATUT_VALIDE for p in pieces):
+    if total and validees == total:
         return STATUT_GLOBAL_COMPLET
     return STATUT_GLOBAL_EN_EXAMEN
+
+
+def statut_global(pieces: list[PieceDossier]) -> str:
+    return statut_global_depuis_comptes(
+        sum(1 for p in pieces if p.statut == STATUT_VALIDE),
+        sum(1 for p in pieces if p.statut == STATUT_REJETE),
+        len(pieces),
+    )
 
 
 class ObtenirStatutCandidatureUseCase:
