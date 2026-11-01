@@ -8,6 +8,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from backend.api.v1.candidatures import get_stockage_fichiers
+from backend.api.v1.contact import limiteur_contact
 from backend.api.v1.limiteur import limiteur_envois, limiteur_identite, limiteur_suivi
 from backend.dal import models  # noqa: F401  (enregistre les tables)
 from backend.dal.database import Base, get_db
@@ -42,8 +43,10 @@ def client(session_factory, dossier_uploads):
     limiteur_envois.reinitialiser()  # chaque test repart avec des compteurs de débit vides
     limiteur_suivi.reinitialiser()
     limiteur_identite.reinitialiser()
+    limiteur_contact.reinitialiser()
     yield TestClient(app)
     app.dependency_overrides.clear()
     limiteur_envois.reinitialiser()
     limiteur_suivi.reinitialiser()
     limiteur_identite.reinitialiser()
+    limiteur_contact.reinitialiser()

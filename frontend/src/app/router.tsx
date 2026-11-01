@@ -5,6 +5,9 @@ import { HomePage } from '../pages/home';
 import { CursusDetailPage } from '../pages/cursus-detail';
 import { ApplyPage } from '../pages/apply';
 import { RemplacerPiecePage, SuiviPage } from '../pages/suivi';
+import { SiteLayout } from './layout/SiteLayout';
+import { HistoryPage } from '../pages/histoire';
+import { ContactPage } from '../pages/contact';
 import { AdminLayout } from './layout/AdminLayout';
 import { AdminLoginPage } from '../pages/admin-login';
 import { AdminCandidaturesPage } from '../pages/admin-candidatures';
@@ -35,6 +38,14 @@ export const router = createBrowserRouter([
         index: true,
         element: <ApplyPage />,
       },
+    ],
+  },
+  {
+    // Pages institutionnelles (maquettes « Histoire » et « Contact »)
+    element: <SiteLayout />,
+    children: [
+      { path: '/histoire', element: <HistoryPage /> },
+      { path: '/contact', element: <ContactPage /> },
     ],
   },
   {
