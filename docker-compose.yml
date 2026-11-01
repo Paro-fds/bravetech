@@ -31,6 +31,9 @@ services:
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-fds_admin}:${POSTGRES_PASSWORD:-fds_secret_pass}@db:5432/${POSTGRES_DB:-fds_portail}
       ENVIRONMENT: production
+      UPLOAD_DIR: /app/uploads
+    volumes:
+      - uploads_data:/app/uploads
     networks:
       - fds_network
 
@@ -49,6 +52,8 @@ services:
 
 volumes:
   postgres_data:
+    driver: local
+  uploads_data:
     driver: local
 
 networks:

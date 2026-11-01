@@ -2,15 +2,10 @@
 """
 
 import pytest
-from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.pool import StaticPool
 
-from backend.dal import models  # noqa: F401  (enregistre les tables)
-from backend.dal.database import Base, get_db
 from backend.dal.models import CandidatModel, CandidatureModel
-from backend.main import app
+
+# Les fixtures `client` et `session_factory` viennent de tests/integration/conftest.py
 
 URL = "/api/v1/candidatures"
 
@@ -24,27 +19,6 @@ SAISIE = {
     "departement": "Ouest",
     "commune": "Pétion-Ville",
 }
-
-
-@pytest.fixture
-def session_factory():
-    engine = create_engine("sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool)
-    Base.metadata.create_all(engine)
-    return sessionmaker(bind=engine, autoflush=False)
-
-
-@pytest.fixture
-def client(session_factory):
-    def _db():
-        db = session_factory()
-        try:
-            yield db
-        finally:
-            db.close()
-
-    app.dependency_overrides[get_db] = _db
-    yield TestClient(app)
-    app.dependency_overrides.clear()
 
 
 def test_creation_du_brouillon(client, session_factory):

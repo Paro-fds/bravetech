@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { CheckCircle2 } from 'lucide-react';
 import {
   candidatureApi,
   STATUT_PAIEMENT_SIMULE,
@@ -12,6 +10,7 @@ import {
   StepAdmission,
   StepInformations,
   StepPaiement,
+  StepPieces,
   StepProgress,
   useCandidatureStore,
   type EtapeCandidature,
@@ -27,7 +26,7 @@ function etapeAutorisee(brouillon: Brouillon): EtapeCandidature {
 
 /**
  * Tunnel de candidature (maquettes) : étapes 1 (informations), 2 (admission MPC + déplacement physique),
- * 3 (paiement simulé) ; l'étape 4 (pièces) arrive avec US-007.
+ * 3 (paiement simulé), 4 (dépôt des pièces, US-007) ; la finalisation du dossier arrive avec US-008.
  */
 export const ApplyPage: React.FC = () => {
   const {
@@ -129,25 +128,11 @@ export const ApplyPage: React.FC = () => {
             onRetour={() => allerEtape(2)}
           />
         ) : (
-          <section className="flex flex-col gap-4" aria-live="polite">
-            <div className="flex gap-2.5 items-start rounded-[10px] border border-[#9bd3b2] bg-fds-ok-bg px-3.5 py-3 text-sm text-fds-ok">
-              <CheckCircle2 className="w-5 h-5 shrink-0" aria-hidden="true" />
-              <span>
-                Paiement simulé enregistré : <strong>{paiement?.reference}</strong> (aucun argent réel prélevé).
-              </span>
-            </div>
-            <h1 className="font-fds-serif text-2xl font-bold text-fds-navy-d">Déposez vos pièces</h1>
-            <p className="text-fds-mute">
-              Le dépôt des pièces sera disponible très prochainement. Votre brouillon est conservé : vous pourrez
-              reprendre ici.
-            </p>
-            <Link
-              to="/"
-              className="min-h-12 rounded-lg border-2 border-fds-navy bg-white text-fds-navy font-semibold flex items-center justify-center"
-            >
-              Retour à l'accueil
-            </Link>
-          </section>
+          <StepPieces
+            candidatureId={candidatureId!}
+            referencePaiement={paiement?.reference ?? null}
+            onRetour={() => allerEtape(3)}
+          />
         )}
       </div>
     </>
