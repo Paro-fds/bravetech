@@ -1,126 +1,38 @@
 import React from 'react';
-import type { CursusListItem } from '../model/types';
-import { Calendar, Clock, ArrowRight, Award, CheckCircle2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
+import type { CursusListItem } from '../model/types';
 
 interface CursusCardProps {
   cursus: CursusListItem;
-  onSelect?: (cursus: CursusListItem) => void;
 }
 
+/**
+ * Carte de cursus de l'accueil (maquette « Accueil ») : le MPC, cursus d'admission, est mis en avant ;
+ * les branches sont des cartes plus discrètes (elles se choisissent après le MPC).
+ */
 export const CursusCard: React.FC<CursusCardProps> = ({ cursus }) => {
-  const isMpc = cursus.est_admission;
-
+  const admission = cursus.est_admission;
   return (
     <Link
       to={`/cursus/${cursus.id}`}
-      className={`group relative flex flex-col justify-between overflow-hidden rounded-2xl border transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer block ${
-        isMpc
-          ? 'bg-gradient-to-br from-blue-900 to-indigo-950 text-white border-blue-700/50 shadow-blue-900/10'
-          : 'bg-white border-slate-200/90 text-slate-900 hover:border-blue-400 shadow-slate-100'
+      className={`rounded-xl border bg-white p-4 flex flex-col gap-2 no-underline text-inherit hover:shadow-md transition-shadow ${
+        admission ? 'border-2 border-fds-navy bg-fds-navy-t' : 'border-fds-line'
       }`}
     >
-      {/* Top Banner accent */}
-      <div
-        className={`h-1.5 w-full ${
-          isMpc
-            ? 'bg-gradient-to-r from-amber-400 to-blue-400'
-            : 'bg-gradient-to-r from-blue-600 to-indigo-600'
-        }`}
-      />
-
-      <div className="p-6 md:p-7 flex flex-col flex-1">
-        {/* Badges row */}
-        <div className="flex items-center justify-between gap-2 mb-4">
-          <span
-            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold tracking-wide ${
-              cursus.est_ouvert
-                ? isMpc
-                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                  : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                : 'bg-slate-100 text-slate-600'
-            }`}
-          >
-            <CheckCircle2 className="w-3.5 h-3.5" />
-            {cursus.est_ouvert ? 'Inscriptions Ouvertes' : 'Fermé'}
-          </span>
-
-          <span
-            className={`inline-flex items-center gap-1 text-xs font-medium ${
-              isMpc ? 'text-blue-200' : 'text-slate-500'
-            }`}
-          >
-            <Clock className="w-3.5 h-3.5" />
-            {cursus.duree_annees} ans d'études
-          </span>
-        </div>
-
-        {isMpc && (
-          <span className="inline-flex self-start items-center px-2.5 py-0.5 mb-3 rounded-full text-[11px] font-bold uppercase tracking-wide bg-amber-400 text-slate-900">
-            Vous candidatez ici
-          </span>
+      <div className="flex items-center gap-2">
+        <h3 className="flex-1 font-fds-serif text-lg font-bold text-fds-navy-d">{cursus.nom}</h3>
+        {admission ? (
+          <span className="rounded-full bg-fds-ok-bg text-fds-ok px-2.5 py-0.5 text-[13px] font-semibold whitespace-nowrap">Vous candidatez ici</span>
+        ) : (
+          <span className="rounded-full bg-fds-navy-t text-fds-navy px-2.5 py-0.5 text-[13px] font-semibold whitespace-nowrap">{cursus.duree_annees} ans</span>
         )}
-
-        {/* Title */}
-        <h3
-          className={`text-xl font-bold tracking-tight mb-3 transition-colors ${
-            isMpc
-              ? 'text-white group-hover:text-amber-300'
-              : 'text-slate-900 group-hover:text-blue-600'
-          }`}
-        >
-          {cursus.nom}
-        </h3>
-
-        {/* Short description */}
-        <p
-          className={`text-sm leading-relaxed mb-6 flex-1 ${
-            isMpc ? 'text-blue-100/90' : 'text-slate-600'
-          }`}
-        >
-          {cursus.description_courte}
-        </p>
-
-        {/* Key dates & meta */}
-        <div
-          className={`pt-4 border-t text-xs flex flex-col gap-2 mb-6 ${
-            isMpc ? 'border-blue-800/60 text-blue-200' : 'border-slate-100 text-slate-500'
-          }`}
-        >
-          <div className="flex items-center justify-between">
-            <span className="flex items-center gap-1.5">
-              <Calendar className="w-3.5 h-3.5 text-blue-500" />
-              Clôture :
-            </span>
-            <span className={`font-semibold ${isMpc ? 'text-white' : 'text-slate-800'}`}>
-              {cursus.date_fermeture_inscription}
-            </span>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="flex items-center gap-1.5">
-              <Award className="w-3.5 h-3.5 text-amber-500" />
-              Niveau d'entrée :
-            </span>
-            <span className={`font-medium ${isMpc ? 'text-white' : 'text-slate-700'}`}>
-              {isMpc ? 'Baccalauréat / NS4' : 'Admis MPC'}
-            </span>
-          </div>
-        </div>
-
-        {/* Action button */}
-        <div className="mt-auto">
-          <div
-            className={`w-full py-2.5 px-4 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-all ${
-              isMpc
-                ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-900/40'
-                : 'bg-slate-100 group-hover:bg-blue-600 group-hover:text-white text-slate-800'
-            }`}
-          >
-            <span>{isMpc ? 'Voir la fiche et les pièces' : 'Voir la fiche détaillée'}</span>
-            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-          </div>
-        </div>
       </div>
+      <p className={`text-sm ${admission ? '' : 'text-fds-mute'}`}>{cursus.description_courte}</p>
+      <span className="mt-auto flex items-center gap-1.5 font-semibold text-fds-navy">
+        {admission ? 'Voir la fiche et les pièces' : 'Découvrir le programme'}
+        <ArrowRight className="w-5 h-5" aria-hidden="true" />
+      </span>
     </Link>
   );
 };
