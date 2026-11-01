@@ -1,11 +1,24 @@
 """Point d'entrée de l'application FastAPI — FDS Portail.
 """
 
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.api.v1 import api_v1_router
+from backend.dal import models  # noqa: F401  (enregistre les tables dans Base.metadata)
+from backend.dal.database import Base, engine
+
+
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    """Crée les tables manquantes au démarrage (pas encore de migrations Alembic)."""
+    Base.metadata.create_all(bind=engine)
+    yield
+
 
 app = FastAPI(
+    lifespan=lifespan,
     title="FDS Portail API — Faculté des Sciences (UEH)",
     description="API REST officielle du portail d'information et d'inscription dématérialisée de la FDS-UEH.",
     version="1.0.0",
