@@ -6,10 +6,16 @@ donc une future route ajoutée ici ne peut pas l'oublier.
 
 from urllib.parse import quote
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Response
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, Response
 from pydantic import BaseModel
 
-from backend.api.v1.candidatures import get_candidature_repository, get_document_repository, get_stockage_fichiers
+from backend.api.v1.candidatures import (
+    get_candidature_repository,
+    get_document_repository,
+    get_email_sender,
+    get_stockage_fichiers,
+    get_url_base_portail,
+)
 from backend.api.v1.dto.admin_dto import (
     DecisionHistoriqueResponse,
     DecisionRequest,
@@ -27,6 +33,7 @@ from backend.bll.consulter_candidatures import (
     ObtenirDossierAdminUseCase,
 )
 from backend.bll.decider_document import DeciderDocumentUseCase
+from backend.bll.notifier_decision import NotifierDecisionUseCase
 from backend.bll.televerser_document import trouver_piece
 from backend.bll.obtenir_statut_candidature import (
     STATUT_GLOBAL_ACTION_REQUISE,
@@ -45,6 +52,7 @@ from backend.entities.pieces_admission import NOM_ADMISSION
 from backend.entities.utilisateur import Utilisateur
 from backend.ports.candidature_repository import ICandidatureRepository
 from backend.ports.document_repository import IDocumentRepository
+from backend.ports.email_sender import IEmailSender
 from backend.ports.stockage_fichiers import IStockageFichiers
 from backend.ports.utilisateur_repository import IUtilisateurRepository
 
@@ -213,16 +221,20 @@ def _piece_apres_decision(document: DocumentSoumis) -> PieceAdminResponse:
 def decider_document(
     document_id: str,
     payload: DecisionRequest,
+    taches: BackgroundTasks,
     utilisateur: Utilisateur = Depends(get_current_admin),
     repo: ICandidatureRepository = Depends(get_candidature_repository),
     documents: IDocumentRepository = Depends(get_document_repository),
+    email_sender: IEmailSender = Depends(get_email_sender),
+    url_base: str = Depends(get_url_base_portail),
 ):
     """Enregistre `valide_par` et `date_validation` ; un refus exige un motif, que le candidat verra.
 
     Une décision ne se modifie pas : 409 si la pièce a déjà été validée ou refusée (jusqu'à son remplacement).
+    Le candidat est prévenu par email (non bloquant, voir `NotifierDecisionUseCase`).
     """
     try:
-        document, _ = DeciderDocumentUseCase(repo, documents).executer(
+        document, decision = DeciderDocumentUseCase(repo, documents).executer(
             document_id, payload.statut, payload.motif, utilisateur
         )
     except InformationsInvalides as erreur:
@@ -231,4 +243,9 @@ def decider_document(
         raise HTTPException(status_code=404, detail="Document introuvable.")
     except DocumentDejaDecide:
         raise HTTPException(status_code=409, detail="Cette pièce a déjà fait l'objet d'une décision, qui est définitive.")
+    # L'email part APRÈS l'enregistrement, en tâche de fond : son échec ne peut ni annuler la décision ni changer la réponse
+    candidat = repo.obtenir_candidat(document.candidat_id)
+    candidature = repo.obtenir_par_candidat(document.candidat_id)
+    if candidat is not None and candidature is not None:
+        taches.add_task(NotifierDecisionUseCase(email_sender, url_base).executer, candidat, candidature, decision)
     return _piece_apres_decision(document)

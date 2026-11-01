@@ -170,3 +170,66 @@ def test_deux_agents_simultanes_un_seul_gagne(client, agent, session_factory):
     with session_factory() as db:
         assert db.query(DecisionDocumentModel).count() == 1  # la décision tardive n'a laissé aucune trace
         assert db.get(DocumentSoumisModel, piece["document_id"]).statut_validation == "valide"
+
+
+# --- US-014 : email après décision ----------------------------------------------------------------
+
+from backend.api.v1.candidatures import get_email_sender  # noqa: E402
+from backend.main import app  # noqa: E402
+from backend.ports.email_sender import IEmailSender  # noqa: E402
+
+
+class _Enregistreur(IEmailSender):
+    def __init__(self):
+        self.messages = []
+
+    def envoyer(self, message):
+        self.messages.append(message)
+
+
+class _EnPanne(IEmailSender):
+    def envoyer(self, message):
+        raise ConnectionError("Resend indisponible")
+
+
+def test_la_decision_envoie_un_email_au_candidat(client, agent):
+    _, entete = agent
+    ref = _soumettre(client, "louismy@exemple.com")
+    emails = _Enregistreur()
+    app.dependency_overrides[get_email_sender] = lambda: emails  # après le dépôt : on ne compte que les décisions
+    pieces = _documents(client, entete, ref)
+
+    _decider(client, entete, pieces[LES_CINQ[0]]["document_id"], "valide")
+    _decider(client, entete, pieces[LES_CINQ[2]]["document_id"], "rejete", "Page coupée")
+    valide, refuse = emails.messages
+    assert valide.destinataire == refuse.destinataire == "louismy@exemple.com"
+    assert "validée" in valide.sujet and "à remplacer" in refuse.sujet
+    assert "Page coupée" in refuse.texte and f"/suivi/{ref}" in refuse.html
+
+
+def test_une_decision_refusee_n_envoie_rien(client, agent):
+    _, entete = agent
+    ref = _soumettre(client, "louismy@exemple.com")
+    emails = _Enregistreur()
+    app.dependency_overrides[get_email_sender] = lambda: emails
+    piece = _documents(client, entete, ref)[LES_CINQ[0]]
+    _decider(client, entete, piece["document_id"], "rejete")  # 422 : motif manquant
+    _decider(client, entete, piece["document_id"], "valide")
+    _decider(client, entete, piece["document_id"], "valide")  # 409 : déjà décidée
+    assert len(emails.messages) == 1
+
+
+def test_panne_d_email_n_annule_pas_la_decision(client, agent, caplog, session_factory):
+    import logging
+
+    _, entete = agent
+    ref = _soumettre(client, "louismy@exemple.com")
+    app.dependency_overrides[get_email_sender] = lambda: _EnPanne()
+    piece = _documents(client, entete, ref)[LES_CINQ[0]]
+    with caplog.at_level(logging.ERROR):
+        reponse = _decider(client, entete, piece["document_id"], "valide")
+    assert reponse.status_code == 200 and reponse.json()["statut"] == "valide"
+    with session_factory() as db:
+        assert db.get(DocumentSoumisModel, piece["document_id"]).statut_validation == "valide"
+        assert db.query(DecisionDocumentModel).count() == 1
+    assert "Email de décision non envoyé" in caplog.text and "louismy@exemple.com" not in caplog.text

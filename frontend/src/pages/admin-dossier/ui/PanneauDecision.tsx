@@ -124,7 +124,7 @@ export const PanneauDecision: React.FC<PanneauDecisionProps> = ({ nomPiece, onDe
       )}
 
       {mode === 'repos' && (
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <button
             type="button"
             onClick={() => setMode('confirmer-validation')}
@@ -140,6 +140,9 @@ export const PanneauDecision: React.FC<PanneauDecisionProps> = ({ nomPiece, onDe
           >
             Refuser cette pièce…
           </button>
+          <span className="flex-1 basis-60 text-xs text-fds-mute">
+            Un email part au candidat après chaque décision. S'il échoue, la décision reste enregistrée.
+          </span>
         </div>
       )}
     </div>
