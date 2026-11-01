@@ -34,6 +34,8 @@ services:
       UPLOAD_DIR: /app/uploads
       # Email de confirmation (US-008) : sans RESEND_API_KEY, les emails sont écrits dans les journaux
       RESEND_API_KEY: "${RESEND_API_KEY:-}"
+      # false : plus aucun email (ni réel, ni dans les journaux). Par défaut : activé.
+      EMAIL_ENABLED: "${EMAIL_ENABLED:-true}"
       # Session du personnel (US-011) : secret de 32 caractères minimum, sans quoi la connexion admin est désactivée
       JWT_SECRET: "${JWT_SECRET:-}"
       EMAIL_FROM: "${EMAIL_FROM:-FDS Portail <onboarding@resend.dev>}"

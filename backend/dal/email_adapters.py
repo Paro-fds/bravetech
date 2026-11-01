@@ -2,7 +2,7 @@
 
 - `ConsoleEmailSender` : écrit le message dans les journaux ; sert en développement et sans clé d'API.
 - `ResendEmailSender` : envoie via l'API REST de Resend (ADR-005). Aucune dépendance externe : bibliothèque standard.
-Le choix se fait par la variable d'environnement `RESEND_API_KEY` (voir `creer_email_sender`).
+Le choix se fait par les variables d'environnement `EMAIL_ENABLED` et `RESEND_API_KEY` (voir `creer_email_sender`).
 """
 
 import json
@@ -24,6 +24,13 @@ class ConsoleEmailSender(IEmailSender):
 
     def envoyer(self, message: MessageEmail) -> None:
         logger.info("[EMAIL console] à=%s | sujet=%s\n%s", message.destinataire, message.sujet, message.texte)
+
+
+class EmailDesactive(IEmailSender):
+    """N'envoie rien (`EMAIL_ENABLED=false`) : aucun email, ni réel ni dans les journaux."""
+
+    def envoyer(self, message: MessageEmail) -> None:
+        logger.debug("Envoi d'email désactivé (EMAIL_ENABLED=false) : message non envoyé.")
 
 
 class ResendEmailSender(IEmailSender):
@@ -60,7 +67,9 @@ class ResendEmailSender(IEmailSender):
 
 
 def creer_email_sender() -> IEmailSender:
-    """Resend si `RESEND_API_KEY` est définie, sinon la version console (le service reste utilisable sans clé)."""
+    """Aucun envoi si `EMAIL_ENABLED=false` ; sinon Resend si `RESEND_API_KEY` est définie, sinon la version console."""
+    if os.getenv("EMAIL_ENABLED", "true").strip().lower() in ("false", "0", "no", "non"):
+        return EmailDesactive()
     cle = os.getenv("RESEND_API_KEY", "").strip()
     if not cle:
         return ConsoleEmailSender()
