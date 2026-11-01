@@ -5,6 +5,7 @@ import type {
   InformationsPersonnelles,
   MethodePaiement,
   PieceDossier,
+  PieceSuivi,
   SuiviDossier,
 } from '../model/types';
 
@@ -68,6 +69,43 @@ export const candidatureApi = {
    */
   obtenirSuivi: (reference: string): Promise<SuiviDossier> =>
     apiClient<SuiviDossier>(`${BASE}/${encodeURIComponent(reference)}/statut`),
+
+  /**
+   * Remplace une pièce REFUSÉE. Le candidat s'identifie par la référence du dossier et l'email de sa candidature.
+   * Rejette avec une `ApiError` : 403 référence ou email incorrect, 409 pièce non refusée, 413/422 fichier refusé,
+   * 429 trop de tentatives. XMLHttpRequest pour suivre la progression de l'envoi (connexion 3G lente).
+   */
+  remplacerPiece: (
+    reference: string,
+    pieceId: string,
+    email: string,
+    fichier: File,
+    onProgression?: (pourcentage: number) => void,
+  ): Promise<PieceSuivi> =>
+    new Promise((resolve, reject) => {
+      const corps = new FormData();
+      corps.append('email', email);
+      corps.append('fichier', fichier);
+
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', urlApi(`${BASE}/${encodeURIComponent(reference)}/pieces/${encodeURIComponent(pieceId)}/remplacement`));
+      xhr.upload.onprogress = (e) => {
+        if (e.lengthComputable && onProgression) onProgression(Math.round((e.loaded / e.total) * 100));
+      };
+      xhr.onload = () => {
+        let decode: unknown = xhr.responseText;
+        try {
+          decode = JSON.parse(xhr.responseText);
+        } catch {
+          // corps non JSON : on garde le texte brut
+        }
+        if (xhr.status >= 200 && xhr.status < 300) resolve(decode as PieceSuivi);
+        else reject(new ApiError(xhr.status, decode, `Erreur API (${xhr.status}): ${xhr.responseText}`));
+      };
+      xhr.onerror = () => reject(new TypeError('Envoi interrompu'));
+      xhr.ontimeout = () => reject(new TypeError('Envoi interrompu'));
+      xhr.send(corps);
+    }),
 
   /** Simule le paiement des frais de dossier : aucun montant réel n'est prélevé. */
   simulerPaiement: (id: string, methode: MethodePaiement, numeroTelephone: string): Promise<Brouillon> =>

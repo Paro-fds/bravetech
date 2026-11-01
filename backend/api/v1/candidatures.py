@@ -6,10 +6,10 @@ conservé par son navigateur pour reprendre le formulaire après une coupure de 
 
 import os
 
-from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, UploadFile
+from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, HTTPException, Request, UploadFile
 from sqlalchemy.orm import Session
 
-from backend.api.v1.limiteur import limiter_envois, limiter_suivi
+from backend.api.v1.limiteur import adresse_client, limiter_envois, limiter_suivi, limiteur_identite
 from backend.api.v1.dto.candidature_dto import (
     BrouillonResponse,
     DeplacementPhysiqueRequest,
@@ -20,7 +20,9 @@ from backend.api.v1.dto.candidature_dto import (
     PieceSuiviResponse,
     SuiviDossierResponse,
 )
+from backend.bll.notifier_remplacement import NotifierRemplacementUseCase
 from backend.bll.obtenir_statut_candidature import ObtenirStatutCandidatureUseCase
+from backend.bll.remplacer_document import RemplacerDocumentUseCase
 from backend.entities.pieces_admission import NOM_ADMISSION
 from backend.bll.definir_deplacement_physique import DefinirDeplacementPhysiqueUseCase
 from backend.bll.enregistrer_informations import EnregistrerInformationsUseCase, MettreAJourInformationsUseCase
@@ -50,7 +52,9 @@ from backend.entities.erreurs import (
     EtapePrecedenteIncomplete,
     FichierInvalide,
     FichierTropVolumineux,
+    IdentiteNonVerifiee,
     InformationsInvalides,
+    RemplacementNonAutorise,
 )
 from backend.ports.candidature_repository import ICandidatureRepository
 from backend.ports.document_repository import IDocumentRepository
@@ -346,10 +350,69 @@ def obtenir_statut(
                 id=p.piece.id,
                 nom=p.piece.nom,
                 statut=p.statut,
+                format_accepte=p.piece.format_accepte,
+                taille_max_mo=p.piece.taille_max_mo,
                 motif_rejet=p.document.motif_rejet if p.document else None,
                 depose_le=p.document.soumis_le if p.document else None,
                 valide_le=p.document.date_validation if p.document else None,
             )
             for p in suivi.pieces
         ],
+    )
+
+
+# --- US-010 : remplacement d'une pièce refusée par le candidat ----------------------------------
+
+@router.post(
+    "/{reference}/pieces/{document_requis_id}/remplacement",
+    response_model=PieceSuiviResponse,
+    summary="Remplacer une pièce refusée (référence du dossier + email de la candidature)",
+    dependencies=[Depends(limiter_envois)],
+)
+async def remplacer_piece(
+    reference: str,
+    document_requis_id: str,
+    requete: Request,
+    taches: BackgroundTasks,
+    email: str = Form(..., max_length=255),
+    fichier: UploadFile = File(...),
+    repo: ICandidatureRepository = Depends(get_candidature_repository),
+    documents: IDocumentRepository = Depends(get_document_repository),
+    stockage: IStockageFichiers = Depends(get_stockage_fichiers),
+    email_sender: IEmailSender = Depends(get_email_sender),
+    url_base: str = Depends(get_url_base_portail),
+):
+    """Remplace le fichier d'une pièce REFUSÉE ; elle repasse « en attente » pour un nouvel examen.
+
+    Le candidat s'identifie par la référence ET l'email du dossier. Les échecs d'identité sont comptés par IP
+    (429 après 5 par minute) pour empêcher de deviner l'email d'un autre candidat.
+    """
+    client = adresse_client(requete)
+    if limiteur_identite.est_atteint(client):
+        raise HTTPException(
+            status_code=429,
+            detail="Trop de tentatives. Patientez une minute puis réessayez.",
+            headers={"Retry-After": "60"},
+        )
+    try:
+        piece = trouver_piece(document_requis_id)
+        contenu = await fichier.read(piece.taille_max_mo * OCTETS_PAR_MO + 1)
+        candidat, candidature, document = RemplacerDocumentUseCase(repo, documents, stockage).executer(
+            reference, email, document_requis_id, fichier.filename, contenu
+        )
+    except IdentiteNonVerifiee:
+        limiteur_identite.enregistrer(client)
+        raise HTTPException(status_code=403, detail="Référence ou email incorrect.")
+    except RemplacementNonAutorise:
+        raise HTTPException(status_code=409, detail="Cette pièce n'a pas été refusée : elle ne peut pas être remplacée.")
+    except (DocumentRequisInconnu, FichierInvalide, FichierTropVolumineux) as erreur:
+        raise _vers_http(erreur)
+    taches.add_task(NotifierRemplacementUseCase(email_sender, url_base).executer, candidat, candidature, document)
+    return PieceSuiviResponse(
+        id=piece.id,
+        nom=piece.nom,
+        statut=document.statut_validation,
+        format_accepte=piece.format_accepte,
+        taille_max_mo=piece.taille_max_mo,
+        depose_le=document.soumis_le,
     )

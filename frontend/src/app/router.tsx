@@ -4,7 +4,7 @@ import { FlowLayout } from './layout/FlowLayout';
 import { HomePage } from '../pages/home';
 import { CursusDetailPage } from '../pages/cursus-detail';
 import { ApplyPage } from '../pages/apply';
-import { SuiviPage } from '../pages/suivi';
+import { RemplacerPiecePage, SuiviPage } from '../pages/suivi';
 import { AdminLayout } from './layout/AdminLayout';
 import { AdminLoginPage } from '../pages/admin-login';
 import { AdminCandidaturesPage } from '../pages/admin-candidatures';
@@ -45,6 +45,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <SuiviPage /> },
       { path: ':reference', element: <SuiviPage /> },
+      { path: ':reference/remplacer/:piece', element: <RemplacerPiecePage /> },
     ],
   },
   // Espace administration (US-011) : connexion publique, le reste exige une session

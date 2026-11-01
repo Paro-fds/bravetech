@@ -81,3 +81,25 @@ def message_decision(
             f"<p>Faculté des Sciences — Université d'État d'Haïti</p>"
         )
     return MessageEmail(destinataire=candidat.email, sujet=sujet, texte=texte, html=html)
+
+
+def message_remplacement(candidat: Candidat, candidature: Candidature, nom_piece: str, url_suivi: str) -> MessageEmail:
+    """Accusé de réception d'une pièce remplacée par le candidat."""
+    reference = candidature.reference_dossier or ""
+    sujet = f"Nouvelle pièce reçue — {nom_piece} ({reference})"
+    texte = (
+        f"Bonjour {candidat.prenom},\n\n"
+        f"Nous avons bien reçu votre nouvelle version de « {nom_piece} » (dossier {reference}).\n"
+        f"La Faculté va l'examiner et vous écrira dès qu'elle aura pris sa décision.\n\n"
+        f"Suivre mon dossier : {url_suivi}\n\n"
+        f"Faculté des Sciences — Université d'État d'Haïti\n"
+    )
+    html = (
+        f"<p>Bonjour {escape(candidat.prenom)},</p>"
+        f"<p>Nous avons bien reçu votre nouvelle version de <strong>{escape(nom_piece)}</strong> "
+        f"(dossier {escape(reference)}).</p>"
+        f"<p>La Faculté va l'examiner et vous écrira dès qu'elle aura pris sa décision.</p>"
+        f'<p><a href="{escape(url_suivi, quote=True)}">Suivre mon dossier</a></p>'
+        f"<p>Faculté des Sciences — Université d'État d'Haïti</p>"
+    )
+    return MessageEmail(destinataire=candidat.email, sujet=sujet, texte=texte, html=html)
