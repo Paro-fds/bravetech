@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T13:09:00Z
-updated: 2026-11-01T15:51:55Z
+updated: 2026-11-01T16:56:09Z
 ---
 
 # EPIC_EXECUTION.md — FDS Portail
@@ -45,6 +45,7 @@ Walking Skeleton complet côté candidat : formulaire multi-étapes, question `d
 | US-008 | Finalisation de candidature & notification de confirmation | 🔲 Backlog | [US-008.md](epic-002-candidature/US-008.md) |
 | US-009 | Consultation et suivi de dossier par référence | 🔲 Backlog | [US-009.md](epic-002-candidature/US-009.md) |
 | US-010 | Remplacement d'un document rejeté depuis la page de suivi | 🔲 Backlog | [US-010.md](epic-002-candidature/US-010.md) |
+| US-018 | Aligner le portail public sur l'admission unique au MPC | 🔲 Backlog | [US-018.md](epic-002-candidature/US-018.md) |
 
 ---
 
@@ -80,6 +81,8 @@ Fonctionnalités de confort et d'efficacité opérationnelle : SMS en complémen
 | US-015 | Export CSV/PDF filtré des dossiers validés | 🔵 Could | 🔲 Backlog | [US-015.md](epic-004-could-have/US-015.md) |
 | US-016 | Notifications SMS en complément de l'email | 🟡 Should | 🔲 Backlog | [US-016.md](epic-004-could-have/US-016.md) |
 | US-017 | Mode sombre interface admin et formulaire candidat | 🔵 Could | 🔲 Backlog | [US-017.md](epic-004-could-have/US-017.md) |
+| US-019 | Pages Histoire et Contact | 🟡 Should | 🔲 Backlog | [US-019.md](epic-004-could-have/US-019.md) |
+| US-020 | Interface en Kreyòl (sélecteur FR / KR) | 🟡 Should | 🔲 Backlog | [US-020.md](epic-004-could-have/US-020.md) |
 
 ---
 
