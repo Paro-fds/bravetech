@@ -36,6 +36,8 @@ services:
       RESEND_API_KEY: "${RESEND_API_KEY:-}"
       # false : plus aucun email (ni réel, ni dans les journaux). Par défaut : activé.
       EMAIL_ENABLED: "${EMAIL_ENABLED:-true}"
+      # Adresse du secrétariat qui reçoit le formulaire de contact (US-019). Vide : le formulaire répond « indisponible ».
+      CONTACT_EMAIL: "${CONTACT_EMAIL:-}"
       # Session du personnel (US-011) : secret de 32 caractères minimum, sans quoi la connexion admin est désactivée
       JWT_SECRET: "${JWT_SECRET:-}"
       EMAIL_FROM: "${EMAIL_FROM:-FDS Portail <onboarding@resend.dev>}"

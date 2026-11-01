@@ -32,9 +32,12 @@ export const Navbar: React.FC = () => {
           <a href="#admission" className="hover:text-slate-900 transition-colors">
             Conditions d'admission
           </a>
-          <a href="#contact" className="hover:text-slate-900 transition-colors">
+          <Link to="/histoire" className="hover:text-slate-900 transition-colors">
+            Histoire
+          </Link>
+          <Link to="/contact" className="hover:text-slate-900 transition-colors">
             Contact & Secrétariat
-          </a>
+          </Link>
         </nav>
 
         {/* Action button */}

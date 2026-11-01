@@ -14,6 +14,7 @@ class MessageEmail:
     sujet: str
     texte: str
     html: str | None = None
+    repondre_a: str | None = None  # adresse à laquelle répond le destinataire (formulaire de contact)
 
 
 class IEmailSender(ABC):

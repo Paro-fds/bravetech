@@ -49,6 +49,8 @@ class ResendEmailSender(IEmailSender):
         }
         if message.html:
             corps["html"] = message.html
+        if message.repondre_a:
+            corps["reply_to"] = message.repondre_a
         requete = urllib.request.Request(
             URL_RESEND,
             data=json.dumps(corps).encode("utf-8"),

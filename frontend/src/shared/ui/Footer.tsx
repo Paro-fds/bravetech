@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { GraduationCap, MapPin, Mail, Phone } from 'lucide-react';
 
 export const Footer: React.FC = () => {
@@ -58,7 +59,9 @@ export const Footer: React.FC = () => {
               <li><a href="#processus" className="hover:text-white transition-colors">Guide du candidat</a></li>
               <li><a href="#admission" className="hover:text-white transition-colors">Calendrier du concours</a></li>
               <li><a href="#pieces" className="hover:text-white transition-colors">Pièces justificatives requises</a></li>
-              <li><span className="text-slate-500">Espace Administration (JWT)</span></li>
+              <li><Link to="/histoire" className="hover:text-white transition-colors">Histoire de la Faculté</Link></li>
+              <li><Link to="/contact" className="hover:text-white transition-colors">Contact et accès</Link></li>
+              <li><Link to="/suivi" className="hover:text-white transition-colors">Suivre mon dossier</Link></li>
             </ul>
           </div>
         </div>

@@ -85,6 +85,14 @@ class RemplacementNonAutorise(ErreurMetier):
     """Seule une pièce refusée peut être remplacée par le candidat."""
 
 
+class ContactIndisponible(ErreurMetier):
+    """L'adresse du secrétariat n'est pas configurée : le formulaire de contact ne peut pas fonctionner."""
+
+
+class EnvoiEmailEchoue(ErreurMetier):
+    """Un email dont l'envoi est l'objet même de l'action n'a pas pu partir."""
+
+
 class IdentifiantsInvalides(ErreurMetier):
     """Email ou mot de passe incorrect, ou compte désactivé (jamais précisé à l'appelant)."""
 
