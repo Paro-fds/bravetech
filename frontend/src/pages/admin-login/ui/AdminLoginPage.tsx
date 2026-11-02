@@ -46,7 +46,7 @@ export const AdminLoginPage: React.FC = () => {
   };
 
   const classeChamp =
-    'w-full min-h-12 rounded-lg border-[1.5px] border-fds-field bg-white px-3 text-base text-fds-ink focus:outline-none focus:ring-2 focus:ring-fds-navy';
+    'w-full min-h-12 rounded-lg border-[1.5px] border-fds-field bg-fds-surface px-3 text-base text-fds-ink focus:outline-none focus:ring-2 focus:ring-fds-accent';
 
   return (
     <div className="min-h-screen bg-fds-navy flex items-center justify-center px-4 py-8 font-fds-sans">
@@ -60,10 +60,10 @@ export const AdminLoginPage: React.FC = () => {
             className="rounded border border-white/30"
           />
           <h1 className="font-fds-serif text-[26px] font-bold">Espace administration</h1>
-          <p className="text-[15px] text-[#cfe0f5]">Faculté des Sciences · réservé au personnel autorisé</p>
+          <p className="text-[15px] text-fds-on-navy">Faculté des Sciences · réservé au personnel autorisé</p>
         </div>
 
-        <form onSubmit={soumettre} noValidate className="rounded-xl border border-fds-line bg-white p-6 flex flex-col gap-4">
+        <form onSubmit={soumettre} noValidate className="rounded-xl border border-fds-line bg-fds-surface p-6 flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
             <label htmlFor="admin-email" className="text-[15px] font-semibold">
               Email professionnel
@@ -93,7 +93,7 @@ export const AdminLoginPage: React.FC = () => {
           </div>
 
           {erreur && (
-            <div role="alert" className="flex gap-2.5 items-start rounded-[10px] border border-[#efb1ab] bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
+            <div role="alert" className="flex gap-2.5 items-start rounded-[10px] border border-fds-bad-line bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
               <TriangleAlert className="w-5 h-5 shrink-0" aria-hidden="true" />
               <span>{erreur}</span>
             </div>
@@ -112,7 +112,7 @@ export const AdminLoginPage: React.FC = () => {
           </p>
         </form>
 
-        <p className="text-xs text-[#cfe0f5] text-center">
+        <p className="text-xs text-fds-on-navy text-center">
           La session se ferme automatiquement après 60 minutes. Toutes vos actions sont enregistrées.
         </p>
       </main>

@@ -18,6 +18,7 @@ export const commun = {
   'nav.suiviLong': 'Swivi dosye',
   'nav.contact': 'Kontak',
   'nav.postuler': 'Aplike',
+  'nav.modeSombre': 'Mòd fènwa',
 
   'pied.simulation': 'Peman sou entènèt la se yon simulasyon pandan faz lansman an.',
   'pied.droits': '© Fakilte Syans, Inivèsite Leta Ayiti',

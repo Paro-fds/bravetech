@@ -62,7 +62,7 @@ export const StepInformations: React.FC<StepInformationsProps> = ({ valeurs, onC
 
   return (
     <form onSubmit={soumettre} noValidate className="flex flex-col gap-[18px] flex-1">
-      <h1 className="font-fds-serif text-2xl font-bold text-fds-navy-d">{t('info.titre')}</h1>
+      <h1 className="font-fds-serif text-2xl font-bold text-fds-title">{t('info.titre')}</h1>
 
       <ChampTexte id="nom" libelle={t('info.nom')} erreur={erreurs.nom}>
         {(p) => <input {...p} type="text" autoComplete="family-name" value={valeurs.nom} onChange={maj('nom')} />}
@@ -149,13 +149,13 @@ export const StepInformations: React.FC<StepInformationsProps> = ({ valeurs, onC
         {(p) => <input {...p} type="text" autoComplete="address-level2" value={valeurs.commune} onChange={maj('commune')} />}
       </ChampTexte>
 
-      <div className="flex gap-2.5 items-start rounded-[10px] border border-[#b9cbe3] bg-fds-navy-t px-3.5 py-3 text-sm text-fds-navy-d">
+      <div className="flex gap-2.5 items-start rounded-[10px] border border-fds-accent-line bg-fds-navy-t px-3.5 py-3 text-sm text-fds-title">
         <Info className="w-5 h-5 shrink-0" aria-hidden="true" />
         <span>{t('info.sauvegarde')}</span>
       </div>
 
       {messageGlobal && (
-        <p role="alert" className="rounded-[10px] border border-[#efb1ab] bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
+        <p role="alert" className="rounded-[10px] border border-fds-bad-line bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
           {messageGlobal}
         </p>
       )}

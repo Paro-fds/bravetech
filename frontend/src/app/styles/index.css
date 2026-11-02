@@ -1,51 +1,108 @@
 @import "tailwindcss";
 
-/* Charte des maquettes (couleurs issues du logo FDS-UEH). Utilisation : bg-fds-navy, text-fds-navy-d, font-fds-serif... */
+/*
+ * Charte des maquettes (couleurs issues du logo FDS-UEH). Utilisation : bg-fds-surface, text-fds-title, font-fds-serif...
+ * Les composants n'emploient QUE ces jetons : le mode sombre (US-017) les redéfinit plus bas sous [data-theme='dark'],
+ * sans toucher aux composants. Les noms décrivent un rôle, pas une teinte :
+ *   - fonds : page, surface (cartes, champs), surface-alt, sunken (zones creuses), navy-t (fond teinté bleu), *-bg ;
+ *   - aplats portant du texte blanc : navy, navy-d (en-têtes, boutons), ok-solid, bad-solid ; gold porte on-light ;
+ *   - textes : ink (courant), mute (secondaire), title (titres), accent (liens, icônes, bordures actives), ok, bad, warn ;
+ *     on-navy (texte secondaire sur aplat marine), on-light (texte sombre sur aplat clair : or, pastille blanche) ;
+ *   - traits : line, field (bord des champs), accent-line, ok-line, bad-line, warn-line.
+ * Contrastes vérifiés (WCAG 2.1 AA) pour les deux thèmes : voir les notes de l'US-017.
+ */
 @theme {
+  --color-fds-page: #f4f6fa;
+  --color-fds-surface: #ffffff;
+  --color-fds-surface-alt: #f8fafd;
+  --color-fds-sunken: #e9edf4;
   --color-fds-navy: #01346d;
   --color-fds-navy-d: #022552;
   --color-fds-navy-t: #e6edf6;
   --color-fds-gold: #f0b429;
+  --color-fds-on-navy: #cfe0f5;
+  --color-fds-on-light: #022552;
+  --color-fds-title: #022552;
+  --color-fds-accent: #01346d;
+  --color-fds-accent-line: #b9cbe3;
   --color-fds-line: #d5dce8;
-  --color-fds-field: #8796b0;
+  --color-fds-field: #8291ab;
   --color-fds-ink: #13233f;
   --color-fds-mute: #475873;
   --color-fds-ok: #14653c;
+  --color-fds-ok-solid: #14653c;
   --color-fds-ok-bg: #e3f4ea;
+  --color-fds-ok-line: #9bd3b2;
   --color-fds-bad: #a8231a;
+  --color-fds-bad-solid: #a8231a;
   --color-fds-bad-bg: #fbe7e5;
+  --color-fds-bad-line: #efb1ab;
   --color-fds-warn: #6b4300;
   --color-fds-warn-bg: #fdf1d6;
+  --color-fds-warn-stripe: #fbe7b0;
+  --color-fds-warn-line: #e6c36b;
+  --color-fds-warn-border: #b27a00;
   --font-fds-serif: 'Source Serif 4', Georgia, serif;
   --font-fds-sans: 'Source Sans 3', system-ui, sans-serif;
 }
 
+/* Thème sombre : posé sur <html> par useTheme (et, avant le premier affichage, par le script de index.html). */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --color-fds-page: #0d1523;
+  --color-fds-surface: #152033;
+  --color-fds-surface-alt: #1a263b;
+  --color-fds-sunken: #0f1a2b;
+  --color-fds-navy: #1d4b86;
+  --color-fds-navy-d: #163a69;
+  --color-fds-navy-t: #182c49;
+  --color-fds-on-navy: #d6e4f6;
+  --color-fds-title: #eef3fa;
+  --color-fds-accent: #93bbf0;
+  --color-fds-accent-line: #36507a;
+  --color-fds-line: #2c3b55;
+  --color-fds-field: #74859f;
+  --color-fds-ink: #e3e9f2;
+  --color-fds-mute: #a9b5c8;
+  --color-fds-ok: #74d49e;
+  --color-fds-ok-solid: #1d7a48;
+  --color-fds-ok-bg: #11301f;
+  --color-fds-ok-line: #2f6b48;
+  --color-fds-bad: #ff9d93;
+  --color-fds-bad-solid: #b3362b;
+  --color-fds-bad-bg: #3a1714;
+  --color-fds-bad-line: #7a3a33;
+  --color-fds-warn: #f3c667;
+  --color-fds-warn-bg: #30240b;
+  --color-fds-warn-stripe: #3b2d0f;
+  --color-fds-warn-line: #7a5c1c;
+  --color-fds-warn-border: #c08a1a;
+}
+
+:root {
+  color-scheme: light;
+}
+
 /* Bandeau hachuré « PAIEMENT SIMULÉ » : doit être visuellement impossible à confondre avec un vrai paiement. */
 .bandeau-simulation {
-  background: repeating-linear-gradient(135deg, #fdf1d6, #fdf1d6 12px, #fbe7b0 12px, #fbe7b0 24px);
-  border: 2px dashed #b27a00;
+  background: repeating-linear-gradient(
+    135deg,
+    var(--color-fds-warn-bg),
+    var(--color-fds-warn-bg) 12px,
+    var(--color-fds-warn-stripe) 12px,
+    var(--color-fds-warn-stripe) 24px
+  );
+  border: 2px dashed var(--color-fds-warn-border);
 }
 
 @layer base {
-  :root {
-    --primary: #1e3a8a;
-    --primary-light: #3b82f6;
-    --accent: #d97706;
-    --bg-main: #f8fafc;
-    --surface: #ffffff;
-    --text-primary: #0f172a;
-    --text-secondary: #475569;
-  }
-
   body {
-    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-    background-color: var(--bg-main);
-    color: var(--text-primary);
+    font-family: var(--font-fds-sans);
+    background-color: var(--color-fds-page);
+    color: var(--color-fds-ink);
     margin: 0;
     padding: 0;
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
   }
 }
-
-

@@ -18,7 +18,7 @@ const BADGES_PIECE: Record<PieceAdmin['statut'], { libelle: string; classe: stri
 };
 
 const Info: React.FC<{ libelle: string; children: React.ReactNode }> = ({ libelle, children }) => (
-  <div className="rounded-xl border border-fds-line bg-white p-4 flex flex-col gap-1">
+  <div className="rounded-xl border border-fds-line bg-fds-surface p-4 flex flex-col gap-1">
     <div className="text-xs text-fds-mute">{libelle}</div>
     <div className="font-semibold break-words">{children}</div>
   </div>
@@ -50,20 +50,20 @@ const ApercuPiece: React.FC<{ session: Session; piece: PieceAdmin }> = ({ sessio
   }, [session, documentId]);
 
   if (!documentId) {
-    return <div className="h-40 rounded-[10px] bg-[#e9edf4] border border-dashed border-fds-field flex items-center justify-center text-fds-mute font-semibold">Aucun fichier déposé</div>;
+    return <div className="h-40 rounded-[10px] bg-fds-sunken border border-dashed border-fds-field flex items-center justify-center text-fds-mute font-semibold">Aucun fichier déposé</div>;
   }
   const courant = apercu && apercu.documentId === documentId ? apercu : null;
   if (!courant) return <p className="text-fds-mute" role="status">Chargement du document…</p>;
   if ('erreur' in courant) {
     return (
-      <p role="alert" className="rounded-[10px] border border-[#efb1ab] bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
+      <p role="alert" className="rounded-[10px] border border-fds-bad-line bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
         Impossible d'afficher ce document.
       </p>
     );
   }
   return (
     <>
-      <div className="h-80 sm:h-[480px] rounded-[10px] bg-[#e9edf4] border border-fds-line overflow-hidden">
+      <div className="h-80 sm:h-[480px] rounded-[10px] bg-fds-sunken border border-fds-line overflow-hidden">
         {courant.type.startsWith('image/') ? (
           <img src={courant.url} alt={`Aperçu : ${piece.nom}`} className="w-full h-full object-contain" />
         ) : (
@@ -74,7 +74,7 @@ const ApercuPiece: React.FC<{ session: Session; piece: PieceAdmin }> = ({ sessio
         href={courant.url}
         target="_blank"
         rel="noreferrer"
-        className="self-start min-h-12 px-4 rounded-lg border-2 border-fds-navy bg-white text-fds-navy font-semibold flex items-center gap-2"
+        className="self-start min-h-12 px-4 rounded-lg border-2 border-fds-accent bg-fds-surface text-fds-accent font-semibold flex items-center gap-2"
       >
         <ExternalLink className="w-5 h-5" aria-hidden="true" />
         Ouvrir en grand
@@ -126,7 +126,7 @@ export const AdminDossierPage: React.FC = () => {
   };
 
   const retour = (
-    <Link to="/admin" className="flex items-center gap-2 min-h-11 font-semibold text-fds-navy">
+    <Link to="/admin" className="flex items-center gap-2 min-h-11 font-semibold text-fds-accent">
       <ArrowLeft className="w-5 h-5" aria-hidden="true" />
       Toutes les candidatures
     </Link>
@@ -147,7 +147,7 @@ export const AdminDossierPage: React.FC = () => {
     return (
       <>
         {retour}
-        <p role="alert" className="rounded-[10px] border border-[#efb1ab] bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
+        <p role="alert" className="rounded-[10px] border border-fds-bad-line bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
           {resultat.etat === 'introuvable' ? 'Aucun dossier ne porte cette référence.' : 'Impossible de charger le dossier. Vérifiez votre connexion.'}
         </p>
       </>
@@ -167,7 +167,7 @@ export const AdminDossierPage: React.FC = () => {
 
       <div className="flex flex-wrap items-start gap-4">
         <div className="flex-1">
-          <h1 className="font-fds-serif text-[28px] font-bold text-fds-navy-d">{d.reference_dossier}</h1>
+          <h1 className="font-fds-serif text-[28px] font-bold text-fds-title">{d.reference_dossier}</h1>
           <p className="text-fds-mute">
             {d.nom} {d.prenom} · Admission MPC · reçu le {d.soumise_le ? formaterJourCourt(d.soumise_le) : '–'}
           </p>
@@ -190,8 +190,8 @@ export const AdminDossierPage: React.FC = () => {
       </div>
 
       <div className="flex flex-wrap gap-6 items-start">
-        <section className="flex-[1_1_320px] rounded-xl border border-fds-line bg-white px-4 py-2" aria-label="Pièces du dossier">
-          <h2 className="font-fds-serif text-lg font-bold text-fds-navy-d py-2">Pièces</h2>
+        <section className="flex-[1_1_320px] rounded-xl border border-fds-line bg-fds-surface px-4 py-2" aria-label="Pièces du dossier">
+          <h2 className="font-fds-serif text-lg font-bold text-fds-title py-2">Pièces</h2>
           <ul>
             {d.pieces.map((p) => {
               const b = BADGES_PIECE[p.statut];
@@ -213,9 +213,9 @@ export const AdminDossierPage: React.FC = () => {
           </ul>
         </section>
 
-        <section className="flex-[2_1_460px] rounded-xl border border-fds-line bg-white p-4 flex flex-col gap-3.5" aria-label="Pièce sélectionnée">
+        <section className="flex-[2_1_460px] rounded-xl border border-fds-line bg-fds-surface p-4 flex flex-col gap-3.5" aria-label="Pièce sélectionnée">
           <div className="flex flex-wrap items-baseline gap-2">
-            <h2 className="font-fds-serif text-xl font-bold text-fds-navy-d flex-1">{piece.nom}</h2>
+            <h2 className="font-fds-serif text-xl font-bold text-fds-title flex-1">{piece.nom}</h2>
             <span className={`rounded-full px-2.5 py-0.5 text-[13px] font-semibold ${badgePiece.classe}`}>{badgePiece.libelle}</span>
           </div>
           {piece.nom_fichier && (
@@ -226,7 +226,7 @@ export const AdminDossierPage: React.FC = () => {
             </p>
           )}
           {piece.statut === 'rejete' && piece.motif_rejet && (
-            <p className="rounded-[10px] border border-[#efb1ab] bg-fds-bad-bg px-3 py-2.5 text-sm text-fds-bad">
+            <p className="rounded-[10px] border border-fds-bad-line bg-fds-bad-bg px-3 py-2.5 text-sm text-fds-bad">
               <strong>Motif du refus :</strong> {piece.motif_rejet}
             </p>
           )}
@@ -246,7 +246,7 @@ export const AdminDossierPage: React.FC = () => {
         </section>
       </div>
 
-      <section className="rounded-xl border border-fds-line bg-[#f8fafd] p-4 flex flex-col gap-2" aria-label="Historique des décisions">
+      <section className="rounded-xl border border-fds-line bg-fds-surface-alt p-4 flex flex-col gap-2" aria-label="Historique des décisions">
         <h2 className="font-semibold text-base">Historique des décisions</h2>
         {d.decisions.length === 0 ? (
           <p className="text-sm text-fds-mute">Aucune décision pour le moment.</p>

@@ -84,11 +84,11 @@ export const StepRecapitulatif: React.FC<StepRecapitulatifProps> = ({
 
   return (
     <div className="flex flex-col gap-4 flex-1">
-      <h1 className="font-fds-serif text-2xl font-bold text-fds-navy-d">{t('recap.titre')}</h1>
+      <h1 className="font-fds-serif text-2xl font-bold text-fds-title">{t('recap.titre')}</h1>
       <p className="text-sm text-fds-mute">{t('recap.consigne')}</p>
 
-      <section className="rounded-xl border border-fds-line bg-white p-4" aria-label={t('recap.secInfos')}>
-        <h2 className="font-fds-serif text-lg font-bold text-fds-navy-d mb-1">{t('recap.secInfos')}</h2>
+      <section className="rounded-xl border border-fds-line bg-fds-surface p-4" aria-label={t('recap.secInfos')}>
+        <h2 className="font-fds-serif text-lg font-bold text-fds-title mb-1">{t('recap.secInfos')}</h2>
         <dl>
           <Ligne libelle={t('recap.nom')}>
             {informations.prenom} {informations.nom}
@@ -102,8 +102,8 @@ export const StepRecapitulatif: React.FC<StepRecapitulatifProps> = ({
         </dl>
       </section>
 
-      <section className="rounded-xl border border-fds-line bg-white p-4" aria-label={t('recap.secAdmissionAria')}>
-        <h2 className="font-fds-serif text-lg font-bold text-fds-navy-d mb-1">{t('recap.admTitre')}</h2>
+      <section className="rounded-xl border border-fds-line bg-fds-surface p-4" aria-label={t('recap.secAdmissionAria')}>
+        <h2 className="font-fds-serif text-lg font-bold text-fds-title mb-1">{t('recap.admTitre')}</h2>
         <dl>
           <Ligne libelle={t('recap.admTitre')}>{t('adm.mpc')}</Ligne>
           <Ligne libelle={t('recap.deplacement')}>
@@ -115,8 +115,8 @@ export const StepRecapitulatif: React.FC<StepRecapitulatifProps> = ({
         </dl>
       </section>
 
-      <section className="rounded-xl border border-fds-line bg-white p-4" aria-label={t('recap.secPieces')}>
-        <h2 className="font-fds-serif text-lg font-bold text-fds-navy-d mb-1">{t('recap.secPieces')}</h2>
+      <section className="rounded-xl border border-fds-line bg-fds-surface p-4" aria-label={t('recap.secPieces')}>
+        <h2 className="font-fds-serif text-lg font-bold text-fds-title mb-1">{t('recap.secPieces')}</h2>
         {pieces ? (
           <ul className="flex flex-col gap-1.5 text-sm">
             {pieces.map((p) => (
@@ -135,13 +135,13 @@ export const StepRecapitulatif: React.FC<StepRecapitulatifProps> = ({
         )}
       </section>
 
-      <div className="flex gap-2.5 items-start rounded-[10px] border border-[#b9cbe3] bg-fds-navy-t px-3.5 py-3 text-sm text-fds-navy-d">
+      <div className="flex gap-2.5 items-start rounded-[10px] border border-fds-accent-line bg-fds-navy-t px-3.5 py-3 text-sm text-fds-title">
         <Info className="w-5 h-5 shrink-0" aria-hidden="true" />
         <span>{t('recap.simulNote')}</span>
       </div>
 
       {erreur && (
-        <div role="alert" className="rounded-[10px] border border-[#efb1ab] bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
+        <div role="alert" className="rounded-[10px] border border-fds-bad-line bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
           <p>{erreur}</p>
           {manques.length > 0 && (
             <ul className="list-disc pl-5 mt-1">
@@ -158,7 +158,7 @@ export const StepRecapitulatif: React.FC<StepRecapitulatifProps> = ({
           <ShieldCheck className="w-5 h-5" aria-hidden="true" />
           <span>{enCours ? t('recap.enCours') : t('recap.confirmer')}</span>
         </button>
-        <button type="button" onClick={onRetour} disabled={enCours} className="min-h-11 text-fds-navy font-semibold underline">
+        <button type="button" onClick={onRetour} disabled={enCours} className="min-h-11 text-fds-accent font-semibold underline">
           {t('commun.retour')}
         </button>
       </BarreAction>

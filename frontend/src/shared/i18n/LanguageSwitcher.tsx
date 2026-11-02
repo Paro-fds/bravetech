@@ -23,7 +23,7 @@ export const LanguageSwitcher: React.FC<{ className?: string }> = ({ className =
             aria-pressed={actif}
             aria-label={c.nom}
             onClick={() => setLangue(c.langue)}
-            className={`min-h-11 min-w-11 px-3 text-sm font-bold ${actif ? 'bg-white text-fds-navy' : 'text-white hover:bg-white/10'}`}
+            className={`min-h-11 min-w-11 px-3 text-sm font-bold ${actif ? 'bg-white text-fds-on-light' : 'text-white hover:bg-white/10'}`}
           >
             {c.libelle}
           </button>

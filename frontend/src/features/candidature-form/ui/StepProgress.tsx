@@ -13,7 +13,7 @@ export const StepProgress: React.FC<StepProgressProps> = ({ etape }) => {
   const total = TITRES.length;
   const pourcentage = Math.round((etape / total) * 100);
   return (
-    <div className="bg-white border-b border-fds-line">
+    <div className="bg-fds-surface border-b border-fds-line">
       <div className="max-w-xl mx-auto px-4 py-3.5 flex flex-col gap-2">
         <div className="flex items-center justify-between">
           <span className="font-semibold">
@@ -29,7 +29,7 @@ export const StepProgress: React.FC<StepProgressProps> = ({ etape }) => {
           aria-valuemax={100}
           aria-label={t('cand.progressionAria')}
         >
-          <div className="h-full bg-fds-navy transition-all" style={{ width: `${pourcentage}%` }} />
+          <div className="h-full bg-fds-accent transition-all" style={{ width: `${pourcentage}%` }} />
         </div>
       </div>
     </div>

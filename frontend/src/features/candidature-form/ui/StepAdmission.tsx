@@ -44,15 +44,15 @@ export const StepAdmission: React.FC<StepAdmissionProps> = ({ deplacementPhysiqu
   return (
     <form onSubmit={soumettre} noValidate className="flex flex-col gap-[22px] flex-1">
       <section className="flex flex-col gap-3">
-        <h1 className="font-fds-serif text-2xl font-bold text-fds-navy-d">{t('adm.titre')}</h1>
-        <div className="rounded-xl border-2 border-fds-navy bg-fds-navy-t p-4 flex flex-col gap-2">
+        <h1 className="font-fds-serif text-2xl font-bold text-fds-title">{t('adm.titre')}</h1>
+        <div className="rounded-xl border-2 border-fds-accent bg-fds-navy-t p-4 flex flex-col gap-2">
           <span className="self-start rounded-full bg-fds-ok-bg text-fds-ok text-[13px] font-semibold px-2.5 py-0.5">
             {t('cursus.badgeAdmission')}
           </span>
-          <h2 className="font-fds-serif text-lg font-bold text-fds-navy-d">{t('adm.mpc')}</h2>
+          <h2 className="font-fds-serif text-lg font-bold text-fds-title">{t('adm.mpc')}</h2>
           <p className="text-sm">{t('adm.texte')}</p>
         </div>
-        <Link to="/cursus/mpc" className="text-fds-navy font-semibold underline min-h-11 inline-flex items-center self-start">
+        <Link to="/cursus/mpc" className="text-fds-accent font-semibold underline min-h-11 inline-flex items-center self-start">
           {t('adm.lienFiche')}
         </Link>
       </section>
@@ -60,7 +60,7 @@ export const StepAdmission: React.FC<StepAdmissionProps> = ({ deplacementPhysiqu
       <hr className="border-fds-line" />
 
       <fieldset className="flex flex-col gap-2.5" aria-describedby={erreur ? 'erreur-deplacement' : undefined}>
-        <legend className="font-fds-serif text-xl font-bold text-fds-navy-d mb-1">{t('adm.dernier')}</legend>
+        <legend className="font-fds-serif text-xl font-bold text-fds-title mb-1">{t('adm.dernier')}</legend>
         <p className="text-sm text-fds-mute">
           {t('adm.aide')} <strong className="text-fds-ink">{t('adm.obligatoire')}</strong>
         </p>
@@ -71,13 +71,13 @@ export const StepAdmission: React.FC<StepAdmissionProps> = ({ deplacementPhysiqu
             <label
               key={String(option.valeur)}
               className={`flex items-center gap-3 rounded-[10px] border-2 p-3.5 min-h-12 cursor-pointer ${
-                choisi ? 'border-fds-navy bg-fds-navy-t' : 'border-fds-line bg-white'
+                choisi ? 'border-fds-accent bg-fds-navy-t' : 'border-fds-line bg-fds-surface'
               }`}
             >
               <input
                 type="radio"
                 name="deplacement_physique"
-                className="w-5 h-5 accent-[#01346d]"
+                className="w-5 h-5 accent-fds-accent"
                 checked={choisi}
                 onChange={() => {
                   onChange(option.valeur);

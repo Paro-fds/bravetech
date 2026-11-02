@@ -19,14 +19,14 @@ const EMAIL_FACULTE = 'admission@fds.ueh.edu.ht';
 type Resultat = { reference: string; etat: 'ok'; suivi: SuiviDossier } | { reference: string; etat: 'introuvable' | 'limite' | 'erreur' };
 
 const BADGES_GLOBAUX: Record<StatutGlobal, { cle: Cle; classe: string }> = {
-  en_examen: { cle: 'suivi.enExamen', classe: 'bg-fds-navy-t text-fds-navy' },
+  en_examen: { cle: 'suivi.enExamen', classe: 'bg-fds-navy-t text-fds-accent' },
   action_requise: { cle: 'suivi.actionRequise', classe: 'bg-fds-warn-bg text-fds-warn' },
   complet: { cle: 'suivi.complet', classe: 'bg-fds-ok-bg text-fds-ok' },
 };
 
 const BADGES_PIECES: Record<PieceSuivi['statut'], { cle: Cle; classe: string }> = {
   manquant: { cle: 'suivi.pieceAFournir', classe: 'bg-fds-warn-bg text-fds-warn' },
-  en_attente: { cle: 'suivi.enExamen', classe: 'bg-fds-navy-t text-fds-navy' },
+  en_attente: { cle: 'suivi.enExamen', classe: 'bg-fds-navy-t text-fds-accent' },
   valide: { cle: 'suivi.pieceValide', classe: 'bg-fds-ok-bg text-fds-ok' },
   rejete: { cle: 'suivi.pieceRefuse', classe: 'bg-fds-bad-bg text-fds-bad' },
 };
@@ -56,11 +56,11 @@ const RechercheReference: React.FC<{ valeurInitiale?: string; message?: string }
   return (
     <>
       <section className="flex flex-col gap-2">
-        <h1 className="font-fds-serif text-2xl font-bold text-fds-navy-d">{t('accueil.suivre')}</h1>
+        <h1 className="font-fds-serif text-2xl font-bold text-fds-title">{t('accueil.suivre')}</h1>
         <p className="text-fds-mute">{t('suivi.intro')}</p>
       </section>
 
-      <form onSubmit={rechercher} noValidate className="rounded-xl border border-fds-line bg-white p-4 flex flex-col gap-3.5">
+      <form onSubmit={rechercher} noValidate className="rounded-xl border border-fds-line bg-fds-surface p-4 flex flex-col gap-3.5">
         <div className="flex flex-col gap-1.5">
           <label htmlFor="reference" className="text-[15px] font-semibold">
             {t('suivi.refLabel')}
@@ -75,7 +75,7 @@ const RechercheReference: React.FC<{ valeurInitiale?: string; message?: string }
             spellCheck={false}
             aria-invalid={erreurFormat}
             aria-describedby="reference-aide"
-            className={`w-full min-h-12 rounded-lg border-[1.5px] bg-white px-3 text-lg tracking-wide text-fds-ink focus:outline-none focus:ring-2 focus:ring-fds-navy ${erreurFormat ? 'border-fds-bad' : 'border-fds-field'}`}
+            className={`w-full min-h-12 rounded-lg border-[1.5px] bg-fds-surface px-3 text-lg tracking-wide text-fds-ink focus:outline-none focus:ring-2 focus:ring-fds-accent ${erreurFormat ? 'border-fds-bad' : 'border-fds-field'}`}
           />
           <p id="reference-aide" role={erreurFormat ? 'alert' : undefined} className={`text-[13px] ${erreurFormat ? 'font-semibold text-fds-bad' : 'text-fds-mute'}`}>
             {erreurFormat ? t('suivi.formatErreur') : t('suivi.formatAide')}
@@ -91,18 +91,18 @@ const RechercheReference: React.FC<{ valeurInitiale?: string; message?: string }
       </form>
 
       {message && (
-        <div role="alert" className="flex gap-2.5 items-start rounded-[10px] border border-[#efb1ab] bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
+        <div role="alert" className="flex gap-2.5 items-start rounded-[10px] border border-fds-bad-line bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
           <TriangleAlert className="w-5 h-5 shrink-0" aria-hidden="true" />
           <span>{message}</span>
         </div>
       )}
 
-      <section className="rounded-xl border border-[#b9cbe3] bg-fds-navy-t p-4 flex flex-col gap-2">
+      <section className="rounded-xl border border-fds-accent-line bg-fds-navy-t p-4 flex flex-col gap-2">
         <h2 className="font-semibold">{t('suivi.perdueTitre')}</h2>
         <p className="text-sm">{t('suivi.perdueTexte')}</p>
         <a
           href={`mailto:${EMAIL_FACULTE}?subject=${encodeURIComponent(t('suivi.mailSujet'))}`}
-          className="min-h-12 rounded-lg border-2 border-fds-navy bg-white text-fds-navy font-semibold flex items-center justify-center"
+          className="min-h-12 rounded-lg border-2 border-fds-accent bg-fds-surface text-fds-accent font-semibold flex items-center justify-center"
         >
           {t('suivi.contacter')}
         </a>
@@ -114,10 +114,10 @@ const RechercheReference: React.FC<{ valeurInitiale?: string; message?: string }
 const IconePiece: React.FC<{ statut: PieceSuivi['statut'] }> = ({ statut }) => {
   const style =
     statut === 'valide'
-      ? 'bg-fds-ok text-white'
+      ? 'bg-fds-ok-solid text-white'
       : statut === 'rejete'
-        ? 'bg-fds-bad text-white'
-        : 'bg-fds-navy-t text-fds-navy border border-[#b9cbe3]';
+        ? 'bg-fds-bad-solid text-white'
+        : 'bg-fds-navy-t text-fds-accent border border-fds-accent-line';
   const Icone = statut === 'valide' ? Check : statut === 'rejete' ? X : Clock;
   return (
     <span className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${style}`} aria-hidden="true">
@@ -146,14 +146,14 @@ const VueDossier: React.FC<{ suivi: SuiviDossier }> = ({ suivi }) => {
 
   return (
     <>
-      <Link to="/suivi" className="flex items-center gap-2 min-h-11 font-semibold text-fds-navy">
+      <Link to="/suivi" className="flex items-center gap-2 min-h-11 font-semibold text-fds-accent">
         <ArrowLeft className="w-5 h-5" aria-hidden="true" />
         {t('suivi.autre')}
       </Link>
 
-      <section className="rounded-xl border border-fds-line bg-white p-4 flex flex-col gap-2.5" aria-label={t('suivi.dossier')}>
+      <section className="rounded-xl border border-fds-line bg-fds-surface p-4 flex flex-col gap-2.5" aria-label={t('suivi.dossier')}>
         <div className="text-sm text-fds-mute">{t('suivi.dossier')}</div>
-        <div className="font-fds-serif text-[28px] leading-tight font-bold text-fds-navy-d break-all" data-testid="reference-dossier">
+        <div className="font-fds-serif text-[28px] leading-tight font-bold text-fds-title break-all" data-testid="reference-dossier">
           {suivi.reference_dossier}
         </div>
         <div className="flex gap-3 text-sm">
@@ -176,7 +176,7 @@ const VueDossier: React.FC<{ suivi: SuiviDossier }> = ({ suivi }) => {
 
       <section className="flex flex-col gap-2.5" aria-label={t('suivi.avancement')}>
         <div className="flex items-center gap-2">
-          <h2 className="font-fds-serif text-xl font-bold text-fds-navy-d flex-1">{t('suivi.avancement')}</h2>
+          <h2 className="font-fds-serif text-xl font-bold text-fds-title flex-1">{t('suivi.avancement')}</h2>
           <span className={`rounded-full px-2.5 py-0.5 text-[13px] font-semibold whitespace-nowrap ${badge.classe}`}>{t(badge.cle)}</span>
         </div>
         <div
@@ -193,7 +193,7 @@ const VueDossier: React.FC<{ suivi: SuiviDossier }> = ({ suivi }) => {
       </section>
 
       {refusees > 0 && (
-        <div role="alert" className="flex gap-2.5 items-start rounded-[10px] border border-[#efb1ab] bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
+        <div role="alert" className="flex gap-2.5 items-start rounded-[10px] border border-fds-bad-line bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
           <TriangleAlert className="w-5 h-5 shrink-0" aria-hidden="true" />
           <span>
             <strong>{refusees > 1 ? t('suivi.refuseePlus', { n: refusees }) : t('suivi.refuseeUne')}</strong>
@@ -202,7 +202,7 @@ const VueDossier: React.FC<{ suivi: SuiviDossier }> = ({ suivi }) => {
         </div>
       )}
 
-      <ul className="rounded-xl border border-fds-line bg-white p-4 flex flex-col gap-4" aria-label={t('suivi.statutPieces')}>
+      <ul className="rounded-xl border border-fds-line bg-fds-surface p-4 flex flex-col gap-4" aria-label={t('suivi.statutPieces')}>
         {suivi.pieces.map((piece) => {
           const badgePiece = BADGES_PIECES[piece.statut];
           const detail = detailPiece(piece);
@@ -218,7 +218,7 @@ const VueDossier: React.FC<{ suivi: SuiviDossier }> = ({ suivi }) => {
                 </div>
                 {detail && <div className="text-xs text-fds-mute">{detail}</div>}
                 {piece.statut === 'rejete' && piece.motif_rejet && (
-                  <p className="rounded-[10px] border border-[#efb1ab] bg-fds-bad-bg px-3 py-2 text-sm text-fds-bad">
+                  <p className="rounded-[10px] border border-fds-bad-line bg-fds-bad-bg px-3 py-2 text-sm text-fds-bad">
                     <strong>{t('suivi.motif')}</strong> {piece.motif_rejet}
                   </p>
                 )}

@@ -50,7 +50,7 @@ export const PanneauDecision: React.FC<PanneauDecisionProps> = ({ nomPiece, onDe
   return (
     <div className="flex flex-col gap-4">
       {mode === 'refus' && (
-        <div className="rounded-xl border-2 border-fds-bad bg-white p-4 flex flex-col gap-3.5">
+        <div className="rounded-xl border-2 border-fds-bad bg-fds-surface p-4 flex flex-col gap-3.5">
           <h3 className="font-semibold text-lg">Refuser cette pièce</h3>
           <div className="flex flex-col gap-1.5">
             <label htmlFor="motif-refus" className="text-[15px] font-semibold">
@@ -62,7 +62,7 @@ export const PanneauDecision: React.FC<PanneauDecisionProps> = ({ nomPiece, onDe
               maxLength={MOTIF_MAX}
               value={motif}
               onChange={(e) => setMotif(e.target.value)}
-              className="w-full rounded-lg border-[1.5px] border-fds-field bg-white px-3 py-2.5 text-base text-fds-ink focus:outline-none focus:ring-2 focus:ring-fds-navy"
+              className="w-full rounded-lg border-[1.5px] border-fds-field bg-fds-surface px-3 py-2.5 text-base text-fds-ink focus:outline-none focus:ring-2 focus:ring-fds-accent"
             />
             <p className="text-[13px] text-fds-mute">
               Soyez précis : le candidat verra ce message et pourra remplacer la pièce. Une décision enregistrée ne peut plus être modifiée.
@@ -73,7 +73,7 @@ export const PanneauDecision: React.FC<PanneauDecisionProps> = ({ nomPiece, onDe
               type="button"
               disabled={enCours}
               onClick={() => void envoyer('rejete')}
-              className="min-h-12 px-4 rounded-lg bg-fds-bad text-white font-semibold disabled:opacity-60"
+              className="min-h-12 px-4 rounded-lg bg-fds-bad-solid text-white font-semibold disabled:opacity-60"
             >
               {enCours ? 'Enregistrement…' : 'Confirmer le refus'}
             </button>
@@ -84,7 +84,7 @@ export const PanneauDecision: React.FC<PanneauDecisionProps> = ({ nomPiece, onDe
                 setMode('repos');
                 setErreur(null);
               }}
-              className="min-h-12 px-4 rounded-lg border-2 border-fds-navy bg-white text-fds-navy font-semibold"
+              className="min-h-12 px-4 rounded-lg border-2 border-fds-accent bg-fds-surface text-fds-accent font-semibold"
             >
               Annuler
             </button>
@@ -93,7 +93,7 @@ export const PanneauDecision: React.FC<PanneauDecisionProps> = ({ nomPiece, onDe
       )}
 
       {mode === 'confirmer-validation' && (
-        <div className="rounded-xl border-2 border-fds-ok bg-white p-4 flex flex-col gap-3">
+        <div className="rounded-xl border-2 border-fds-ok bg-fds-surface p-4 flex flex-col gap-3">
           <p className="font-semibold">Valider « {nomPiece} » ?</p>
           <p className="text-sm text-fds-mute">Cette décision est définitive : elle sera enregistrée avec votre nom et l'heure.</p>
           <div className="flex flex-wrap gap-3">
@@ -101,7 +101,7 @@ export const PanneauDecision: React.FC<PanneauDecisionProps> = ({ nomPiece, onDe
               type="button"
               disabled={enCours}
               onClick={() => void envoyer('valide')}
-              className="min-h-12 px-4 rounded-lg bg-fds-ok text-white font-semibold disabled:opacity-60"
+              className="min-h-12 px-4 rounded-lg bg-fds-ok-solid text-white font-semibold disabled:opacity-60"
             >
               {enCours ? 'Enregistrement…' : 'Confirmer la validation'}
             </button>
@@ -109,7 +109,7 @@ export const PanneauDecision: React.FC<PanneauDecisionProps> = ({ nomPiece, onDe
               type="button"
               disabled={enCours}
               onClick={() => setMode('repos')}
-              className="min-h-12 px-4 rounded-lg border-2 border-fds-navy bg-white text-fds-navy font-semibold"
+              className="min-h-12 px-4 rounded-lg border-2 border-fds-accent bg-fds-surface text-fds-accent font-semibold"
             >
               Annuler
             </button>
@@ -118,7 +118,7 @@ export const PanneauDecision: React.FC<PanneauDecisionProps> = ({ nomPiece, onDe
       )}
 
       {erreur && (
-        <p role="alert" className="rounded-[10px] border border-[#efb1ab] bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
+        <p role="alert" className="rounded-[10px] border border-fds-bad-line bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
           {erreur}
         </p>
       )}
@@ -128,7 +128,7 @@ export const PanneauDecision: React.FC<PanneauDecisionProps> = ({ nomPiece, onDe
           <button
             type="button"
             onClick={() => setMode('confirmer-validation')}
-            className="min-h-12 px-4 rounded-lg bg-fds-ok text-white font-semibold flex items-center gap-2"
+            className="min-h-12 px-4 rounded-lg bg-fds-ok-solid text-white font-semibold flex items-center gap-2"
           >
             <Check className="w-5 h-5" aria-hidden="true" />
             Valider cette pièce
@@ -136,7 +136,7 @@ export const PanneauDecision: React.FC<PanneauDecisionProps> = ({ nomPiece, onDe
           <button
             type="button"
             onClick={() => setMode('refus')}
-            className="min-h-12 px-4 rounded-lg border-2 border-fds-bad bg-white text-fds-bad font-semibold"
+            className="min-h-12 px-4 rounded-lg border-2 border-fds-bad bg-fds-surface text-fds-bad font-semibold"
           >
             Refuser cette pièce…
           </button>

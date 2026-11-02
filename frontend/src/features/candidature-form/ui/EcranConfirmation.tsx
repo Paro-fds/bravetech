@@ -61,19 +61,19 @@ export const EcranConfirmation: React.FC<EcranConfirmationProps> = ({
   return (
     <div className="flex flex-col gap-[18px] flex-1 pb-8" aria-live="polite">
       <div className="flex flex-col items-center text-center gap-2.5">
-        <span className="w-16 h-16 rounded-full bg-fds-ok text-white flex items-center justify-center">
+        <span className="w-16 h-16 rounded-full bg-fds-ok-solid text-white flex items-center justify-center">
           <Check className="w-9 h-9" strokeWidth={2.5} aria-hidden="true" />
         </span>
-        <h1 className="font-fds-serif text-2xl font-bold text-fds-navy-d">{t('conf.titre')}</h1>
+        <h1 className="font-fds-serif text-2xl font-bold text-fds-title">{t('conf.titre')}</h1>
         <p className="text-fds-mute">{t('conf.merci', { prenom })}</p>
       </div>
 
-      <section className="rounded-xl border-2 border-fds-navy bg-white p-4 flex flex-col gap-2 text-center" aria-label={t('conf.refAria')}>
+      <section className="rounded-xl border-2 border-fds-accent bg-fds-surface p-4 flex flex-col gap-2 text-center" aria-label={t('conf.refAria')}>
         <div className="text-sm text-fds-mute">{t('conf.refLabel')}</div>
-        <div className="font-fds-serif text-[34px] leading-tight font-bold text-fds-navy-d tracking-wide break-all" data-testid="reference-dossier">
+        <div className="font-fds-serif text-[34px] leading-tight font-bold text-fds-title tracking-wide break-all" data-testid="reference-dossier">
           {reference}
         </div>
-        <div className="flex gap-2.5 items-start text-left rounded-[10px] border border-[#e6c36b] bg-fds-warn-bg px-3.5 py-3 text-sm text-fds-warn">
+        <div className="flex gap-2.5 items-start text-left rounded-[10px] border border-fds-warn-line bg-fds-warn-bg px-3.5 py-3 text-sm text-fds-warn">
           <TriangleAlert className="w-5 h-5 shrink-0" aria-hidden="true" />
           <span>
             <strong>{t('conf.notez')}</strong>{t('conf.notezSuite')}
@@ -82,7 +82,7 @@ export const EcranConfirmation: React.FC<EcranConfirmationProps> = ({
         <button
           type="button"
           onClick={() => void copierReference()}
-          className="min-h-12 rounded-lg border-2 border-fds-navy bg-white text-fds-navy font-semibold flex items-center justify-center gap-2"
+          className="min-h-12 rounded-lg border-2 border-fds-accent bg-fds-surface text-fds-accent font-semibold flex items-center justify-center gap-2"
         >
           {copie === 'ok' ? <Check className="w-5 h-5" aria-hidden="true" /> : <Copy className="w-5 h-5" aria-hidden="true" />}
           <span>
@@ -91,7 +91,7 @@ export const EcranConfirmation: React.FC<EcranConfirmationProps> = ({
         </button>
       </section>
 
-      <section className="rounded-xl border border-fds-line bg-white p-4 flex flex-col gap-2.5 text-sm">
+      <section className="rounded-xl border border-fds-line bg-fds-surface p-4 flex flex-col gap-2.5 text-sm">
         <div className="flex gap-2.5 items-start">
           <Mail className="w-5 h-5 shrink-0 text-fds-ok" aria-hidden="true" />
           <span>
@@ -123,7 +123,7 @@ export const EcranConfirmation: React.FC<EcranConfirmationProps> = ({
         </div>
       </section>
 
-      <div className="flex gap-2.5 items-start rounded-[10px] border border-[#b9cbe3] bg-fds-navy-t px-3.5 py-3 text-sm text-fds-navy-d">
+      <div className="flex gap-2.5 items-start rounded-[10px] border border-fds-accent-line bg-fds-navy-t px-3.5 py-3 text-sm text-fds-title">
         <Info className="w-5 h-5 shrink-0" aria-hidden="true" />
         <span>{t('conf.noteSimul')}</span>
       </div>
@@ -136,7 +136,7 @@ export const EcranConfirmation: React.FC<EcranConfirmationProps> = ({
       </Link>
       <Link
         to="/"
-        className="min-h-12 rounded-lg border-2 border-fds-navy bg-white text-fds-navy font-semibold flex items-center justify-center"
+        className="min-h-12 rounded-lg border-2 border-fds-accent bg-fds-surface text-fds-accent font-semibold flex items-center justify-center"
       >
         {t('conf.retourAccueil')}
       </Link>

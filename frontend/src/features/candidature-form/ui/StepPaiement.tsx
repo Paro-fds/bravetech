@@ -72,12 +72,12 @@ export const StepPaiement: React.FC<StepPaiementProps> = ({ montantHtg, methode,
         {t('pay.bandeau')}
       </div>
 
-      <h1 className="font-fds-serif text-2xl font-bold text-fds-navy-d">{t('pay.titre')}</h1>
+      <h1 className="font-fds-serif text-2xl font-bold text-fds-title">{t('pay.titre')}</h1>
 
-      <div className="flex items-center justify-between rounded-xl border border-fds-line bg-white p-4">
+      <div className="flex items-center justify-between rounded-xl border border-fds-line bg-fds-surface p-4">
         <div>
           <div className="text-sm text-fds-mute">{t('pay.montant')}</div>
-          <div className="font-fds-serif text-3xl font-bold text-fds-navy-d">{montantHtg} HTG</div>
+          <div className="font-fds-serif text-3xl font-bold text-fds-title">{montantHtg} HTG</div>
         </div>
         <span className="rounded-full bg-fds-warn-bg text-fds-warn text-[13px] font-semibold px-2.5 py-0.5">{t('pay.tag')}</span>
       </div>
@@ -90,13 +90,13 @@ export const StepPaiement: React.FC<StepPaiementProps> = ({ montantHtg, methode,
             <label
               key={op.valeur}
               className={`flex items-start gap-3 rounded-[10px] border-2 p-3.5 min-h-12 cursor-pointer ${
-                choisi ? 'border-fds-navy bg-fds-navy-t' : 'border-fds-line bg-white'
+                choisi ? 'border-fds-accent bg-fds-navy-t' : 'border-fds-line bg-fds-surface'
               }`}
             >
               <input
                 type="radio"
                 name="methode_paiement"
-                className="w-5 h-5 mt-0.5 accent-[#01346d]"
+                className="w-5 h-5 mt-0.5 accent-fds-accent"
                 checked={choisi}
                 onChange={() => {
                   onChange(op.valeur, numero);
@@ -141,7 +141,7 @@ export const StepPaiement: React.FC<StepPaiementProps> = ({ montantHtg, methode,
         )}
       </ChampTexte>
 
-      <div className="flex gap-2.5 items-start rounded-[10px] border border-[#b9cbe3] bg-fds-navy-t px-3.5 py-3 text-sm text-fds-navy-d">
+      <div className="flex gap-2.5 items-start rounded-[10px] border border-fds-accent-line bg-fds-navy-t px-3.5 py-3 text-sm text-fds-title">
         <Info className="w-5 h-5 shrink-0" aria-hidden="true" />
         <span>
           {t('pay.refAvant')}<strong>PAY-SIM-2026-XXXX</strong>{t('pay.refApres')}
@@ -149,7 +149,7 @@ export const StepPaiement: React.FC<StepPaiementProps> = ({ montantHtg, methode,
       </div>
 
       {messageGlobal && (
-        <p role="alert" className="rounded-[10px] border border-[#efb1ab] bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
+        <p role="alert" className="rounded-[10px] border border-fds-bad-line bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
           {messageGlobal}
         </p>
       )}
@@ -158,7 +158,7 @@ export const StepPaiement: React.FC<StepPaiementProps> = ({ montantHtg, methode,
         <button type="submit" disabled={enCours} className={CLASSE_BOUTON_PRIMAIRE}>
           {enCours ? t('pay.enCours') : t('pay.bouton', { montant: montantHtg })}
         </button>
-        <button type="button" onClick={onRetour} className="min-h-11 text-fds-navy font-semibold underline">
+        <button type="button" onClick={onRetour} className="min-h-11 text-fds-accent font-semibold underline">
           {t('commun.retour')}
         </button>
       </BarreAction>
