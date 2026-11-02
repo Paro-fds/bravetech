@@ -1,6 +1,7 @@
 import React from 'react';
+import { useT } from '../../../shared/i18n/useT';
 
-const TITRES = ['Vos informations', 'Admission et accès', 'Frais de dossier', 'Vos pièces'];
+const TITRES = ['cand.etape1', 'cand.etape2', 'cand.etape3', 'cand.etape4'] as const;
 
 interface StepProgressProps {
   etape: number;
@@ -8,6 +9,7 @@ interface StepProgressProps {
 
 /** Barre de progression du tunnel de candidature (4 étapes), comme sur les maquettes. */
 export const StepProgress: React.FC<StepProgressProps> = ({ etape }) => {
+  const t = useT();
   const total = TITRES.length;
   const pourcentage = Math.round((etape / total) * 100);
   return (
@@ -15,9 +17,9 @@ export const StepProgress: React.FC<StepProgressProps> = ({ etape }) => {
       <div className="max-w-xl mx-auto px-4 py-3.5 flex flex-col gap-2">
         <div className="flex items-center justify-between">
           <span className="font-semibold">
-            Étape {etape} sur {total}
+            {t('cand.etapeSur', { n: etape, total })}
           </span>
-          <span className="text-sm text-fds-mute">{TITRES[etape - 1]}</span>
+          <span className="text-sm text-fds-mute">{t(TITRES[etape - 1])}</span>
         </div>
         <div
           className="h-2 rounded bg-fds-line overflow-hidden"
@@ -25,7 +27,7 @@ export const StepProgress: React.FC<StepProgressProps> = ({ etape }) => {
           aria-valuenow={pourcentage}
           aria-valuemin={0}
           aria-valuemax={100}
-          aria-label="Progression de la candidature"
+          aria-label={t('cand.progressionAria')}
         >
           <div className="h-full bg-fds-navy transition-all" style={{ width: `${pourcentage}%` }} />
         </div>

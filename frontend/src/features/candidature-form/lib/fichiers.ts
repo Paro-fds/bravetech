@@ -1,4 +1,5 @@
 import type { PieceDossier } from '../../../entities/candidature';
+import { traduireMaintenant as tr } from '../../../shared/i18n/useT';
 
 const OCTETS_PAR_MO = 1024 * 1024;
 
@@ -38,13 +39,13 @@ export function validerFichierLocal(
   fichier: File,
   piece: Pick<PieceDossier, 'taille_max_mo' | 'format_accepte'>,
 ): string | undefined {
-  if (fichier.size === 0) return 'Ce fichier est vide. Choisissez un autre fichier.';
+  if (fichier.size === 0) return tr('fichier.vide');
   if (fichier.size > piece.taille_max_mo * OCTETS_PAR_MO) {
-    return `Ce fichier fait ${formaterTaille(fichier.size)}. La limite est de ${piece.taille_max_mo} Mo. Choisissez un fichier plus léger ou reprenez une photo.`;
+    return tr('fichier.lourd', { taille: formaterTaille(fichier.size), max: piece.taille_max_mo });
   }
   const extension = fichier.name.includes('.') ? fichier.name.split('.').pop()!.toLowerCase() : '';
   if (!extensionsAcceptees(piece.format_accepte).includes(extension)) {
-    return `Format non accepté. Formats acceptés : ${piece.format_accepte}.`;
+    return tr('fichier.format', { formats: piece.format_accepte });
   }
   return undefined;
 }

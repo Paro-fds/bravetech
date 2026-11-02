@@ -10,6 +10,7 @@ import { ApiError } from '../../../shared/api/client';
 import { validerInformations } from '../lib/validation';
 import { BarreAction, CLASSE_BOUTON_PRIMAIRE } from './BarreAction';
 import { ChampTexte } from './ChampTexte';
+import { useT } from '../../../shared/i18n/useT';
 
 interface StepInformationsProps {
   valeurs: InformationsPersonnelles;
@@ -20,6 +21,7 @@ interface StepInformationsProps {
 
 /** Étape 1 : informations personnelles (maquette « Candidature 1/4 - Identité »). */
 export const StepInformations: React.FC<StepInformationsProps> = ({ valeurs, onChange, onSoumettre }) => {
+  const t = useT();
   const [erreurs, setErreurs] = useState<ErreursChamps>({});
   const [messageGlobal, setMessageGlobal] = useState<string | null>(null);
   const [enCours, setEnCours] = useState(false);
@@ -49,11 +51,9 @@ export const StepInformations: React.FC<StepInformationsProps> = ({ valeurs, onC
       if (erreursServeur) {
         setErreurs(erreursServeur);
       } else if (erreur instanceof ApiError && erreur.status === 409) {
-        setErreurs({ email: 'Une candidature existe déjà avec cet email.' });
+        setErreurs({ email: t('info.doublon') });
       } else {
-        setMessageGlobal(
-          "Impossible d'enregistrer vos informations pour le moment. Vérifiez votre connexion : ce que vous avez saisi est conservé, vous pouvez réessayer.",
-        );
+        setMessageGlobal(t('info.erreurReseau'));
       }
     } finally {
       setEnCours(false);
@@ -62,17 +62,17 @@ export const StepInformations: React.FC<StepInformationsProps> = ({ valeurs, onC
 
   return (
     <form onSubmit={soumettre} noValidate className="flex flex-col gap-[18px] flex-1">
-      <h1 className="font-fds-serif text-2xl font-bold text-fds-navy-d">Qui êtes-vous ?</h1>
+      <h1 className="font-fds-serif text-2xl font-bold text-fds-navy-d">{t('info.titre')}</h1>
 
-      <ChampTexte id="nom" libelle="Nom" erreur={erreurs.nom}>
+      <ChampTexte id="nom" libelle={t('info.nom')} erreur={erreurs.nom}>
         {(p) => <input {...p} type="text" autoComplete="family-name" value={valeurs.nom} onChange={maj('nom')} />}
       </ChampTexte>
 
-      <ChampTexte id="prenom" libelle="Prénom" erreur={erreurs.prenom}>
+      <ChampTexte id="prenom" libelle={t('info.prenom')} erreur={erreurs.prenom}>
         {(p) => <input {...p} type="text" autoComplete="given-name" value={valeurs.prenom} onChange={maj('prenom')} />}
       </ChampTexte>
 
-      <ChampTexte id="date_naissance" libelle="Date de naissance" erreur={erreurs.date_naissance}>
+      <ChampTexte id="date_naissance" libelle={t('info.naissance')} erreur={erreurs.date_naissance}>
         {(p) => (
           <input
             {...p}
@@ -84,21 +84,21 @@ export const StepInformations: React.FC<StepInformationsProps> = ({ valeurs, onC
         )}
       </ChampTexte>
 
-      <ChampTexte id="sexe" libelle="Sexe" erreur={erreurs.sexe}>
+      <ChampTexte id="sexe" libelle={t('info.sexe')} erreur={erreurs.sexe}>
         {(p) => (
           <select {...p} value={valeurs.sexe} onChange={maj('sexe')}>
-            <option value="">Choisir</option>
-            <option value="F">Féminin</option>
-            <option value="M">Masculin</option>
+            <option value="">{t('info.choisir')}</option>
+            <option value="F">{t('info.feminin')}</option>
+            <option value="M">{t('info.masculin')}</option>
           </select>
         )}
       </ChampTexte>
 
       <ChampTexte
         id="telephone"
-        libelle="Téléphone (WhatsApp)"
+        libelle={t('info.tel')}
         erreur={erreurs.telephone}
-        aide="Numéro haïtien à 8 chiffres. Nous l'utilisons pour vous joindre si besoin."
+        aide={t('info.telAide')}
       >
         {(p) => (
           <input
@@ -115,9 +115,9 @@ export const StepInformations: React.FC<StepInformationsProps> = ({ valeurs, onC
 
       <ChampTexte
         id="email"
-        libelle="Adresse email"
+        libelle={t('info.email')}
         erreur={erreurs.email}
-        aide="Votre référence de dossier y sera envoyée."
+        aide={t('info.emailAide')}
       >
         {(p) => (
           <input
@@ -132,26 +132,26 @@ export const StepInformations: React.FC<StepInformationsProps> = ({ valeurs, onC
         )}
       </ChampTexte>
 
-      <ChampTexte id="departement" libelle="Département de résidence" erreur={erreurs.departement}>
+      <ChampTexte id="departement" libelle={t('info.dept')} erreur={erreurs.departement}>
         {(p) => (
           <select {...p} value={valeurs.departement} onChange={maj('departement')}>
-            <option value="">Choisir un département</option>
+            <option value="">{t('info.choisirDept')}</option>
             {DEPARTEMENTS.map((d) => (
               <option key={d} value={d}>
-                {d}
+                {t(`dept.${d}`)}
               </option>
             ))}
           </select>
         )}
       </ChampTexte>
 
-      <ChampTexte id="commune" libelle="Commune" erreur={erreurs.commune}>
+      <ChampTexte id="commune" libelle={t('info.commune')} erreur={erreurs.commune}>
         {(p) => <input {...p} type="text" autoComplete="address-level2" value={valeurs.commune} onChange={maj('commune')} />}
       </ChampTexte>
 
       <div className="flex gap-2.5 items-start rounded-[10px] border border-[#b9cbe3] bg-fds-navy-t px-3.5 py-3 text-sm text-fds-navy-d">
         <Info className="w-5 h-5 shrink-0" aria-hidden="true" />
-        <span>Vos réponses sont enregistrées à chaque étape. Si votre connexion coupe, vous reprenez là où vous étiez.</span>
+        <span>{t('info.sauvegarde')}</span>
       </div>
 
       {messageGlobal && (
@@ -162,7 +162,7 @@ export const StepInformations: React.FC<StepInformationsProps> = ({ valeurs, onC
 
       <BarreAction>
         <button type="submit" disabled={enCours} className={CLASSE_BOUTON_PRIMAIRE}>
-          <span>{enCours ? 'Enregistrement…' : 'Continuer'}</span>
+          <span>{enCours ? t('cand.enregistrement') : t('cand.continuer')}</span>
           {!enCours && <ArrowRight className="w-5 h-5" aria-hidden="true" />}
         </button>
       </BarreAction>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Check, Copy, Info, Mail, TriangleAlert } from 'lucide-react';
 import { formaterHorodatage } from '../lib/dates';
+import { useT } from '../../../shared/i18n/useT';
 
 interface EcranConfirmationProps {
   prenom: string;
@@ -50,6 +51,7 @@ export const EcranConfirmation: React.FC<EcranConfirmationProps> = ({
   onNouvelleCandidature,
 }) => {
   const [copie, setCopie] = useState<'idle' | 'ok' | 'echec'>('idle');
+  const t = useT();
 
   const copierReference = async () => {
     setCopie((await copier(reference)) ? 'ok' : 'echec');
@@ -62,19 +64,19 @@ export const EcranConfirmation: React.FC<EcranConfirmationProps> = ({
         <span className="w-16 h-16 rounded-full bg-fds-ok text-white flex items-center justify-center">
           <Check className="w-9 h-9" strokeWidth={2.5} aria-hidden="true" />
         </span>
-        <h1 className="font-fds-serif text-2xl font-bold text-fds-navy-d">Votre dossier a bien été envoyé</h1>
-        <p className="text-fds-mute">Merci, {prenom}. La Faculté va maintenant examiner vos pièces.</p>
+        <h1 className="font-fds-serif text-2xl font-bold text-fds-navy-d">{t('conf.titre')}</h1>
+        <p className="text-fds-mute">{t('conf.merci', { prenom })}</p>
       </div>
 
-      <section className="rounded-xl border-2 border-fds-navy bg-white p-4 flex flex-col gap-2 text-center" aria-label="Référence du dossier">
-        <div className="text-sm text-fds-mute">Votre référence de dossier</div>
+      <section className="rounded-xl border-2 border-fds-navy bg-white p-4 flex flex-col gap-2 text-center" aria-label={t('conf.refAria')}>
+        <div className="text-sm text-fds-mute">{t('conf.refLabel')}</div>
         <div className="font-fds-serif text-[34px] leading-tight font-bold text-fds-navy-d tracking-wide break-all" data-testid="reference-dossier">
           {reference}
         </div>
         <div className="flex gap-2.5 items-start text-left rounded-[10px] border border-[#e6c36b] bg-fds-warn-bg px-3.5 py-3 text-sm text-fds-warn">
           <TriangleAlert className="w-5 h-5 shrink-0" aria-hidden="true" />
           <span>
-            <strong>Notez-la ou faites une capture d'écran.</strong> Elle vous permet de suivre votre dossier.
+            <strong>{t('conf.notez')}</strong>{t('conf.notezSuite')}
           </span>
         </div>
         <button
@@ -84,7 +86,7 @@ export const EcranConfirmation: React.FC<EcranConfirmationProps> = ({
         >
           {copie === 'ok' ? <Check className="w-5 h-5" aria-hidden="true" /> : <Copy className="w-5 h-5" aria-hidden="true" />}
           <span>
-            {copie === 'ok' ? 'Référence copiée' : copie === 'echec' ? 'Copie impossible : notez-la' : 'Copier la référence'}
+            {copie === 'ok' ? t('conf.copie') : copie === 'echec' ? t('conf.copieEchec') : t('conf.copier')}
           </span>
         </button>
       </section>
@@ -93,54 +95,53 @@ export const EcranConfirmation: React.FC<EcranConfirmationProps> = ({
         <div className="flex gap-2.5 items-start">
           <Mail className="w-5 h-5 shrink-0 text-fds-ok" aria-hidden="true" />
           <span>
-            Un email de confirmation, avec un lien de suivi, est envoyé à <strong className="break-all">{email}</strong>. Si vous ne
-            le recevez pas, votre référence suffit pour suivre votre dossier.
+            {t('conf.emailAvant')}<strong className="break-all">{email}</strong>{t('conf.emailApres')}
           </span>
         </div>
         <hr className="border-fds-line" />
         <div className="flex gap-3">
-          <span className="flex-1 text-fds-mute">Admission</span>
-          <strong>Premier cycle MPC</strong>
+          <span className="flex-1 text-fds-mute">{t('conf.admission')}</span>
+          <strong>{t('adm.mpc')}</strong>
         </div>
         <div className="flex gap-3">
-          <span className="flex-1 text-fds-mute">Frais</span>
-          <strong>{montantHtg} HTG (simulation)</strong>
+          <span className="flex-1 text-fds-mute">{t('conf.frais')}</span>
+          <strong>{t('recap.fraisValeur', { montant: montantHtg })}</strong>
         </div>
         {referencePaiement && (
           <div className="flex gap-3">
-            <span className="flex-1 text-fds-mute">Paiement simulé</span>
+            <span className="flex-1 text-fds-mute">{t('conf.paiementSimule')}</span>
             <strong>{referencePaiement}</strong>
           </div>
         )}
         <div className="flex gap-3">
-          <span className="flex-1 text-fds-mute">Pièces envoyées</span>
-          <strong>5 sur 5</strong>
+          <span className="flex-1 text-fds-mute">{t('conf.piecesEnvoyees')}</span>
+          <strong>{t('conf.cinqSurCinq')}</strong>
         </div>
         <div className="flex gap-3">
-          <span className="flex-1 text-fds-mute">Envoyé le</span>
+          <span className="flex-1 text-fds-mute">{t('conf.envoyeLe')}</span>
           <strong className="text-right">{formaterHorodatage(soumiseLe)}</strong>
         </div>
       </section>
 
       <div className="flex gap-2.5 items-start rounded-[10px] border border-[#b9cbe3] bg-fds-navy-t px-3.5 py-3 text-sm text-fds-navy-d">
         <Info className="w-5 h-5 shrink-0" aria-hidden="true" />
-        <span>Le paiement était une simulation : aucun argent n'a été prélevé.</span>
+        <span>{t('conf.noteSimul')}</span>
       </div>
 
       <Link
         to={`/suivi/${reference}`}
         className="min-h-12 rounded-lg bg-fds-navy hover:bg-fds-navy-d text-white font-semibold flex items-center justify-center"
       >
-        Suivre mon dossier
+        {t('accueil.suivre')}
       </Link>
       <Link
         to="/"
         className="min-h-12 rounded-lg border-2 border-fds-navy bg-white text-fds-navy font-semibold flex items-center justify-center"
       >
-        Retour à l'accueil
+        {t('conf.retourAccueil')}
       </Link>
       <button type="button" onClick={onNouvelleCandidature} className="min-h-11 text-sm text-fds-mute underline self-center">
-        Commencer une nouvelle candidature
+        {t('conf.nouvelle')}
       </button>
     </div>
   );

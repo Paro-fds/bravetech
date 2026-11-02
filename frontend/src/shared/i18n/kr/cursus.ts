@@ -1,0 +1,43 @@
+/** Kreyòl ayisyen — brouillon sans relecture, à faire valider par la Faculté (US-020). */
+export const cursus = {
+  'cursus.chargement': 'Ap chaje fich la…',
+  'cursus.introuvableTitre': 'Nou pa jwenn fòmasyon sa a',
+  'cursus.introuvableTexte': 'Kourikoulòm sa a pa egziste oswa yo pa ofri l ankò.',
+  'cursus.badgeAdmission': 'Yon sèl admisyon',
+  'cursus.badgeBranche': 'Branch, apre MPC a',
+  'cursus.infosCles': 'Enfòmasyon prensipal',
+  'cursus.duree': 'Dire',
+  'cursus.dureeMpc': 'Dire MPC a',
+  'cursus.frais': 'Frè dosye',
+  'cursus.dateLimite': 'Dat limit pou depoze',
+  'cursus.rentree': 'Rantre klas',
+  'cursus.aConfirmer': 'Fakilte a ap konfime sa',
+  'cursus.acces': 'Aksè',
+  'cursus.apresMpc': 'Apre MPC a',
+
+  'cursus.parcoursTitre': 'Pakou ou nan 5 an',
+  'cursus.parcours12Titre': 'Ane 1 ak 2: MPC',
+  'cursus.parcours12Texte': 'Tout moun kòmanse la a. Se admisyon sa a w ap mande.',
+  'cursus.parcours35Titre': 'Ane 3 rive 5: branch ou',
+  'cursus.parcours35Texte': 'Apre MPC a, ou chwazi:',
+
+  'cursus.programmeMpc': 'Pwogram MPC a',
+  'cursus.programme': 'Pwogram',
+  'cursus.matieres': '{n} matyè',
+
+  'cursus.piecesTitre': 'Dokiman ou dwe bay',
+  'cursus.piecesNote':
+    'Tout dokiman yo obligatwa. Fòma yo aksepte: PDF oswa JPG, 5 Mo maksimòm chak. Yon foto ou pran ak telefòn ou ase si li klè.',
+  'cursus.brancheTitre': 'Branch sa a louvri apre MPC a',
+  'cursus.brancheTexte':
+    'Ou pa poze kandidati dirèkteman nan yon branch: admisyon an fèt yon sèl fwa, nan Premye sik MPC a. Ou pral chwazi branch ou a nan fen MPC a.',
+  'cursus.voirMpc': 'Gade admisyon MPC a',
+  'cursus.sansDeplacement': 'San deplasman. Pa gen kont pou kreye.',
+  'cursus.deposer': 'Depoze kandidati mwen',
+
+  'piece.mpc-acte-naissance': 'Akt nesans oswa ekstrè achiv',
+  'piece.mpc-diplome-bac': 'Sètifika fen etid segondè (Bakaloreya II)',
+  'piece.mpc-releve-notes-bac': 'Relve nòt ofisyèl',
+  'piece.mpc-photos-identite': 'De foto idantite resan',
+  'piece.mpc-cin': 'Kat idantite (CIN)',
+} as const;
