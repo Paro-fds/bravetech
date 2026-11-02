@@ -16,6 +16,7 @@ export const commun = {
   'nav.suiviLong': 'Suivi de dossier',
   'nav.contact': 'Contact',
   'nav.postuler': 'Postuler',
+  'nav.modeSombre': 'Mode sombre',
 
   'pied.simulation': 'Le paiement en ligne est une simulation pendant la phase de lancement.',
   'pied.droits': "© Faculté des Sciences, Université d'État d'Haïti",

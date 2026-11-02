@@ -100,7 +100,7 @@ export const StepPieces: React.FC<StepPiecesProps> = ({ candidatureId, reference
   return (
     <div className="flex flex-col gap-4 flex-1">
       {referencePaiement && (
-        <div className="flex gap-2.5 items-start rounded-[10px] border border-[#9bd3b2] bg-fds-ok-bg px-3.5 py-3 text-sm text-fds-ok">
+        <div className="flex gap-2.5 items-start rounded-[10px] border border-fds-ok-line bg-fds-ok-bg px-3.5 py-3 text-sm text-fds-ok">
           <CheckCircle2 className="w-5 h-5 shrink-0" aria-hidden="true" />
           <span>
             {t('pieces.payeAvant')} <strong>{referencePaiement}</strong> {t('pieces.payeApres')}
@@ -108,13 +108,13 @@ export const StepPieces: React.FC<StepPiecesProps> = ({ candidatureId, reference
         </div>
       )}
 
-      <h1 className="font-fds-serif text-2xl font-bold text-fds-navy-d">{t('pieces.titre')}</h1>
+      <h1 className="font-fds-serif text-2xl font-bold text-fds-title">{t('pieces.titre')}</h1>
       <p className="text-sm text-fds-mute">
         {t('pieces.consigne')}
       </p>
 
       {erreurChargement && (
-        <div role="alert" className="rounded-[10px] border border-[#efb1ab] bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad flex flex-col gap-2">
+        <div role="alert" className="rounded-[10px] border border-fds-bad-line bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad flex flex-col gap-2">
           <span>{t('pieces.errChargement')}</span>
           <button type="button" onClick={recharger} className="self-start font-semibold underline min-h-11">
             {t('commun.reessayer')}
@@ -133,7 +133,7 @@ export const StepPieces: React.FC<StepPiecesProps> = ({ candidatureId, reference
         const enCours = envoi && 'progression' in envoi;
         const erreur = envoi && 'erreur' in envoi ? envoi.erreur : undefined;
         const badge = enCours
-          ? { cle: 'pieces.encours' as Cle, classe: 'bg-fds-navy-t text-fds-navy' }
+          ? { cle: 'pieces.encours' as Cle, classe: 'bg-fds-navy-t text-fds-accent' }
           : erreur
             ? { cle: 'pieces.erreur' as Cle, classe: 'bg-fds-bad-bg text-fds-bad' }
             : BADGES[piece.statut];
@@ -142,7 +142,7 @@ export const StepPieces: React.FC<StepPiecesProps> = ({ candidatureId, reference
         return (
           <section
             key={piece.id}
-            className={`rounded-xl border bg-white p-4 flex flex-col gap-2.5 ${erreur ? 'border-[#efb1ab]' : 'border-fds-line'}`}
+            className={`rounded-xl border bg-fds-surface p-4 flex flex-col gap-2.5 ${erreur ? 'border-fds-bad-line' : 'border-fds-line'}`}
             aria-label={nomPiece(piece.id, piece.nom)}
           >
             <div className="flex items-center gap-2">
@@ -161,7 +161,7 @@ export const StepPieces: React.FC<StepPiecesProps> = ({ candidatureId, reference
             )}
 
             {piece.statut === 'rejete' && piece.motif_rejet && (
-              <p className="rounded-[10px] border border-[#efb1ab] bg-fds-bad-bg px-3 py-2.5 text-sm text-fds-bad">
+              <p className="rounded-[10px] border border-fds-bad-line bg-fds-bad-bg px-3 py-2.5 text-sm text-fds-bad">
                 <strong>{t('pieces.motif')}</strong> {piece.motif_rejet}
               </p>
             )}
@@ -177,7 +177,7 @@ export const StepPieces: React.FC<StepPiecesProps> = ({ candidatureId, reference
                   aria-label={t('pieces.envoiAria', { nom: nomPiece(piece.id, piece.nom) })}
                 >
                   <div
-                    className="h-full bg-fds-navy"
+                    className="h-full bg-fds-accent"
                     style={{ width: `${(envoi as { progression: number }).progression}%` }}
                   />
                 </div>
@@ -188,14 +188,14 @@ export const StepPieces: React.FC<StepPiecesProps> = ({ candidatureId, reference
             )}
 
             {erreur && (
-              <p role="alert" className="flex gap-2 items-start rounded-[10px] border border-[#efb1ab] bg-fds-bad-bg px-3 py-2.5 text-sm text-fds-bad">
+              <p role="alert" className="flex gap-2 items-start rounded-[10px] border border-fds-bad-line bg-fds-bad-bg px-3 py-2.5 text-sm text-fds-bad">
                 <TriangleAlert className="w-5 h-5 shrink-0" aria-hidden="true" />
                 <span>{erreur}</span>
               </p>
             )}
 
             {!enCours && piece.statut !== 'valide' && (
-              <label className="min-h-12 rounded-lg border-2 border-fds-navy bg-white text-fds-navy font-semibold flex items-center justify-center gap-2 cursor-pointer focus-within:ring-2 focus-within:ring-fds-navy focus-within:ring-offset-2">
+              <label className="min-h-12 rounded-lg border-2 border-fds-accent bg-fds-surface text-fds-accent font-semibold flex items-center justify-center gap-2 cursor-pointer focus-within:ring-2 focus-within:ring-fds-accent focus-within:ring-offset-2 focus-within:ring-offset-fds-surface">
                 <input
                   type="file"
                   className="sr-only"
@@ -223,7 +223,7 @@ export const StepPieces: React.FC<StepPiecesProps> = ({ candidatureId, reference
         <button type="button" disabled={!complet} onClick={onContinuer} className={CLASSE_BOUTON_PRIMAIRE}>
           {t('pieces.verifier')}
         </button>
-        <button type="button" onClick={onRetour} className="min-h-11 text-fds-navy font-semibold underline">
+        <button type="button" onClick={onRetour} className="min-h-11 text-fds-accent font-semibold underline">
           {t('commun.retour')}
         </button>
       </BarreAction>

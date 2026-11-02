@@ -14,16 +14,16 @@ import { formaterJourCourt } from '../../../features/candidature-form';
 type Resultat = { cle: string; page: PageDossiers } | { cle: string; erreur: true };
 
 const CLASSE_CHAMP =
-  'w-full min-h-12 rounded-lg border-[1.5px] border-fds-field bg-white px-3 text-base text-fds-ink focus:outline-none focus:ring-2 focus:ring-fds-navy';
+  'w-full min-h-12 rounded-lg border-[1.5px] border-fds-field bg-fds-surface px-3 text-base text-fds-ink focus:outline-none focus:ring-2 focus:ring-fds-accent';
 
 function pourcentage(partie: number, total: number): string {
   return total === 0 ? '–' : `${Math.round((partie / total) * 100)} %`;
 }
 
 const Indicateur: React.FC<{ libelle: string; valeur: string | number; aide?: string }> = ({ libelle, valeur, aide }) => (
-  <div className="rounded-xl border border-fds-line bg-white p-4 flex flex-col gap-1">
+  <div className="rounded-xl border border-fds-line bg-fds-surface p-4 flex flex-col gap-1">
     <div className="text-sm text-fds-mute">{libelle}</div>
-    <div className="font-fds-serif text-[32px] leading-tight font-bold text-fds-navy-d">{valeur}</div>
+    <div className="font-fds-serif text-[32px] leading-tight font-bold text-fds-title">{valeur}</div>
     {aide && <div className="text-xs text-fds-mute">{aide}</div>}
   </div>
 );
@@ -95,8 +95,8 @@ export const AdminCandidaturesPage: React.FC = () => {
   return (
     <>
       <div className="flex flex-wrap items-baseline gap-2">
-        <h1 className="font-fds-serif text-[28px] font-bold text-fds-navy-d flex-1">Candidatures</h1>
-        <button type="button" onClick={() => setRechargement((n) => n + 1)} className="min-h-11 px-2 text-sm font-semibold text-fds-navy underline">
+        <h1 className="font-fds-serif text-[28px] font-bold text-fds-title flex-1">Candidatures</h1>
+        <button type="button" onClick={() => setRechargement((n) => n + 1)} className="min-h-11 px-2 text-sm font-semibold text-fds-accent underline">
           Actualiser
         </button>
         {(['csv', 'pdf'] as const).map((format) => (
@@ -105,7 +105,7 @@ export const AdminCandidaturesPage: React.FC = () => {
             type="button"
             disabled={exportEnCours !== null}
             onClick={() => void exporter(format)}
-            className="min-h-11 px-4 rounded-lg border-2 border-fds-navy bg-white text-fds-navy font-semibold flex items-center gap-2 disabled:opacity-60"
+            className="min-h-11 px-4 rounded-lg border-2 border-fds-accent bg-fds-surface text-fds-accent font-semibold flex items-center gap-2 disabled:opacity-60"
           >
             <Download className="w-4 h-4" aria-hidden="true" />
             {exportEnCours === format ? 'Préparation…' : `Exporter ${format.toUpperCase()}`}
@@ -113,7 +113,7 @@ export const AdminCandidaturesPage: React.FC = () => {
         ))}
       </div>
       {erreurExport && (
-        <p role="alert" className="rounded-[10px] border border-[#efb1ab] bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
+        <p role="alert" className="rounded-[10px] border border-fds-bad-line bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
           L'export n'a pas pu être téléchargé. Vérifiez votre connexion puis réessayez.
         </p>
       )}
@@ -136,7 +136,7 @@ export const AdminCandidaturesPage: React.FC = () => {
         />
       </div>
 
-      <section className="rounded-xl border border-fds-line bg-white flex flex-col gap-4" aria-label="Liste des dossiers">
+      <section className="rounded-xl border border-fds-line bg-fds-surface flex flex-col gap-4" aria-label="Liste des dossiers">
         <div className="flex flex-wrap gap-4 p-4 pb-0">
           <div className="flex flex-col gap-1.5 flex-[2_1_260px]">
             <label htmlFor="recherche" className="text-[15px] font-semibold">
@@ -185,7 +185,7 @@ export const AdminCandidaturesPage: React.FC = () => {
         </div>
 
         {resultat && 'erreur' in resultat && resultat.cle === cle && (
-          <p role="alert" className="mx-4 rounded-[10px] border border-[#efb1ab] bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
+          <p role="alert" className="mx-4 rounded-[10px] border border-fds-bad-line bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
             Impossible de charger les dossiers. Vérifiez votre connexion puis cliquez sur « Actualiser ».
           </p>
         )}
@@ -193,7 +193,7 @@ export const AdminCandidaturesPage: React.FC = () => {
         <div className="overflow-x-auto" aria-busy={enChargement}>
           <table className="w-full text-left text-[15px]">
             <thead>
-              <tr className="border-y border-fds-line bg-[#f8fafd] text-sm text-fds-mute">
+              <tr className="border-y border-fds-line bg-fds-surface-alt text-sm text-fds-mute">
                 <th className="px-4 py-3 font-semibold">Référence</th>
                 <th className="px-4 py-3 font-semibold">Candidat</th>
                 <th className="px-4 py-3 font-semibold">Déplacement</th>
@@ -225,7 +225,7 @@ export const AdminCandidaturesPage: React.FC = () => {
                     <td className="px-4 py-3">
                       <Link
                         to={`/admin/candidatures/${d.reference_dossier}`}
-                        className="min-h-10 px-4 rounded-lg border-2 border-fds-navy text-fds-navy font-semibold inline-flex items-center"
+                        className="min-h-10 px-4 rounded-lg border-2 border-fds-accent text-fds-accent font-semibold inline-flex items-center"
                       >
                         Ouvrir<span className="sr-only"> le dossier {d.reference_dossier}</span>
                       </Link>
@@ -257,7 +257,7 @@ export const AdminCandidaturesPage: React.FC = () => {
             type="button"
             disabled={!page || page.page <= 1}
             onClick={() => setFiltres({ ...filtres, page: filtres.page - 1 })}
-            className="min-h-11 px-4 rounded-lg border-2 border-fds-navy bg-white text-fds-navy font-semibold disabled:opacity-40"
+            className="min-h-11 px-4 rounded-lg border-2 border-fds-accent bg-fds-surface text-fds-accent font-semibold disabled:opacity-40"
           >
             Précédent
           </button>
@@ -265,7 +265,7 @@ export const AdminCandidaturesPage: React.FC = () => {
             type="button"
             disabled={!page || page.page >= derniere}
             onClick={() => setFiltres({ ...filtres, page: filtres.page + 1 })}
-            className="min-h-11 px-4 rounded-lg border-2 border-fds-navy bg-white text-fds-navy font-semibold disabled:opacity-40"
+            className="min-h-11 px-4 rounded-lg border-2 border-fds-accent bg-fds-surface text-fds-accent font-semibold disabled:opacity-40"
           >
             Suivant
           </button>

@@ -29,11 +29,11 @@ export const HomePage: React.FC = () => {
           <h1 className="font-fds-serif text-[30px] md:text-[44px] leading-tight font-bold">
             {t('accueil.titre')}
           </h1>
-          <p className="text-[#dbe6f5] md:text-lg">
+          <p className="text-fds-on-navy md:text-lg">
             {t('accueil.sousTitre')}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 pt-1">
-            <Link to="/postuler" className={`${CLASSE_BOUTON} bg-fds-gold text-fds-navy-d hover:brightness-95`}>
+            <Link to="/postuler" className={`${CLASSE_BOUTON} bg-fds-gold text-fds-on-light hover:brightness-95`}>
               {t('accueil.postuler')}
             </Link>
             <Link to="/suivi" className={`${CLASSE_BOUTON} border-2 border-white text-white hover:bg-white/10`}>
@@ -46,10 +46,10 @@ export const HomePage: React.FC = () => {
 
       <div className="max-w-5xl w-full mx-auto px-4 py-6 md:py-10 flex flex-col gap-8 md:gap-12">
         <section className="flex flex-col gap-4" aria-labelledby="comment">
-          <h2 id="comment" className="font-fds-serif text-2xl font-bold text-fds-navy-d">
+          <h2 id="comment" className="font-fds-serif text-2xl font-bold text-fds-title">
             {t('accueil.comment')}
           </h2>
-          <ol className="rounded-xl border border-fds-line bg-white p-4 md:p-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <ol className="rounded-xl border border-fds-line bg-fds-surface p-4 md:p-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {ETAPES.map((n) => (
               <li key={n} className="flex gap-3 items-start">
                 <span className="w-8 h-8 rounded-full bg-fds-navy text-white font-bold flex items-center justify-center shrink-0" aria-hidden="true">
@@ -65,7 +65,7 @@ export const HomePage: React.FC = () => {
         </section>
 
         <section className="flex flex-col gap-4" aria-labelledby="cursus">
-          <h2 id="cursus" className="font-fds-serif text-2xl font-bold text-fds-navy-d">
+          <h2 id="cursus" className="font-fds-serif text-2xl font-bold text-fds-title">
             {t('accueil.cursusTitre')}
           </h2>
 
@@ -75,7 +75,7 @@ export const HomePage: React.FC = () => {
             </p>
           )}
           {isError && (
-            <div role="alert" className="rounded-[10px] border border-[#efb1ab] bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad flex flex-col gap-2">
+            <div role="alert" className="rounded-[10px] border border-fds-bad-line bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad flex flex-col gap-2">
               <span>{t('accueil.erreur')}</span>
               <button type="button" onClick={() => void refetch()} className="self-start min-h-11 font-semibold underline">
                 {t('commun.reessayer')}
@@ -87,7 +87,7 @@ export const HomePage: React.FC = () => {
 
           {branches.length > 0 && (
             <>
-              <h3 className="font-fds-serif text-lg font-bold text-fds-navy-d pt-2">{t('accueil.branches')}</h3>
+              <h3 className="font-fds-serif text-lg font-bold text-fds-title pt-2">{t('accueil.branches')}</h3>
               <div className="grid gap-4 md:grid-cols-2">
                 {branches.map((c) => (
                   <CursusCard key={c.id} cursus={c} />
@@ -98,19 +98,19 @@ export const HomePage: React.FC = () => {
         </section>
 
         <div className="grid gap-6 md:grid-cols-2">
-          <section className="rounded-xl border border-[#b9cbe3] bg-fds-navy-t p-4 md:p-6 flex flex-col gap-2.5">
+          <section className="rounded-xl border border-fds-accent-line bg-fds-navy-t p-4 md:p-6 flex flex-col gap-2.5">
             <h2 className="font-semibold text-lg">{t('accueil.dejaTitre')}</h2>
             <p className="text-sm">{t('accueil.dejaTexte')}</p>
             <Link to="/suivi" className={`${CLASSE_BOUTON} bg-fds-navy hover:bg-fds-navy-d text-white mt-auto`}>
               {t('accueil.suivre')}
             </Link>
           </section>
-          <section className="rounded-xl border border-fds-line bg-white p-4 md:p-6 flex flex-col gap-2.5">
+          <section className="rounded-xl border border-fds-line bg-fds-surface p-4 md:p-6 flex flex-col gap-2.5">
             <h2 className="font-semibold text-lg">{t('accueil.histoireTitre')}</h2>
             <p className="text-sm text-fds-mute">
               {t('accueil.histoireTexte')}
             </p>
-            <Link to="/histoire" className={`${CLASSE_BOUTON} border-2 border-fds-navy bg-white text-fds-navy mt-auto`}>
+            <Link to="/histoire" className={`${CLASSE_BOUTON} border-2 border-fds-accent bg-fds-surface text-fds-accent mt-auto`}>
               {t('accueil.histoireLien')}
             </Link>
           </section>

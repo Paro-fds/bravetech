@@ -50,7 +50,7 @@ export const RemplacerPiecePage: React.FC = () => {
   }, [reference, pieceId]);
 
   const retour = (
-    <Link to={`/suivi/${reference}`} className="flex items-center gap-2 min-h-11 font-semibold text-fds-navy">
+    <Link to={`/suivi/${reference}`} className="flex items-center gap-2 min-h-11 font-semibold text-fds-accent">
       <ArrowLeft className="w-5 h-5" aria-hidden="true" />
       {t('rempl.retour')}
     </Link>
@@ -65,7 +65,7 @@ export const RemplacerPiecePage: React.FC = () => {
     );
   } else if (chargement.etat !== 'ok') {
     contenu = (
-      <p role="alert" className="rounded-[10px] border border-[#efb1ab] bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
+      <p role="alert" className="rounded-[10px] border border-fds-bad-line bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
         {chargement.etat === 'introuvable' ? t('rempl.introuvable') : t('rempl.reseau')}
       </p>
     );
@@ -73,10 +73,10 @@ export const RemplacerPiecePage: React.FC = () => {
     contenu = (
       <div className="flex flex-col gap-4" aria-live="polite">
         <div className="flex flex-col items-center text-center gap-2.5">
-          <span className="w-16 h-16 rounded-full bg-fds-ok text-white flex items-center justify-center">
+          <span className="w-16 h-16 rounded-full bg-fds-ok-solid text-white flex items-center justify-center">
             <Check className="w-9 h-9" strokeWidth={2.5} aria-hidden="true" />
           </span>
-          <h1 className="font-fds-serif text-2xl font-bold text-fds-navy-d">{t('rempl.envoyeTitre')}</h1>
+          <h1 className="font-fds-serif text-2xl font-bold text-fds-title">{t('rempl.envoyeTitre')}</h1>
           <p className="text-fds-mute">
             {t('rempl.envoyeTexte', { nom: nomPiece(chargement.piece.id, chargement.piece.nom) })}
           </p>
@@ -89,7 +89,7 @@ export const RemplacerPiecePage: React.FC = () => {
   } else if (chargement.piece.statut !== 'rejete') {
     contenu = (
       <>
-        <h1 className="font-fds-serif text-2xl font-bold text-fds-navy-d">{t('rempl.rienTitre')}</h1>
+        <h1 className="font-fds-serif text-2xl font-bold text-fds-title">{t('rempl.rienTitre')}</h1>
         <p className="text-fds-mute">{t('rempl.rienTexte', { nom: nomPiece(chargement.piece.id, chargement.piece.nom) })}</p>
       </>
     );
@@ -117,12 +117,12 @@ export const RemplacerPiecePage: React.FC = () => {
     contenu = (
       <form onSubmit={envoyer} noValidate className="flex flex-col gap-[18px]">
         <section className="flex flex-col gap-2">
-          <h1 className="font-fds-serif text-2xl font-bold text-fds-navy-d">{t('rempl.titre', { nom: nomPiece(piece.id, piece.nom) })}</h1>
+          <h1 className="font-fds-serif text-2xl font-bold text-fds-title">{t('rempl.titre', { nom: nomPiece(piece.id, piece.nom) })}</h1>
           <p className="text-fds-mute">{t('rempl.intro')}</p>
         </section>
 
         {piece.motif_rejet && (
-          <div className="flex gap-2.5 items-start rounded-[10px] border border-[#efb1ab] bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
+          <div className="flex gap-2.5 items-start rounded-[10px] border border-fds-bad-line bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
             <TriangleAlert className="w-5 h-5 shrink-0" aria-hidden="true" />
             <span>
               <strong>{t('rempl.motif')}</strong> {piece.motif_rejet}
@@ -130,7 +130,7 @@ export const RemplacerPiecePage: React.FC = () => {
           </div>
         )}
 
-        <section className="rounded-xl border border-fds-line bg-white p-4 flex flex-col gap-2.5">
+        <section className="rounded-xl border border-fds-line bg-fds-surface p-4 flex flex-col gap-2.5">
           <h2 className="font-semibold">{t('rempl.conseilsTitre')}</h2>
           {[
             t('rempl.conseil1'),
@@ -156,14 +156,14 @@ export const RemplacerPiecePage: React.FC = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             aria-describedby="email-aide"
-            className="w-full min-h-12 rounded-lg border-[1.5px] border-fds-field bg-white px-3 text-base text-fds-ink focus:outline-none focus:ring-2 focus:ring-fds-navy"
+            className="w-full min-h-12 rounded-lg border-[1.5px] border-fds-field bg-fds-surface px-3 text-base text-fds-ink focus:outline-none focus:ring-2 focus:ring-fds-accent"
           />
           <p id="email-aide" className="text-[13px] text-fds-mute">
             {t('rempl.emailAide')}
           </p>
         </div>
 
-        <label className="min-h-16 rounded-lg border-2 border-dashed border-fds-navy bg-white text-fds-navy font-semibold flex items-center justify-center gap-2 cursor-pointer text-center px-3 focus-within:ring-2 focus-within:ring-fds-navy focus-within:ring-offset-2">
+        <label className="min-h-16 rounded-lg border-2 border-dashed border-fds-accent bg-fds-surface text-fds-accent font-semibold flex items-center justify-center gap-2 cursor-pointer text-center px-3 focus-within:ring-2 focus-within:ring-fds-accent focus-within:ring-offset-2 focus-within:ring-offset-fds-page">
           <input
             type="file"
             className="sr-only"
@@ -180,8 +180,8 @@ export const RemplacerPiecePage: React.FC = () => {
         </label>
 
         {fichier && (
-          <div className="rounded-xl border border-fds-line bg-white p-3 flex items-center gap-2.5">
-            <FileText className="w-6 h-6 shrink-0 text-fds-navy" aria-hidden="true" />
+          <div className="rounded-xl border border-fds-line bg-fds-surface p-3 flex items-center gap-2.5">
+            <FileText className="w-6 h-6 shrink-0 text-fds-accent" aria-hidden="true" />
             <div className="flex-1 min-w-0">
               <div className="text-sm font-semibold truncate">{fichier.name}</div>
               <div className="text-xs text-fds-mute">{t('rempl.pret', { taille: formaterTaille(fichier.size) })}</div>
@@ -195,14 +195,14 @@ export const RemplacerPiecePage: React.FC = () => {
         {progression !== null && (
           <div className="flex flex-col gap-1">
             <div className="h-2 rounded bg-fds-line overflow-hidden" role="progressbar" aria-valuenow={progression} aria-valuemin={0} aria-valuemax={100} aria-label={t('rempl.progAria')}>
-              <div className="h-full bg-fds-navy" style={{ width: `${progression}%` }} />
+              <div className="h-full bg-fds-accent" style={{ width: `${progression}%` }} />
             </div>
             <span className="text-xs text-fds-mute">{t('pieces.envoiCours', { n: progression })}</span>
           </div>
         )}
 
         {erreur && (
-          <div role="alert" className="flex gap-2.5 items-start rounded-[10px] border border-[#efb1ab] bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
+          <div role="alert" className="flex gap-2.5 items-start rounded-[10px] border border-fds-bad-line bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
             <TriangleAlert className="w-5 h-5 shrink-0" aria-hidden="true" />
             <span>{erreur}</span>
           </div>

@@ -2,6 +2,7 @@ import React from 'react';
 import { Navigate, NavLink, Outlet } from 'react-router-dom';
 import { FileText, LogOut } from 'lucide-react';
 import { sessionValide, useSessionStore } from '../../entities/session';
+import { ThemeToggle } from '../../shared/theme/ThemeToggle';
 
 /**
  * Mise en page de l'espace administration (maquettes « Administration ») : barre latérale marine, contenu à droite ;
@@ -18,14 +19,16 @@ export const AdminLayout: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-wrap min-h-screen bg-[#f4f6fa] font-fds-sans text-fds-ink">
+    <div className="flex flex-wrap min-h-screen bg-fds-page font-fds-sans text-fds-ink">
       <aside className="flex-[1_1_240px] lg:max-w-60 bg-fds-navy text-white p-4 flex flex-col gap-1.5">
         <div className="flex items-center gap-2.5 pb-4 px-2">
           <img src="/logo-fds.png" alt="Logo FDS" width={40} height={40} className="rounded" />
-          <div className="leading-tight">
+          <div className="leading-tight mr-auto">
             <div className="font-semibold">FDS Admin</div>
-            <div className="text-xs text-[#cfe0f5]">{session.role === 'admin' ? 'Administrateur' : 'Agent'}</div>
+            <div className="text-xs text-fds-on-navy">{session.role === 'admin' ? 'Administrateur' : 'Agent'}</div>
           </div>
+          {/* L'administration reste en français (spec WS-01 §1.6) : libellé fixe, pas de traduction */}
+          <ThemeToggle libelle="Mode sombre" />
         </div>
         <NavLink
           to="/admin"
@@ -38,7 +41,7 @@ export const AdminLayout: React.FC = () => {
           Candidatures
         </NavLink>
         <div className="flex-1" />
-        <div className="px-2 py-2 text-[13px] text-[#cfe0f5]">
+        <div className="px-2 py-2 text-[13px] text-fds-on-navy">
           Connecté : <b className="text-white break-all">{session.email}</b>
         </div>
         <button type="button" onClick={fermer} className="min-h-11 px-3 rounded-lg flex items-center gap-2.5 font-semibold hover:bg-white/10">

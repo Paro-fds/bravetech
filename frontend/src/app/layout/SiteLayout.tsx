@@ -3,6 +3,7 @@ import { Link, NavLink, Outlet } from 'react-router-dom';
 import { LanguageSwitcher } from '../../shared/i18n/LanguageSwitcher';
 import type { Cle } from '../../shared/i18n/fr';
 import { useT } from '../../shared/i18n/useT';
+import { ThemeToggle } from '../../shared/theme/ThemeToggle';
 
 const LIENS: { to: string; cle: Cle; cleLongue?: Cle; fin?: boolean }[] = [
   { to: '/', cle: 'nav.accueil', fin: true },
@@ -19,17 +20,22 @@ const LIENS: { to: string; cle: Cle; cleLongue?: Cle; fin?: boolean }[] = [
 export const SiteLayout: React.FC = () => {
   const t = useT();
   return (
-    <div className="flex flex-col min-h-screen bg-[#f4f6fa] font-fds-sans text-fds-ink">
+    <div className="flex flex-col min-h-screen bg-fds-page font-fds-sans text-fds-ink">
       <header className="bg-fds-navy text-white">
-        <div className="max-w-5xl mx-auto px-4 py-2.5 flex flex-wrap items-center gap-x-4 gap-y-0">
-          <Link to="/" className="flex items-center gap-3 min-h-11 mr-auto" aria-label={t('marque.accueilLien')}>
-            <img src="/logo-fds.png" alt={t('marque.logoAlt')} width={44} height={44} className="rounded" />
-            <span className="leading-tight">
+        <div className="max-w-5xl mx-auto px-4 py-2.5 flex flex-wrap items-center gap-x-3 md:gap-x-4 gap-y-0">
+          {/* Sur petit écran le nom passe sur deux lignes (et l'université se masque sous 400 px) pour que
+              le bouton de thème et le sélecteur de langue restent sur la ligne du logo */}
+          <Link to="/" className="flex flex-1 basis-0 min-w-0 md:flex-none md:basis-auto items-center gap-3 min-h-11 mr-auto" aria-label={t('marque.accueilLien')}>
+            <img src="/logo-fds.png" alt={t('marque.logoAlt')} width={44} height={44} className="rounded shrink-0" />
+            <span className="leading-tight min-w-0">
               <span className="block font-semibold text-[15px] md:text-lg">{t('marque.faculte')}</span>
-              <span className="block text-xs md:text-[13px] text-[#cfe0f5]">{t('marque.universite')}</span>
+              <span className="hidden min-[400px]:block text-xs md:text-[13px] text-fds-on-navy">{t('marque.universite')}</span>
             </span>
           </Link>
-          <LanguageSwitcher />
+          <div className="flex items-center gap-2">
+            <ThemeToggle libelle={t('nav.modeSombre')} />
+            <LanguageSwitcher />
+          </div>
           <nav aria-label={t('nav.principale')} className="order-last w-full md:order-none md:w-auto border-t border-white/15 md:border-0 -mx-2 md:mx-0">
             <ul className="flex flex-wrap px-2 md:px-0">
               {LIENS.map((lien) => (
@@ -38,7 +44,7 @@ export const SiteLayout: React.FC = () => {
                     to={lien.to}
                     end={lien.fin}
                     className={({ isActive }) =>
-                      `min-h-11 px-2.5 sm:px-3 flex items-center text-sm font-semibold border-b-2 ${isActive ? 'border-fds-gold text-white' : 'border-transparent text-[#cfe0f5] hover:text-white'}`
+                      `min-h-11 px-2.5 sm:px-3 flex items-center text-sm font-semibold border-b-2 ${isActive ? 'border-fds-gold text-white' : 'border-transparent text-fds-on-navy hover:text-white'}`
                     }
                   >
                     {t(lien.cle)}
@@ -48,7 +54,7 @@ export const SiteLayout: React.FC = () => {
             </ul>
           </nav>
           {/* Sur mobile la place manque : « Postuler » reste accessible depuis l'accueil, les fiches et la page Histoire */}
-          <Link to="/postuler" className="hidden md:flex min-h-11 px-4 rounded-lg bg-fds-gold text-fds-navy-d font-semibold items-center">
+          <Link to="/postuler" className="hidden md:flex min-h-11 px-4 rounded-lg bg-fds-gold text-fds-on-light font-semibold items-center">
             {t('nav.postuler')}
           </Link>
         </div>
@@ -58,7 +64,7 @@ export const SiteLayout: React.FC = () => {
         <Outlet />
       </main>
 
-      <footer className="bg-fds-navy-d text-[#cfe0f5] text-sm">
+      <footer className="bg-fds-navy-d text-fds-on-navy text-sm">
         <div className="max-w-5xl mx-auto px-4 py-6 flex flex-col gap-3">
           <div className="flex items-center gap-3">
             <img src="/logo-fds.png" alt="" width={40} height={40} className="rounded" />

@@ -9,7 +9,7 @@ interface ChampTexteProps {
 }
 
 const CLASSE_BASE =
-  'w-full min-h-12 rounded-lg border-[1.5px] bg-white px-3 text-base text-fds-ink focus:outline-none focus:ring-2 focus:ring-fds-navy';
+  'w-full min-h-12 rounded-lg border-[1.5px] bg-fds-surface px-3 text-base text-fds-ink focus:outline-none focus:ring-2 focus:ring-fds-accent';
 
 /** Libellé + champ + message d'aide ou d'erreur, reliés pour les lecteurs d'écran (style des maquettes). */
 export const ChampTexte: React.FC<ChampTexteProps> = ({ id, libelle, erreur, aide, children }) => {

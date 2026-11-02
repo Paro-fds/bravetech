@@ -8,11 +8,11 @@ import { useT } from '../../../shared/i18n/useT';
 const QUESTIONS = [1, 2, 3] as const;
 
 const CLASSE_CHAMP =
-  'w-full min-h-12 rounded-lg border-[1.5px] bg-white px-3 text-base text-fds-ink focus:outline-none focus:ring-2 focus:ring-fds-navy';
+  'w-full min-h-12 rounded-lg border-[1.5px] bg-fds-surface px-3 text-base text-fds-ink focus:outline-none focus:ring-2 focus:ring-fds-accent';
 
 const Coordonnee: React.FC<{ icone: React.ReactNode; titre: string; valeur: string }> = ({ icone, titre, valeur }) => (
   <div className="flex gap-3 items-start">
-    <span className="text-fds-navy shrink-0 pt-0.5">{icone}</span>
+    <span className="text-fds-accent shrink-0 pt-0.5">{icone}</span>
     <div>
       <div className="font-semibold">{titre}</div>
       <div className="text-sm text-fds-mute">{valeur}</div>
@@ -94,11 +94,11 @@ export const ContactPage: React.FC = () => {
   return (
     <div className="max-w-3xl w-full mx-auto px-4 py-6 flex flex-col gap-[22px]">
       <section className="flex flex-col gap-2">
-        <h1 className="font-fds-serif text-2xl font-bold text-fds-navy-d">{t('contact.titre')}</h1>
+        <h1 className="font-fds-serif text-2xl font-bold text-fds-title">{t('contact.titre')}</h1>
         <p className="text-fds-mute">{t('contact.sousTitre')}</p>
       </section>
 
-      <section className="rounded-xl border border-fds-line bg-white p-4 flex flex-col gap-3.5" aria-label={t('contact.coordonnees')}>
+      <section className="rounded-xl border border-fds-line bg-fds-surface p-4 flex flex-col gap-3.5" aria-label={t('contact.coordonnees')}>
         <Coordonnee icone={<MapPin className="w-5 h-5" aria-hidden="true" />} titre={t('contact.adresse')} valeur={t('marque.adresse')} />
         {INSTITUTION.telephone && <Coordonnee icone={<Phone className="w-5 h-5" aria-hidden="true" />} titre={t('contact.telephone')} valeur={INSTITUTION.telephone} />}
         {INSTITUTION.email && <Coordonnee icone={<Mail className="w-5 h-5" aria-hidden="true" />} titre={t('contact.email')} valeur={INSTITUTION.email} />}
@@ -106,9 +106,9 @@ export const ContactPage: React.FC = () => {
       </section>
 
       <section className="flex flex-col gap-3">
-        <h2 className="font-fds-serif text-xl font-bold text-fds-navy-d">{t('contact.faqTitre')}</h2>
+        <h2 className="font-fds-serif text-xl font-bold text-fds-title">{t('contact.faqTitre')}</h2>
         {QUESTIONS.map((n) => (
-          <div key={n} className="rounded-xl border border-fds-line bg-white p-4 flex flex-col gap-1.5">
+          <div key={n} className="rounded-xl border border-fds-line bg-fds-surface p-4 flex flex-col gap-1.5">
             <h3 className="font-semibold">{t(`contact.q${n}`)}</h3>
             <p className="text-sm text-fds-mute">{t(`contact.r${n}`)}</p>
           </div>
@@ -116,7 +116,7 @@ export const ContactPage: React.FC = () => {
       </section>
 
       {envoye ? (
-        <section className="rounded-xl border border-[#9bd3b2] bg-fds-ok-bg p-5 flex flex-col gap-2.5 items-start text-fds-ok" role="status">
+        <section className="rounded-xl border border-fds-ok-line bg-fds-ok-bg p-5 flex flex-col gap-2.5 items-start text-fds-ok" role="status">
           <span className="flex items-center gap-2 font-semibold text-lg">
             <Check className="w-6 h-6" aria-hidden="true" />
             {t('contact.okTitre')}
@@ -127,8 +127,8 @@ export const ContactPage: React.FC = () => {
           </button>
         </section>
       ) : (
-        <form onSubmit={envoyer} noValidate className="rounded-xl border border-fds-line bg-white p-4 flex flex-col gap-3.5">
-          <h2 className="font-fds-serif text-xl font-bold text-fds-navy-d">{t('contact.formTitre')}</h2>
+        <form onSubmit={envoyer} noValidate className="rounded-xl border border-fds-line bg-fds-surface p-4 flex flex-col gap-3.5">
+          <h2 className="font-fds-serif text-xl font-bold text-fds-title">{t('contact.formTitre')}</h2>
           <Champ id="contact-nom" libelle={t('contact.nom')} erreur={erreurs.nom}>
             {(p) => <input {...p} autoComplete="name" value={nom} onChange={(e) => setNom(e.target.value)} />}
           </Champ>
@@ -145,7 +145,7 @@ export const ContactPage: React.FC = () => {
           </div>
 
           {erreurGlobale && (
-            <div role="alert" className="flex gap-2.5 items-start rounded-[10px] border border-[#efb1ab] bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
+            <div role="alert" className="flex gap-2.5 items-start rounded-[10px] border border-fds-bad-line bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
               <TriangleAlert className="w-5 h-5 shrink-0" aria-hidden="true" />
               <span>{erreurGlobale}</span>
             </div>
