@@ -85,6 +85,11 @@ export interface SuiviDossier {
 /** Format d'une référence de dossier : CAN-AAAA-NNNN. */
 export const FORMAT_REFERENCE = /^CAN-\d{4}-\d{4,}$/;
 
+/** Saisie libre → référence comparable au format (espaces retirés, majuscules). */
+export function normaliserReference(saisie: string): string {
+  return saisie.trim().toUpperCase();
+}
+
 export type ErreursChamps = Partial<
   Record<keyof InformationsPersonnelles | 'deplacement_physique' | 'methode_paiement' | 'numero_telephone' | 'fichier', string>
 >;

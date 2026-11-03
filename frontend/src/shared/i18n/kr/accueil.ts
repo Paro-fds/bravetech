@@ -25,6 +25,9 @@ export const accueil = {
 
   'accueil.dejaTitre': 'Ou deja kandida?',
   'accueil.dejaTexte': 'Antre referans ou (pa egzanp CAN-2026-0089) pou wè kote dosye ou rive.',
+  'accueil.dejaBureauTitre': 'Ou deja aplike?',
+  'accueil.dejaBureauTexte': 'Antre referans ou pou wè kote dosye a rive.',
+  'accueil.voirAvancement': 'Wè kote dosye a rive',
   'accueil.histoireTitre': 'Yon enstitisyon istorik',
   'accueil.histoireTexte':
     'Fakilte Syans lan te fonde an 1902. Li se youn nan pi ansyen etablisman anseyman siperyè an Ayiti.',

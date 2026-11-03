@@ -4,6 +4,7 @@ import { ArrowLeft, Check, Clock, Search, TriangleAlert, X } from 'lucide-react'
 import {
   candidatureApi,
   FORMAT_REFERENCE,
+  normaliserReference as normaliser,
   type PieceSuivi,
   type StatutGlobal,
   type SuiviDossier,
@@ -30,10 +31,6 @@ const BADGES_PIECES: Record<PieceSuivi['statut'], { cle: Cle; classe: string }> 
   valide: { cle: 'suivi.pieceValide', classe: 'bg-fds-ok-bg text-fds-ok' },
   rejete: { cle: 'suivi.pieceRefuse', classe: 'bg-fds-bad-bg text-fds-bad' },
 };
-
-function normaliser(saisie: string): string {
-  return saisie.trim().toUpperCase();
-}
 
 /** Formulaire de recherche (maquette « Suivi »). */
 const RechercheReference: React.FC<{ valeurInitiale?: string; message?: string }> = ({ valeurInitiale = '', message }) => {

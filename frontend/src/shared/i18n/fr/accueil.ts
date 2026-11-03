@@ -25,6 +25,9 @@ export const accueil = {
 
   'accueil.dejaTitre': 'Déjà candidat ?',
   'accueil.dejaTexte': 'Entrez votre référence (par exemple CAN-2026-0089) pour voir où en est votre dossier.',
+  'accueil.dejaBureauTitre': 'Vous avez déjà candidaté ?',
+  'accueil.dejaBureauTexte': "Entrez votre référence pour voir l'avancement.",
+  'accueil.voirAvancement': "Voir l'avancement",
   'accueil.histoireTitre': 'Une institution historique',
   'accueil.histoireTexte':
     "Fondée en 1902, la Faculté des Sciences est l'un des plus anciens établissements d'enseignement supérieur d'Haïti.",

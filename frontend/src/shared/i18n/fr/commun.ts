@@ -12,17 +12,19 @@ export const commun = {
   'nav.accueil': 'Accueil',
   'nav.cursus': 'Cursus',
   'nav.histoire': 'Histoire',
-  'nav.suivi': 'Suivi',
   'nav.suiviLong': 'Suivi de dossier',
   'nav.contact': 'Contact',
   'nav.postuler': 'Postuler',
+  'nav.suivre': 'Suivre mon dossier',
+  'nav.ouvrirMenu': 'Ouvrir le menu',
+  'nav.fermerMenu': 'Fermer le menu',
   'nav.modeSombre': 'Mode sombre',
 
   'pied.simulation': 'Le paiement en ligne est une simulation pendant la phase de lancement.',
   'pied.droits': "© Faculté des Sciences, Université d'État d'Haïti",
 
   'flux.titreCandidature': 'Candidature',
-  'flux.titreSuivi': 'Suivi de dossier',
+  'flux.titreDossier': 'Dossier {reference}',
 
   'commun.reessayer': 'Réessayer',
   'commun.retour': 'Retour',
