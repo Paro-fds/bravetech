@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T13:09:00Z
-updated: 2026-11-01T19:57:53Z
+updated: 2026-11-03T13:54:35Z
 ---
 
 # EPIC_EXECUTION.md — FDS Portail
@@ -84,6 +84,7 @@ Fonctionnalités de confort et d'efficacité opérationnelle : SMS en complémen
 | US-019 | Pages Histoire et Contact | 🟡 Should | 🔲 Backlog | [US-019.md](epic-004-could-have/US-019.md) |
 | US-020 | Interface en Kreyòl (sélecteur FR / KR) | 🟡 Should | 🔲 Backlog | [US-020.md](epic-004-could-have/US-020.md) |
 | US-021 | Refonte visuelle de l'accueil et des fiches de cursus | 🔵 Could | 🔲 Backlog | [US-021.md](epic-004-could-have/US-021.md) |
+| US-022 | Finition de la refonte visuelle (menu mobile, accueil et fiche MPC sur ordinateur, suivi) | 🔵 Could | 🔲 Backlog | [US-022.md](epic-004-could-have/US-022.md) |
 
 ---
 

@@ -26,25 +26,24 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    // Pages publiques (maquettes « Accueil », « Cursus », « Histoire » et « Contact »)
+    // Pages publiques (maquettes « Accueil », « Cursus », « Histoire », « Contact » et « Suivi »)
     element: <SiteLayout />,
     children: [
       { path: '/', element: <HomePage /> },
       { path: '/cursus/:id', element: <CursusDetailPage /> },
       { path: '/histoire', element: <HistoryPage /> },
       { path: '/contact', element: <ContactPage /> },
+      // Suivi par référence : en-tête public et pied de page (maquettes « Suivi » et « Dossier », US-022)
+      { path: '/suivi', element: <SuiviPage /> },
+      { path: '/suivi/:reference', element: <SuiviPage /> },
     ],
   },
   {
-    // Suivi par référence : même mise en page que le tunnel (maquettes « Suivi » et « Dossier »)
-    path: '/suivi',
+    // Remplacement d'une pièce : en-tête allégé « Dossier CAN-… » (maquette « Remplacement »)
+    path: '/suivi/:reference/remplacer/:piece',
     element: <FlowLayout />,
-    handle: { titre: 'flux.titreSuivi' },
-    children: [
-      { index: true, element: <SuiviPage /> },
-      { path: ':reference', element: <SuiviPage /> },
-      { path: ':reference/remplacer/:piece', element: <RemplacerPiecePage /> },
-    ],
+    handle: { titre: 'flux.titreDossier' },
+    children: [{ index: true, element: <RemplacerPiecePage /> }],
   },
   // Espace administration (US-011) : connexion publique, le reste exige une session
   { path: '/admin/login', element: <AdminLoginPage /> },

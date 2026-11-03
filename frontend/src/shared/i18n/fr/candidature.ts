@@ -8,6 +8,7 @@ export const candidature = {
   'cand.progressionAria': 'Progression de la candidature',
   'cand.reprise': 'Reprise de votre candidature…',
   'cand.continuer': 'Continuer',
+  'cand.quitter': 'Quitter',
   'cand.enregistrement': 'Enregistrement…',
 
   'val.libNom': 'Nom',

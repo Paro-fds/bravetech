@@ -14,17 +14,19 @@ export const commun = {
   'nav.accueil': 'Akèy',
   'nav.cursus': 'Fòmasyon',
   'nav.histoire': 'Istwa',
-  'nav.suivi': 'Swivi',
   'nav.suiviLong': 'Swivi dosye',
   'nav.contact': 'Kontak',
   'nav.postuler': 'Aplike',
+  'nav.suivre': 'Swiv dosye mwen',
+  'nav.ouvrirMenu': 'Louvri meni an',
+  'nav.fermerMenu': 'Fèmen meni an',
   'nav.modeSombre': 'Mòd fènwa',
 
   'pied.simulation': 'Peman sou entènèt la se yon simulasyon pandan faz lansman an.',
   'pied.droits': '© Fakilte Syans, Inivèsite Leta Ayiti',
 
   'flux.titreCandidature': 'Kandidati',
-  'flux.titreSuivi': 'Swivi dosye',
+  'flux.titreDossier': 'Dosye {reference}',
 
   'commun.reessayer': 'Eseye ankò',
   'commun.retour': 'Tounen',

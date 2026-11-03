@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { ArrowRight, Info } from 'lucide-react';
 import {
   DEPARTEMENTS,
@@ -8,7 +9,7 @@ import {
 } from '../../../entities/candidature';
 import { ApiError } from '../../../shared/api/client';
 import { validerInformations } from '../lib/validation';
-import { BarreAction, CLASSE_BOUTON_PRIMAIRE } from './BarreAction';
+import { BarreAction, CLASSE_BOUTON_PRIMAIRE, CLASSE_BOUTON_SECONDAIRE } from './BarreAction';
 import { ChampTexte } from './ChampTexte';
 import { useT } from '../../../shared/i18n/useT';
 
@@ -161,10 +162,16 @@ export const StepInformations: React.FC<StepInformationsProps> = ({ valeurs, onC
       )}
 
       <BarreAction>
-        <button type="submit" disabled={enCours} className={CLASSE_BOUTON_PRIMAIRE}>
-          <span>{enCours ? t('cand.enregistrement') : t('cand.continuer')}</span>
-          {!enCours && <ArrowRight className="w-5 h-5" aria-hidden="true" />}
-        </button>
+        <div className="flex gap-3">
+          {/* Les réponses sont gardées en brouillon : quitter ne perd rien (maquette « Étape 1 ») */}
+          <Link to="/" className={CLASSE_BOUTON_SECONDAIRE}>
+            {t('cand.quitter')}
+          </Link>
+          <button type="submit" disabled={enCours} className={`${CLASSE_BOUTON_PRIMAIRE} flex-1`}>
+            <span>{enCours ? t('cand.enregistrement') : t('cand.continuer')}</span>
+            {!enCours && <ArrowRight className="w-5 h-5" aria-hidden="true" />}
+          </button>
+        </div>
       </BarreAction>
     </form>
   );

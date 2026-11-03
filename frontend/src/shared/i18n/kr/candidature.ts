@@ -8,6 +8,7 @@ export const candidature = {
   'cand.progressionAria': 'Pwogresyon kandidati a',
   'cand.reprise': 'Ap rekòmanse kandidati ou…',
   'cand.continuer': 'Kontinye',
+  'cand.quitter': 'Kite',
   'cand.enregistrement': 'Ap anrejistre…',
 
   'val.libNom': 'Non',

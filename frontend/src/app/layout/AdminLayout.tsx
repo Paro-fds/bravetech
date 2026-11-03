@@ -20,7 +20,7 @@ export const AdminLayout: React.FC = () => {
 
   return (
     <div className="flex flex-wrap min-h-screen bg-fds-page font-fds-sans text-fds-ink">
-      <aside className="flex-[1_1_240px] lg:max-w-60 bg-fds-navy text-white p-4 flex flex-col gap-1.5">
+      <aside className="flex-[1_1_240px] lg:max-w-60 bg-fds-navy-d text-white p-4 flex flex-col gap-1.5">
         <div className="flex items-center gap-2.5 pb-4 px-2">
           <img src="/logo-fds.png" alt="Logo FDS" width={40} height={40} className="rounded" />
           <div className="leading-tight mr-auto">

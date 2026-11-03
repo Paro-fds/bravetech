@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T15:23:00Z
-updated: 2026-11-02T16:37:13Z
+updated: 2026-11-03T13:54:35Z
 workstream: WS-01
 ---
 
@@ -142,6 +142,7 @@ Les règles suivantes, actives durant l'Epic 1, sont désormais pérennes dans l
 4. **Règle R4 — Couleurs du frontend par jetons de rôle uniquement (US-017)** :
    - Les composants n'emploient que les jetons `fds-*` définis dans `frontend/src/app/styles/index.css` (`bg-fds-surface`, `text-fds-title`, `text-fds-accent`, `border-fds-bad-line`…). Jamais de couleur codée en dur (`bg-white`, `bg-[#…]`, `text-slate-…`) : elle ne suivrait pas le mode sombre.
    - Un jeton nomme un **rôle**, pas une teinte : `fds-accent` (liens, icônes, bordures actives) devient clair en mode sombre, alors que `fds-navy` reste un aplat foncé qui porte du texte blanc. Exceptions voulues : `text-white` et `bg-white/10` sur les aplats marine, et la pastille blanche active du sélecteur de langue (`bg-white text-fds-on-light`).
+   - Les illustrations SVG (cursus, bandeau d'accueil) suivent la même règle : couleurs par classes `fill-fds-*` / `stroke-fds-*`, jamais d'attribut `fill="#…"` (US-022).
    - Le mode sombre redéfinit les jetons sous `:root[data-theme='dark']`. Toute nouvelle paire texte/fond doit tenir 4,5:1 (texte) ou 3:1 (bord de champ, remplissage de barre) dans les deux thèmes.
    - Le thème est posé sur `<html data-theme>` par un court script de `index.html`, avant le premier affichage, puis par `shared/theme/useTheme.ts`. Ordre de priorité : choix mémorisé (`localStorage`, clé `fds-theme`, valeur `clair` ou `sombre`), sinon préférence du système. Les deux endroits appliquent la même règle et doivent rester alignés.
 
