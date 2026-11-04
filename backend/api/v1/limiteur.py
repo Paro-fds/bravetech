@@ -5,6 +5,7 @@ Le compteur est en mémoire du processus : suffisant pour un seul conteneur, à 
 (Redis...) si l'API est un jour répliquée.
 """
 
+import os
 import time
 from collections import defaultdict, deque
 from typing import Callable
@@ -55,12 +56,27 @@ class LimiteurDebit:
 limiteur_envois = LimiteurDebit()
 
 
+def _nombre_proxys_confiance() -> int:
+    """TRUSTED_PROXY_COUNT : proxys devant l'API (Nginx du conteneur = 1 ; Apache UEH + Nginx = 2 ; aucun = 0)."""
+    try:
+        return max(0, int(os.getenv("TRUSTED_PROXY_COUNT", "1")))
+    except ValueError:
+        return 1
+
+
 def adresse_client(request: Request) -> str:
-    # Derrière Nginx, l'adresse réelle du visiteur est dans X-Forwarded-For (premier élément)
-    transmis = request.headers.get("x-forwarded-for", "")
-    if transmis:
-        return transmis.split(",")[0].strip()
-    return request.client.host if request.client else "inconnu"
+    """Adresse du visiteur, lue depuis la droite de X-Forwarded-For (US-024).
+
+    Chaque proxy ajoute à droite l'adresse de qui l'a contacté : avec N proxys de confiance, la N-ième entrée en
+    partant de la droite est celle du visiteur. Ce qui est plus à gauche vient du visiteur, qui peut l'inventer.
+    """
+    connexion = request.client.host if request.client else "inconnu"
+    nombre = _nombre_proxys_confiance()
+    transmis = [a.strip() for a in request.headers.get("x-forwarded-for", "").split(",") if a.strip()]
+    if nombre == 0 or not transmis:
+        return connexion
+    # Moins d'entrées que de proxys : la requête n'est pas passée par tous ; la plus à gauche vient d'un proxy
+    return transmis[-nombre] if len(transmis) >= nombre else transmis[0]
 
 
 # Consultation de dossier (US-009) : les références sont séquentielles, donc devinables ; on freine l'énumération

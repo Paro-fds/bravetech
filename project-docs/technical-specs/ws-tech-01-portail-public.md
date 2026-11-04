@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T15:23:00Z
-updated: 2026-11-04T18:35:15Z
+updated: 2026-11-04T20:08:30Z
 workstream: WS-01
 ---
 
@@ -165,6 +165,26 @@ Conformément à l'ADR-006 (serveur Linux sur site / Proxmox à la Faculté des 
 - **Adoption d'une base créée avant Alembic** (la base de la VM, créée par `create_all` le 2026-11-04) : `backend/dal/schema.py` la détecte (tables présentes, pas de table `alembic_version`) et la marque à la révision `0001` sans la modifier, ce qui équivaut à `alembic stamp 0001`. Les données restent intactes. L'adoption est **refusée** si une table ou une colonne des modèles manque : une base plus ancienne que `0001` ne doit pas être déclarée à jour. Une table en trop (`cursus`, `documents_requis` dans les vieilles bases de développement) est tolérée.
 - **Pilote PostgreSQL : psycopg2.** SQLAlchemy 2.1 prend psycopg 3 par défaut pour `postgresql://`, qui n'est pas installé. `backend/dal/database.py` réécrit donc `postgresql://` et `postgres://` en `postgresql+psycopg2://`, quelle que soit l'URL fournie.
 - **Versions Python figées** (`==`) dans `requirements.txt` et `requirements-dev.txt`. Une version sans borne haute a cassé le démarrage en production (SQLAlchemy 2.1.8 installé à la place de 2.0). Monter une version passe par une PR, avec la CI verte.
+
+### 5.2 Adresse du visiteur derrière les proxys (US-024)
+
+Les limites de débit (envois de pièces, consultations de dossier, connexion, contact) comptent par adresse de visiteur (`adresse_client`, `backend/api/v1/limiteur.py`). En production, la chaîne est :
+
+```
+visiteur → Apache UEH (TLS, *.ueh.edu.ht) → Nginx du conteneur frontend → FastAPI
+```
+
+- **Chaque proxy ajoute à droite de `X-Forwarded-For`** l'adresse de qui l'a contacté. FastAPI reçoit donc `[ce que le visiteur a inventé…], visiteur, Apache`. L'adresse retenue est la N-ième entrée **en partant de la droite**, N = `TRUSTED_PROXY_COUNT`. Ne jamais lire la première entrée : le visiteur la choisit, et pourrait ainsi contourner toutes les limites.
+- **`TRUSTED_PROXY_COUNT`** : `0` sans proxy (uvicorn lancé directement), `1` (par défaut) avec le seul Nginx du conteneur, `2` derrière l'Apache UEH. Trop haut, un visiteur peut inventer son adresse ; trop bas, tous les visiteurs partagent l'adresse d'Apache et la limite de 20 consultations par minute bloque tout le monde.
+- **Nginx** (`frontend/nginx.conf`) transmet `X-Forwarded-For $proxy_add_x_forwarded_for` : il ajoute l'adresse d'Apache sans retirer ce qui précède. À ne pas remplacer par `$remote_addr`, qui effacerait l'adresse du visiteur.
+- **Apache UEH** doit transmettre `X-Forwarded-For`. `mod_proxy` le fait par défaut avec `ProxyPass`, à condition de ne pas mettre `ProxyAddHeaders Off`. Configuration attendue :
+  ```
+  ProxyPass        / http://<VM>:5000/
+  ProxyPassReverse / http://<VM>:5000/
+  LimitRequestBody 6291456
+  ```
+  Vérifié le 2026-11-04 dans les journaux Nginx de la VM : les requêtes passées par Apache portent bien l'adresse publique du visiteur.
+- **Limite connue** : un accès direct au port de la VM, sans passer par Apache, ne traverse qu'un proxy. L'entrée la plus à gauche, ajoutée par Nginx, est alors retenue. Un visiteur du réseau local qui envoie son propre `X-Forwarded-For` sur ce port peut donc choisir son adresse. Le port n'est pas censé être joignable depuis Internet autrement que par Apache.
 
 ---
 
