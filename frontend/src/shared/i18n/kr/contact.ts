@@ -7,6 +7,7 @@ export const contact = {
   'contact.telephone': 'Telefòn',
   'contact.email': 'Imèl',
   'contact.horaires': 'Orè sekretarya a',
+  'contact.photoLegende': 'Kanpis Delmas 33 la: se la sekretarya a ye, men ou ka fè tout bagay sou entènèt.',
 
   'contact.faqTitre': 'Kesyon moun poze souvan',
   'contact.q1': 'Èske mwen dwe deplase pou m poze kandidati?',

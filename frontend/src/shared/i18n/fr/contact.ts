@@ -7,6 +7,7 @@ export const contact = {
   'contact.telephone': 'Téléphone',
   'contact.email': 'Email',
   'contact.horaires': 'Horaires du secrétariat',
+  'contact.photoLegende': "Le campus de Delmas 33 : c'est ici que se trouve le secrétariat, mais vous pouvez tout faire en ligne.",
 
   'contact.faqTitre': 'Questions fréquentes',
   'contact.q1': 'Dois-je me déplacer pour candidater ?',
