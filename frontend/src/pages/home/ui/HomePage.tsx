@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { cursusApi, CursusCard, trierBranches } from '../../../entities/cursus';
 import { FORMAT_REFERENCE, normaliserReference } from '../../../entities/candidature';
 import { useT } from '../../../shared/i18n/useT';
+import { PhotoCampus } from '../../../shared/ui/PhotoCampus';
 import { IllustrationDossier } from './IllustrationDossier';
 
 const ETAPES = [1, 2, 3, 4, 5] as const;
@@ -168,12 +169,18 @@ export const HomePage: React.FC = () => {
               {t('accueil.suivre')}
             </Link>
           </section>
-          <section className="rounded-xl border border-fds-line bg-fds-surface p-4 md:p-6 lg:p-8 flex flex-col gap-2.5 lg:bg-fds-navy-t lg:border-fds-accent-line">
-            <h2 className="font-semibold text-lg lg:font-fds-serif lg:text-2xl lg:font-bold lg:text-fds-title">{t('accueil.histoireTitre')}</h2>
-            <p className="text-sm text-fds-mute lg:text-base lg:max-w-xl">{t('accueil.histoireTexte')}</p>
-            <Link to="/histoire" className={`${CLASSE_BOUTON} border-2 border-fds-accent bg-fds-surface text-fds-accent mt-auto lg:self-start lg:min-w-55`}>
-              {t('accueil.histoireLien')}
-            </Link>
+          {/* Sur ordinateur : texte à gauche, photo du campus à droite (maquette bureau) */}
+          <section className="rounded-xl border border-fds-line bg-fds-surface flex flex-col lg:flex-row lg:items-stretch overflow-hidden lg:bg-fds-navy-t lg:border-fds-accent-line">
+            <div className="flex flex-col gap-2.5 p-4 md:p-6 lg:p-8 lg:flex-1 lg:justify-center">
+              <h2 className="font-semibold text-lg lg:font-fds-serif lg:text-2xl lg:font-bold lg:text-fds-title">{t('accueil.histoireTitre')}</h2>
+              <p className="text-sm text-fds-mute lg:text-base lg:max-w-xl">{t('accueil.histoireTexte')}</p>
+              <Link to="/histoire" className={`${CLASSE_BOUTON} border-2 border-fds-accent bg-fds-surface text-fds-accent mt-auto lg:mt-1.5 lg:self-start lg:min-w-55`}>
+                {t('accueil.histoireLien')}
+              </Link>
+            </div>
+            <figure className="hidden lg:block lg:flex-1 relative min-h-75 m-0">
+              <PhotoCampus className="absolute inset-0 w-full h-full" />
+            </figure>
           </section>
         </div>
       </div>

@@ -7,6 +7,7 @@ export const commun = {
   'marque.facuteUeh': 'Fakilte Syans, UEH',
   'marque.logoAlt': 'Logo Fakilte Syans, Inivèsite Leta Ayiti',
   'marque.adresse': 'Fakilte Syans, Delmas 33, Ayiti',
+  'marque.photoCampusAlt': 'Lakou anndan Fakilte Syans nan Delmas 33, ak galri li yo sou plizyè etaj',
   'marque.accueilLien': 'Paj dakèy pòtay la',
   'marque.accueilRetour': 'Tounen sou paj dakèy pòtay la',
 

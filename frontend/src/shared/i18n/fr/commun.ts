@@ -5,6 +5,7 @@ export const commun = {
   'marque.facuteUeh': 'Faculté des Sciences, UEH',
   'marque.logoAlt': "Logo de la Faculté des Sciences, Université d'État d'Haïti",
   'marque.adresse': 'Faculté des Sciences, Delmas 33, Haïti',
+  'marque.photoCampusAlt': 'La cour intérieure de la Faculté des Sciences à Delmas 33, avec ses galeries à plusieurs niveaux',
   'marque.accueilLien': 'Accueil du portail',
   'marque.accueilRetour': "Retour à l'accueil du portail",
 
