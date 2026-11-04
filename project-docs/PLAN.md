@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T00:30:00Z
-updated: 2026-11-01T16:56:09Z
+updated: 2026-11-04T15:33:51Z
 ---
 
 # PLAN.md — FDS Portail
@@ -19,6 +19,7 @@ Les Epics sont **séquentiels** — chaque Epic doit être livrable et testable 
 | `epic-001-socle` | Socle & Portail public | WS-01 | — | ✅ Done — closed 2026-09-26, voir [epic-001-closeout.md](execution/epic-001-socle/epic-001-closeout.md) |
 | `epic-002-candidature` | Candidature & Suivi | WS-02, WS-03, WS-05 | `epic-001` | 🟡 In progress — [suivi](execution/epic-002-candidature/epic-002-refinement.md) |
 | `epic-003-administration` | Administration & Audit | WS-04, WS-05 | `epic-002` | Un admin valide/rejette des documents. Les emails de statut partent. Le candidat peut remplacer un document rejeté. |
+| `epic-005-mise-en-production` | Mise en production | Transverse | — (le portail fonctionnel existe déjà) | Le portail est en ligne sur la VM Proxmox de la FDS, déployé automatiquement à chaque fusion, avec des sauvegardes hors site restaurables. |
 
 **Pourquoi cet ordre ?**
 - `epic-001` établit le socle technique (CI/CD, déploiement, base de données, auth basique) sur lequel tout repose.
@@ -129,6 +130,27 @@ Source : `PRD.md §6` (Must / Should / Won't). Consolidé ici pour le séquencem
 - `US-014` — Notification email déclenchée par une décision admin (validation/rejet, non bloquant).
 
 **Critère de sortie :** tous les scénarios du plan de tests fonctionnels (`cahier_des_charges.md §12.2`) passent. Les critères de succès du PRD §11 sont mesurables (≥ 20 candidatures, ≥ 70 % sans déplacement).
+
+---
+
+### `epic-005` — Mise en production
+
+**Livrable :** le portail est accessible aux candidats sur `dorfilus.ueh.edu.ht`, hébergé sur la VM Proxmox de la FDS (ADR-006), sans manipulation manuelle à chaque version.
+
+**Workstreams :** transverse (déploiement, CI/CD, exploitation)
+
+**But en une phrase :** *"Chaque fusion validée arrive en ligne toute seule, et aucune panne du serveur ne fait perdre un dossier."*
+
+**User stories principales :**
+- `US-023` — Migrations de base de données avec Alembic (et pilote PostgreSQL figé).
+- `US-024` — Adresse réelle du visiteur derrière les proxys (limiteur de requêtes).
+- `US-025` — Vérifications du frontend en CI.
+- `US-026` — Déploiement continu vers la VM de la FDS (images GHCR, SSH, retour arrière).
+- `US-027` — Sauvegardes hors site et procédure d'exploitation (restauration testée).
+
+**Dépendances externes :** configuration de l'Apache UEH (en-têtes, envois de 6 Mo, redirection HTTPS) et DNS pour les emails — voir [epic-005-refinement.md](execution/epic-005-mise-en-production/epic-005-refinement.md) §3.
+
+**Critère de sortie :** une fusion sur `master` arrive en ligne sans intervention ; une restauration complète depuis une sauvegarde hors site a réussi.
 
 ---
 
