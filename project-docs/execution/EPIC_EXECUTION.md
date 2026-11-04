@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T13:09:00Z
-updated: 2026-11-03T13:54:35Z
+updated: 2026-11-04T15:33:51Z
 ---
 
 # EPIC_EXECUTION.md — FDS Portail
@@ -85,6 +85,23 @@ Fonctionnalités de confort et d'efficacité opérationnelle : SMS en complémen
 | US-020 | Interface en Kreyòl (sélecteur FR / KR) | 🟡 Should | 🔲 Backlog | [US-020.md](epic-004-could-have/US-020.md) |
 | US-021 | Refonte visuelle de l'accueil et des fiches de cursus | 🔵 Could | 🔲 Backlog | [US-021.md](epic-004-could-have/US-021.md) |
 | US-022 | Finition de la refonte visuelle (menu mobile, accueil et fiche MPC sur ordinateur, suivi) | 🔵 Could | 🔲 Backlog | [US-022.md](epic-004-could-have/US-022.md) |
+
+---
+
+## Epic 5 — Mise en production
+
+**Workstream :** transverse (déploiement, CI/CD, exploitation)
+**Status :** ⏳ Not started — [refinement](epic-005-mise-en-production/epic-005-refinement.md)
+
+Mise en ligne du portail sur la VM Proxmox de la FDS (Docker Compose, HTTPS assuré par l'Apache de l'UEH) : migrations versionnées, adresse réelle du visiteur derrière les proxys, CI frontend, déploiement continu par images GHCR, sauvegardes hors site avec restauration testée. Ordre de build : US-023 → US-024 → US-025 → US-026 → US-027.
+
+| Story | Titre | Statut | Spec |
+|---|---|---|---|
+| US-023 | Migrations de base de données avec Alembic | 🔲 Backlog | [US-023.md](epic-005-mise-en-production/US-023.md) |
+| US-024 | Adresse réelle du visiteur derrière les proxys | 🔲 Backlog | [US-024.md](epic-005-mise-en-production/US-024.md) |
+| US-025 | Vérifications du frontend en CI | 🔲 Backlog | [US-025.md](epic-005-mise-en-production/US-025.md) |
+| US-026 | Déploiement continu vers la VM de la FDS | 🔲 Backlog | [US-026.md](epic-005-mise-en-production/US-026.md) |
+| US-027 | Sauvegardes hors site et procédure d'exploitation | 🔲 Backlog | [US-027.md](epic-005-mise-en-production/US-027.md) |
 
 ---
 
