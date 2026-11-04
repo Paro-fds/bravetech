@@ -5,7 +5,8 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-fds_admin}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-fds_secret_pass}
+      # Obligatoire (US-023) : jamais de mot de passe par défaut, il serait public dans ce dépôt
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD manquant dans .env}
       POSTGRES_DB: ${POSTGRES_DB:-fds_portail}
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -27,7 +28,7 @@ services:
       db:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql+psycopg2://${POSTGRES_USER:-fds_admin}:${POSTGRES_PASSWORD:-fds_secret_pass}@db:5432/${POSTGRES_DB:-fds_portail}
+      DATABASE_URL: postgresql+psycopg2://${POSTGRES_USER:-fds_admin}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD manquant dans .env}@db:5432/${POSTGRES_DB:-fds_portail}
       ENVIRONMENT: production
       UPLOAD_DIR: /app/uploads
       # Email de confirmation (US-008) : sans RESEND_API_KEY, les emails sont écrits dans les journaux
