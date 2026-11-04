@@ -1,10 +1,13 @@
-fastapi>=0.110.0
-uvicorn[standard]>=0.28.0
-pydantic>=2.6.0
-sqlalchemy>=2.0.0
-psycopg2-binary>=2.9.9
-filetype>=1.2.0
-python-multipart>=0.0.9
-bcrypt>=4.1.0
-PyJWT>=2.8.0
-reportlab>=4.0.0
+# Versions figées (US-023) : une dépendance sans borne haute a cassé le démarrage en production
+# (SQLAlchemy 2.1 a pris psycopg 3 comme pilote par défaut). Monter une version = une PR, avec la CI verte.
+fastapi==0.162.0
+uvicorn[standard]==0.54.0
+pydantic==2.14.2
+sqlalchemy==2.1.8
+alembic==1.20.1
+psycopg2-binary==2.9.13
+filetype==1.2.0
+python-multipart==0.0.33
+bcrypt==5.0.0
+PyJWT==2.15.1
+reportlab==5.1.0

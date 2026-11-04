@@ -11,8 +11,8 @@ import os
 import sys
 import uuid
 
-from backend.dal import models  # noqa: F401  (enregistre les tables)
-from backend.dal.database import Base, SessionLocal, engine
+from backend.dal.database import SessionLocal, engine
+from backend.dal.schema import mettre_a_jour_schema
 from backend.dal.securite import HacheurBcrypt
 from backend.dal.utilisateur_repository_sql import SqlUtilisateurRepository
 from backend.entities.utilisateur import ROLE_ADMIN, Utilisateur
@@ -44,7 +44,7 @@ def main() -> int:
     if not email or not mot_de_passe:
         print("ADMIN_SEED_EMAIL et ADMIN_SEED_PASSWORD doivent être définis.", file=sys.stderr)
         return 1
-    Base.metadata.create_all(bind=engine)
+    mettre_a_jour_schema(engine)  # sans effet si le conteneur a déjà migré la base
     with SessionLocal() as session:
         try:
             cree = creer_admin(email, mot_de_passe, SqlUtilisateurRepository(session))

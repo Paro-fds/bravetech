@@ -15,5 +15,5 @@ COPY cursus/ ./cursus/
 
 EXPOSE 8000
 
-# Commande de démarrage avec serveur ASGI uvicorn
-CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Migrations de la base (US-023), puis serveur ASGI uvicorn : si une migration échoue, l'API ne démarre pas
+CMD ["sh", "-c", "python -m backend.scripts.migrer && exec uvicorn backend.main:app --host 0.0.0.0 --port 8000"]

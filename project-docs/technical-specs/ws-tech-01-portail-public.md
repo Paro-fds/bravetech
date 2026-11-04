@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T15:23:00Z
-updated: 2026-11-03T13:54:35Z
+updated: 2026-11-04T18:35:15Z
 workstream: WS-01
 ---
 
@@ -155,6 +155,16 @@ Conformément à l'ADR-006 (serveur Linux sur site / Proxmox à la Faculté des 
 - **Frontend Dockerfile** : Multi-stage build (Node 20 Alpine pour la compilation Vite + Nginx Alpine pour servir les fichiers statiques).
 - **Reverse Proxy Nginx** : Configuration `nginx.conf` routant `/api/` vers le service backend Docker et servant `index.html` pour les routes SPA côté client.
 - **Orchestration Docker Compose** : `docker-compose.yml` déclarant les 3 services (`db`, `backend`, `frontend`), les réseaux internes et le volume persistant `postgres_data`.
+
+### 5.1 Schéma de la base : migrations Alembic (US-023)
+
+- **Le schéma n'est créé que par les migrations.** `Base.metadata.create_all` n'est plus appelé par l'application : il crée les tables manquantes mais ne modifie jamais une table existante, si bien qu'une colonne ajoutée n'arriverait jamais en production. Seuls les tests d'intégration l'utilisent encore, sur une base SQLite en mémoire.
+- **Au démarrage du conteneur backend**, `python -m backend.scripts.migrer` applique `alembic upgrade head`, puis uvicorn démarre. Si une migration échoue, l'API ne démarre pas. En développement, on lance la même commande avant `uvicorn`.
+- **Modifier un modèle (`backend/dal/models.py`) impose une migration** dans la même PR :
+  `alembic -c backend/alembic.ini revision --autogenerate -m "description"`, depuis la racine du dépôt, puis relire le fichier produit dans `backend/dal/migrations/versions/`. Le test `tests/integration/test_migrations.py` fait échouer la CI si les modèles et la dernière migration divergent.
+- **Adoption d'une base créée avant Alembic** (la base de la VM, créée par `create_all` le 2026-11-04) : `backend/dal/schema.py` la détecte (tables présentes, pas de table `alembic_version`) et la marque à la révision `0001` sans la modifier, ce qui équivaut à `alembic stamp 0001`. Les données restent intactes. L'adoption est **refusée** si une table ou une colonne des modèles manque : une base plus ancienne que `0001` ne doit pas être déclarée à jour. Une table en trop (`cursus`, `documents_requis` dans les vieilles bases de développement) est tolérée.
+- **Pilote PostgreSQL : psycopg2.** SQLAlchemy 2.1 prend psycopg 3 par défaut pour `postgresql://`, qui n'est pas installé. `backend/dal/database.py` réécrit donc `postgresql://` et `postgres://` en `postgresql+psycopg2://`, quelle que soit l'URL fournie.
+- **Versions Python figées** (`==`) dans `requirements.txt` et `requirements-dev.txt`. Une version sans borne haute a cassé le démarrage en production (SQLAlchemy 2.1.8 installé à la place de 2.0). Monter une version passe par une PR, avec la CI verte.
 
 ---
 
