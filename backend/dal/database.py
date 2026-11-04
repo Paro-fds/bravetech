@@ -12,7 +12,17 @@ from sqlalchemy.orm import declarative_base, sessionmaker, Session
 
 # Chemin par défaut pour SQLite en local
 DEFAULT_DB_PATH = Path(__file__).resolve().parents[2] / "bravetech.db"
-DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{DEFAULT_DB_PATH}")
+
+
+def normaliser_url(url: str) -> str:
+    """Impose le pilote psycopg2 (seul installé) : SQLAlchemy 2.1 prend psycopg 3 par défaut pour `postgresql://`."""
+    for prefixe in ("postgresql://", "postgres://"):
+        if url.startswith(prefixe):
+            return "postgresql+psycopg2://" + url[len(prefixe):]
+    return url
+
+
+DATABASE_URL = normaliser_url(os.getenv("DATABASE_URL", f"sqlite:///{DEFAULT_DB_PATH}"))
 
 # Si SQLite, activer check_same_thread=False
 connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}

@@ -2,29 +2,19 @@
 """
 
 import logging
-from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.api.v1 import api_v1_router
-from backend.dal import models  # noqa: F401  (enregistre les tables dans Base.metadata)
-from backend.dal.database import Base, engine
 
 
 # Sans cette configuration, uvicorn n'affiche pas les messages INFO de l'application : en mode console
 # (sans RESEND_API_KEY), l'email de confirmation serait « envoyé » dans le vide.
 logging.basicConfig(level=logging.INFO, format="%(levelname)s [%(name)s] %(message)s")
 
-
-@asynccontextmanager
-async def lifespan(_: FastAPI):
-    """Crée les tables manquantes au démarrage (pas encore de migrations Alembic)."""
-    Base.metadata.create_all(bind=engine)
-    yield
-
+# Le schéma de la base n'est plus créé ici : `python -m backend.scripts.migrer` l'applique avant l'API (US-023).
 
 app = FastAPI(
-    lifespan=lifespan,
     title="FDS Portail API — Faculté des Sciences (UEH)",
     description="API REST officielle du portail d'information et d'inscription dématérialisée de la FDS-UEH.",
     version="1.0.0",

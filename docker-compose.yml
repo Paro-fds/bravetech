@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   db:
     image: postgres:15-alpine
@@ -29,7 +27,7 @@ services:
       db:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql://${POSTGRES_USER:-fds_admin}:${POSTGRES_PASSWORD:-fds_secret_pass}@db:5432/${POSTGRES_DB:-fds_portail}
+      DATABASE_URL: postgresql+psycopg2://${POSTGRES_USER:-fds_admin}:${POSTGRES_PASSWORD:-fds_secret_pass}@db:5432/${POSTGRES_DB:-fds_portail}
       ENVIRONMENT: production
       UPLOAD_DIR: /app/uploads
       # Email de confirmation (US-008) : sans RESEND_API_KEY, les emails sont écrits dans les journaux
