@@ -108,13 +108,13 @@ export const ContactPage: React.FC = () => {
     <>
       {/* Sur ordinateur, le titre devient un bandeau marine (maquette « Contact bureau ») */}
       <section className="lg:bg-fds-navy lg:text-white">
-        <div className="max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 lg:py-11 flex flex-col gap-2 lg:gap-2.5">
+        <div className="max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 lg:py-11 flex flex-col gap-2 lg:gap-2.5">
           <h1 className="font-fds-serif text-2xl lg:text-[40px] font-bold text-fds-title lg:text-white">{t('contact.titre')}</h1>
           <p className="text-fds-mute lg:text-fds-on-navy lg:text-lg">{t('contact.sousTitre')}</p>
         </div>
       </section>
 
-      <div className="max-w-3xl lg:max-w-6xl w-full mx-auto px-4 py-6 lg:pt-10 lg:pb-14 flex flex-col lg:flex-row lg:items-start gap-[22px] lg:gap-10">
+      <div className="max-w-3xl lg:max-w-5xl w-full mx-auto px-4 py-6 lg:pt-10 lg:pb-14 flex flex-col lg:flex-row lg:items-start gap-[22px] lg:gap-10">
         <div className="flex flex-col gap-[22px] lg:gap-7 lg:flex-1 min-w-0">
           <section className="rounded-xl border border-fds-line bg-fds-surface p-4 flex flex-col gap-3.5" aria-label={t('contact.coordonnees')}>
             <Coordonnee icone={<MapPin className="w-5 h-5" aria-hidden="true" />} titre={t('contact.adresse')} valeur={t('marque.adresse')} />

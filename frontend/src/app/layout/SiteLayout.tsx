@@ -109,13 +109,16 @@ export const SiteLayout: React.FC = () => {
       </main>
 
       <footer className="bg-fds-navy-d text-fds-on-navy text-sm">
-        <div className="max-w-5xl mx-auto px-4 py-6 flex flex-col gap-3">
-          <div className="flex items-center gap-3">
-            <img src="/logo-fds.png" alt="" width={40} height={40} className="rounded" />
-            <span className="font-semibold text-white">{t('marque.facuteUeh')}</span>
+        {/* Sur ordinateur (maquette bureau) : identité à gauche, liens à droite, mentions sur toute la largeur */}
+        <div className="max-w-5xl mx-auto px-4 py-6 lg:py-8 flex flex-col lg:flex-row lg:flex-wrap lg:items-center lg:justify-between gap-3 lg:gap-x-8">
+          <div className="flex flex-col gap-3 lg:gap-2">
+            <div className="flex items-center gap-3">
+              <img src="/logo-fds.png" alt="" width={40} height={40} className="rounded" />
+              <span className="font-semibold text-white">{t('marque.facuteUeh')}</span>
+            </div>
+            <p>{t('marque.adresse')}</p>
           </div>
-          <p>{t('marque.adresse')}</p>
-          <ul className="flex flex-wrap gap-x-5">
+          <ul className="flex flex-wrap gap-x-5 lg:gap-x-6">
             {LIENS.filter((l) => l.to !== '/cursus/mpc').map((lien) => (
               <li key={lien.to}>
                 <Link to={lien.to} className="min-h-11 inline-flex items-center underline">
@@ -124,8 +127,10 @@ export const SiteLayout: React.FC = () => {
               </li>
             ))}
           </ul>
-          <p className="text-xs">{t('pied.simulation')}</p>
-          <p className="text-xs">{t('pied.droits')}</p>
+          <div className="flex flex-col gap-3 lg:basis-full lg:gap-1.5 lg:border-t lg:border-white/15 lg:pt-4">
+            <p className="text-xs">{t('pied.simulation')}</p>
+            <p className="text-xs">{t('pied.droits')}</p>
+          </div>
         </div>
       </footer>
     </div>

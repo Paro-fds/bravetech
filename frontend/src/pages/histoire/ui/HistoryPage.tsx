@@ -21,14 +21,14 @@ export const HistoryPage: React.FC = () => {
         <PhotoCampus tailles="100vw" className="hidden lg:block absolute inset-0 w-full h-full" />
         {/* Voile marine : le titre blanc reste lisible sur la photo */}
         <div aria-hidden="true" className="hidden lg:block absolute inset-0 bg-fds-navy-d/75" />
-        <div className="relative w-full max-w-3xl lg:max-w-6xl mx-auto px-4 py-8 lg:pt-14 lg:pb-12 flex flex-col gap-2.5 lg:gap-3">
+        <div className="relative w-full max-w-3xl lg:max-w-5xl mx-auto px-4 py-8 lg:pt-14 lg:pb-12 flex flex-col gap-2.5 lg:gap-3">
           <span className="self-start rounded-full bg-white/15 px-2.5 py-0.5 text-[13px] font-semibold">{t('histoire.badge')}</span>
           <h1 className="font-fds-serif text-[28px] lg:text-[46px] leading-tight font-bold lg:max-w-3xl">{t('histoire.titre')}</h1>
           <p className="text-fds-on-navy lg:text-white/90 lg:text-lg">{t('histoire.sousTitre')}</p>
         </div>
       </section>
 
-      <div className="max-w-3xl lg:max-w-6xl w-full mx-auto px-4 py-6 lg:py-12 grid gap-6 lg:grid-cols-[3fr_1fr] lg:gap-x-12 lg:gap-y-9 lg:text-lg">
+      <div className="max-w-3xl lg:max-w-5xl w-full mx-auto px-4 py-6 lg:py-12 grid gap-6 lg:grid-cols-[3fr_1fr] lg:gap-x-12 lg:gap-y-9 lg:text-lg">
         <section className="flex flex-col gap-3 lg:col-start-1">
           <h2 className={CLASSE_TITRE_SECTION}>{t('histoire.fondationTitre')}</h2>
           <p>{t('histoire.fondation1')}</p>
