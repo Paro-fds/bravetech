@@ -1,3 +1,4 @@
-// Erreur volontaire (US-025) : cette PR doit être rouge, ne jamais la fusionner
-const inutilisee = 1;
-export const n: number = "texte";
+// Avertissement de lint volontaire (US-025) : accepté par TypeScript, refusé par oxlint --deny-warnings
+export function arreter(): void {
+  debugger;
+}
