@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T12:35:00Z
-updated: 2026-09-30T16:04:08Z
+updated: 2026-11-04T20:22:30Z
 ---
 
 # PROJECT_WORKFLOW.md — FDS Portail
@@ -69,12 +69,12 @@ Chaque User Story doit satisfaire **tous** ces critères avant d'être marquée 
 
 | Critère | Vérification |
 |---|---|
-| **Code mergé** | PR approuvée et mergée sur `main` |
-| **Tests verts** | `pytest tests/` passe en CI — dont `test_architecture.py` |
-| **Pas de régression** | Le build Vite (`npm run build`) passe sans erreur |
+| **Code mergé** | PR approuvée et mergée sur `master` |
+| **CI verte, backend et frontend** | Les deux jobs de `.github/workflows/ci.yml` passent (US-025) : « Architecture & Unit Tests » (`pytest tests/`, dont `test_architecture.py`) et « Frontend » (`tsc -b`, `npm run lint` où un avertissement fait échouer, `npm test`, `vite build`) |
 | **Comportement vérifié** | Le scénario de la User Story a été testé manuellement ou couvert par un test d'intégration |
 | **Pas de logique métier dans Infrastructure** | Aucun import SQLAlchemy dans `entities/`, aucun appel métier dans `dal/` |
-| **Pas de secret en clair** | Aucune clé API, token ou mot de passe dans le code versionné |
+| **Pas de secret en clair** | Aucune clé API, token ou mot de passe dans le code versionné, pas même une valeur par défaut (`${VAR:?…}` dans `docker-compose.yml`) ; GitGuardian vert |
+| **Pas d'adresse réelle** | Le dépôt est public : aucune adresse IP ni port d'accès tirés de la VM ou de ses journaux. Les tests utilisent des adresses fictives (RFC 5737) |
 | **Document mis à jour si nécessaire** | Si la story change un contrat API, un schéma de données ou une décision d'architecture → le document correspondant est mis à jour avant de fermer l'Issue |
 
 > **Différence entre « fonctionnel » et « fini » :** une story qui fonctionne localement mais dont les tests échouent en CI n'est **pas** finie. Une story qui passe en CI mais introduit une violation de la Règle de Dépendance n'est **pas** finie — `test_architecture.py` est le gardien automatique de cette règle.

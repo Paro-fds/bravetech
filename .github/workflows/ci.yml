@@ -29,3 +29,37 @@ jobs:
       - name: Run all tests
         run: |
           pytest tests/ -v
+
+  # US-025 : sans ce job, une erreur de type ou de build n'était vue qu'à la main
+  frontend:
+    name: Frontend (types, lint, tests, build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22" # comme frontend/Dockerfile
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npx tsc -b
+
+      - name: Lint (un avertissement fait échouer)
+        run: npm run lint # oxlint --deny-warnings src
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Build
+        run: npx vite build
