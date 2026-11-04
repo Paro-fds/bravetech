@@ -42,6 +42,8 @@ services:
       EMAIL_FROM: "${EMAIL_FROM:-FDS Portail <onboarding@resend.dev>}"
       # URL publique du portail, utilisée pour le lien de suivi des emails
       APP_BASE_URL: "${APP_BASE_URL:-http://localhost}"
+      # Proxys devant l'API (US-024) : 1 = Nginx du conteneur seul ; 2 = un proxy en amont (Apache UEH) + Nginx
+      TRUSTED_PROXY_COUNT: "${TRUSTED_PROXY_COUNT:-1}"
     volumes:
       - uploads_data:/app/uploads
     networks:
