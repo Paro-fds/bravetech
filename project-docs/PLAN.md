@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T00:30:00Z
-updated: 2026-11-04T15:33:51Z
+updated: 2026-11-05T17:49:02Z
 ---
 
 # PLAN.md — FDS Portail
@@ -156,13 +156,12 @@ Source : `PRD.md §6` (Must / Should / Won't). Consolidé ici pour le séquencem
 
 ## Prochaines étapes immédiates
 
-> `epic-001` est clôturé (socle, scaffold back/front, déploiement, US-001 à US-004). `epic-002` est ouvert, aucune story commencée.
+> Mis à jour le 2026-11-05. `epic-001` est clôturé ; les stories des Epics 2 et 3 sont toutes livrées ; il reste `US-016` (Epic 4) et `US-027` (Epic 5). Le portail est en production sur la VM de la FDS.
 
-1. **Refine `US-005`** (`epic-002`) — Formulaire d'inscription & question `deplacement_physique`. Passer par le skill `user-story` (Refine) : lever les questions ouvertes de la spec avant tout code. C'est la première story de l'Epic et il n'existe pas d'ordre de build explicite documenté.
-2. **Construire `US-005`** — formulaire d'infos personnelles + question `deplacement_physique` obligatoire persistée en base (métrique principale du MVP, cible ≥ 70 % à `false`).
-3. **Enchaîner `US-006` → `US-010`** dans l'ordre de l'Epic : simulation de paiement, téléversement sécurisé, finalisation + email, suivi par référence, remplacement d'un document rejeté.
-4. **Documenter l'ordre de build** de l'Epic 2 dans sa section `EPIC_EXECUTION.md` si l'on dévie de l'ordre séquentiel par ID.
-5. **Aligner WS-01 sur l'admission unique** (ADR-008) : accueil avec carte MPC mise en avant, fiche MPC (parcours en 5 ans, 5 pièces), fiches des branches sans pièces, et liste de pièces unique dans `backend/dal/cursus_loader.py`. Story `US-018` (Epic 2, à faire en parallèle d'`US-005`). Les pages Histoire / Contact et le Kreyòl sont `US-019` et `US-020` (Epic 4, Should Have).
+1. **Construire `US-016` — Notifications SMS** (Should Have, seul élément du périmètre contractuel non livré). Passer par le skill `user-story` (Refine) : choisir le fournisseur (Twilio en essai, ou opérateur local) ou, faute de clé, livrer le port `ISmsProvider` et l'adaptateur console et justifier l'absence d'envoi réel dans le rapport.
+2. **Activer les emails en production** (Must Have) : domaine d'envoi vérifié chez Resend, clé posée dans le `.env` de la VM (`reviews/03`, F2). Configuration, pas de code.
+3. **Clôturer les Epics 2 et 3** avec le skill `epic` (Close) : closeouts, et specs fonctionnelles / techniques de WS-02, WS-03 et WS-04 consolidées depuis les stories.
+4. **Construire `US-027`** — sauvegardes hors site et procédure d'exploitation (Epic 5), puis clôturer les Epics 4 et 5.
 
 > Le statut quotidien (story en cours, bloquages) vit dans `project-docs/execution/` une fois le travail commencé — pas ici. Ce fichier ne change que si la séquence des Epics change.
 
