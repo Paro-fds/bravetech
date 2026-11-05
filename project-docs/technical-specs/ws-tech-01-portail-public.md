@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T15:23:00Z
-updated: 2026-11-04T20:08:30Z
+updated: 2026-11-05T14:28:36Z
 workstream: WS-01
 ---
 
@@ -152,7 +152,7 @@ Les règles suivantes, actives durant l'Epic 1, sont désormais pérennes dans l
 
 Conformément à l'ADR-006 (serveur Linux sur site / Proxmox à la Faculté des Sciences) :
 - **Backend Dockerfile** : Image Python 3.11-slim optimisée avec installation des dépendances et lancement par Uvicorn.
-- **Frontend Dockerfile** : Multi-stage build (Node 20 Alpine pour la compilation Vite + Nginx Alpine pour servir les fichiers statiques).
+- **Frontend Dockerfile** : Multi-stage build (Node 22 Alpine pour la compilation Vite + Nginx Alpine pour servir les fichiers statiques).
 - **Reverse Proxy Nginx** : Configuration `nginx.conf` routant `/api/` vers le service backend Docker et servant `index.html` pour les routes SPA côté client.
 - **Orchestration Docker Compose** : `docker-compose.yml` déclarant les 3 services (`db`, `backend`, `frontend`), les réseaux internes et le volume persistant `postgres_data`.
 
@@ -163,6 +163,7 @@ Conformément à l'ADR-006 (serveur Linux sur site / Proxmox à la Faculté des 
 - **Modifier un modèle (`backend/dal/models.py`) impose une migration** dans la même PR :
   `alembic -c backend/alembic.ini revision --autogenerate -m "description"`, depuis la racine du dépôt, puis relire le fichier produit dans `backend/dal/migrations/versions/`. Le test `tests/integration/test_migrations.py` fait échouer la CI si les modèles et la dernière migration divergent.
 - **Adoption d'une base créée avant Alembic** (la base de la VM, créée par `create_all` le 2026-11-04) : `backend/dal/schema.py` la détecte (tables présentes, pas de table `alembic_version`) et la marque à la révision `0001` sans la modifier, ce qui équivaut à `alembic stamp 0001`. Les données restent intactes. L'adoption est **refusée** si une table ou une colonne des modèles manque : une base plus ancienne que `0001` ne doit pas être déclarée à jour. Une table en trop (`cursus`, `documents_requis` dans les vieilles bases de développement) est tolérée.
+- **Une migration doit rester compatible avec la version précédente du code** (US-026). Le retour arrière automatique remet les anciennes images mais pas l'ancien schéma : Alembic ne va que vers l'avant. On ajoute (table, colonne nullable ou avec valeur par défaut) dans une version ; on renomme ou on supprime seulement dans une version suivante, une fois que plus aucun code en ligne ne s'en sert. Sinon, le retour arrière passe par la copie de la base faite avant le déploiement (§5.3).
 - **Pilote PostgreSQL : psycopg2.** SQLAlchemy 2.1 prend psycopg 3 par défaut pour `postgresql://`, qui n'est pas installé. `backend/dal/database.py` réécrit donc `postgresql://` et `postgres://` en `postgresql+psycopg2://`, quelle que soit l'URL fournie.
 - **Versions Python figées** (`==`) dans `requirements.txt` et `requirements-dev.txt`. Une version sans borne haute a cassé le démarrage en production (SQLAlchemy 2.1.8 installé à la place de 2.0). Monter une version passe par une PR, avec la CI verte.
 
@@ -185,6 +186,23 @@ visiteur → Apache UEH (TLS, *.ueh.edu.ht) → Nginx du conteneur frontend → 
   ```
   Vérifié le 2026-11-04 dans les journaux Nginx de la VM : les requêtes passées par Apache portent bien l'adresse publique du visiteur.
 - **Limite connue** : un accès direct au port de la VM, sans passer par Apache, ne traverse qu'un proxy. L'entrée la plus à gauche, ajoutée par Nginx, est alors retenue. Un visiteur du réseau local qui envoie son propre `X-Forwarded-For` sur ce port peut donc choisir son adresse. Le port n'est pas censé être joignable depuis Internet autrement que par Apache.
+
+### 5.3 Déploiement continu et retour arrière (US-026, ADR-009)
+
+- **Chaîne** : fusion sur `master` → CI verte → `.github/workflows/deploy.yml` (déclenché par `workflow_run` sur la CI, uniquement pour un push) → images `ghcr.io/paro-fds/bravetech-backend` et `-frontend`, étiquetées par le commit complet → job `deployer` dans l'environnement GitHub `production` → `ssh` vers la VM → `deploy/deploy.sh <commit>`.
+- **Sur la VM, deux fichiers comptent** : `~/bravetech/.env` (jamais versionné, toutes les variables de `.env.example`) et `~/deploiement/deploy.sh` (copie de `deploy/deploy.sh`, hors du clone git pour qu'une mise à jour du dépôt ne le change pas pendant qu'il tourne). Le script télécharge `docker-compose.prod.yml` du commit demandé ; le clone git de `~/bravetech` ne sert plus au déploiement.
+- **`docker-compose.prod.yml` fixe `name: bravetech`** : c'est ce nom qui rattache les volumes `bravetech_postgres_data` et `bravetech_uploads_data`. Le changer ferait démarrer le portail sur des volumes vides.
+- **Étapes du script** : refuse tout argument qui n'est pas un commit de 40 caractères hexadécimaux ; un seul déploiement à la fois (`flock`) ; télécharge les images (échec → rien n'est touché) ; copie la base (`pg_dump`, `~/sauvegardes/deploiements/`, 10 dernières gardées) ; `docker compose up -d` ; attend jusqu'à 90 s que `/api/v1/sante` réponde 200 ; sinon affiche les journaux du backend et relance la version précédente (`.version-deployee`, `docker-compose.prod.yml.precedent`). Tout s'affiche dans le journal du workflow.
+- **`/api/v1/sante`** passe par Nginx et exécute `SELECT 1`. Ne pas utiliser `/health` pour le contrôle : derrière Nginx, cette adresse renvoie la page du site, donc 200 même backend arrêté.
+- **Clé de déploiement** : une clé ed25519 dédiée, sans phrase de passe, dont la partie privée n'existe que dans le secret GitHub `DEPLOY_KEY`. Dans `~/.ssh/authorized_keys` de la VM, elle est limitée au script : `command="/home/devops/deploiement/deploy.sh",no-port-forwarding,no-X11-forwarding,no-agent-forwarding,no-pty`. Le commit envoyé par GitHub arrive dans `SSH_ORIGINAL_COMMAND`.
+- **Secrets de l'environnement `production`** : `DEPLOY_HOST`, `DEPLOY_PORT`, `DEPLOY_USER`, `DEPLOY_KEY`, `DEPLOY_KNOWN_HOSTS` (empreinte d'hôte de la VM, vérifiée avec `StrictHostKeyChecking=yes`). Adresse et port n'apparaissent jamais dans le dépôt public.
+- **Images publiques** sur GHCR : à passer en public une fois, à la création des paquets (GitHub → Packages → paquet → Package settings → Change visibility). La VM les télécharge sans identifiant.
+- **Approbation manuelle** : désactivée. Elle s'active sans toucher au code, dans Settings → Environments → `production` → Required reviewers.
+- **Retour manuel à une version** (avec votre clé personnelle, depuis votre poste) :
+  `ssh fds-vm '~/deploiement/deploy.sh <commit complet>'`
+  La liste des versions déployables est celle des commits de `master` dont le workflow « Déploiement » a construit les images.
+- **Restaurer la copie faite avant un déploiement** (si une migration a abîmé la base) : arrêter le backend, puis `pg_restore --clean --if-exists` du fichier `~/sauvegardes/deploiements/avant-<commit>-<date>.dump` dans le conteneur `db`. Procédure complète et testée : US-027.
+- **Mettre à jour le script lui-même** : il n'est pas déployé automatiquement. Après une modification de `deploy/deploy.sh` fusionnée sur `master`, recopier le fichier dans `~/deploiement/` sur la VM.
 
 ---
 

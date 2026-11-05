@@ -1,0 +1,92 @@
+name: Déploiement
+
+# US-026 : chaque push sur master dont la CI est verte construit les images, les publie sur GHCR
+# et les déploie sur la VM de la FDS par SSH. Le dépôt est public : pas de runner sur la VM (E5-4).
+on:
+  workflow_run:
+    workflows: ["CI - Architecture & Tests"]
+    types: [completed]
+    branches: [master]
+
+# Un seul déploiement à la fois, sans annuler celui qui tourne
+concurrency:
+  group: production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  images:
+    name: Images (GHCR)
+    # Seulement après un push sur master réussi, jamais pour une pull request
+    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    env:
+      TAG: ${{ github.event.workflow_run.head_sha }}
+
+    steps:
+      - name: Checkout du commit testé
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Connexion à GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Image backend
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: backend/Dockerfile
+          push: true
+          tags: ghcr.io/paro-fds/bravetech-backend:${{ env.TAG }}
+          labels: org.opencontainers.image.source=https://github.com/${{ github.repository }}
+          cache-from: type=gha,scope=backend
+          cache-to: type=gha,scope=backend,mode=max
+
+      - name: Image frontend
+        uses: docker/build-push-action@v6
+        with:
+          context: ./frontend
+          push: true
+          tags: ghcr.io/paro-fds/bravetech-frontend:${{ env.TAG }}
+          labels: org.opencontainers.image.source=https://github.com/${{ github.repository }}
+          cache-from: type=gha,scope=frontend
+          cache-to: type=gha,scope=frontend,mode=max
+
+  deployer:
+    name: Déploiement sur la VM
+    needs: images
+    runs-on: ubuntu-latest
+    # Secrets du déploiement rangés dans cet environnement ; l'approbation manuelle s'y active (Settings → Environments)
+    environment: production
+
+    steps:
+      - name: Lancer deploy.sh sur la VM
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+          TAG: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/deploiement
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/deploiement ~/.ssh/known_hosts
+          # La clé ne peut lancer que deploy.sh (command= dans authorized_keys) : le commit est son seul argument.
+          # Empreinte d'hôte vérifiée (StrictHostKeyChecking) : on ne parle qu'à la VM attendue.
+          ssh -i ~/.ssh/deploiement -p "$DEPLOY_PORT" \
+            -o StrictHostKeyChecking=yes -o BatchMode=yes -o ConnectTimeout=20 \
+            "$DEPLOY_USER@$DEPLOY_HOST" "$TAG"

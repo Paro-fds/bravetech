@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T00:35:00Z
-updated: 2026-11-01T15:51:55Z
+updated: 2026-11-05T14:28:36Z
 ---
 
 # GLOSSARY.md — FDS Portail
@@ -32,8 +32,8 @@ updated: 2026-11-01T15:51:55Z
 | Terme | Définition |
 |---|---|
 | **FDS Portail** | Le produit dans son ensemble — comprend le frontend et le backend. À ne pas confondre avec les autres modules de l'écosystème FDS (FDS Pay, FDS Akademi, FDS SYS). |
-| **Frontend** | Application React/Vite (SPA) hébergée sur Vercel. Sert les pages publiques (cursus, candidature, suivi) et le tableau de bord admin. Structure interne : Feature-Sliced Design (FSD). |
-| **Backend** | API FastAPI hébergée sur Railway. Structure interne : Clean Architecture (4 couches). Expose les endpoints REST sous `/api/v1/`. Source de vérité : PostgreSQL. |
+| **Frontend** | Application React/Vite (SPA), servie par Nginx dans un conteneur sur la VM Proxmox de la FDS (ADR-006) ; Nginx relaie aussi `/api/` vers le Backend. Sert les pages publiques (cursus, candidature, suivi) et le tableau de bord admin. Structure interne : Feature-Sliced Design (FSD). |
+| **Backend** | API FastAPI, dans un conteneur sur la VM Proxmox de la FDS (ADR-006). Structure interne : Clean Architecture (4 couches). Expose les endpoints REST sous `/api/v1/`. Source de vérité : PostgreSQL. |
 | **FDS SYS** | Système externe — System of Record des identités des administrateurs FDS. FDS Portail *consomme* ces identités mais ne les gère pas. Non livré en V1 : les comptes admin sont créés manuellement. |
 | **FDS Pay** | Module externe de paiement réel (MonCash/NatCash). Non livré en V1 — FDS Portail simule le paiement. |
 
