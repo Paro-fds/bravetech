@@ -1,6 +1,6 @@
 ---
-created: 2026-11-05T17:00:00Z
-updated: 2026-11-05T16:56:47Z
+created: 2026-11-05T16:50:00Z
+updated: 2026-11-05T16:57:24Z
 ---
 
 # 02 — Les contrôles attendus par le cours (ce que nous croyions sur notre architecture frontend et nos tests)
