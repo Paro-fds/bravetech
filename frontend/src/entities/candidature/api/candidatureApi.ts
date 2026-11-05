@@ -128,6 +128,15 @@ export function extraireErreursChamps(erreur: unknown): ErreursChamps | null {
   return detail?.erreurs ?? null;
 }
 
+/** Issue d'un paiement simulé qui n'aboutit pas : refusé par l'opérateur (402) ou échec technique (502), sinon null. */
+export function extraireIssuePaiement(erreur: unknown): 'refuse' | 'echoue' | null {
+  if (!(erreur instanceof ApiError)) return null;
+  const code = (erreur.body as { detail?: { code?: string } } | null)?.detail?.code;
+  if (erreur.status === 402 && code === 'paiement_refuse') return 'refuse';
+  if (erreur.status === 502 && code === 'paiement_echoue') return 'echoue';
+  return null;
+}
+
 /** Liste des éléments manquants d'un dossier incomplet (réponse 409 de la soumission), ou null. */
 export function extraireManques(erreur: unknown): string[] | null {
   if (!(erreur instanceof ApiError) || erreur.status !== 409) return null;

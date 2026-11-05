@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T12:35:00Z
-updated: 2026-11-05T16:56:47Z
+updated: 2026-11-05T17:47:40Z
 ---
 
 # PROJECT_WORKFLOW.md — FDS Portail
@@ -72,6 +72,7 @@ Chaque User Story doit satisfaire **tous** ces critères avant d'être marquée 
 | **Code mergé** | PR approuvée et mergée sur `master` |
 | **CI verte, backend et frontend** | Les deux jobs de `.github/workflows/ci.yml` passent (US-025) : « Architecture & Unit Tests » (`pytest tests/`, dont `test_architecture.py`) et « Frontend » (`tsc -b`, `npm run lint` où un avertissement fait échouer, `npm run lint:archi` = steiger sans erreur, `npm test`, `vite build`). Le job backend calcule aussi le **score CRAP** (`tools/crap.py`) : aucune fonction au-dessus de 30 |
 | **Comportement vérifié** | Le scénario de la User Story a été testé manuellement ou couvert par un test d'intégration |
+| **Conforme au contrat et en production** | Les critères d'acceptation ont été relus contre le périmètre du document de lancement (Partie 3 et Partie 5 : par exemple, paiement réussi, échoué, refusé et relancé) ; la fonctionnalité marche sur `https://dorfilus.ueh.edu.ht`, pas seulement en local (voir `reviews/03`) |
 | **Pas de logique métier dans Infrastructure** | Aucun import SQLAlchemy dans `entities/`, aucun appel métier dans `dal/` |
 | **Pas de secret en clair** | Aucune clé API, token ou mot de passe dans le code versionné, pas même une valeur par défaut (`${VAR:?…}` dans `docker-compose.yml`) ; GitGuardian vert |
 | **Pas d'adresse réelle** | Le dépôt est public : aucune adresse IP ni port d'accès tirés de la VM ou de ses journaux. Les tests utilisent des adresses fictives (RFC 5737) |

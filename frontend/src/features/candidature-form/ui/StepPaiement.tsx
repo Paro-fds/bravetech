@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { TriangleAlert, Info } from 'lucide-react';
+import { CircleX, Info, RotateCcw, TriangleAlert } from 'lucide-react';
 import {
   extraireErreursChamps,
+  extraireIssuePaiement,
   type ErreursChamps,
   type MethodePaiement,
 } from '../../../entities/candidature';
@@ -33,11 +34,14 @@ export const StepPaiement: React.FC<StepPaiementProps> = ({ montantHtg, methode,
   const t = useT();
   const [erreurs, setErreurs] = useState<ErreursChamps>({});
   const [messageGlobal, setMessageGlobal] = useState<string | null>(null);
+  // Paiement simulé qui n'aboutit pas : refusé par l'opérateur, ou échec technique que l'on peut relancer
+  const [issue, setIssue] = useState<'refuse' | 'echoue' | null>(null);
   const [enCours, setEnCours] = useState(false);
 
-  const soumettre = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const soumettre = async (e?: React.FormEvent) => {
+    e?.preventDefault();
     setMessageGlobal(null);
+    setIssue(null);
 
     const erreursLocales: ErreursChamps = {};
     if (!methode) erreursLocales.methode_paiement = t('pay.erreurMethode');
@@ -54,9 +58,10 @@ export const StepPaiement: React.FC<StepPaiementProps> = ({ montantHtg, methode,
       await onSoumettre(methode, numero);
     } catch (erreur) {
       const erreursServeur = extraireErreursChamps(erreur);
+      const issueServeur = extraireIssuePaiement(erreur);
       if (erreursServeur) setErreurs(erreursServeur);
-      else
-        setMessageGlobal(t('pay.erreurReseau'));
+      else if (issueServeur) setIssue(issueServeur);
+      else setMessageGlobal(t('pay.erreurReseau'));
     } finally {
       setEnCours(false);
     }
@@ -143,10 +148,34 @@ export const StepPaiement: React.FC<StepPaiementProps> = ({ montantHtg, methode,
 
       <div className="flex gap-2.5 items-start rounded-[10px] border border-fds-accent-line bg-fds-navy-t px-3.5 py-3 text-sm text-fds-title">
         <Info className="w-5 h-5 shrink-0" aria-hidden="true" />
-        <span>
-          {t('pay.refAvant')}<strong>PAY-SIM-2026-XXXX</strong>{t('pay.refApres')}
+        <span className="flex flex-col gap-1.5">
+          <span>
+            {t('pay.refAvant')}<strong>PAY-SIM-2026-XXXX</strong>{t('pay.refApres')}
+          </span>
+          <span>{t('pay.numerosTest')}</span>
         </span>
       </div>
+
+      {issue && (
+        <div role="alert" className="flex flex-col gap-2.5 rounded-[10px] border border-fds-bad-line bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
+          <p className="flex items-center gap-2 font-semibold text-base">
+            <CircleX className="w-5 h-5 shrink-0" aria-hidden="true" />
+            {issue === 'refuse' ? t('pay.refuseTitre') : t('pay.echecTitre')}
+          </p>
+          <p>{issue === 'refuse' ? t('pay.refuse') : t('pay.echec')}</p>
+          {issue === 'echoue' && (
+            <button
+              type="button"
+              onClick={() => soumettre()}
+              disabled={enCours}
+              className="self-start min-h-11 px-4 rounded-lg border-2 border-fds-bad-line bg-fds-surface text-fds-bad font-semibold flex items-center gap-2"
+            >
+              <RotateCcw className="w-5 h-5" aria-hidden="true" />
+              {t('pay.relancer')}
+            </button>
+          )}
+        </div>
+      )}
 
       {messageGlobal && (
         <p role="alert" className="rounded-[10px] border border-fds-bad-line bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
