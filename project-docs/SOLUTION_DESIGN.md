@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T00:18:00Z
-updated: 2026-11-01T17:34:29Z
+updated: 2026-11-05T14:28:36Z
 ---
 
 # SOLUTION_DESIGN.md — FDS Portail
@@ -47,9 +47,11 @@ Cinq zones fonctionnelles indépendantes, chacune pouvant évoluer sans bloquer 
 
 ## 3. Vue d'ensemble du système
 
-FDS Portail est un **monolithe modulaire** déployé en deux artefacts coordonnés :
-- Un **frontend React/Vite** (SPA) hébergé sur Vercel.
-- Un **backend FastAPI** hébergé sur Railway, connecté à PostgreSQL (Railway) et aux services externes Cloudinary (stockage) et Resend (email).
+FDS Portail est un **monolithe modulaire** déployé en deux images Docker coordonnées, sur une VM de la Faculté (Proxmox, ADR-006) :
+- Un **frontend React/Vite** (SPA) servi par Nginx, qui relaie aussi `/api/` vers le backend.
+- Un **backend FastAPI**, connecté à PostgreSQL (conteneur sur la même VM), au stockage des pièces (volume local, ADR-007) et à Resend (email).
+
+*Corrigé le 2026-11-05 (US-026) : ce paragraphe décrivait Vercel et Railway, abandonnés au profit de la VM Proxmox (ADR-006, ADR-009).*
 
 Le flux de bout en bout : le candidat accède au frontend via HTTPS → le frontend appelle le backend via REST JSON → le backend lit/écrit dans PostgreSQL, délègue les fichiers à Cloudinary et les emails à Resend. L'administrateur passe par le même frontend mais ses routes sont protégées par JWT.
 
@@ -57,27 +59,28 @@ Le flux de bout en bout : le candidat accède au frontend via HTTPS → le front
 Candidat / Admin
       │ HTTPS
       ▼
- [Vercel — React/Vite SPA]
-      │ REST JSON
+ [Apache UEH — TLS *.ueh.edu.ht]
+      │
       ▼
- [Railway — FastAPI]
+ [VM Proxmox FDS — Docker Compose]
+   ├── Nginx + React/Vite SPA ── /api/ ──▶ FastAPI
    ├── PostgreSQL (source de vérité)
-   ├── Cloudinary (fichiers)
-   └── Resend (emails)
+   ├── Volume des pièces (fichiers)
+   └── Resend (emails, service externe)
 ```
 
 ---
 
 ## 4. Carte des composants
 
-### 4.1 Frontend (Vercel)
+### 4.1 Frontend (image Nginx sur la VM)
 - **Framework :** React 19 + Vite + TypeScript
 - **Structure :** Feature-Sliced Design (FSD) — couches `app/`, `pages/`, `features/`, `entities/`, `shared/`
 - **Points d'entrée publics :** `/`, `/cursus/:id`, `/postuler`, `/suivi`, `/histoire`, `/contact`, `/admin/login`, `/admin/dashboard`
 - **État serveur :** TanStack Query (cache, retry, invalidation)
 - **État client :** Zustand (formulaire multi-étapes en cours)
 
-### 4.2 Backend (Railway — FastAPI)
+### 4.2 Backend (image FastAPI sur la VM)
 Organisé selon la **Clean Architecture** (`_ARCHITECTURE_EXPLAINED.md`, Partie 1) :
 
 | Couche | Dossier | Contenu |
@@ -104,7 +107,7 @@ Organisé selon la **Clean Architecture** (`_ARCHITECTURE_EXPLAINED.md`, Partie 
 ### 4.3 Services externes
 | Service | Rôle | Interface locale |
 |---|---|---|
-| **PostgreSQL (Railway)** | Source de vérité | SQLAlchemy 2.x via `dal/` |
+| **PostgreSQL (conteneur sur la VM)** | Source de vérité | SQLAlchemy 2.x via `dal/`, schéma par migrations Alembic (US-023) |
 | **Cloudinary** | Stockage fichiers | `IStorageService` → `CloudinaryStorageAdapter` |
 | **Resend** | Email transactionnel | `IEmailService` → `ResendEmailAdapter` |
 
@@ -121,8 +124,7 @@ Organisé selon la **Clean Architecture** (`_ARCHITECTURE_EXPLAINED.md`, Partie 
 | Auth | python-jose (JWT HS256) + passlib (bcrypt) | Lib éprouvée, hash sécurisé |
 | Stockage fichiers | Cloudinary | Upload sécurisé, URL signée, sans infra propre |
 | Email | Resend (API REST) | Notifications transactionnelles non bloquantes |
-| Frontend deploy | Vercel | CDN global, HTTPS automatique, preview par PR |
-| Backend deploy | Railway (PaaS) | CI/CD depuis GitHub, stateless, PostgreSQL intégré |
+| Déploiement | Docker Compose sur la VM Proxmox de la FDS (ADR-006) | Images construites par GitHub Actions, publiées sur GHCR, déployées par SSH à chaque fusion sur `master` (ADR-009, US-026) |
 | Secrets | `.env` hors repo + `.gitignore` | Anti-fuite de clés |
 | Tests | pytest + pytest-asyncio | Architecture + unitaires + intégration |
 
@@ -198,19 +200,7 @@ Pas de boucle autonome, pas de tâche planifiée, pas de risque de runaway en MV
 
 **Au lancement (production) :**
 
-| Composant | Hébergement | Pipeline |
-|---|---|---|
-| Frontend | Vercel | Push sur `main` → build Vite → déploiement CDN automatique |
-| Backend | Railway | Push sur `main` → build Docker → déploiement stateless automatique |
-| Base de données | Railway PostgreSQL | Provisionnée dans le même projet Railway, backups quotidiens |
-
-**Chemin d'un changement local jusqu'en prod :**
-1. Développement en branche feature.
-2. Pull Request → review → merge sur `main`.
-3. GitHub Actions (ou Railway/Vercel hooks) : tests pytest (`test_architecture`, unitaires, intégration) + build.
-4. Si tout est vert → déploiement automatique.
-
-**CI/CD en MVP :** validation minimale — `pytest tests/` + build Vite. Pas de staging environment dédié en V1.
+Voir la seconde section « 11. Vue d'ensemble du déploiement » plus bas (VM Proxmox, ADR-006 et ADR-009). *Corrigé le 2026-11-05 (US-026) : cette section décrivait Vercel et Railway.*
 
 ---
 
@@ -218,8 +208,8 @@ Pas de boucle autonome, pas de tâche planifiée, pas de risque de runaway en MV
 
 | Hypothèse | Conséquence si fausse |
 |---|---|
-| Le volume de candidatures reste < 500 en V1 | Pool PostgreSQL (5+10 connexions) insuffisant → scale up Railway immédiat |
-| Railway PostgreSQL est fiable à 99 % | Indisponibilité pendant la période d'inscription → perte de candidatures |
+| Le volume de candidatures reste < 500 en V1 | Pool PostgreSQL (5+10 connexions) insuffisant → augmenter les ressources de la VM |
+| La VM Proxmox de la FDS et son alimentation restent disponibles | Indisponibilité pendant la période d'inscription → perte de candidatures (sauvegardes hors site : US-027) |
 | Les candidats ont accès à un email valide | Le système de suivi par référence + email devient inutilisable → ajouter un canal SMS |
 | Cloudinary maintient son API stable | `CloudinaryStorageAdapter` à réécrire → isolé derrière `IStorageService`, coût limité |
 | FDS SYS fournit les comptes administrateurs avant le lancement | Besoin d'une procédure manuelle de création de compte si ce n'est pas le cas |
@@ -259,7 +249,7 @@ Pas de boucle autonome, pas de tâche planifiée, pas de risque de runaway en MV
 |---|---|---|
 | Conformité légale haïtienne sur les données personnelles (consentement, responsable légal) | Non pour le lancement technique | FDS-UEH — avant mise en production publique |
 | Procédure de création des comptes admin si FDS SYS n'est pas prêt | Oui si aucun admin n'existe au lancement | Équipe Bravetech — sprint pré-lancement |
-| Test de restauration du backup Railway PostgreSQL | Non (RPO/RTO documentés, test non effectué) | Équipe Bravetech — avant la période d'inscription |
+| Test de restauration de la sauvegarde PostgreSQL de la VM (US-027) | Non (RPO/RTO documentés, test non effectué) | Équipe Bravetech — avant la période d'inscription |
 | Monitoring automatique (alertes 5xx) | Non pour le MVP | Post-MVP — intégrer Uptime Robot ou équivalent |
 
 ---
@@ -355,11 +345,11 @@ Pas de boucle autonome, pas de tâche planifiée, pas de risque de runaway en MV
    - `db` : Conteneur PostgreSQL 15 avec volume persistant `postgres_data`.
    - `backend` : Conteneur Python 3.11-slim exécutant FastAPI via Uvicorn.
    - `frontend` : Conteneur multi-stage (Node 20 Alpine pour le build Vite, Nginx Alpine pour servir les statiques et faire reverse-proxy vers `/api/`).
-2. **Cheminement d'un changement :** 
-   - Développement local avec tests unitaires, d'intégration et d'architecture.
-   - Push sur la branche `master` / pull request → déclenchement automatique du workflow GitHub Actions (`.github/workflows/ci.yml`).
-   - Déploiement sur le serveur cible via `docker compose up -d --build`.
-3. **CI/CD :** Pipeline GitHub Actions validant à chaque push l'exécution intégrale des tests pytest (tests unitaires, tests d'intégration API, et tests d'architecture Clean Architecture).
+2. **Cheminement d'un changement (US-025, US-026, ADR-009) :**
+   - Branche, puis pull request vers `master`. La protection de `master` exige les vérifications vertes : backend (`pytest`, dont `test_architecture.py`), frontend (`tsc -b`, lint sans avertissement, tests, `vite build`) et GitGuardian.
+   - Fusion sur `master` → `.github/workflows/deploy.yml` construit les images `bravetech-backend` et `bravetech-frontend`, les publie sur GHCR (étiquette = commit), puis se connecte à la VM par SSH.
+   - Sur la VM, `deploy/deploy.sh` copie la base, lance `docker-compose.prod.yml` avec ces images (les migrations Alembic passent au démarrage du backend), vérifie `/api/v1/sante` et revient à la version précédente en cas d'échec.
+3. **Exposition :** l'Apache de l'UEH porte le TLS (`*.ueh.edu.ht`) et relaie vers le port du portail sur la VM. Détails techniques : `technical-specs/ws-tech-01-portail-public.md` §5.
 
 ## 12. Hypothèses
 
@@ -389,6 +379,7 @@ Pas de boucle autonome, pas de tâche planifiée, pas de risque de runaway en MV
 | ADR-006 | Déploiement conteneurisé (Docker Compose / Proxmox) | Dépendance exclusive à un PaaS propriétaire | Hébergement souverain sur l'infrastructure Linux de la faculté des sciences via Proxmox avec portabilité immédiate | Accepté (2026-09-26) |
 | ADR-007 | Stockage des pièces derrière un port `IStockageFichiers`, avec un volume local persistant par défaut ; Cloudinary reste un adaptateur optionnel | Cloudinary obligatoire (ADR-004 seul) | Autonomie sur la VM Proxmox (ADR-006) et développement sans clé d'API externe. Le port permet d'ajouter Cloudinary sans toucher au métier. Arbitrage de l'Epic 2 (Q1) ; adaptateur local livré avec US-007 (2026-11-01), adaptateur Cloudinary non écrit | Accepté (2026-09-27) |
 | ADR-008 | Admission unique au MPC : la candidature ne porte ni `cursus_slug` ni filière ; les pièces requises forment une liste unique de 5 | Une candidature par cursus, avec pièces variables selon le cursus (modèle initial : `UNIQUE (email, cursus_slug, campagne)`) | Règle institutionnelle (2026-10-31) : tout candidat entre en MPC (2 ans), puis choisit sa branche (3 ans) hors du portail. Un champ cursus à la candidature serait trompeur et obligerait à le migrer. Contrainte d'unicité : `(email, campagne)`. Voir `reviews/01-admission-unique-mpc.md` | Accepté (2026-10-31) |
+| ADR-009 | Déploiement continu : images construites par GitHub Actions, publiées sur GHCR (publiques), déployées par SSH avec une clé limitée à `deploy/deploy.sh` (`command=`) ; contrôle `/api/v1/sante` et retour automatique à la version précédente | Runner GitHub Actions auto-hébergé sur la VM ; Dokploy ; construction des images sur la VM | Dépôt public : un runner sur la VM exécuterait le code d'un fork (E5-4). Dokploy ajoute une couche pour un seul portail (E5-3). Construire sur la VM charge la machine de production et rend chaque version non reproductible. Images publiques : elles ne contiennent que le code déjà public, et la VM n'a aucun jeton à garder. Limite acceptée : si le port SSH est un jour fermé à Internet, GitHub ne pourra plus déployer (E5-5) | Accepté (2026-11-05) |
 
 > **Questions à se poser, pour chaque nouvelle entrée :**
 > 1. Qu'a-t-on décidé qui aurait pu très bien aller dans l'autre sens ?

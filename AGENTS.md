@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T12:52:00Z
-updated: 2026-11-01T15:51:55Z
+updated: 2026-11-05T14:28:36Z
 ---
 
 # AGENTS.md — FDS Portail
@@ -61,8 +61,9 @@ backend/
 ## Stack technique
 
 Voir `SOLUTION_DESIGN.md §5` — ne pas recopier ici. En résumé :
-- **Backend :** FastAPI + SQLAlchemy + PostgreSQL (Railway)
-- **Frontend :** React 19 + Vite + TypeScript + FSD (Vercel)
+- **Backend :** FastAPI + SQLAlchemy + Alembic + PostgreSQL
+- **Frontend :** React 19 + Vite + TypeScript + FSD
+- **Hébergement :** Docker Compose sur la VM Proxmox de la FDS ; déploiement continu GitHub Actions → GHCR → SSH (ADR-006, ADR-009)
 - **Services :** Cloudinary (fichiers), Resend (emails)
 - **Auth :** JWT HS256 + bcrypt
 

@@ -1,0 +1,64 @@
+# Production sur la VM de la FDS (US-026) : images construites par GitHub Actions et publiées sur GHCR,
+# jamais construites sur la VM. Lancé par deploy/deploy.sh, qui fournit TAG (le commit déployé).
+# Le développement local garde docker-compose.yml (construction des images sur place).
+
+# Nom de projet fixe : les données vivent dans les volumes bravetech_postgres_data et bravetech_uploads_data.
+# Sous un autre nom, Docker créerait des volumes vides et le portail semblerait avoir perdu tous les dossiers.
+name: bravetech
+
+services:
+  db:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-fds_admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD manquant dans .env}
+      POSTGRES_DB: ${POSTGRES_DB:-fds_portail}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-fds_admin} -d ${POSTGRES_DB:-fds_portail}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - fds_network
+
+  backend:
+    image: ghcr.io/paro-fds/bravetech-backend:${TAG:?TAG manquant (commit à déployer)}
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+psycopg2://${POSTGRES_USER:-fds_admin}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD manquant dans .env}@db:5432/${POSTGRES_DB:-fds_portail}
+      ENVIRONMENT: production
+      UPLOAD_DIR: /app/uploads
+      RESEND_API_KEY: "${RESEND_API_KEY:-}"
+      EMAIL_ENABLED: "${EMAIL_ENABLED:-true}"
+      CONTACT_EMAIL: "${CONTACT_EMAIL:-}"
+      JWT_SECRET: "${JWT_SECRET:-}"
+      EMAIL_FROM: "${EMAIL_FROM:-FDS Portail <onboarding@resend.dev>}"
+      APP_BASE_URL: "${APP_BASE_URL:-http://localhost}"
+      TRUSTED_PROXY_COUNT: "${TRUSTED_PROXY_COUNT:-1}"
+    volumes:
+      - uploads_data:/app/uploads
+    networks:
+      - fds_network
+
+  frontend:
+    image: ghcr.io/paro-fds/bravetech-frontend:${TAG:?TAG manquant (commit à déployer)}
+    restart: unless-stopped
+    ports:
+      - "${PORT:-80}:80"
+    depends_on:
+      - backend
+    networks:
+      - fds_network
+
+volumes:
+  postgres_data:
+  uploads_data:
+
+networks:
+  fds_network:

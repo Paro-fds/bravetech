@@ -1,0 +1,2 @@
+# Scripts exécutés sous Linux (VM, conteneurs) : toujours en fin de ligne LF, même extraits sous Windows (US-026)
+*.sh text eol=lf
