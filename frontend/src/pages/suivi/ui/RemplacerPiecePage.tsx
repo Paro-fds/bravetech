@@ -3,8 +3,8 @@ import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, Check, FileText, TriangleAlert, Upload, X } from 'lucide-react';
 import { candidatureApi, extraireErreursChamps, type PieceSuivi } from '../../../entities/candidature';
 import { attributAccept, formaterTaille, validerFichierLocal } from '../../../features/candidature-form';
-import { ApiError } from '../../../shared/api/client';
-import { traduireMaintenant as tr, useNomPiece, useT } from '../../../shared/i18n/useT';
+import { ApiError } from '../../../shared/api';
+import { traduireMaintenant as tr, useNomPiece, useT } from '../../../shared/i18n';
 
 type Chargement = { reference: string; etat: 'ok'; piece: PieceSuivi } | { reference: string; etat: 'introuvable' | 'erreur' };
 

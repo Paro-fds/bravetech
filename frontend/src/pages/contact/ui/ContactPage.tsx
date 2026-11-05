@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Check, Clock, Mail, MapPin, Phone, TriangleAlert } from 'lucide-react';
-import { contactApi, extraireErreursContact, type ErreursContact } from '../../../entities/contact';
-import { ApiError } from '../../../shared/api/client';
-import { INSTITUTION } from '../../../shared/config/institution';
-import { useT } from '../../../shared/i18n/useT';
+import { contactApi, extraireErreursContact, type ErreursContact } from '../api/contactApi';
+import { ApiError } from '../../../shared/api';
+import { INSTITUTION } from '../../../shared/config';
+import { useT } from '../../../shared/i18n';
 import { PhotoCampus } from '../../../shared/ui/PhotoCampus';
 
 const QUESTIONS = [1, 2, 3] as const;

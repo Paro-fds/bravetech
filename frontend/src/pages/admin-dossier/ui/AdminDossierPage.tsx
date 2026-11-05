@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, ExternalLink } from 'lucide-react';
-import { ApiError } from '../../../shared/api/client';
+import { ApiError } from '../../../shared/api';
 import { BADGES_DOSSIER, dossierAdminApi, type DossierAdmin, type PieceAdmin } from '../../../entities/dossier-admin';
 import { useSessionStore, type Session } from '../../../entities/session';
 import { formaterHorodatage, formaterJourCourt, formaterTaille } from '../../../features/candidature-form';

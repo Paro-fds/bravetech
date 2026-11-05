@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T15:23:00Z
-updated: 2026-11-05T14:28:36Z
+updated: 2026-11-05T16:56:47Z
 workstream: WS-01
 ---
 
@@ -139,6 +139,8 @@ Les règles suivantes, actives durant l'Epic 1, sont désormais pérennes dans l
 3. **Règle R3 — Invariant des tests d'architecture** :
    - `tests/unit/test_architecture.py` applique la règle de dépendance Clean Architecture : la couche `backend/entities/` ne doit dépendre d'aucun module externe (ni `fastapi`, ni `sqlalchemy`, ni `dal`, ni `bll`, ni `api`).
    - Le test doit passer sans erreur même sur un module vide pour prévenir toute rupture de CI lors de refactorisations.
+   - **Frontend, Feature-Sliced Design** : `npm run lint:archi` (`steiger src`, règles `recommended`) doit répondre « No problems found », vérifié en CI. Un segment `shared` (`api`, `config`, `i18n`, `theme`) s'importe par son `index.ts`, jamais par un fichier interne. Une entité n'en importe une autre que par la notation `@x` (`entities/session/@x/dossier-admin.ts`). Une slice utilisée par une seule page vit dans cette page (`pages/contact/api/contactApi.ts`). Voir `reviews/02`.
+   - **Score CRAP** : `tools/crap.py` (complexité radon × couverture coverage.py, par fonction) tourne en CI après les tests et échoue si une fonction dépasse 30. Une fonction non testée doit rester de complexité ≤ 5.
 4. **Règle R4 — Couleurs du frontend par jetons de rôle uniquement (US-017)** :
    - Les composants n'emploient que les jetons `fds-*` définis dans `frontend/src/app/styles/index.css` (`bg-fds-surface`, `text-fds-title`, `text-fds-accent`, `border-fds-bad-line`…). Jamais de couleur codée en dur (`bg-white`, `bg-[#…]`, `text-slate-…`) : elle ne suivrait pas le mode sombre.
    - Un jeton nomme un **rôle**, pas une teinte : `fds-accent` (liens, icônes, bordures actives) devient clair en mode sombre, alors que `fds-navy` reste un aplat foncé qui porte du texte blanc. Exceptions voulues : `text-white` et `bg-white/10` sur les aplats marine, et la pastille blanche active du sélecteur de langue (`bg-white text-fds-on-light`).

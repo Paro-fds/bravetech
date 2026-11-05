@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { cursusApi, CursusCard, trierBranches } from '../../../entities/cursus';
 import { FORMAT_REFERENCE, normaliserReference } from '../../../entities/candidature';
-import { useT } from '../../../shared/i18n/useT';
+import { useT } from '../../../shared/i18n';
 import { PhotoCampus } from '../../../shared/ui/PhotoCampus';
 import { IllustrationDossier } from './IllustrationDossier';
 

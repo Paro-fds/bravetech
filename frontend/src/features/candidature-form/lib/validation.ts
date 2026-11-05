@@ -3,7 +3,7 @@ import {
   type ErreursChamps,
   type InformationsPersonnelles,
 } from '../../../entities/candidature';
-import { traduireMaintenant as tr } from '../../../shared/i18n/useT';
+import { traduireMaintenant as tr } from '../../../shared/i18n';
 
 const AGE_MINIMUM = 14;
 const AGE_MAXIMUM = 90;

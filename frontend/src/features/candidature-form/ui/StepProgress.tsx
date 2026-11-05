@@ -1,5 +1,5 @@
 import React from 'react';
-import { useT } from '../../../shared/i18n/useT';
+import { useT } from '../../../shared/i18n';
 
 const TITRES = ['cand.etape1', 'cand.etape2', 'cand.etape3', 'cand.etape4'] as const;
 
