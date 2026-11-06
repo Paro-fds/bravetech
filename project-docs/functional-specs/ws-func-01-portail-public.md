@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T15:23:00Z
-updated: 2026-11-06T03:21:37Z
+updated: 2026-11-06T03:36:30Z
 workstream: WS-01
 ---
 
@@ -22,13 +22,14 @@ Le portail public constitue la vitrine officielle et la première étape du parc
 
 1. **En-tête institutionnel** : logo FDS-UEH, nom de la Faculté, sélecteur de langue FR / KR, menu (Accueil, Cursus, Histoire, Suivre mon dossier, Contact).
 2. **Bandeau d'accroche** : badge d'après le calendrier d'admission (US-028) — « Admissions ouvertes jusqu'au 30 novembre 2026 », « Admissions à partir du … », « Admissions fermées », ou « Admissions ouvertes » sans calendrier ; message « Candidatez à la Faculté des Sciences, sans vous déplacer », bouton principal **Postuler maintenant** (`/postuler`), bouton secondaire **Suivre mon dossier** (`/suivi`). Sur ordinateur, une illustration d'un téléphone affichant un dossier validé pièce par pièce.
-3. **Comment ça marche** : cinq étapes (découvrir le parcours, remplir le formulaire, payer en simulation, déposer les pièces, suivre son dossier).
-4. **Une admission, puis votre branche** — **À faire** (Epic 1 affichait cinq cartes de même rang) :
+3. **Calendrier d'admission (US-028)** : cinq cases — ouverture, date limite de dépôt (mise en avant), concours, résultats, rentrée ; « À confirmer par la Faculté » pour une date non fixée ; mention « Les candidatures sont fermées » hors période. Section masquée tant qu'aucun calendrier n'est enregistré.
+4. **Comment ça marche** : cinq étapes (découvrir le parcours, remplir le formulaire, payer en simulation, déposer les pièces, suivre son dossier).
+5. **Une admission, puis votre branche** — **À faire** (Epic 1 affichait cinq cartes de même rang) :
    - Une carte mise en avant **Premier cycle MPC** (badge « Vous candidatez ici », 2 ans) menant à sa fiche.
    - Quatre cartes **branches** (3 ans) : Génie Civil, Génie Électromécanique, Génie Électronique, Architecture. Sur ordinateur, chaque carte porte une illustration légère.
-5. **Accès rapide au suivi** : champ « Référence du dossier » (ex. `CAN-2026-0089`).
-6. **Bandeau institutionnel** : « Une institution historique » (fondée en 1902) avec une photo réelle de la Faculté, lien vers `/histoire`.
-7. **Pied de page** : Faculté des Sciences, UEH, Delmas 33 ; liens Histoire, Contact, Suivi ; rappel que le paiement en ligne est une simulation.
+6. **Accès rapide au suivi** : champ « Référence du dossier » (ex. `CAN-2026-0089`).
+7. **Bandeau institutionnel** : « Une institution historique » (fondée en 1902) avec une photo réelle de la Faculté, lien vers `/histoire`.
+8. **Pied de page** : Faculté des Sciences, UEH, Delmas 33 ; liens Histoire, Contact, Suivi ; rappel que le paiement en ligne est une simulation.
 
 ### 1.2 Fiche du Premier cycle MPC (`/cursus/mpc`) — **À faire**
 

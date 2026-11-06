@@ -3,9 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { cursusApi, CursusCard, trierBranches } from '../../../entities/cursus';
 import { FORMAT_REFERENCE, normaliserReference } from '../../../entities/candidature';
-import { calendrierApi } from '../../../entities/calendrier';
+import { calendrierApi, candidaturesAcceptees, type DatesCalendrier } from '../../../entities/calendrier';
 import { formaterDateCivile } from '../../../features/candidature-form';
-import { useT } from '../../../shared/i18n';
+import { useT, type Cle } from '../../../shared/i18n';
 import { PhotoCampus } from '../../../shared/ui/PhotoCampus';
 import { IllustrationDossier } from './IllustrationDossier';
 
@@ -22,6 +22,47 @@ const BadgeAdmissions: React.FC = () => {
   if (calendrier?.etat === 'a_venir' && calendrier.date_ouverture) texte = t('accueil.badgeAVenir', { date: formaterDateCivile(calendrier.date_ouverture) });
   if (calendrier?.etat === 'fermee') texte = t('accueil.badgeFermees');
   return <span className="self-start rounded-full bg-white/15 px-2.5 py-0.5 text-[13px] font-semibold">{texte}</span>;
+};
+
+const DATES_ACCUEIL: { champ: keyof DatesCalendrier; cle: Cle }[] = [
+  { champ: 'date_ouverture', cle: 'cursus.ouverture' },
+  { champ: 'date_limite', cle: 'cursus.dateLimite' },
+  { champ: 'date_concours', cle: 'cursus.concours' },
+  { champ: 'date_resultats', cle: 'cursus.resultats' },
+  { champ: 'date_rentree', cle: 'cursus.rentree' },
+];
+
+/**
+ * Calendrier d'admission réglé par l'administration (US-028). Masqué tant qu'aucun calendrier n'est enregistré :
+ * cinq « À confirmer » n'apprendraient rien au candidat. La date limite est mise en avant.
+ */
+const DatesAdmission: React.FC = () => {
+  const t = useT();
+  const { data: calendrier } = useQuery({ queryKey: ['calendrier'], queryFn: calendrierApi.obtenir });
+  if (!calendrier || calendrier.etat === 'non_definie') return null;
+  return (
+    <section className="flex flex-col gap-4" aria-labelledby="calendrier">
+      <h2 id="calendrier" className="font-fds-serif text-2xl md:text-3xl font-bold text-fds-title">
+        {t('accueil.calendrierTitre')}
+      </h2>
+      <dl className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+        {DATES_ACCUEIL.map(({ champ, cle }) => {
+          const valeur = calendrier[champ];
+          const limite = champ === 'date_limite';
+          return (
+            <div
+              key={champ}
+              className={`rounded-xl border p-4 flex flex-col gap-1 ${limite ? 'border-fds-accent bg-fds-navy-t col-span-2 md:col-span-1' : 'border-fds-line bg-fds-surface'}`}
+            >
+              <dt className={`text-sm ${limite ? 'font-semibold text-fds-accent' : 'text-fds-mute'}`}>{t(cle)}</dt>
+              <dd className={`font-semibold ${valeur ? 'text-fds-ink' : 'text-fds-mute'}`}>{valeur ? formaterDateCivile(valeur) : t('cursus.aConfirmer')}</dd>
+            </div>
+          );
+        })}
+      </dl>
+      {!candidaturesAcceptees(calendrier.etat) && <p className="text-sm font-semibold text-fds-bad">{t('cursus.fermees')}</p>}
+    </section>
+  );
 };
 
 /** Carte « Vous avez déjà candidaté ? » du bureau : la référence ouvre directement le suivi du dossier. */
@@ -120,6 +161,8 @@ export const HomePage: React.FC = () => {
         <div className="hidden lg:block">
           <RechercheRapide />
         </div>
+
+        <DatesAdmission />
 
         <section className="flex flex-col gap-4" aria-labelledby="comment">
           <h2 id="comment" className="font-fds-serif text-2xl md:text-3xl font-bold text-fds-title">
