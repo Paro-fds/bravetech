@@ -19,6 +19,9 @@ DOSSIER_MIGRATIONS = Path(__file__).resolve().parent / "migrations"
 
 # Schéma tel que `create_all` le produisait avant Alembic (base de la VM créée le 2026-11-04)
 REVISION_INITIALE = "0001"
+# Tables de cette révision : une base d'avant Alembic ne contient qu'elles. Les tables ajoutées par les migrations
+# suivantes (`calendriers_admission`, US-028…) lui manquent forcément : `upgrade` les crée ensuite.
+TABLES_INITIALES = frozenset({"candidats", "candidatures", "documents_soumis", "utilisateurs", "decisions_documents"})
 
 journal = logging.getLogger(__name__)
 
@@ -29,10 +32,17 @@ def configuration_alembic() -> Config:
     return config
 
 
+def _ecart_tolere(ecart) -> bool:
+    """Une table en trop (reste d'un ancien schéma), ou une table créée par une migration postérieure à l'initiale."""
+    if not isinstance(ecart, tuple):
+        return False
+    return ecart[0].startswith("remove_") or (ecart[0] == "add_table" and ecart[1].name not in TABLES_INITIALES)
+
+
 def _ecarts_bloquants(connexion: Connection) -> list:
-    """Ce qui manque à la base par rapport aux modèles. Une table en trop (reste d'un ancien schéma) est tolérée."""
+    """Ce qui manque à la base par rapport au schéma de la révision initiale."""
     ecarts = compare_metadata(MigrationContext.configure(connexion), Base.metadata)
-    return [e for e in ecarts if not (isinstance(e, tuple) and e[0].startswith("remove_"))]
+    return [e for e in ecarts if not _ecart_tolere(e)]
 
 
 def mettre_a_jour_schema(engine: Engine) -> None:

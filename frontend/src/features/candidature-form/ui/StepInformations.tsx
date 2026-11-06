@@ -7,6 +7,7 @@ import {
   type ErreursChamps,
   type InformationsPersonnelles,
 } from '../../../entities/candidature';
+import { estCandidaturesFermees } from '../../../entities/calendrier';
 import { ApiError } from '../../../shared/api';
 import { validerInformations } from '../lib/validation';
 import { BarreAction, CLASSE_BOUTON_PRIMAIRE, CLASSE_BOUTON_SECONDAIRE } from './BarreAction';
@@ -51,6 +52,8 @@ export const StepInformations: React.FC<StepInformationsProps> = ({ valeurs, onC
       const erreursServeur = extraireErreursChamps(erreur);
       if (erreursServeur) {
         setErreurs(erreursServeur);
+      } else if (estCandidaturesFermees(erreur)) {
+        setMessageGlobal(t('cand.fermeeErreur'));
       } else if (erreur instanceof ApiError && erreur.status === 409) {
         setErreurs({ email: t('info.doublon') });
       } else {

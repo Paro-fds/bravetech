@@ -27,13 +27,16 @@ from backend.api.v1.dto.admin_dto import (
     PieceAdminResponse,
     StatistiquesResponse,
 )
-from backend.api.v1.securite import get_current_admin, get_utilisateur_repository
+from backend.api.v1.calendrier import dates_du_calendrier, get_calendrier_repository
+from backend.api.v1.dto.calendrier_dto import CalendrierAdminResponse, CalendrierRequest
+from backend.api.v1.securite import get_current_admin, get_current_admin_complet, get_utilisateur_repository
 from backend.bll.consulter_candidatures import (
     LIMITE_MAX,
     ListerCandidaturesUseCase,
     ObtenirContenuDocumentUseCase,
     ObtenirDossierAdminUseCase,
 )
+from backend.bll.calendrier_admission import ConsulterCalendrierUseCase, ModifierCalendrierUseCase
 from backend.bll.decider_document import DeciderDocumentUseCase
 from backend.bll.exporter_candidatures import generer_csv, vers_lignes
 from backend.bll.notifier_decision import NotifierDecisionUseCase
@@ -54,6 +57,7 @@ from backend.entities.erreurs import (
 )
 from backend.entities.pieces_admission import NOM_ADMISSION
 from backend.entities.utilisateur import Utilisateur
+from backend.ports.calendrier_repository import ICalendrierRepository
 from backend.ports.candidature_repository import ICandidatureRepository
 from backend.ports.document_repository import IDocumentRepository
 from backend.ports.email_sender import IEmailSender
@@ -306,3 +310,45 @@ def decider_document(
     if candidat is not None and candidature is not None:
         taches.add_task(NotifierDecisionUseCase(email_sender, url_base).executer, candidat, candidature, decision)
     return _piece_apres_decision(document)
+
+
+# --- US-028 : calendrier d'admission ------------------------------------------------------------------
+
+def _calendrier_admin(calendriers: ICalendrierRepository, utilisateurs: IUtilisateurRepository) -> CalendrierAdminResponse:
+    calendrier, etat = ConsulterCalendrierUseCase(calendriers).executer()
+    if calendrier is None:
+        return CalendrierAdminResponse(etat=etat)
+    auteur = utilisateurs.obtenir(calendrier.modifie_par)
+    return CalendrierAdminResponse(
+        etat=etat,
+        modifie_par=auteur.email if auteur else None,
+        modifie_le=calendrier.modifie_le,
+        **dates_du_calendrier(calendrier),
+    )
+
+
+@router.get("/calendrier", response_model=CalendrierAdminResponse, summary="Calendrier d'admission et dernière modification")
+def obtenir_calendrier_admin(
+    calendriers: ICalendrierRepository = Depends(get_calendrier_repository),
+    utilisateurs: IUtilisateurRepository = Depends(get_utilisateur_repository),
+):
+    return _calendrier_admin(calendriers, utilisateurs)
+
+
+@router.put(
+    "/calendrier",
+    response_model=CalendrierAdminResponse,
+    summary="Modifier les dates de la session (rôle admin) ; chaque modification est conservée",
+)
+def modifier_calendrier(
+    payload: CalendrierRequest,
+    utilisateur: Utilisateur = Depends(get_current_admin_complet),
+    calendriers: ICalendrierRepository = Depends(get_calendrier_repository),
+    utilisateurs: IUtilisateurRepository = Depends(get_utilisateur_repository),
+):
+    try:
+        ModifierCalendrierUseCase(calendriers).executer(payload.model_dump(), utilisateur)
+    except InformationsInvalides as erreur:
+        raise HTTPException(status_code=422, detail={"erreurs": erreur.erreurs})
+    _journal.info("Calendrier d'admission modifié par %s.", utilisateur.id)
+    return _calendrier_admin(calendriers, utilisateurs)
