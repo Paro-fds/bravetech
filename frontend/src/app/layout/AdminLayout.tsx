@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate, NavLink, Outlet, useLocation } from 'react-router-dom';
-import { CalendarDays, FileText, LogOut } from 'lucide-react';
+import { CalendarDays, FileText, LogOut, Users } from 'lucide-react';
 import { sessionValide, useSessionStore } from '../../entities/session';
 import { ThemeToggle } from '../../shared/theme';
 
@@ -34,11 +34,13 @@ export const AdminLayout: React.FC = () => {
           {/* L'administration reste en français (spec WS-01 §1.6) : libellé fixe, pas de traduction */}
           <ThemeToggle libelle="Mode sombre" />
         </div>
-        {/* « Candidatures » couvre /admin et les dossiers, mais pas le calendrier */}
+        {/* « Candidatures » couvre /admin et les dossiers, mais ni le calendrier ni la gestion des accès */}
         <NavLink
           to="/admin"
           end={false}
-          className={({ isActive }) => lienMenu(isActive && !pathname.startsWith('/admin/calendrier'))}
+          className={({ isActive }) =>
+            lienMenu(isActive && !pathname.startsWith('/admin/calendrier') && !pathname.startsWith('/admin/utilisateurs'))
+          }
         >
           <FileText className="w-5 h-5" aria-hidden="true" />
           Candidatures
@@ -47,6 +49,12 @@ export const AdminLayout: React.FC = () => {
           <CalendarDays className="w-5 h-5" aria-hidden="true" />
           Calendrier
         </NavLink>
+        {session.role === 'admin' && (
+          <NavLink to="/admin/utilisateurs" className={({ isActive }) => lienMenu(isActive)}>
+            <Users className="w-5 h-5" aria-hidden="true" />
+            Accès
+          </NavLink>
+        )}
         <div className="flex-1" />
         <div className="px-2 py-2 text-[13px] text-fds-on-navy">
           Connecté : <b className="text-white break-all">{session.email}</b>

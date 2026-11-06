@@ -13,6 +13,8 @@ ROLE_ADMIN = "admin"
 ROLE_AGENT = "agent"
 ROLES = (ROLE_ADMIN, ROLE_AGENT)
 
+LONGUEUR_MIN_MOT_DE_PASSE = 12
+
 # Durée de vie d'une session : 60 minutes, sans renouvellement automatique (epic-003, Q1)
 DUREE_SESSION_MINUTES = 60
 

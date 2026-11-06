@@ -20,3 +20,15 @@ class IUtilisateurRepository(ABC):
     @abstractmethod
     def creer(self, utilisateur: Utilisateur) -> None:
         """Persiste un nouvel utilisateur."""
+
+    @abstractmethod
+    def lister(self) -> list[Utilisateur]:
+        """Retourne tous les comptes du personnel, triés du plus récent au plus ancien."""
+
+    @abstractmethod
+    def mettre_a_jour(self, utilisateur: Utilisateur) -> None:
+        """Met à jour le rôle, le statut actif ou l'empreinte du mot de passe d'un utilisateur existant."""
+
+    @abstractmethod
+    def compter_admins_actifs(self) -> int:
+        """Retourne le nombre de comptes ayant le rôle `admin` et `est_actif=True`."""
