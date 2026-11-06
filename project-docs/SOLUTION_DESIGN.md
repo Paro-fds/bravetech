@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T00:18:00Z
-updated: 2026-11-06T03:03:27Z
+updated: 2026-11-06T04:11:35Z
 ---
 
 # SOLUTION_DESIGN.md — FDS Portail
@@ -166,10 +166,10 @@ Schéma SQL complet : `cahier_des_charges.md §9.3`.
 
 **AuthO (Qu'as-tu le droit de faire ?) :**
 - RBAC — `Utilisateur.role` ∈ `{admin, agent}`.
-- `get_current_admin()` est appelé à **chaque endpoint admin** — pas seulement à la connexion.
-- Deny by default : toute exception dans le contrôle d'accès → 403 Forbidden.
+- `get_current_admin` est posé sur **tout le routeur** `/api/v1/admin` (une route ajoutée en hérite) ; rôle et état du compte relus en base à chaque requête. `get_current_admin_complet` réserve une route au rôle `admin` (calendrier d'admission).
+- Deny by default : jeton absent, invalide ou expiré → 401 ; rôle insuffisant → 403.
 
-**Rate limiting :** 5 requêtes / 60s sur `POST /api/v1/auth/token` (anti brute-force).
+**Rate limiting :** 5 **échecs** de connexion par minute et par adresse sur `POST /api/v1/auth/token`, puis 429 (anti brute-force). Détails : `technical-specs/ws-tech-04-administration.md`.
 
 **Refresh tokens :** non implémentés en MVP — l'admin se reconnecte après 60 min. Prévu en post-MVP (`POST /api/v1/auth/refresh`).
 
@@ -263,7 +263,7 @@ Pas de boucle autonome, pas de tâche planifiée, pas de risque de runaway en MV
 | Question | Bloquante ? | Qui / Quand |
 |---|---|---|
 | Conformité légale haïtienne sur les données personnelles (consentement, responsable légal) | Non pour le lancement technique | FDS-UEH — avant mise en production publique |
-| Procédure de création des comptes admin si FDS SYS n'est pas prêt | Oui si aucun admin n'existe au lancement | Équipe Bravetech — sprint pré-lancement |
+| Création des comptes agents : le premier admin est créé par `backend/scripts/seed_admin.py` (US-011, résolu pour le lancement) ; aucun écran de gestion des comptes | Non | Équipe Bravetech / FDS SYS — post-MVP |
 | Test de restauration de la sauvegarde PostgreSQL de la VM (US-027) | Non (RPO/RTO documentés, test non effectué) | Équipe Bravetech — avant la période d'inscription |
 | Monitoring automatique (alertes 5xx) | Non pour le MVP | Post-MVP — intégrer Uptime Robot ou équivalent |
 
