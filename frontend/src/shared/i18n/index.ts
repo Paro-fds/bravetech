@@ -2,4 +2,4 @@
 export type { Cle } from './fr';
 export { LanguageSwitcher } from './LanguageSwitcher';
 export { useLangue } from './useLangue';
-export { traduireMaintenant, useNomDepartement, useNomPiece, useT } from './useT';
+export { traduireMaintenant, useNomDepartement, useNomPiece, useT, useTexteCursus } from './useT';

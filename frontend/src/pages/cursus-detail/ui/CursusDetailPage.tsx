@@ -5,7 +5,7 @@ import { ArrowLeft, ChevronDown, FileText, Info, Plus, Check } from 'lucide-reac
 import { calendrierApi, candidaturesAcceptees } from '../../../entities/calendrier';
 import { cursusApi, IllustrationCursus, trierBranches, type MatiereItem } from '../../../entities/cursus';
 import { FRAIS_DOSSIER_PAR_DEFAUT, formaterDateCivile } from '../../../features/candidature-form';
-import { useNomPiece, useT } from '../../../shared/i18n';
+import { useNomPiece, useT, useTexteCursus } from '../../../shared/i18n';
 
 /** « 120 h + 60 h TP », ou « 90 h » selon les volumes renseignés (programme replié, mobile). */
 function formaterHeures(m: MatiereItem): string {
@@ -27,7 +27,12 @@ const heuresTp = (m: MatiereItem) => (m.heures_tp != null ? `${m.heures_tp} h` :
 /** « MPC1 » → « MPC 1 » : le nom du niveau vient des données, sans espace. */
 const formaterNiveau = (nom: string) => nom.replace(/^([A-Za-z]+)(\d+)$/, '$1 $2');
 
-const BRANCHES = ['Génie Civil', 'Génie Électromécanique', 'Génie Électronique', 'Architecture'];
+const BRANCHES = [
+  { id: 'genie-civil', nom: 'Génie Civil' },
+  { id: 'genie-electromecanique', nom: 'Génie Électromécanique' },
+  { id: 'genie-electronique', nom: 'Génie Électronique' },
+  { id: 'architecture', nom: 'Architecture' },
+];
 
 const TITRE_SECTION = 'font-fds-serif text-xl lg:text-3xl font-bold text-fds-title';
 const PASTILLE = 'rounded-full bg-fds-navy-t text-fds-accent px-2.5 py-0.5 text-[13px] font-semibold';
@@ -47,6 +52,7 @@ const Ligne: React.FC<{ libelle: string; valeur: string }> = ({ libelle, valeur 
 export const CursusDetailPage: React.FC = () => {
   const t = useT();
   const nomPiece = useNomPiece();
+  const texteCursus = useTexteCursus();
   const { id } = useParams<{ id: string }>();
   const [ouverts, setOuverts] = useState<Record<string, boolean>>({});
 
@@ -93,6 +99,10 @@ export const CursusDetailPage: React.FC = () => {
   }
 
   const niveaux = Object.entries(cursus.niveaux ?? {});
+  const nomCursus = texteCursus(cursus.id, 'nom', cursus.nom);
+  const descriptionCursus = cursus.description_longue
+    ? texteCursus(cursus.id, 'long', cursus.description_longue)
+    : texteCursus(cursus.id, 'court', cursus.description_courte);
   const admission = cursus.est_admission;
   const branches = trierBranches(liste.filter((c) => !c.est_admission));
 
@@ -109,11 +119,11 @@ export const CursusDetailPage: React.FC = () => {
                   <span className="rounded-full bg-fds-ok-bg text-fds-ok px-2.5 py-0.5 text-[13px] font-semibold">{t('accueil.badge')}</span>
                 )}
               </div>
-              <h1 lang="fr" className="font-fds-serif text-[28px] md:text-4xl lg:text-[40px] leading-tight font-bold text-fds-title lg:text-white">
-                {cursus.nom}
+              <h1 lang={nomCursus.lang} className="font-fds-serif text-[28px] md:text-4xl lg:text-[40px] leading-tight font-bold text-fds-title lg:text-white">
+                {nomCursus.texte}
               </h1>
-              <p lang="fr" className="text-fds-mute lg:text-fds-on-navy md:text-lg max-w-3xl">
-                {cursus.description_longue || cursus.description_courte}
+              <p lang={descriptionCursus.lang} className="text-fds-mute lg:text-fds-on-navy md:text-lg max-w-3xl">
+                {descriptionCursus.texte}
               </p>
             </div>
             <IllustrationCursus id={cursus.id} className="hidden lg:block lg:w-96 shrink-0 rounded-xl" />
@@ -192,11 +202,14 @@ export const CursusDetailPage: React.FC = () => {
                     <div className="font-semibold">{t('cursus.parcours35Titre')}</div>
                     <div className="text-sm text-fds-mute">{t('cursus.parcours35Texte')}</div>
                     <div className="flex flex-wrap gap-1.5">
-                      {BRANCHES.map((b) => (
-                        <span key={b} lang="fr" className={PASTILLE}>
-                          {b}
-                        </span>
-                      ))}
+                      {BRANCHES.map((b) => {
+                        const nom = texteCursus(b.id, 'nom', b.nom);
+                        return (
+                          <span key={b.id} lang={nom.lang} className={PASTILLE}>
+                            {nom.texte}
+                          </span>
+                        );
+                      })}
                     </div>
                   </div>
                 </li>
@@ -213,11 +226,14 @@ export const CursusDetailPage: React.FC = () => {
                   <h3 className="font-fds-serif text-lg font-bold text-fds-title">{t('cursus.parcours35Titre')}</h3>
                   <p className="text-sm text-fds-mute">{t('cursus.parcours35Texte')}</p>
                   <div className="flex flex-wrap gap-1.5">
-                    {BRANCHES.map((b) => (
-                      <span key={b} lang="fr" className={PASTILLE}>
-                        {b}
-                      </span>
-                    ))}
+                    {BRANCHES.map((b) => {
+                      const nom = texteCursus(b.id, 'nom', b.nom);
+                      return (
+                        <span key={b.id} lang={nom.lang} className={PASTILLE}>
+                          {nom.texte}
+                        </span>
+                      );
+                    })}
                   </div>
                 </li>
               </ol>
@@ -305,9 +321,12 @@ export const CursusDetailPage: React.FC = () => {
                   >
                     <IllustrationCursus id={b.id} />
                     <div className="p-3.5 flex flex-col gap-1">
-                      <h3 lang="fr" className="font-fds-serif text-lg font-bold text-fds-title">{b.nom}</h3>
+                      <h3 lang={texteCursus(b.id, 'nom', b.nom).lang} className="font-fds-serif text-lg font-bold text-fds-title">
+                        {texteCursus(b.id, 'nom', b.nom).texte}
+                      </h3>
                       <p className="text-sm text-fds-mute">
-                        {t('carte.ans', { n: b.duree_annees })}. <span lang="fr">{b.description_courte}</span>
+                        {t('carte.ans', { n: b.duree_annees })}.{' '}
+                        <span lang={texteCursus(b.id, 'court', b.description_courte).lang}>{texteCursus(b.id, 'court', b.description_courte).texte}</span>
                       </p>
                     </div>
                   </Link>
