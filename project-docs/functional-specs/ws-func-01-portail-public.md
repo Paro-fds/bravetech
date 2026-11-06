@@ -1,13 +1,13 @@
 ---
 created: 2026-09-26T15:23:00Z
-updated: 2026-11-06T03:36:30Z
+updated: 2026-11-06T18:23:57Z
 workstream: WS-01
 ---
 
 # Spécification Fonctionnelle — WS-01 Portail Public
 
 **Workstream :** WS-01 Portail public  
-**Statut :** ✅ Livré via Epic 1 (US-001, US-002) — évolutions du 2026-10-31 (admission unique au MPC, pages Histoire et Contact, Kreyòl) marquées **À faire** ci-dessous  
+**Statut :** ✅ Livré via Epic 1 (US-001, US-002), puis US-018 (admission unique), US-019 (Histoire et Contact), US-020 (Kreyòl), US-021 et US-022 (refonte visuelle), US-028 (dates d'admission)  
 **Public cible :** Candidats, lycéens, grand public (accès sans authentification, optimisé mobile 360px et connexions intermittentes)
 
 ---
@@ -24,14 +24,14 @@ Le portail public constitue la vitrine officielle et la première étape du parc
 2. **Bandeau d'accroche** : badge d'après le calendrier d'admission (US-028) — « Admissions ouvertes jusqu'au 30 novembre 2026 », « Admissions à partir du … », « Admissions fermées », ou « Admissions ouvertes » sans calendrier ; message « Candidatez à la Faculté des Sciences, sans vous déplacer », bouton principal **Postuler maintenant** (`/postuler`), bouton secondaire **Suivre mon dossier** (`/suivi`). Sur ordinateur, une illustration d'un téléphone affichant un dossier validé pièce par pièce.
 3. **Calendrier d'admission (US-028)** : cinq cases — ouverture, date limite de dépôt (mise en avant), concours, résultats, rentrée ; « À confirmer par la Faculté » pour une date non fixée ; mention « Les candidatures sont fermées » hors période. Section masquée tant qu'aucun calendrier n'est enregistré.
 4. **Comment ça marche** : cinq étapes (découvrir le parcours, remplir le formulaire, payer en simulation, déposer les pièces, suivre son dossier).
-5. **Une admission, puis votre branche** — **À faire** (Epic 1 affichait cinq cartes de même rang) :
+5. **Une admission, puis votre branche** :
    - Une carte mise en avant **Premier cycle MPC** (badge « Vous candidatez ici », 2 ans) menant à sa fiche.
    - Quatre cartes **branches** (3 ans) : Génie Civil, Génie Électromécanique, Génie Électronique, Architecture. Sur ordinateur, chaque carte porte une illustration légère.
 6. **Accès rapide au suivi** : champ « Référence du dossier » (ex. `CAN-2026-0089`).
 7. **Bandeau institutionnel** : « Une institution historique » (fondée en 1902) avec une photo réelle de la Faculté, lien vers `/histoire`.
 8. **Pied de page** : Faculté des Sciences, UEH, Delmas 33 ; liens Histoire, Contact, Suivi ; rappel que le paiement en ligne est une simulation.
 
-### 1.2 Fiche du Premier cycle MPC (`/cursus/mpc`) — **À faire**
+### 1.2 Fiche du Premier cycle MPC (`/cursus/mpc`)
 
 1. **En-tête** : retour vers l'accueil, badges « Admission unique » et « Admissions ouvertes », titre, description.
 2. **Chiffres clés** : durée du MPC (2 ans), durée totale (5 ans), frais de dossier (500 HTG, simulés), date limite de dépôt et rentrée.
@@ -42,7 +42,7 @@ Le portail public constitue la vitrine officielle et la première étape du parc
 6. **Pièces à fournir** : les cinq pièces obligatoires (voir §2.2). Aucun indicateur « facultatif ».
 7. **Passerelle vers la candidature** : bouton **Déposer ma candidature** → `/postuler` (sans paramètre `cursus`), avec la mention « Sans déplacement. Sans compte à créer. » Sur mobile, la barre d'action reste fixée en bas de l'écran.
 
-### 1.3 Fiche d'une branche (`/cursus/:id`, branches uniquement) — **À faire**
+### 1.3 Fiche d'une branche (`/cursus/:id`, branches uniquement)
 
 1. **En-tête** : badge « Branche » et « Après le MPC », titre, description.
 2. **Présentation académique** : durée (3 ans), grille par niveau listant matières, codes et volumes horaires (source `cursus/<branche>.json`).
@@ -51,7 +51,7 @@ Le portail public constitue la vitrine officielle et la première étape du parc
 
 > Le fichier `cursus/genie-civil.json` ne décrit que les niveaux GC1 et GC2 alors que la branche dure 3 ans : le programme de 3e année est à fournir par la Faculté.
 
-### 1.4 Page Histoire (`/histoire`) — **À faire**
+### 1.4 Page Histoire (`/histoire`)
 
 1. **Bannière** : photo réelle de la cour de la Faculté (Delmas 33), titre « Plus d'un siècle de formation scientifique et technique en Haïti ».
 2. **Contenu** : la fondation (1902, École des Sciences Appliquées et ses six fondateurs), repères chronologiques (1902, 1905, 1906, 1945, 1947, 1961, 1986), évolution de l'offre, gouvernance participative depuis 1986.
@@ -61,20 +61,20 @@ Le portail public constitue la vitrine officielle et la première étape du parc
 
 Source du texte : *Histoire de la Faculté Des Sciences* (document fourni par la Faculté).
 
-### 1.5 Page Contact et accès (`/contact`) — **À faire**
+### 1.5 Page Contact et accès (`/contact`)
 
 1. **Coordonnées** : adresse (Delmas 33, Haïti), téléphone, email, horaires du secrétariat (à fournir par la Faculté).
 2. **Questions fréquentes** : dois-je me déplacer pour candidater ? le paiement est-il réel ? j'ai perdu ma référence de dossier.
 3. **Formulaire « Nous écrire »** : nom, email, message. L'acheminement du message (email au secrétariat) reste à préciser avant de planifier la story.
 4. **Photo et plan d'accès** : photo de la Faculté, plan de Delmas 33 à intégrer.
 
-### 1.6 Langues — **À faire**
+### 1.6 Langues
 
 1. Le français est la langue par défaut. Un sélecteur **FR / KR** dans l'en-tête bascule l'interface en Kreyòl.
 2. Les textes créoles sont rédigés ou validés par la Faculté avant publication (les maquettes contiennent une proposition non validée).
-3. Les données issues de `cursus/*.json` (noms de matières) restent en français.
+3. Les noms de matières du programme (`cursus/*.json`) restent en français. Le nom et les descriptions de chaque cursus, fournis en français par l'API, s'affichent en kreyòl quand une traduction existe (clés `cursusTexte.<id>.nom|court|long`, crochet `useTexteCursus`), sinon en français.
 
-### 1.7 Images — **À faire**
+### 1.7 Images
 
 1. Privilégier des **photos réelles** de la Faculté (droit de publication confirmé, visages floutés si nécessaire) ; à défaut, des illustrations légères.
 2. Aucun visuel contenant du texte incrusté ni un nom de faculté ou un logo différents du logo officiel FDS-UEH.

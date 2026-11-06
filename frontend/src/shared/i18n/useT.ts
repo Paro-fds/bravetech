@@ -27,6 +27,23 @@ export function useNomPiece() {
   );
 }
 
+/**
+ * Nom et descriptions d'un cursus : en créole si la traduction existe, sinon le texte de l'API (français).
+ * Renvoie aussi la langue du texte affiché, pour l'attribut `lang` (lecteurs d'écran, césure).
+ */
+export function useTexteCursus() {
+  const langue = useLangue((s) => s.langue);
+  const kr = useLangue((s) => s.kr);
+  return useCallback(
+    (id: string, champ: 'nom' | 'court' | 'long', texteApi: string): { texte: string; lang: 'fr' | 'ht' } => {
+      const cle = `cursusTexte.${id}.${champ}`;
+      const traduit = traduire(cle, langue, fr, kr);
+      return langue === 'kr' && traduit !== cle && kr?.[cle as Cle] ? { texte: traduit, lang: 'ht' } : { texte: texteApi, lang: 'fr' };
+    },
+    [langue, kr],
+  );
+}
+
 /** Nom d'un département : traduit en créole s'il est connu, sinon la valeur telle quelle. */
 export function useNomDepartement() {
   const langue = useLangue((s) => s.langue);
