@@ -52,58 +52,63 @@ const RechercheReference: React.FC<{ valeurInitiale?: string; message?: string }
 
   return (
     <>
-      <section className="flex flex-col gap-2">
-        <h1 className="font-fds-serif text-2xl font-bold text-fds-title">{t('accueil.suivre')}</h1>
-        <p className="text-fds-mute">{t('suivi.intro')}</p>
+      <section className="flex flex-col gap-2 lg:gap-2.5">
+        <h1 className="font-fds-serif text-2xl lg:text-[40px] font-bold text-fds-title">{t('accueil.suivre')}</h1>
+        <p className="text-fds-mute lg:text-lg">{t('suivi.intro')}</p>
       </section>
 
-      <form onSubmit={rechercher} noValidate className="rounded-xl border border-fds-line bg-fds-surface p-4 flex flex-col gap-3.5">
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="reference" className="text-[15px] font-semibold">
-            {t('suivi.refLabel')}
-          </label>
-          <input
-            id="reference"
-            value={saisie}
-            onChange={(e) => setSaisie(e.target.value)}
-            placeholder="CAN-2026-0089"
-            autoCapitalize="characters"
-            autoComplete="off"
-            spellCheck={false}
-            aria-invalid={erreurFormat}
-            aria-describedby="reference-aide"
-            className={`w-full min-h-12 rounded-lg border-[1.5px] bg-fds-surface px-3 text-lg tracking-wide text-fds-ink focus:outline-none focus:ring-2 focus:ring-fds-accent ${erreurFormat ? 'border-fds-bad' : 'border-fds-field'}`}
-          />
-          <p id="reference-aide" role={erreurFormat ? 'alert' : undefined} className={`text-[13px] ${erreurFormat ? 'font-semibold text-fds-bad' : 'text-fds-mute'}`}>
-            {erreurFormat ? t('suivi.formatErreur') : t('suivi.formatAide')}
-          </p>
-        </div>
-        <button
-          type="submit"
-          className="min-h-12 px-4 rounded-lg bg-fds-navy hover:bg-fds-navy-d text-white font-semibold flex items-center justify-center gap-2 transition-colors"
-        >
-          <Search className="w-5 h-5" aria-hidden="true" />
-          {t('suivi.voir')}
-        </button>
-      </form>
+      {/* Sur ordinateur : la recherche à gauche, l'aide « référence perdue » à droite */}
+      <div className="flex flex-col gap-[18px] lg:grid lg:grid-cols-[3fr_2fr] lg:gap-8 lg:items-start">
+        <div className="flex flex-col gap-[18px] min-w-0">
+          <form onSubmit={rechercher} noValidate className="rounded-xl border border-fds-line bg-fds-surface p-4 lg:p-6 flex flex-col gap-3.5">
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="reference" className="text-[15px] font-semibold">
+                {t('suivi.refLabel')}
+              </label>
+              <input
+                id="reference"
+                value={saisie}
+                onChange={(e) => setSaisie(e.target.value)}
+                placeholder="CAN-2026-0089"
+                autoCapitalize="characters"
+                autoComplete="off"
+                spellCheck={false}
+                aria-invalid={erreurFormat}
+                aria-describedby="reference-aide"
+                className={`w-full min-h-12 rounded-lg border-[1.5px] bg-fds-surface px-3 text-lg tracking-wide text-fds-ink focus:outline-none focus:ring-2 focus:ring-fds-accent ${erreurFormat ? 'border-fds-bad' : 'border-fds-field'}`}
+              />
+              <p id="reference-aide" role={erreurFormat ? 'alert' : undefined} className={`text-[13px] ${erreurFormat ? 'font-semibold text-fds-bad' : 'text-fds-mute'}`}>
+                {erreurFormat ? t('suivi.formatErreur') : t('suivi.formatAide')}
+              </p>
+            </div>
+            <button
+              type="submit"
+              className="min-h-12 px-4 lg:px-8 lg:self-start rounded-lg bg-fds-navy hover:bg-fds-navy-d text-white font-semibold flex items-center justify-center gap-2 transition-colors"
+            >
+              <Search className="w-5 h-5" aria-hidden="true" />
+              {t('suivi.voir')}
+            </button>
+          </form>
 
-      {message && (
-        <div role="alert" className="flex gap-2.5 items-start rounded-[10px] border border-fds-bad-line bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
-          <TriangleAlert className="w-5 h-5 shrink-0" aria-hidden="true" />
-          <span>{message}</span>
+          {message && (
+            <div role="alert" className="flex gap-2.5 items-start rounded-[10px] border border-fds-bad-line bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
+              <TriangleAlert className="w-5 h-5 shrink-0" aria-hidden="true" />
+              <span>{message}</span>
+            </div>
+          )}
         </div>
-      )}
 
-      <section className="rounded-xl border border-fds-accent-line bg-fds-navy-t p-4 flex flex-col gap-2">
-        <h2 className="font-semibold">{t('suivi.perdueTitre')}</h2>
-        <p className="text-sm">{t('suivi.perdueTexte')}</p>
-        <a
-          href={`mailto:${EMAIL_FACULTE}?subject=${encodeURIComponent(t('suivi.mailSujet'))}`}
-          className="min-h-12 rounded-lg border-2 border-fds-accent bg-fds-surface text-fds-accent font-semibold flex items-center justify-center"
-        >
-          {t('suivi.contacter')}
-        </a>
-      </section>
+        <section className="rounded-xl border border-fds-accent-line bg-fds-navy-t p-4 lg:p-6 flex flex-col gap-2">
+          <h2 className="font-semibold">{t('suivi.perdueTitre')}</h2>
+          <p className="text-sm">{t('suivi.perdueTexte')}</p>
+          <a
+            href={`mailto:${EMAIL_FACULTE}?subject=${encodeURIComponent(t('suivi.mailSujet'))}`}
+            className="min-h-12 rounded-lg border-2 border-fds-accent bg-fds-surface text-fds-accent font-semibold flex items-center justify-center"
+          >
+            {t('suivi.contacter')}
+          </a>
+        </section>
+      </div>
     </>
   );
 };
@@ -148,92 +153,99 @@ const VueDossier: React.FC<{ suivi: SuiviDossier }> = ({ suivi }) => {
         {t('suivi.autre')}
       </Link>
 
-      <section className="rounded-xl border border-fds-line bg-fds-surface p-4 flex flex-col gap-2.5" aria-label={t('suivi.dossier')}>
-        <div className="text-sm text-fds-mute">{t('suivi.dossier')}</div>
-        <div className="font-fds-serif text-[28px] leading-tight font-bold text-fds-title break-all" data-testid="reference-dossier">
-          {suivi.reference_dossier}
-        </div>
-        <div className="flex gap-3 text-sm">
-          <span className="flex-1 text-fds-mute">{t('suivi.candidat')}</span>
-          <strong>
-            {suivi.prenom} {suivi.initiale_nom}.
-          </strong>
-        </div>
-        <div className="flex gap-3 text-sm">
-          <span className="flex-1 text-fds-mute">{t('suivi.admission')}</span>
-          <strong>{t('adm.mpc')}</strong>
-        </div>
-        {suivi.soumise_le && (
-          <div className="flex gap-3 text-sm">
-            <span className="flex-1 text-fds-mute">{t('suivi.envoyeLe')}</span>
-            <strong>{formaterJour(suivi.soumise_le)}</strong>
-          </div>
-        )}
-      </section>
-
-      <section className="flex flex-col gap-2.5" aria-label={t('suivi.avancement')}>
-        <div className="flex items-center gap-2">
-          <h2 className="font-fds-serif text-xl font-bold text-fds-title flex-1">{t('suivi.avancement')}</h2>
-          <span className={`rounded-full px-2.5 py-0.5 text-[13px] font-semibold whitespace-nowrap ${badge.classe}`}>{t(badge.cle)}</span>
-        </div>
-        <div
-          className="h-2.5 rounded bg-fds-line overflow-hidden"
-          role="progressbar"
-          aria-valuenow={pourcentage}
-          aria-valuemin={0}
-          aria-valuemax={100}
-          aria-label={t('suivi.progAria')}
-        >
-          <div className="h-full bg-fds-ok" style={{ width: `${pourcentage}%` }} />
-        </div>
-        <p className="text-sm text-fds-mute">{resume}</p>
-      </section>
-
-      {refusees > 0 && (
-        <div role="alert" className="flex gap-2.5 items-start rounded-[10px] border border-fds-bad-line bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
-          <TriangleAlert className="w-5 h-5 shrink-0" aria-hidden="true" />
-          <span>
-            <strong>{refusees > 1 ? t('suivi.refuseePlus', { n: refusees }) : t('suivi.refuseeUne')}</strong>
-            {refusees > 1 ? t('suivi.remplacezPlus') : t('suivi.remplacezUne')}
-          </span>
-        </div>
-      )}
-
-      <ul className="rounded-xl border border-fds-line bg-fds-surface p-4 flex flex-col gap-4" aria-label={t('suivi.statutPieces')}>
-        {suivi.pieces.map((piece) => {
-          const badgePiece = BADGES_PIECES[piece.statut];
-          const detail = detailPiece(piece);
-          return (
-            <li key={piece.id} className="flex gap-3 items-start">
-              <IconePiece statut={piece.statut} />
-              <div className="flex-1 flex flex-col gap-1.5">
-                <div className="flex items-center gap-2">
-                  <span className="font-semibold flex-1">{piece.nom}</span>
-                  <span className={`rounded-full px-2.5 py-0.5 text-[13px] font-semibold whitespace-nowrap ${badgePiece.classe}`}>
-                    {t(badgePiece.cle)}
-                  </span>
-                </div>
-                {detail && <div className="text-xs text-fds-mute">{detail}</div>}
-                {piece.statut === 'rejete' && piece.motif_rejet && (
-                  <p className="rounded-[10px] border border-fds-bad-line bg-fds-bad-bg px-3 py-2 text-sm text-fds-bad">
-                    <strong>{t('suivi.motif')}</strong> {piece.motif_rejet}
-                  </p>
-                )}
-                {piece.statut === 'rejete' && (
-                  <Link
-                    to={`/suivi/${suivi.reference_dossier}/remplacer/${piece.id}`}
-                    className="min-h-12 px-4 rounded-lg bg-fds-navy hover:bg-fds-navy-d text-white font-semibold flex items-center justify-center"
-                  >
-                    {t('suivi.remplacer')}
-                  </Link>
-                )}
+      {/* Sur ordinateur : identité et avancement à gauche, toujours visibles ; les pièces à droite */}
+      <div className="flex flex-col gap-[18px] lg:grid lg:grid-cols-[2fr_3fr] lg:gap-8 lg:items-start">
+        <div className="flex flex-col gap-[18px] min-w-0 lg:sticky lg:top-4">
+          <section className="rounded-xl border border-fds-line bg-fds-surface p-4 lg:p-6 flex flex-col gap-2.5" aria-label={t('suivi.dossier')}>
+            <div className="text-sm text-fds-mute">{t('suivi.dossier')}</div>
+            <div className="font-fds-serif text-[28px] leading-tight font-bold text-fds-title break-all" data-testid="reference-dossier">
+              {suivi.reference_dossier}
+            </div>
+            <div className="flex gap-3 text-sm">
+              <span className="flex-1 text-fds-mute">{t('suivi.candidat')}</span>
+              <strong>
+                {suivi.prenom} {suivi.initiale_nom}.
+              </strong>
+            </div>
+            <div className="flex gap-3 text-sm">
+              <span className="flex-1 text-fds-mute">{t('suivi.admission')}</span>
+              <strong>{t('adm.mpc')}</strong>
+            </div>
+            {suivi.soumise_le && (
+              <div className="flex gap-3 text-sm">
+                <span className="flex-1 text-fds-mute">{t('suivi.envoyeLe')}</span>
+                <strong>{formaterJour(suivi.soumise_le)}</strong>
               </div>
-            </li>
-          );
-        })}
-      </ul>
+            )}
+          </section>
 
-      <p className="text-xs text-fds-mute">{t('suivi.note')}</p>
+          <section className="flex flex-col gap-2.5" aria-label={t('suivi.avancement')}>
+            <div className="flex items-center gap-2">
+              <h2 className="font-fds-serif text-xl font-bold text-fds-title flex-1">{t('suivi.avancement')}</h2>
+              <span className={`rounded-full px-2.5 py-0.5 text-[13px] font-semibold whitespace-nowrap ${badge.classe}`}>{t(badge.cle)}</span>
+            </div>
+            <div
+              className="h-2.5 rounded bg-fds-line overflow-hidden"
+              role="progressbar"
+              aria-valuenow={pourcentage}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label={t('suivi.progAria')}
+            >
+              <div className="h-full bg-fds-ok" style={{ width: `${pourcentage}%` }} />
+            </div>
+            <p className="text-sm text-fds-mute">{resume}</p>
+          </section>
+        </div>
+
+        <div className="flex flex-col gap-[18px] min-w-0">
+          {refusees > 0 && (
+            <div role="alert" className="flex gap-2.5 items-start rounded-[10px] border border-fds-bad-line bg-fds-bad-bg px-3.5 py-3 text-sm text-fds-bad">
+              <TriangleAlert className="w-5 h-5 shrink-0" aria-hidden="true" />
+              <span>
+                <strong>{refusees > 1 ? t('suivi.refuseePlus', { n: refusees }) : t('suivi.refuseeUne')}</strong>
+                {refusees > 1 ? t('suivi.remplacezPlus') : t('suivi.remplacezUne')}
+              </span>
+            </div>
+          )}
+
+          <ul className="rounded-xl border border-fds-line bg-fds-surface p-4 lg:p-6 flex flex-col gap-4 lg:gap-5" aria-label={t('suivi.statutPieces')}>
+            {suivi.pieces.map((piece) => {
+              const badgePiece = BADGES_PIECES[piece.statut];
+              const detail = detailPiece(piece);
+              return (
+                <li key={piece.id} className="flex gap-3 items-start">
+                  <IconePiece statut={piece.statut} />
+                  <div className="flex-1 flex flex-col gap-1.5">
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold flex-1">{piece.nom}</span>
+                      <span className={`rounded-full px-2.5 py-0.5 text-[13px] font-semibold whitespace-nowrap ${badgePiece.classe}`}>
+                        {t(badgePiece.cle)}
+                      </span>
+                    </div>
+                    {detail && <div className="text-xs text-fds-mute">{detail}</div>}
+                    {piece.statut === 'rejete' && piece.motif_rejet && (
+                      <p className="rounded-[10px] border border-fds-bad-line bg-fds-bad-bg px-3 py-2 text-sm text-fds-bad">
+                        <strong>{t('suivi.motif')}</strong> {piece.motif_rejet}
+                      </p>
+                    )}
+                    {piece.statut === 'rejete' && (
+                      <Link
+                        to={`/suivi/${suivi.reference_dossier}/remplacer/${piece.id}`}
+                        className="min-h-12 px-4 lg:px-6 lg:self-start rounded-lg bg-fds-navy hover:bg-fds-navy-d text-white font-semibold flex items-center justify-center"
+                      >
+                        {t('suivi.remplacer')}
+                      </Link>
+                    )}
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+
+          <p className="text-xs text-fds-mute">{t('suivi.note')}</p>
+        </div>
+      </div>
     </>
   );
 };
@@ -294,5 +306,5 @@ export const SuiviPage: React.FC = () => {
     contenu = <RechercheReference valeurInitiale={reference} message={messages[resultat.etat]} />;
   }
 
-  return <div className="max-w-xl w-full mx-auto px-4 py-6 flex-1 flex flex-col gap-[18px]">{contenu}</div>;
+  return <div className="max-w-xl lg:max-w-5xl w-full mx-auto px-4 py-6 lg:pt-10 lg:pb-14 flex-1 flex flex-col gap-[18px] lg:gap-7">{contenu}</div>;
 };
