@@ -3,13 +3,26 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { cursusApi, CursusCard, trierBranches } from '../../../entities/cursus';
 import { FORMAT_REFERENCE, normaliserReference } from '../../../entities/candidature';
-import { useT } from '../../../shared/i18n/useT';
+import { calendrierApi } from '../../../entities/calendrier';
+import { formaterDateCivile } from '../../../features/candidature-form';
+import { useT } from '../../../shared/i18n';
 import { PhotoCampus } from '../../../shared/ui/PhotoCampus';
 import { IllustrationDossier } from './IllustrationDossier';
 
 const ETAPES = [1, 2, 3, 4, 5] as const;
 
 const CLASSE_BOUTON = 'min-h-12 px-5 rounded-lg font-semibold flex items-center justify-center text-center transition-colors';
+
+/** Badge du bandeau d'accueil, d'après le calendrier réglé par l'administration (US-028). */
+const BadgeAdmissions: React.FC = () => {
+  const t = useT();
+  const { data: calendrier } = useQuery({ queryKey: ['calendrier'], queryFn: calendrierApi.obtenir });
+  let texte = t('accueil.badge');
+  if (calendrier?.etat === 'ouverte' && calendrier.date_limite) texte = t('accueil.badgeJusquau', { date: formaterDateCivile(calendrier.date_limite) });
+  if (calendrier?.etat === 'a_venir' && calendrier.date_ouverture) texte = t('accueil.badgeAVenir', { date: formaterDateCivile(calendrier.date_ouverture) });
+  if (calendrier?.etat === 'fermee') texte = t('accueil.badgeFermees');
+  return <span className="self-start rounded-full bg-white/15 px-2.5 py-0.5 text-[13px] font-semibold">{texte}</span>;
+};
 
 /** Carte « Vous avez déjà candidaté ? » du bureau : la référence ouvre directement le suivi du dossier. */
 const RechercheRapide: React.FC = () => {
@@ -87,7 +100,7 @@ export const HomePage: React.FC = () => {
       <section className="bg-fds-navy text-white">
         <div className="max-w-5xl mx-auto px-4 py-8 md:py-14 lg:pb-20 flex items-center gap-10">
           <div className="flex-[1_1_480px] flex flex-col gap-4">
-            <span className="self-start rounded-full bg-white/15 px-2.5 py-0.5 text-[13px] font-semibold">{t('accueil.badge')}</span>
+            <BadgeAdmissions />
             <h1 className="font-fds-serif text-[30px] md:text-[44px] leading-tight font-bold">{t('accueil.titre')}</h1>
             <p className="text-fds-on-navy md:text-lg max-w-xl">{t('accueil.sousTitre')}</p>
             <div className="flex flex-col sm:flex-row gap-3 pt-1">

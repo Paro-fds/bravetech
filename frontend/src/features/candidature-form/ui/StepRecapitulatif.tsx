@@ -6,11 +6,12 @@ import {
   type InformationsPersonnelles,
   type PieceDossier,
 } from '../../../entities/candidature';
+import { estCandidaturesFermees } from '../../../entities/calendrier';
 import { formaterDateNaissance } from '../lib/dates';
 import { formaterTaille } from '../lib/fichiers';
 import type { PaiementSimule } from '../model/useCandidatureStore';
 import { BarreAction, CLASSE_BOUTON_PRIMAIRE } from './BarreAction';
-import { useNomDepartement, useNomPiece, useT } from '../../../shared/i18n/useT';
+import { useNomDepartement, useNomPiece, useT } from '../../../shared/i18n';
 
 interface StepRecapitulatifProps {
   candidatureId: string;
@@ -74,6 +75,8 @@ export const StepRecapitulatif: React.FC<StepRecapitulatifProps> = ({
       if (liste) {
         setManques(liste);
         setErreur(t('recap.incomplet'));
+      } else if (estCandidaturesFermees(e)) {
+        setErreur(t('cand.fermeeErreur'));
       } else {
         setErreur(t('recap.erreurEnvoi'));
       }

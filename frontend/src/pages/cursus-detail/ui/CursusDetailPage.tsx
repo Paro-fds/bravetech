@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { ArrowLeft, ChevronDown, FileText, Info, Plus, Check } from 'lucide-react';
+import { calendrierApi, candidaturesAcceptees } from '../../../entities/calendrier';
 import { cursusApi, IllustrationCursus, trierBranches, type MatiereItem } from '../../../entities/cursus';
-import { FRAIS_DOSSIER_PAR_DEFAUT } from '../../../features/candidature-form';
-import { useNomPiece, useT } from '../../../shared/i18n/useT';
+import { FRAIS_DOSSIER_PAR_DEFAUT, formaterDateCivile } from '../../../features/candidature-form';
+import { useNomPiece, useT } from '../../../shared/i18n';
 
 /** « 120 h + 60 h TP », ou « 90 h » selon les volumes renseignés (programme replié, mobile). */
 function formaterHeures(m: MatiereItem): string {
@@ -56,6 +57,10 @@ export const CursusDetailPage: React.FC = () => {
   });
   // Cartes « Après le MPC » : même requête que l'accueil (souvent déjà en cache)
   const { data: liste = [] } = useQuery({ queryKey: ['cursus'], queryFn: cursusApi.getList, enabled: Boolean(cursus?.est_admission) });
+  // Dates réglées par l'administration (US-028) ; une date absente reste « À confirmer »
+  const { data: calendrier } = useQuery({ queryKey: ['calendrier'], queryFn: calendrierApi.obtenir, enabled: Boolean(cursus?.est_admission) });
+  const dateOu = (iso: string | null | undefined) => (iso ? formaterDateCivile(iso) : t('cursus.aConfirmer'));
+  const ouvertes = candidaturesAcceptees(calendrier?.etat);
 
   const retour = (
     <Link to="/" className="self-start flex items-center gap-2 min-h-11 font-semibold text-fds-accent lg:text-white">
@@ -100,7 +105,7 @@ export const CursusDetailPage: React.FC = () => {
             <div className="flex-1 min-w-0 flex flex-col gap-2.5">
               <div className="flex flex-wrap gap-2">
                 <span className={`${PASTILLE} lg:bg-white/15 lg:text-white`}>{admission ? t('cursus.badgeAdmission') : t('cursus.badgeBranche')}</span>
-                {admission && cursus.est_ouvert && (
+                {admission && cursus.est_ouvert && ouvertes && (
                   <span className="rounded-full bg-fds-ok-bg text-fds-ok px-2.5 py-0.5 text-[13px] font-semibold">{t('accueil.badge')}</span>
                 )}
               </div>
@@ -132,14 +137,13 @@ export const CursusDetailPage: React.FC = () => {
                   <div className="text-xs text-fds-mute">{t('cursus.frais')}</div>
                   <div className="font-semibold">{FRAIS_DOSSIER_PAR_DEFAUT} HTG</div>
                 </div>
-                {/* Dates non confirmées par la Faculté : on ne les affiche pas comme si elles l'étaient */}
                 <div>
                   <div className="text-xs text-fds-mute">{t('cursus.dateLimite')}</div>
-                  <div className="font-semibold">{t('cursus.aConfirmer')}</div>
+                  <div className="font-semibold">{dateOu(calendrier?.date_limite)}</div>
                 </div>
                 <div>
                   <div className="text-xs text-fds-mute">{t('cursus.rentree')}</div>
-                  <div className="font-semibold">{t('cursus.aConfirmer')}</div>
+                  <div className="font-semibold">{dateOu(calendrier?.date_rentree)}</div>
                 </div>
               </>
             ) : (
@@ -149,6 +153,20 @@ export const CursusDetailPage: React.FC = () => {
               </div>
             )}
           </section>
+
+          {admission && (
+            <section className="lg:hidden rounded-xl border border-fds-line bg-fds-surface p-4 flex flex-col gap-2.5" aria-labelledby="dates-cles">
+              <h2 id="dates-cles" className="font-fds-serif text-lg font-bold text-fds-title">
+                {t('cursus.datesCles')}
+              </h2>
+              <Ligne libelle={t('cursus.ouverture')} valeur={dateOu(calendrier?.date_ouverture)} />
+              <Ligne libelle={t('cursus.dateLimite')} valeur={dateOu(calendrier?.date_limite)} />
+              <Ligne libelle={t('cursus.concours')} valeur={dateOu(calendrier?.date_concours)} />
+              <Ligne libelle={t('cursus.resultats')} valeur={dateOu(calendrier?.date_resultats)} />
+              <Ligne libelle={t('cursus.rentree')} valeur={dateOu(calendrier?.date_rentree)} />
+              {!ouvertes && <p className="text-sm font-semibold text-fds-bad">{t('cursus.fermees')}</p>}
+            </section>
+          )}
 
           {admission && (
             <section className="flex flex-col gap-3 lg:gap-4" aria-labelledby="parcours">
@@ -326,10 +344,16 @@ export const CursusDetailPage: React.FC = () => {
               <Ligne libelle={t('cursus.dureeMpc')} valeur={t('carte.ans', { n: cursus.duree_annees })} />
               <Ligne libelle={t('cursus.dureeTotale')} valeur={t('carte.ans', { n: 5 })} />
               <Ligne libelle={t('cursus.frais')} valeur={`${FRAIS_DOSSIER_PAR_DEFAUT} HTG`} />
-              {/* Dates non confirmées par la Faculté : on ne les affiche pas comme si elles l'étaient */}
-              <Ligne libelle={t('cursus.dateLimite')} valeur={t('cursus.aConfirmer')} />
-              <Ligne libelle={t('cursus.rentree')} valeur={t('cursus.aConfirmer')} />
             </div>
+            <div className="flex flex-col gap-2.5 border-t border-fds-line pt-3">
+              <h3 className="text-sm font-semibold">{t('cursus.datesCles')}</h3>
+              <Ligne libelle={t('cursus.ouverture')} valeur={dateOu(calendrier?.date_ouverture)} />
+              <Ligne libelle={t('cursus.dateLimite')} valeur={dateOu(calendrier?.date_limite)} />
+              <Ligne libelle={t('cursus.concours')} valeur={dateOu(calendrier?.date_concours)} />
+              <Ligne libelle={t('cursus.resultats')} valeur={dateOu(calendrier?.date_resultats)} />
+              <Ligne libelle={t('cursus.rentree')} valeur={dateOu(calendrier?.date_rentree)} />
+            </div>
+            {!ouvertes && <p className="text-sm font-semibold text-fds-bad">{t('cursus.fermees')}</p>}
             <Link to="/postuler" className="min-h-12 px-4 rounded-lg bg-fds-gold text-fds-on-light font-semibold flex items-center justify-center hover:brightness-95">
               {t('cursus.deposer')}
             </Link>

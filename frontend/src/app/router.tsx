@@ -11,6 +11,7 @@ import { AdminLayout } from './layout/AdminLayout';
 import { AdminLoginPage } from '../pages/admin-login';
 import { AdminCandidaturesPage } from '../pages/admin-candidatures';
 import { AdminDossierPage } from '../pages/admin-dossier';
+import { AdminCalendrierPage } from '../pages/admin-calendrier';
 
 export const router = createBrowserRouter([
   {
@@ -54,6 +55,8 @@ export const router = createBrowserRouter([
       { index: true, element: <AdminCandidaturesPage /> },
       { path: 'dashboard', element: <Navigate to="/admin" replace /> },
       { path: 'candidatures/:reference', element: <AdminDossierPage /> },
+      // Calendrier d'admission réglable sans toucher au code (US-028)
+      { path: 'calendrier', element: <AdminCalendrierPage /> },
     ],
   },
 ]);

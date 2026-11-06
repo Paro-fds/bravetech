@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Check } from 'lucide-react';
 import { MOTIF_MAX, MOTIF_MIN } from '../../../entities/dossier-admin';
-import { ApiError } from '../../../shared/api/client';
+import { ApiError } from '../../../shared/api';
 
 interface PanneauDecisionProps {
   nomPiece: string;

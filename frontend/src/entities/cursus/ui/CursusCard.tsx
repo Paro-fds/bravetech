@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
-import { useT } from '../../../shared/i18n/useT';
+import { useT } from '../../../shared/i18n';
 import type { CursusListItem } from '../model/types';
 import { IllustrationCursus } from './IllustrationCursus';
 

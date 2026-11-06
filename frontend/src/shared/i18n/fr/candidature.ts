@@ -7,6 +7,13 @@ export const candidature = {
   'cand.etapeSur': 'Étape {n} sur {total}',
   'cand.progressionAria': 'Progression de la candidature',
   'cand.reprise': 'Reprise de votre candidature…',
+  'cand.fermeeTitre': 'Les candidatures sont fermées',
+  'cand.aVenir': 'Les candidatures ouvriront le {date}.',
+  'cand.fermee': 'La date limite de dépôt était le {date}.',
+  'cand.fermeeSansDate': 'La Faculté n’accepte pas de candidatures pour le moment.',
+  'cand.fermeeSuivi': 'Vous avez déjà envoyé votre dossier ? Vous pouvez toujours le suivre et remplacer une pièce refusée.',
+  'cand.voirDates': 'Voir les dates d’admission',
+  'cand.fermeeErreur': 'Les candidatures sont fermées : la date limite de dépôt est passée.',
   'cand.continuer': 'Continuer',
   'cand.quitter': 'Quitter',
   'cand.enregistrement': 'Enregistrement…',
@@ -91,6 +98,14 @@ export const candidature = {
   'pay.refApres': ' vous sera donnée. Elle ne correspond à aucun vrai paiement.',
   'pay.bouton': 'Simuler le paiement de {montant} HTG',
   'pay.enCours': 'Simulation en cours…',
+  'pay.numerosTest':
+    'Numéros de test : un numéro finissant par 0000 simule un refus (solde insuffisant), par 9999 une panne de l’opérateur ; tout autre numéro simule un paiement accepté.',
+  'pay.refuseTitre': 'Paiement refusé',
+  'pay.refuse':
+    'L’opérateur a refusé le paiement : solde insuffisant (simulation). Rien n’a été prélevé. Essayez un autre numéro ou l’autre service.',
+  'pay.echecTitre': 'Le paiement n’a pas abouti',
+  'pay.echec': 'L’opérateur n’a pas répondu (simulation). Aucun montant n’a été prélevé : vous pouvez relancer le paiement.',
+  'pay.relancer': 'Relancer le paiement',
 
   'pieces.payeAvant': 'Paiement simulé enregistré :',
   'pieces.payeApres': '(aucun argent réel prélevé).',

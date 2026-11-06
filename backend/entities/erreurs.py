@@ -65,6 +65,14 @@ class ReferenceDejaAttribuee(ErreurMetier):
     """Une référence (de dossier ou de paiement) est déjà prise : il faut en tirer une autre."""
 
 
+class PaiementRefuse(ErreurMetier):
+    """Paiement simulé refusé par l'opérateur (solde insuffisant) : rien n'est payé, le candidat peut réessayer."""
+
+
+class PaiementEchoue(ErreurMetier):
+    """Échec technique simulé (l'opérateur ne répond pas) : rien n'est payé, une relance aboutit."""
+
+
 class CandidatureDejaSoumise(ErreurMetier):
     """La candidature est déjà soumise : ses informations ne sont plus modifiables."""
 
@@ -103,3 +111,11 @@ class JetonInvalide(ErreurMetier):
 
 class AccesInterdit(ErreurMetier):
     """Utilisateur authentifié mais dont le rôle ne permet pas l'action."""
+
+
+class CandidaturesFermees(ErreurMetier):
+    """Hors de la période de candidature fixée par l'administration (US-028) : avant l'ouverture ou après la date limite."""
+
+    def __init__(self, calendrier) -> None:
+        super().__init__("Les candidatures sont fermées.")
+        self.calendrier = calendrier

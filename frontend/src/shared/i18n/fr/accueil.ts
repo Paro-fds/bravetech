@@ -1,6 +1,9 @@
 /** Textes de l'accueil et de la carte de cursus. */
 export const accueil = {
   'accueil.badge': 'Admissions ouvertes',
+  'accueil.badgeJusquau': 'Admissions ouvertes jusqu’au {date}',
+  'accueil.badgeAVenir': 'Admissions à partir du {date}',
+  'accueil.badgeFermees': 'Admissions fermées',
   'accueil.titre': 'Candidatez à la Faculté des Sciences, sans vous déplacer.',
   'accueil.sousTitre': 'Consultez les cursus, déposez votre dossier et suivez son traitement depuis votre téléphone.',
   'accueil.postuler': 'Postuler maintenant',

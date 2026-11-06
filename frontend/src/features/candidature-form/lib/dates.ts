@@ -1,4 +1,4 @@
-import { useLangue } from '../../../shared/i18n/useLangue';
+import { useLangue } from '../../../shared/i18n';
 
 /** Fuseau d'affichage des dates : l'heure d'Haïti. Les dates sont toujours stockées et échangées en UTC. */
 const FUSEAU_AFFICHAGE = 'America/Port-au-Prince';
@@ -20,7 +20,7 @@ function composantes(date: Date): { jour: number; mois: number; annee: number } 
 }
 
 /** « 14 mai 2008 » / « 14 me 2008 » à partir d'une date AAAA-MM-JJ (sans conversion de fuseau : c'est une date civile). */
-export function formaterDateNaissance(valeur: string): string {
+export function formaterDateCivile(valeur: string): string {
   const [annee, mois, jour] = valeur.split('-').map(Number);
   if (!annee || !mois || !jour) return valeur;
   if (estKreyol()) return `${jour} ${MOIS_KREYOL[mois - 1]} ${annee}`;
@@ -31,6 +31,9 @@ export function formaterDateNaissance(valeur: string): string {
     timeZone: 'UTC',
   });
 }
+
+/** Date de naissance : une date civile. */
+export const formaterDateNaissance = formaterDateCivile;
 
 /** « 27 octobre 2026 » / « 27 oktòb 2026 » à partir d'un horodatage ISO-8601 en UTC, au jour d'Haïti. */
 export function formaterJour(iso: string): string {

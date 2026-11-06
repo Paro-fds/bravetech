@@ -26,9 +26,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements-dev.txt
 
-      - name: Run all tests
+      - name: Run all tests (avec couverture)
         run: |
-          pytest tests/ -v
+          python -m coverage run --source=backend -m pytest tests/ -v
+          python -m coverage json -q -o coverage.json
+
+      # Score CRAP (complexité de radon × couverture) : échoue si une fonction dépasse 30
+      - name: Score CRAP
+        run: python tools/crap.py coverage.json --seuil 30 --top 10
 
   # US-025 : sans ce job, une erreur de type ou de build n'était vue qu'à la main
   frontend:
@@ -57,6 +62,9 @@ jobs:
 
       - name: Lint (un avertissement fait échouer)
         run: npm run lint # oxlint --deny-warnings src
+
+      - name: Architecture FSD (steiger)
+        run: npm run lint:archi
 
       - name: Unit tests
         run: npm test

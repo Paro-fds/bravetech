@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { Lock, TriangleAlert } from 'lucide-react';
 import { sessionApi, sessionValide, useSessionStore } from '../../../entities/session';
-import { ApiError } from '../../../shared/api/client';
+import { ApiError } from '../../../shared/api';
 
 function messageErreur(erreur: unknown): string {
   if (erreur instanceof ApiError) {

@@ -1,5 +1,5 @@
-import { apiClient, ApiError, urlApi } from '../../../shared/api/client';
-import { enteteAuth, useSessionStore, type Session } from '../../session';
+import { apiClient, ApiError, urlApi } from '../../../shared/api';
+import { enteteAuth, useSessionStore, type Session } from '../../session/@x/dossier-admin';
 import { TAILLE_PAGE, type DossierAdmin, type FiltresDossiers, type PageDossiers, type PieceAdmin } from '../model/types';
 
 const BASE = '/api/v1/admin';
