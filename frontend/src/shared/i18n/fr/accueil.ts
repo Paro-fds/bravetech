@@ -4,6 +4,7 @@ export const accueil = {
   'accueil.badgeJusquau': 'Admissions ouvertes jusqu’au {date}',
   'accueil.badgeAVenir': 'Admissions à partir du {date}',
   'accueil.badgeFermees': 'Admissions fermées',
+  'accueil.calendrierTitre': 'Calendrier d’admission',
   'accueil.titre': 'Candidatez à la Faculté des Sciences, sans vous déplacer.',
   'accueil.sousTitre': 'Consultez les cursus, déposez votre dossier et suivez son traitement depuis votre téléphone.',
   'accueil.postuler': 'Postuler maintenant',
