@@ -30,6 +30,15 @@ class FakeUtilisateurs(IUtilisateurRepository):
     def creer(self, utilisateur):
         self.lignes[utilisateur.id] = utilisateur
 
+    def lister(self):
+        return list(self.lignes.values())
+
+    def mettre_a_jour(self, utilisateur):
+        self.lignes[utilisateur.id] = utilisateur
+
+    def compter_admins_actifs(self):
+        return sum(1 for u in self.lignes.values() if u.role == ROLE_ADMIN and u.est_actif)
+
 
 @pytest.fixture(scope="module")
 def hacheur():

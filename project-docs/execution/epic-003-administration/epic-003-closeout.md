@@ -1,6 +1,6 @@
 ---
 created: 2026-11-06T04:30:00Z
-updated: 2026-11-06T13:53:00Z
+updated: 2026-11-06T18:04:26Z
 ---
 
 # Epic 003 Closeout — Administration & Audit
@@ -50,7 +50,7 @@ Le fichier ne contenait pas de section « règles actives » ; ses arbitrages so
 
 ## Split to Unscheduled
 
-None. Not built and not in this Epic: an account-management screen for agents (noted in `SOLUTION_DESIGN.md` §15).
+None. Not built in this Epic: an account-management screen for agents — added later by US-029 (Epic 4, 2026-11-06).
 
 ## Tracking
 

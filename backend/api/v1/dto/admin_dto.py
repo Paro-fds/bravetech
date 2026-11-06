@@ -87,3 +87,32 @@ class DossierAdminResponse(BaseModel):
     montant_htg: int
     pieces: list[PieceAdminResponse]
     decisions: list[DecisionHistoriqueResponse]
+
+
+class ComptePersonnelResponse(BaseModel):
+    id: str
+    email: str
+    role: str  # admin | agent
+    est_actif: bool
+    created_at: datetime  # UTC
+
+
+class CreerCompteRequest(BaseModel):
+    email: str = ""
+    mot_de_passe: str = ""
+    role: str = "agent"
+
+    model_config = {"extra": "forbid"}
+
+
+class ModifierAccesRequest(BaseModel):
+    role: str | None = None
+    est_actif: bool | None = None
+
+    model_config = {"extra": "forbid"}
+
+
+class ReinitialiserMotDePasseRequest(BaseModel):
+    mot_de_passe: str = ""
+
+    model_config = {"extra": "forbid"}

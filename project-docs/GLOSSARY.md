@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T00:35:00Z
-updated: 2026-11-06T03:21:37Z
+updated: 2026-11-06T18:04:23Z
 ---
 
 # GLOSSARY.md — FDS Portail
@@ -18,7 +18,7 @@ updated: 2026-11-06T03:21:37Z
 |---|---|
 | **Candidat** | Lycéen ou adulte souhaitant s'inscrire à la FDS-UEH. Accès entièrement public — aucun compte requis. S'identifie via sa **référence dossier** pour le suivi. Peut consulter les cursus, postuler, uploader des documents, suivre son dossier et remplacer un document rejeté. |
 | **Administrateur (Admin)** | Agent du secrétariat FDS. Accès authentifié (email + mot de passe → JWT). Peut consulter toutes les candidatures, valider ou rejeter des documents. Toute action est auditée. En cas de conflit de besoin avec le Candidat, l'Admin est prioritaire (traçabilité > simplicité). |
-| **Agent** | Sous-rôle d'Administrateur avec permissions potentiellement réduites. Identifiant de rôle : `agent` (vs `admin`). Différence en V1 : un agent consulte le calendrier d'admission mais ne peut pas le modifier (rôle `admin` requis, US-028). |
+| **Agent** | Sous-rôle d'Administrateur avec permissions réduites. Identifiant de rôle : `agent` (vs `admin`). Un agent instruit les dossiers et consulte le calendrier d'admission, mais seul le rôle `admin` peut modifier le calendrier (US-028) et gérer les accès du personnel (`/admin/utilisateurs`). |
 | **Système** | Le backend FastAPI agissant de façon autonome : génération de références, déclenchement d'emails, validation des fichiers. N'est pas un acteur humain. |
 
 > **Terme à ne pas confondre :** « utilisateur » n'est jamais utilisé seul dans ce projet — il désigne toujours un Candidat (public) ou un Administrateur (authentifié). Utiliser le terme précis selon le contexte.
@@ -34,7 +34,7 @@ updated: 2026-11-06T03:21:37Z
 | **FDS Portail** | Le produit dans son ensemble — comprend le frontend et le backend. À ne pas confondre avec les autres modules de l'écosystème FDS (FDS Pay, FDS Akademi, FDS SYS). |
 | **Frontend** | Application React/Vite (SPA), servie par Nginx dans un conteneur sur la VM Proxmox de la FDS (ADR-006) ; Nginx relaie aussi `/api/` vers le Backend. Sert les pages publiques (cursus, candidature, suivi) et le tableau de bord admin. Structure interne : Feature-Sliced Design (FSD). |
 | **Backend** | API FastAPI, dans un conteneur sur la VM Proxmox de la FDS (ADR-006). Structure interne : Clean Architecture (4 couches). Expose les endpoints REST sous `/api/v1/`. Source de vérité : PostgreSQL. |
-| **FDS SYS** | Système externe — System of Record des identités des administrateurs FDS. FDS Portail *consomme* ces identités mais ne les gère pas. Non livré en V1 : les comptes admin sont créés manuellement. |
+| **FDS SYS** | Système externe cible — System of Record des identités des administrateurs FDS. Tant que FDS SYS n'est pas déployé, FDS Portail gère localement les comptes du personnel (`admin` et `agent`) depuis l'écran **Accès** (`/admin/utilisateurs`), amorcé par `seed_admin.py`. |
 | **FDS Pay** | Module externe de paiement réel (MonCash/NatCash). Non livré en V1 — FDS Portail simule le paiement. |
 
 ---

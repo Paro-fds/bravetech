@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T13:09:00Z
-updated: 2026-11-06T14:13:35Z
+updated: 2026-11-06T18:04:26Z
 ---
 
 # EPIC_EXECUTION.md — FDS Portail
@@ -91,6 +91,7 @@ Fonctionnalités de confort et d'efficacité opérationnelle : SMS en complémen
 | US-021 | Refonte visuelle de l'accueil et des fiches de cursus | 🔵 Could | ✅ Done | [US-021.md](epic-004-could-have/US-021.md) |
 | US-022 | Finition de la refonte visuelle (menu mobile, accueil et fiche MPC sur ordinateur, suivi) | 🔵 Could | ✅ Done | [US-022.md](epic-004-could-have/US-022.md) |
 | US-028 | Calendrier d'admission réglable par l'administration | 🟡 Should | ✅ Done | [US-028.md](epic-004-could-have/US-028.md) |
+| US-029 | Gestion des accès du personnel depuis l'espace admin | 🔵 Could | 🔲 Backlog | [US-029.md](epic-004-could-have/US-029.md) |
 
 ---
 

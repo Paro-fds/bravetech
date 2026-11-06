@@ -15,9 +15,7 @@ from backend.dal.database import SessionLocal, engine
 from backend.dal.schema import mettre_a_jour_schema
 from backend.dal.securite import HacheurBcrypt
 from backend.dal.utilisateur_repository_sql import SqlUtilisateurRepository
-from backend.entities.utilisateur import ROLE_ADMIN, Utilisateur
-
-LONGUEUR_MIN_MOT_DE_PASSE = 12
+from backend.entities.utilisateur import LONGUEUR_MIN_MOT_DE_PASSE, ROLE_ADMIN, Utilisateur
 
 
 def creer_admin(email: str, mot_de_passe: str, depot: SqlUtilisateurRepository) -> bool:

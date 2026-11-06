@@ -6,7 +6,7 @@ from datetime import timezone
 from sqlalchemy.orm import Session
 
 from backend.dal.models import UtilisateurModel
-from backend.entities.utilisateur import Utilisateur
+from backend.entities.utilisateur import ROLE_ADMIN, Utilisateur
 from backend.ports.utilisateur_repository import IUtilisateurRepository
 
 _CHAMPS = ("id", "email", "mot_de_passe_hash", "role", "est_actif")
@@ -36,3 +36,24 @@ class SqlUtilisateurRepository(IUtilisateurRepository):
             created_at=utilisateur.created_at, **{champ: getattr(utilisateur, champ) for champ in _CHAMPS}
         ))
         self._session.commit()
+
+    def lister(self) -> list[Utilisateur]:
+        modeles = (
+            self._session.query(UtilisateurModel)
+            .order_by(UtilisateurModel.created_at.desc(), UtilisateurModel.email.asc())
+            .all()
+        )
+        return [_vers_entite(modele) for modele in modeles]
+
+    def mettre_a_jour(self, utilisateur: Utilisateur) -> None:
+        modele = self._session.get(UtilisateurModel, utilisateur.id)
+        for champ in ("email", "mot_de_passe_hash", "role", "est_actif"):
+            setattr(modele, champ, getattr(utilisateur, champ))
+        self._session.commit()
+
+    def compter_admins_actifs(self) -> int:
+        return (
+            self._session.query(UtilisateurModel)
+            .filter(UtilisateurModel.role == ROLE_ADMIN, UtilisateurModel.est_actif.is_(True))
+            .count()
+        )

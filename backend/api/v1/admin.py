@@ -19,17 +19,26 @@ from backend.api.v1.candidatures import (
     get_url_base_portail,
 )
 from backend.api.v1.dto.admin_dto import (
+    ComptePersonnelResponse,
+    CreerCompteRequest,
     DecisionHistoriqueResponse,
     DecisionRequest,
     DossierAdminResponse,
     LigneCandidatureResponse,
+    ModifierAccesRequest,
     PageCandidaturesResponse,
     PieceAdminResponse,
+    ReinitialiserMotDePasseRequest,
     StatistiquesResponse,
 )
 from backend.api.v1.calendrier import dates_du_calendrier, get_calendrier_repository
 from backend.api.v1.dto.calendrier_dto import CalendrierAdminResponse, CalendrierRequest
-from backend.api.v1.securite import get_current_admin, get_current_admin_complet, get_utilisateur_repository
+from backend.api.v1.securite import (
+    get_current_admin,
+    get_current_admin_complet,
+    get_hacheur,
+    get_utilisateur_repository,
+)
 from backend.bll.consulter_candidatures import (
     LIMITE_MAX,
     ListerCandidaturesUseCase,
@@ -39,6 +48,12 @@ from backend.bll.consulter_candidatures import (
 from backend.bll.calendrier_admission import ConsulterCalendrierUseCase, ModifierCalendrierUseCase
 from backend.bll.decider_document import DeciderDocumentUseCase
 from backend.bll.exporter_candidatures import generer_csv, vers_lignes
+from backend.bll.gerer_utilisateurs import (
+    CreerUtilisateurUseCase,
+    ListerUtilisateursUseCase,
+    ModifierAccesUtilisateurUseCase,
+    ReinitialiserMotDePasseUseCase,
+)
 from backend.bll.notifier_decision import NotifierDecisionUseCase
 from backend.bll.televerser_document import trouver_piece
 from backend.bll.obtenir_statut_candidature import (
@@ -50,10 +65,14 @@ from backend.dal.export_pdf import generer_pdf
 from backend.entities.candidature import FRAIS_DOSSIER_HTG
 from backend.entities.document_soumis import DocumentSoumis
 from backend.entities.erreurs import (
+    ActionSurSoiInterdite,
     CandidatureIntrouvable,
+    DernierAdministrateurActif,
     DocumentDejaDecide,
     DocumentIntrouvable,
     InformationsInvalides,
+    UtilisateurDejaExistant,
+    UtilisateurIntrouvable,
 )
 from backend.entities.pieces_admission import NOM_ADMISSION
 from backend.entities.utilisateur import Utilisateur
@@ -61,6 +80,7 @@ from backend.ports.calendrier_repository import ICalendrierRepository
 from backend.ports.candidature_repository import ICandidatureRepository
 from backend.ports.document_repository import IDocumentRepository
 from backend.ports.email_sender import IEmailSender
+from backend.ports.securite import IHacheurMotDePasse
 from backend.ports.stockage_fichiers import IStockageFichiers
 from backend.ports.utilisateur_repository import IUtilisateurRepository
 
@@ -352,3 +372,106 @@ def modifier_calendrier(
         raise HTTPException(status_code=422, detail={"erreurs": erreur.erreurs})
     _journal.info("Calendrier d'admission modifié par %s.", utilisateur.id)
     return _calendrier_admin(calendriers, utilisateurs)
+
+
+# --- Gestion des accès du personnel (rôle admin uniquement) -------------------------------------------
+
+def _compte_reponse(utilisateur: Utilisateur) -> ComptePersonnelResponse:
+    return ComptePersonnelResponse(
+        id=utilisateur.id,
+        email=utilisateur.email,
+        role=utilisateur.role,
+        est_actif=utilisateur.est_actif,
+        created_at=utilisateur.created_at,
+    )
+
+
+@router.get(
+    "/utilisateurs",
+    response_model=list[ComptePersonnelResponse],
+    summary="Lister les comptes du personnel (rôle admin)",
+)
+def lister_utilisateurs(
+    _admin: Utilisateur = Depends(get_current_admin_complet),
+    utilisateurs: IUtilisateurRepository = Depends(get_utilisateur_repository),
+):
+    return [_compte_reponse(u) for u in ListerUtilisateursUseCase(utilisateurs).executer()]
+
+
+@router.post(
+    "/utilisateurs",
+    response_model=ComptePersonnelResponse,
+    status_code=201,
+    summary="Créer un compte agent ou admin avec mot de passe provisoire (rôle admin)",
+)
+def creer_utilisateur(
+    payload: CreerCompteRequest,
+    admin: Utilisateur = Depends(get_current_admin_complet),
+    utilisateurs: IUtilisateurRepository = Depends(get_utilisateur_repository),
+    hacheur: IHacheurMotDePasse = Depends(get_hacheur),
+):
+    try:
+        cree = CreerUtilisateurUseCase(utilisateurs, hacheur).executer(
+            payload.email, payload.mot_de_passe, payload.role
+        )
+    except InformationsInvalides as erreur:
+        raise HTTPException(status_code=422, detail={"erreurs": erreur.erreurs})
+    except UtilisateurDejaExistant:
+        raise HTTPException(status_code=409, detail="Un compte du personnel existe déjà avec cette adresse email.")
+    _journal.info("Compte %s (%s) créé par %s.", cree.id, cree.role, admin.id)
+    return _compte_reponse(cree)
+
+
+@router.patch(
+    "/utilisateurs/{utilisateur_id}",
+    response_model=ComptePersonnelResponse,
+    summary="Modifier le rôle ou activer/désactiver un compte du personnel (rôle admin)",
+)
+def modifier_acces_utilisateur(
+    utilisateur_id: str,
+    payload: ModifierAccesRequest,
+    admin: Utilisateur = Depends(get_current_admin_complet),
+    utilisateurs: IUtilisateurRepository = Depends(get_utilisateur_repository),
+):
+    try:
+        modifie = ModifierAccesUtilisateurUseCase(utilisateurs).executer(
+            utilisateur_id, admin, role=payload.role, est_actif=payload.est_actif
+        )
+    except InformationsInvalides as erreur:
+        raise HTTPException(status_code=422, detail={"erreurs": erreur.erreurs})
+    except UtilisateurIntrouvable:
+        raise HTTPException(status_code=404, detail="Compte introuvable.")
+    except ActionSurSoiInterdite:
+        raise HTTPException(
+            status_code=409,
+            detail="Vous ne pouvez ni désactiver votre propre compte ni vous retirer le rôle d'administrateur.",
+        )
+    except DernierAdministrateurActif:
+        raise HTTPException(
+            status_code=409,
+            detail="Impossible de retirer ou désactiver le dernier administrateur actif du portail.",
+        )
+    _journal.info("Accès du compte %s modifié par %s (role=%s, actif=%s).", modifie.id, admin.id, modifie.role, modifie.est_actif)
+    return _compte_reponse(modifie)
+
+
+@router.put(
+    "/utilisateurs/{utilisateur_id}/mot-de-passe",
+    response_model=ComptePersonnelResponse,
+    summary="Réinitialiser le mot de passe d'un compte du personnel (rôle admin)",
+)
+def reinitialiser_mot_de_passe_utilisateur(
+    utilisateur_id: str,
+    payload: ReinitialiserMotDePasseRequest,
+    admin: Utilisateur = Depends(get_current_admin_complet),
+    utilisateurs: IUtilisateurRepository = Depends(get_utilisateur_repository),
+    hacheur: IHacheurMotDePasse = Depends(get_hacheur),
+):
+    try:
+        modifie = ReinitialiserMotDePasseUseCase(utilisateurs, hacheur).executer(utilisateur_id, payload.mot_de_passe)
+    except InformationsInvalides as erreur:
+        raise HTTPException(status_code=422, detail={"erreurs": erreur.erreurs})
+    except UtilisateurIntrouvable:
+        raise HTTPException(status_code=404, detail="Compte introuvable.")
+    _journal.info("Mot de passe du compte %s réinitialisé par %s.", modifie.id, admin.id)
+    return _compte_reponse(modifie)

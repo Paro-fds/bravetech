@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T00:18:00Z
-updated: 2026-11-06T04:11:35Z
+updated: 2026-11-06T18:04:26Z
 ---
 
 # SOLUTION_DESIGN.md — FDS Portail
@@ -263,7 +263,7 @@ Pas de boucle autonome, pas de tâche planifiée, pas de risque de runaway en MV
 | Question | Bloquante ? | Qui / Quand |
 |---|---|---|
 | Conformité légale haïtienne sur les données personnelles (consentement, responsable légal) | Non pour le lancement technique | FDS-UEH — avant mise en production publique |
-| Création des comptes agents : le premier admin est créé par `backend/scripts/seed_admin.py` (US-011, résolu pour le lancement) ; aucun écran de gestion des comptes | Non | Équipe Bravetech / FDS SYS — post-MVP |
+| Comptes du personnel gérés localement (premier admin par `seed_admin.py`, les suivants par l'écran « Accès », US-029) en attendant FDS SYS | Non | FDS SYS — post-MVP |
 | Test de restauration de la sauvegarde PostgreSQL de la VM (US-027) | Non (RPO/RTO documentés, test non effectué) | Équipe Bravetech — avant la période d'inscription |
 | Monitoring automatique (alertes 5xx) | Non pour le MVP | Post-MVP — intégrer Uptime Robot ou équivalent |
 

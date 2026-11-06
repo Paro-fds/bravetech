@@ -119,3 +119,19 @@ class CandidaturesFermees(ErreurMetier):
     def __init__(self, calendrier) -> None:
         super().__init__("Les candidatures sont fermées.")
         self.calendrier = calendrier
+
+
+class UtilisateurIntrouvable(ErreurMetier):
+    """Aucun compte du personnel ne correspond à cet identifiant."""
+
+
+class UtilisateurDejaExistant(ErreurMetier):
+    """Un compte du personnel existe déjà avec cette adresse email."""
+
+
+class ActionSurSoiInterdite(ErreurMetier):
+    """Un administrateur ne peut ni se désactiver ni se retirer le rôle d'administrateur lui-même."""
+
+
+class DernierAdministrateurActif(ErreurMetier):
+    """Impossible de désactiver ou de rétrograder le dernier administrateur actif."""
