@@ -1,6 +1,6 @@
 ---
 created: 2026-09-24T20:42:00Z
-updated: 2026-11-01T15:51:55Z
+updated: 2026-11-06T03:03:27Z
 ---
 
 # PRD.md — FDS Portail
@@ -74,7 +74,7 @@ La frontière est de **sécurité** : un candidat ne doit jamais voir le dossier
 | **Consulter l'histoire et les contacts** | Candidat ouvre « Histoire » ou « Contact » | Pages institutionnelles : histoire de la Faculté, adresse (Delmas 33), moyens de contact |
 | **Postuler** | Candidat clique « Postuler » et complète le formulaire en 4 étapes (informations, admission MPC et déplacement, paiement simulé, pièces) | Dossier créé en base, référence `CAN-2026-X` générée, email de confirmation envoyé |
 | **Simuler le paiement** | Candidat confirme la simulation MonCash/NatCash | `statut_paiement` et `reference_paiement` enregistrés, accès à l'étape upload débloqué |
-| **Uploader une pièce** | Candidat attache un fichier PDF/JPG ≤ 5 Mo | Fichier stocké sur Cloudinary, `DocumentSoumis` créé avec statut `en_attente` |
+| **Uploader une pièce** | Candidat attache un fichier PDF/JPG ≤ 5 Mo | Fichier stocké sur le serveur du portail (volume de la VM, ADR-007), `DocumentSoumis` créé avec statut `en_attente` |
 | **Suivre son dossier** | Candidat saisit sa référence sur la page de suivi | Barre de progression affichant le statut de chaque document |
 | **Remplacer un document rejeté** | Candidat uploade un nouveau fichier sur un document `rejete` | Même `DocumentSoumis` mis à jour (upsert), statut repassé à `en_attente` |
 | **Valider / rejeter un document** | Admin clique Valider ou Rejeter dans le tableau de bord | Statut mis à jour en base, audit enregistré (`valide_par`, `date_validation`), email déclenché |

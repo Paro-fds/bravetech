@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T12:35:00Z
-updated: 2026-11-06T01:57:24Z
+updated: 2026-11-06T03:03:27Z
 ---
 
 # PROJECT_WORKFLOW.md — FDS Portail
@@ -77,6 +77,7 @@ Chaque User Story doit satisfaire **tous** ces critères avant d'être marquée 
 | **Pas de secret en clair** | Aucune clé API, token ou mot de passe dans le code versionné, pas même une valeur par défaut (`${VAR:?…}` dans `docker-compose.yml`) ; GitGuardian vert |
 | **Pas d'adresse réelle** | Le dépôt est public : aucune adresse IP ni port d'accès tirés de la VM ou de ses journaux. Les tests utilisent des adresses fictives (RFC 5737) |
 | **Document mis à jour si nécessaire** | Si la story change un contrat API, un schéma de données ou une décision d'architecture → le document correspondant est mis à jour avant de fermer l'Issue |
+| **Ancien choix cherché partout** | Une ADR qui remplace un choix (fournisseur, hébergement, bibliothèque) : chercher l'ancien nom dans `AGENTS.md`, `PRD.md`, `NFR.md`, `SOLUTION_DESIGN.md`, `GLOSSARY.md`, `README.md`, et corriger dans la même PR. Aucun document ne garde de questions du gabarit ni de « *(À rédiger)* » ([review 04](reviews/04-documents-fondateurs-et-adr.md)) |
 
 > **Différence entre « fonctionnel » et « fini » :** une story qui fonctionne localement mais dont les tests échouent en CI n'est **pas** finie. Une story qui passe en CI mais introduit une violation de la Règle de Dépendance n'est **pas** finie — `test_architecture.py` est le gardien automatique de cette règle.
 
@@ -98,12 +99,12 @@ git config core.hooksPath .githooks
 ```
 Active `.githooks/pre-commit`, qui inscrit `updated:` (UTC) sur chaque fichier Markdown indexé. Une date présente et fausse est lue comme vraie — ne pas ignorer cette étape.
 
-**2. Installer les dépendances backend**
+**2. Installer les dépendances backend** (depuis la racine du dépôt : `requirements*.txt` y sont)
 ```bash
-cd backend
 python -m venv .venv
 .venv\Scripts\activate      # Windows
-pip install -r requirements.txt
+pip install -r requirements-dev.txt
+python -m backend.scripts.migrer   # crée ou met à jour la base (Alembic)
 ```
 
 **3. Installer les dépendances frontend**
@@ -115,7 +116,7 @@ npm install
 **4. Copier et remplir les variables d'environnement**
 ```bash
 cp .env.example .env
-# Remplir DATABASE_URL, CLOUDINARY_*, RESEND_API_KEY, SECRET_KEY
+# Remplir au minimum POSTGRES_PASSWORD et JWT_SECRET ; RESEND_API_KEY, EMAIL_FROM, CONTACT_EMAIL pour les emails
 ```
 
 **5. Vérifier que les tests d'architecture passent**
@@ -125,12 +126,7 @@ pytest tests/unit/test_architecture.py -v
 Si ce test est rouge sur un projet vide, c'est un problème de configuration — corriger avant d'écrire la moindre ligne de code métier.
 
 **6. Créer les Milestones GitHub**
-Dans GitHub → Issues → Milestones : créer `epic-001-socle`, `epic-002-candidature`, `epic-003-administration`.
-
----
-
-*PROJECT_WORKFLOW.md — FDS Portail — Bravetech · GL-EN3-2026*
-
+Dans GitHub → Issues → Milestones : un Milestone par Epic, nommé comme dans `PLAN.md` (ex. `Epic 2 — Candidature & Suivi`). Ils existent déjà pour les Epics 1 à 5.
 
 ---
 
