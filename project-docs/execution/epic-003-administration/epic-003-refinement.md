@@ -1,10 +1,12 @@
 ---
 created: 2026-09-29T18:00:00Z
-updated: 2026-09-30T16:04:08Z
-status: open
+updated: 2026-11-06T04:11:35Z
+status: closed
 ---
 
 # epic-003-refinement.md — Administration & Audit
+
+> **Clôturé le 2026-11-06.** Ce fichier n'est plus la source d'aucune règle : c'est l'historique de l'Epic. Les arbitrages Q1 à Q4 et le constat E3-5 ont été déplacés dans les documents propriétaires ; la table de destination est dans [epic-003-closeout.md](epic-003-closeout.md).
 
 > **Ce fichier est la source de vérité des règles en cours pour epic-003.**  
 > Toute règle technique ou décision d'arbitrage produite pendant cet Epic vit ici jusqu'à sa clôture.  
