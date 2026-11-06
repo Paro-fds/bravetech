@@ -14,8 +14,28 @@ export const StepProgress: React.FC<StepProgressProps> = ({ etape }) => {
   const pourcentage = Math.round((etape / total) * 100);
   return (
     <div className="bg-fds-surface border-b border-fds-line">
-      <div className="max-w-xl mx-auto px-4 py-3.5 flex flex-col gap-2">
-        <div className="flex items-center justify-between">
+      <div className="max-w-xl lg:max-w-5xl mx-auto px-4 py-3.5 lg:py-4 flex flex-col gap-2 lg:gap-3">
+        {/* Ordinateur : les quatre étapes nommées, l'étape en cours mise en avant */}
+        <ol className="hidden lg:grid grid-cols-4 gap-4">
+          {TITRES.map((titre, i) => {
+            const n = i + 1;
+            const etat = n < etape ? 'fait' : n === etape ? 'courant' : 'avenir';
+            return (
+              <li key={titre} className="flex items-center gap-2.5" aria-current={etat === 'courant' ? 'step' : undefined}>
+                <span
+                  className={`w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold shrink-0 ${
+                    etat === 'avenir' ? 'border-2 border-fds-line text-fds-mute' : 'bg-fds-accent text-white'
+                  }`}
+                  aria-hidden="true"
+                >
+                  {n}
+                </span>
+                <span className={`text-sm ${etat === 'courant' ? 'font-semibold' : 'text-fds-mute'}`}>{t(titre)}</span>
+              </li>
+            );
+          })}
+        </ol>
+        <div className="flex items-center justify-between lg:hidden">
           <span className="font-semibold">
             {t('cand.etapeSur', { n: etape, total })}
           </span>

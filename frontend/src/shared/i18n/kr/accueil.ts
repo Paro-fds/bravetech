@@ -4,6 +4,7 @@ export const accueil = {
   'accueil.badgeJusquau': 'Admisyon louvri jiska {date}',
   'accueil.badgeAVenir': 'Admisyon ap louvri {date}',
   'accueil.badgeFermees': 'Admisyon fèmen',
+  'accueil.calendrierTitre': 'Kalandriye admisyon',
   'accueil.titre': 'Poze kandidati ou nan Fakilte Syans lan, san ou pa bezwen deplase.',
   'accueil.sousTitre': 'Gade kourikoulòm yo, depoze dosye ou epi swiv jan yo ap trete l, depi nan telefòn ou.',
   'accueil.postuler': 'Aplike kounye a',

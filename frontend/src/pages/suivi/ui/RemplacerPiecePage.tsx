@@ -221,7 +221,7 @@ export const RemplacerPiecePage: React.FC = () => {
   }
 
   return (
-    <div className="max-w-xl w-full mx-auto px-4 py-6 flex-1 flex flex-col gap-[18px]">
+    <div className="max-w-xl lg:max-w-3xl w-full mx-auto px-4 py-6 lg:my-10 lg:p-8 lg:rounded-xl lg:border lg:border-fds-line lg:bg-fds-surface flex-1 lg:flex-none flex flex-col gap-[18px]">
       {!envoye && retour}
       {contenu}
     </div>
