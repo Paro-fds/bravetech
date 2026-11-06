@@ -8,7 +8,7 @@ import {
 import { validerNumeroHaitien } from '../lib/validation';
 import { BarreAction, CLASSE_BOUTON_PRIMAIRE } from './BarreAction';
 import { ChampTexte } from './ChampTexte';
-import { useT } from '../../../shared/i18n/useT';
+import { useT } from '../../../shared/i18n';
 
 interface StepPaiementProps {
   montantHtg: number;

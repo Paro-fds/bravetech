@@ -2,7 +2,7 @@ import React from 'react';
 import { Navigate, NavLink, Outlet } from 'react-router-dom';
 import { FileText, LogOut } from 'lucide-react';
 import { sessionValide, useSessionStore } from '../../entities/session';
-import { ThemeToggle } from '../../shared/theme/ThemeToggle';
+import { ThemeToggle } from '../../shared/theme';
 
 /**
  * Mise en page de l'espace administration (maquettes « Administration ») : barre latérale marine, contenu à droite ;

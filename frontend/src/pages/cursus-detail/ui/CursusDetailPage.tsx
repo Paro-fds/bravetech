@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { ArrowLeft, ChevronDown, FileText, Info, Plus, Check } from 'lucide-react';
 import { cursusApi, IllustrationCursus, trierBranches, type MatiereItem } from '../../../entities/cursus';
 import { FRAIS_DOSSIER_PAR_DEFAUT } from '../../../features/candidature-form';
-import { useNomPiece, useT } from '../../../shared/i18n/useT';
+import { useNomPiece, useT } from '../../../shared/i18n';
 
 /** « 120 h + 60 h TP », ou « 90 h » selon les volumes renseignés (programme replié, mobile). */
 function formaterHeures(m: MatiereItem): string {

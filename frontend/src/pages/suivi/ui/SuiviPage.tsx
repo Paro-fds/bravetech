@@ -10,9 +10,9 @@ import {
   type SuiviDossier,
 } from '../../../entities/candidature';
 import { formaterJour } from '../../../features/candidature-form';
-import { ApiError } from '../../../shared/api/client';
-import { traduireMaintenant as tr, useT } from '../../../shared/i18n/useT';
-import type { Cle } from '../../../shared/i18n/fr';
+import { ApiError } from '../../../shared/api';
+import { traduireMaintenant as tr, useT } from '../../../shared/i18n';
+import type { Cle } from '../../../shared/i18n';
 
 // Adresse déjà affichée dans le pied de page du site ; à confirmer avec la Faculté.
 const EMAIL_FACULTE = 'admission@fds.ueh.edu.ht';

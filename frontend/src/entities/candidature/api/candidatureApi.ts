@@ -1,4 +1,4 @@
-import { apiClient, ApiError, urlApi } from '../../../shared/api/client';
+import { apiClient, ApiError, urlApi } from '../../../shared/api';
 import type {
   Brouillon,
   ErreursChamps,

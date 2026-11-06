@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Check, Copy, Info, Mail, TriangleAlert } from 'lucide-react';
 import { formaterHorodatage } from '../lib/dates';
-import { useT } from '../../../shared/i18n/useT';
+import { useT } from '../../../shared/i18n';
 
 interface EcranConfirmationProps {
   prenom: string;

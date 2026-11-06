@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link, Outlet, useMatches, useParams } from 'react-router-dom';
-import { LanguageSwitcher } from '../../shared/i18n/LanguageSwitcher';
-import type { Cle } from '../../shared/i18n/fr';
-import { useT } from '../../shared/i18n/useT';
-import { ThemeToggle } from '../../shared/theme/ThemeToggle';
+import { LanguageSwitcher } from '../../shared/i18n';
+import type { Cle } from '../../shared/i18n';
+import { useT } from '../../shared/i18n';
+import { ThemeToggle } from '../../shared/theme';
 
 /**
  * Mise en page du tunnel de candidature et du suivi (maquettes) : en-tête marine allégé, sans menu ni pied de page.

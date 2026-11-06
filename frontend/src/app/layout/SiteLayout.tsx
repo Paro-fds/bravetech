@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
-import { LanguageSwitcher } from '../../shared/i18n/LanguageSwitcher';
-import type { Cle } from '../../shared/i18n/fr';
-import { useT } from '../../shared/i18n/useT';
-import { ThemeToggle } from '../../shared/theme/ThemeToggle';
+import { LanguageSwitcher } from '../../shared/i18n';
+import type { Cle } from '../../shared/i18n';
+import { useT } from '../../shared/i18n';
+import { ThemeToggle } from '../../shared/theme';
 
 const LIENS: { to: string; cle: Cle; clePied?: Cle; fin?: boolean }[] = [
   { to: '/', cle: 'nav.accueil', fin: true },

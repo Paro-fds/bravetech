@@ -1,4 +1,4 @@
-import type { StatutPiece } from '../../candidature';
+import type { StatutPiece } from '../../candidature/@x/dossier-admin';
 
 /** Statut global d'un dossier vu du personnel (« en_examen » s'affiche « À examiner »). */
 export type StatutDossier = 'en_examen' | 'action_requise' | 'complet';

@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { CheckCircle2, FileText, TriangleAlert, Upload } from 'lucide-react';
 import { candidatureApi, extraireErreursChamps, type PieceDossier } from '../../../entities/candidature';
-import { ApiError } from '../../../shared/api/client';
+import { ApiError } from '../../../shared/api';
 import { attributAccept, formaterTaille, validerFichierLocal } from '../lib/fichiers';
 import { BarreAction, CLASSE_BOUTON_PRIMAIRE } from './BarreAction';
-import { useNomPiece, useT } from '../../../shared/i18n/useT';
-import type { Cle } from '../../../shared/i18n/fr';
+import { useNomPiece, useT } from '../../../shared/i18n';
+import type { Cle } from '../../../shared/i18n';
 
 interface StepPiecesProps {
   candidatureId: string;

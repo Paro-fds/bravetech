@@ -18,8 +18,8 @@ import {
   useCandidatureStore,
   type EtapeCandidature,
 } from '../../../features/candidature-form';
-import { ApiError } from '../../../shared/api/client';
-import { useT } from '../../../shared/i18n/useT';
+import { ApiError } from '../../../shared/api';
+import { useT } from '../../../shared/i18n';
 
 /** Étape du tunnel que le serveur autorise, d'après l'état du brouillon (le serveur est la source de vérité). */
 function etapeAutorisee(brouillon: Brouillon): EtapeCandidature {

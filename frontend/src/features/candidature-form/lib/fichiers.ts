@@ -1,5 +1,5 @@
 import type { PieceDossier } from '../../../entities/candidature';
-import { traduireMaintenant as tr } from '../../../shared/i18n/useT';
+import { traduireMaintenant as tr } from '../../../shared/i18n';
 
 const OCTETS_PAR_MO = 1024 * 1024;
 

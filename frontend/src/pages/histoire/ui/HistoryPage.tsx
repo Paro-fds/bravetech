@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { CONSEIL_DE_DIRECTION } from '../../../shared/config/institution';
-import { useT } from '../../../shared/i18n/useT';
+import { CONSEIL_DE_DIRECTION } from '../../../shared/config';
+import { useT } from '../../../shared/i18n';
 import { PhotoCampus } from '../../../shared/ui/PhotoCampus';
 
 const ANNEES_REPERES = ['1902', '1905', '1906', '1945', '1947', '1961', '1986'] as const;

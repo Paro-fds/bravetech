@@ -1,4 +1,4 @@
-import { apiClient } from '../../../shared/api/client';
+import { apiClient } from '../../../shared/api';
 import type { Session } from '../model/useSessionStore';
 
 interface JetonReponse {
