@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T13:09:00Z
-updated: 2026-11-04T15:33:51Z
+updated: 2026-11-05T17:49:02Z
 ---
 
 # EPIC_EXECUTION.md — FDS Portail
@@ -9,6 +9,14 @@ updated: 2026-11-04T15:33:51Z
 **Dépend de :** `PLAN.md` pour les noms d'Epics.
 
 > Cette table est la source de vérité du statut en temps réel. Mise à jour à chaque changement de statut d'une story — pas à la fin d'un Epic.
+
+## Où en est le projet (2026-11-05)
+
+- **En production** sur https://dorfilus.ueh.edu.ht (VM Proxmox de la FDS, déploiement continu : US-026). 25 stories sur 27 sont livrées.
+- **Prochaine story à construire : `US-016` — Notifications SMS** (Epic 4). C'est le **seul élément du périmètre contractuel** (Should Have du document de lancement, Partie 3) qui n'est pas livré. Elle dépend d'un fournisseur SMS (clé `SMS_API_KEY`) : sans fournisseur, on livre le port et l'adaptateur console, et le non-envoi réel est justifié au §2 du rapport.
+- **Ensuite :** `US-027` — sauvegardes hors site (Epic 5, hors périmètre contractuel, nécessaire à l'exploitation).
+- **Clôtures en retard :** les Epics 2 et 3 ont toutes leurs stories livrées mais ne sont pas formellement fermés (pas de closeout, pas de specs WS-02 à WS-04 consolidées). À faire avant de fermer les Epics 4 et 5.
+- **Bloquant hors code :** les emails (Must Have) sont désactivés en production tant que le domaine d'envoi Resend n'est pas vérifié (`reviews/03`, F2).
 
 ---
 
@@ -31,7 +39,7 @@ Socle technique complet établi (Clean Architecture, CI GitHub Actions avec test
 ## Epic 2 — Candidature & Suivi (côté candidat)
 
 **Workstream :** WS-02 Candidature, WS-03 Suivi de dossier
-**Status :** 🟡 In progress — [refinement](epic-002-candidature/epic-002-refinement.md)
+**Status :** ✅ Stories livrées — clôture formelle à faire (closeout, specs WS-02 et WS-03) — [refinement](epic-002-candidature/epic-002-refinement.md)
 
 Règle d'admission (2026-10-31) : l'admission est unique (Premier cycle MPC), sans choix de cursus ; liste unique de 5 pièces — voir [epic-002-refinement.md](epic-002-candidature/epic-002-refinement.md) (E2-6, E2-7, R5, R6) et ADR-008.
 
@@ -39,68 +47,64 @@ Walking Skeleton complet côté candidat : formulaire multi-étapes, question `d
 
 | Story | Titre | Statut | Spec |
 |---|---|---|---|
-| US-005 | Formulaire d'inscription & question `deplacement_physique` | 🔲 Backlog | [US-005.md](epic-002-candidature/US-005.md) |
-| US-006 | Simulation de paiement MonCash / NatCash | 🔲 Backlog | [US-006.md](epic-002-candidature/US-006.md) |
-| US-007 | Téléversement sécurisé des pièces requises | 🔲 Backlog | [US-007.md](epic-002-candidature/US-007.md) |
-| US-008 | Finalisation de candidature & notification de confirmation | 🔲 Backlog | [US-008.md](epic-002-candidature/US-008.md) |
-| US-009 | Consultation et suivi de dossier par référence | 🔲 Backlog | [US-009.md](epic-002-candidature/US-009.md) |
-| US-010 | Remplacement d'un document rejeté depuis la page de suivi | 🔲 Backlog | [US-010.md](epic-002-candidature/US-010.md) |
-| US-018 | Aligner le portail public sur l'admission unique au MPC | 🔲 Backlog | [US-018.md](epic-002-candidature/US-018.md) |
+| US-005 | Formulaire d'inscription & question `deplacement_physique` | ✅ Done | [US-005.md](epic-002-candidature/US-005.md) |
+| US-006 | Simulation de paiement MonCash / NatCash | ✅ Done | [US-006.md](epic-002-candidature/US-006.md) |
+| US-007 | Téléversement sécurisé des pièces requises | ✅ Done | [US-007.md](epic-002-candidature/US-007.md) |
+| US-008 | Finalisation de candidature & notification de confirmation | ✅ Done | [US-008.md](epic-002-candidature/US-008.md) |
+| US-009 | Consultation et suivi de dossier par référence | ✅ Done | [US-009.md](epic-002-candidature/US-009.md) |
+| US-010 | Remplacement d'un document rejeté depuis la page de suivi | ✅ Done | [US-010.md](epic-002-candidature/US-010.md) |
+| US-018 | Aligner le portail public sur l'admission unique au MPC | ✅ Done | [US-018.md](epic-002-candidature/US-018.md) |
 
 ---
 
 ## Epic 3 — Administration & Audit
 
 **Workstream :** WS-04 Administration
-**Status :** ⏳ Not started — [refinement](epic-003-administration/epic-003-refinement.md)
-
-*(Démarrera une fois epic-002 ✅ Done)*
+**Status :** ✅ Stories livrées — clôture formelle à faire (closeout, spec WS-04) — [refinement](epic-003-administration/epic-003-refinement.md)
 
 Interface d'administration sécurisée : authentification JWT + RBAC, tableau de bord des candidatures, validation/rejet de documents avec traçabilité complète (`valide_par`, `date_validation`), et notifications email déclenchées par les décisions admin.
 
 | Story | Titre | Statut | Spec |
 |---|---|---|---|
-| US-011 | Authentification de l'administrateur (JWT + RBAC) | 🔲 Backlog | [US-011.md](epic-003-administration/US-011.md) |
-| US-012 | Dashboard admin — liste et consultation des candidatures | 🔲 Backlog | [US-012.md](epic-003-administration/US-012.md) |
-| US-013 | Validation ou rejet d'un document avec audit | 🔲 Backlog | [US-013.md](epic-003-administration/US-013.md) |
-| US-014 | Notification email déclenchée par une décision admin | 🔲 Backlog | [US-014.md](epic-003-administration/US-014.md) |
+| US-011 | Authentification de l'administrateur (JWT + RBAC) | ✅ Done | [US-011.md](epic-003-administration/US-011.md) |
+| US-012 | Dashboard admin — liste et consultation des candidatures | ✅ Done | [US-012.md](epic-003-administration/US-012.md) |
+| US-013 | Validation ou rejet d'un document avec audit | ✅ Done | [US-013.md](epic-003-administration/US-013.md) |
+| US-014 | Notification email déclenchée par une décision admin | ✅ Done | [US-014.md](epic-003-administration/US-014.md) |
 
 ---
 
 ## Epic 4 — Could Have & Should Have
 
 **Workstream :** WS-05 Notifications, WS-04 Admin (exports)
-**Status :** ⏳ Not started — [refinement](epic-004-could-have/epic-004-refinement.md)
-
-*(Démarrera une fois epic-003 ✅ Done)*
+**Status :** 🟡 In progress — reste `US-016` (SMS, Should Have) — [refinement](epic-004-could-have/epic-004-refinement.md)
 
 Fonctionnalités de confort et d'efficacité opérationnelle : SMS en complément des emails, export CSV/PDF des dossiers pour commissions hors ligne, et mode sombre.
 
 | Story | Titre | MoSCoW | Statut | Spec |
 |---|---|---|---|---|
-| US-015 | Export CSV/PDF filtré des dossiers validés | 🔵 Could | 🔲 Backlog | [US-015.md](epic-004-could-have/US-015.md) |
+| US-015 | Export CSV/PDF filtré des dossiers validés | 🔵 Could | ✅ Done | [US-015.md](epic-004-could-have/US-015.md) |
 | US-016 | Notifications SMS en complément de l'email | 🟡 Should | 🔲 Backlog | [US-016.md](epic-004-could-have/US-016.md) |
-| US-017 | Mode sombre interface admin et formulaire candidat | 🔵 Could | 🔲 Backlog | [US-017.md](epic-004-could-have/US-017.md) |
-| US-019 | Pages Histoire et Contact | 🟡 Should | 🔲 Backlog | [US-019.md](epic-004-could-have/US-019.md) |
-| US-020 | Interface en Kreyòl (sélecteur FR / KR) | 🟡 Should | 🔲 Backlog | [US-020.md](epic-004-could-have/US-020.md) |
-| US-021 | Refonte visuelle de l'accueil et des fiches de cursus | 🔵 Could | 🔲 Backlog | [US-021.md](epic-004-could-have/US-021.md) |
-| US-022 | Finition de la refonte visuelle (menu mobile, accueil et fiche MPC sur ordinateur, suivi) | 🔵 Could | 🔲 Backlog | [US-022.md](epic-004-could-have/US-022.md) |
+| US-017 | Mode sombre interface admin et formulaire candidat | 🔵 Could | ✅ Done | [US-017.md](epic-004-could-have/US-017.md) |
+| US-019 | Pages Histoire et Contact | 🟡 Should | ✅ Done | [US-019.md](epic-004-could-have/US-019.md) |
+| US-020 | Interface en Kreyòl (sélecteur FR / KR) | 🟡 Should | ✅ Done | [US-020.md](epic-004-could-have/US-020.md) |
+| US-021 | Refonte visuelle de l'accueil et des fiches de cursus | 🔵 Could | ✅ Done | [US-021.md](epic-004-could-have/US-021.md) |
+| US-022 | Finition de la refonte visuelle (menu mobile, accueil et fiche MPC sur ordinateur, suivi) | 🔵 Could | ✅ Done | [US-022.md](epic-004-could-have/US-022.md) |
 
 ---
 
 ## Epic 5 — Mise en production
 
 **Workstream :** transverse (déploiement, CI/CD, exploitation)
-**Status :** ⏳ Not started — [refinement](epic-005-mise-en-production/epic-005-refinement.md)
+**Status :** 🟡 In progress — reste `US-027` (sauvegardes) — [refinement](epic-005-mise-en-production/epic-005-refinement.md)
 
 Mise en ligne du portail sur la VM Proxmox de la FDS (Docker Compose, HTTPS assuré par l'Apache de l'UEH) : migrations versionnées, adresse réelle du visiteur derrière les proxys, CI frontend, déploiement continu par images GHCR, sauvegardes hors site avec restauration testée. Ordre de build : US-023 → US-024 → US-025 → US-026 → US-027.
 
 | Story | Titre | Statut | Spec |
 |---|---|---|---|
-| US-023 | Migrations de base de données avec Alembic | 🔲 Backlog | [US-023.md](epic-005-mise-en-production/US-023.md) |
-| US-024 | Adresse réelle du visiteur derrière les proxys | 🔲 Backlog | [US-024.md](epic-005-mise-en-production/US-024.md) |
-| US-025 | Vérifications du frontend en CI | 🔲 Backlog | [US-025.md](epic-005-mise-en-production/US-025.md) |
-| US-026 | Déploiement continu vers la VM de la FDS | 🔲 Backlog | [US-026.md](epic-005-mise-en-production/US-026.md) |
+| US-023 | Migrations de base de données avec Alembic | ✅ Done | [US-023.md](epic-005-mise-en-production/US-023.md) |
+| US-024 | Adresse réelle du visiteur derrière les proxys | ✅ Done | [US-024.md](epic-005-mise-en-production/US-024.md) |
+| US-025 | Vérifications du frontend en CI | ✅ Done | [US-025.md](epic-005-mise-en-production/US-025.md) |
+| US-026 | Déploiement continu vers la VM de la FDS | ✅ Done | [US-026.md](epic-005-mise-en-production/US-026.md) |
 | US-027 | Sauvegardes hors site et procédure d'exploitation | 🔲 Backlog | [US-027.md](epic-005-mise-en-production/US-027.md) |
 
 ---

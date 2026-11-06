@@ -1,6 +1,6 @@
 ---
 created: 2026-11-05T17:47:00Z
-updated: 2026-11-05T17:47:40Z
+updated: 2026-11-06T01:57:24Z
 ---
 
 # 03 — Le périmètre à livrer (ce que nous croyions sur le paiement simulé et les emails)
