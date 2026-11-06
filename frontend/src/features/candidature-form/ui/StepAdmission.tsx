@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { BarreAction, CLASSE_BOUTON_PRIMAIRE, CLASSE_BOUTON_SECONDAIRE } from './BarreAction';
-import { useT } from '../../../shared/i18n/useT';
-import type { Cle } from '../../../shared/i18n/fr';
+import { useT } from '../../../shared/i18n';
+import type { Cle } from '../../../shared/i18n';
 
 interface StepAdmissionProps {
   deplacementPhysique: boolean | null;

@@ -10,7 +10,9 @@ from backend.bll.enregistrer_informations import EnregistrerInformationsUseCase
 from backend.bll.simuler_paiement import SimulerPaiementUseCase
 from backend.entities.candidature import (
     FRAIS_DOSSIER_HTG,
+    STATUT_PAIEMENT_ECHOUE,
     STATUT_PAIEMENT_EN_ATTENTE,
+    STATUT_PAIEMENT_REFUSE,
     STATUT_PAIEMENT_SIMULE,
     STATUT_SOUMISE,
 )
@@ -20,6 +22,8 @@ from backend.entities.erreurs import (
     ErreurMetier,
     EtapePrecedenteIncomplete,
     InformationsInvalides,
+    PaiementEchoue,
+    PaiementRefuse,
 )
 
 from tests.unit.bll.fakes import FakeCandidatureRepository, donnees_valides
@@ -127,3 +131,45 @@ def test_dossier_soumis_non_modifiable(repo):
     repo.enregistrer_candidature(candidature)
     with pytest.raises(CandidatureDejaSoumise):
         SimulerPaiementUseCase(repo).executer(candidature.id, "MONCASH", "37123456")
+
+
+# --- Cas qui n'aboutissent pas : refus, échec technique, relance (simulation de tous les cas d'un vrai paiement) ---
+
+def test_numero_finissant_par_0000_refuse_et_ne_debloque_rien(repo):
+    candidature = _candidature(repo)
+    with pytest.raises(PaiementRefuse):
+        SimulerPaiementUseCase(repo).executer(candidature.id, "MONCASH", "37 12 00 00")
+    stockee = repo.candidatures[candidature.id]
+    assert stockee.statut_paiement == STATUT_PAIEMENT_REFUSE
+    assert stockee.reference_paiement is None
+
+
+def test_un_refus_se_repete_avec_le_meme_numero_mais_un_autre_compte_aboutit(repo):
+    candidature = _candidature(repo)
+    for _ in range(2):
+        with pytest.raises(PaiementRefuse):
+            SimulerPaiementUseCase(repo).executer(candidature.id, "MONCASH", "37120000")
+    resultat = SimulerPaiementUseCase(repo).executer(candidature.id, "NATCASH", "41 12 34 56")
+    assert resultat.statut_paiement == STATUT_PAIEMENT_SIMULE
+    assert resultat.methode_paiement == "NATCASH"
+
+
+def test_echec_technique_puis_relance_qui_aboutit(repo):
+    candidature = _candidature(repo)
+    with pytest.raises(PaiementEchoue):
+        SimulerPaiementUseCase(repo).executer(candidature.id, "MONCASH", "37 12 99 99")
+    assert repo.candidatures[candidature.id].statut_paiement == STATUT_PAIEMENT_ECHOUE
+    assert repo.candidatures[candidature.id].reference_paiement is None
+
+    relance = SimulerPaiementUseCase(repo).executer(candidature.id, "MONCASH", "37 12 99 99")
+    assert relance.statut_paiement == STATUT_PAIEMENT_SIMULE
+    assert re.fullmatch(r"PAY-SIM-2026-\d{4}", relance.reference_paiement)
+
+
+def test_un_refus_ne_compte_pas_comme_un_echec_technique_deja_subi(repo):
+    candidature = _candidature(repo)
+    with pytest.raises(PaiementRefuse):
+        SimulerPaiementUseCase(repo).executer(candidature.id, "MONCASH", "37120000")
+    with pytest.raises(PaiementEchoue):
+        SimulerPaiementUseCase(repo).executer(candidature.id, "MONCASH", "37129999")
+

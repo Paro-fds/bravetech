@@ -1,4 +1,4 @@
-import { apiClient, ApiError } from '../../../shared/api/client';
+import { apiClient, ApiError } from '../../../shared/api';
 
 export interface MessageContact {
   nom: string;

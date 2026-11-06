@@ -7,11 +7,11 @@ import {
   type ErreursChamps,
   type InformationsPersonnelles,
 } from '../../../entities/candidature';
-import { ApiError } from '../../../shared/api/client';
+import { ApiError } from '../../../shared/api';
 import { validerInformations } from '../lib/validation';
 import { BarreAction, CLASSE_BOUTON_PRIMAIRE, CLASSE_BOUTON_SECONDAIRE } from './BarreAction';
 import { ChampTexte } from './ChampTexte';
-import { useT } from '../../../shared/i18n/useT';
+import { useT } from '../../../shared/i18n';
 
 interface StepInformationsProps {
   valeurs: InformationsPersonnelles;

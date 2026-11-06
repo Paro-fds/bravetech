@@ -16,6 +16,9 @@ STATUT_SOUMISE = "soumise"
 # Paiement simulé (V1) : aucun argent réel n'est prélevé, le paiement réel est délégué à FDS Pay
 STATUT_PAIEMENT_EN_ATTENTE = "en_attente"
 STATUT_PAIEMENT_SIMULE = "SIMULE_PAYE"
+# Issues simulées d'une tentative qui n'aboutit pas : le brouillon reste payable, le candidat peut relancer
+STATUT_PAIEMENT_REFUSE = "REFUSE"  # refusé par l'opérateur (solde insuffisant)
+STATUT_PAIEMENT_ECHOUE = "ECHOUE"  # échec technique (l'opérateur ne répond pas)
 METHODE_MONCASH = "MONCASH"
 METHODE_NATCASH = "NATCASH"
 METHODES_PAIEMENT = (METHODE_MONCASH, METHODE_NATCASH)

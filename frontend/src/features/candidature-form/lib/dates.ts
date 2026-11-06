@@ -1,4 +1,4 @@
-import { useLangue } from '../../../shared/i18n/useLangue';
+import { useLangue } from '../../../shared/i18n';
 
 /** Fuseau d'affichage des dates : l'heure d'Haïti. Les dates sont toujours stockées et échangées en UTC. */
 const FUSEAU_AFFICHAGE = 'America/Port-au-Prince';

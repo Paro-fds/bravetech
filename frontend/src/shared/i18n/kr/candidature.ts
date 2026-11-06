@@ -91,6 +91,14 @@ export const candidature = {
   'pay.refApres': '. Li pa koresponn ak okenn vrè peman.',
   'pay.bouton': 'Simile peman {montant} HTG',
   'pay.enCours': 'Simulasyon ap fèt…',
+  'pay.numerosTest':
+    'Nimewo pou fè tès: yon nimewo ki fini ak 0000 simile yon refi (pa ase kòb), 9999 yon pann operatè; nenpòt lòt nimewo simile yon peman ki pase.',
+  'pay.refuseTitre': 'Peman an refize',
+  'pay.refuse':
+    'Operatè a refize peman an: pa gen ase kòb sou kont lan (simulasyon). Yo pa pran anyen. Eseye yon lòt nimewo oswa lòt sèvis la.',
+  'pay.echecTitre': 'Peman an pa pase',
+  'pay.echec': 'Operatè a pa reponn (simulasyon). Yo pa pran okenn kòb: ou ka relanse peman an.',
+  'pay.relancer': 'Relanse peman an',
 
   'pieces.payeAvant': 'Peman simile anrejistre:',
   'pieces.payeApres': '(yo pa pran okenn lajan reyèl).',
