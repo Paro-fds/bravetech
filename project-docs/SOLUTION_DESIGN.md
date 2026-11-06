@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T00:18:00Z
-updated: 2026-11-05T14:28:36Z
+updated: 2026-11-06T03:03:27Z
 ---
 
 # SOLUTION_DESIGN.md — FDS Portail
@@ -53,7 +53,7 @@ FDS Portail est un **monolithe modulaire** déployé en deux images Docker coord
 
 *Corrigé le 2026-11-05 (US-026) : ce paragraphe décrivait Vercel et Railway, abandonnés au profit de la VM Proxmox (ADR-006, ADR-009).*
 
-Le flux de bout en bout : le candidat accède au frontend via HTTPS → le frontend appelle le backend via REST JSON → le backend lit/écrit dans PostgreSQL, délègue les fichiers à Cloudinary et les emails à Resend. L'administrateur passe par le même frontend mais ses routes sont protégées par JWT.
+Le flux de bout en bout : le candidat accède au frontend via HTTPS → le frontend appelle le backend via REST JSON → le backend lit/écrit dans PostgreSQL, range les pièces sur un volume Docker de la VM (ADR-007) et délègue les emails à Resend. L'administrateur passe par le même frontend mais ses routes sont protégées par JWT.
 
 ```
 Candidat / Admin
@@ -76,7 +76,7 @@ Candidat / Admin
 ### 4.1 Frontend (image Nginx sur la VM)
 - **Framework :** React 19 + Vite + TypeScript
 - **Structure :** Feature-Sliced Design (FSD) — couches `app/`, `pages/`, `features/`, `entities/`, `shared/`
-- **Points d'entrée publics :** `/`, `/cursus/:id`, `/postuler`, `/suivi`, `/histoire`, `/contact`, `/admin/login`, `/admin/dashboard`
+- **Points d'entrée publics :** `/`, `/cursus/:id`, `/postuler`, `/suivi`, `/histoire`, `/contact`, `/suivi/:reference`, `/admin/login`, `/admin` (dossiers), `/admin/candidatures/:reference`
 - **État serveur :** TanStack Query (cache, retry, invalidation)
 - **État client :** Zustand (formulaire multi-étapes en cours)
 
@@ -85,31 +85,28 @@ Organisé selon la **Clean Architecture** (`_ARCHITECTURE_EXPLAINED.md`, Partie 
 
 | Couche | Dossier | Contenu |
 |---|---|---|
-| Domain | `entities/` | `Candidat`, `DocumentSoumis`, `DocumentRequis` — dataclasses pures, zéro dépendance externe |
-| Application | `bll/` + `ports/` | Use cases (`SoumettreCandidature`, `ValiderDocument`, `RemplacerDocument`, `SuivreDossier`) + interfaces abstraites (`ICandidatRepository`, `IStorageService`, `IEmailService`) |
-| Infrastructure | `dal/` | `CandidatRepositorySQLAlchemy`, `CloudinaryStorageAdapter`, `ResendEmailAdapter`, `JWTAuthAdapter` |
+| Domain | `entities/` | `Candidat`, `Candidature`, `DocumentSoumis`, `DecisionDocument`, `Utilisateur`, pièces d'admission — dataclasses pures, zéro dépendance externe |
+| Application | `bll/` + `ports/` | Cas d'utilisation (`EnregistrerInformationsUseCase`, `SimulerPaiementUseCase`, `TeleverserDocumentUseCase`, `SoumettreCandidatureUseCase`, `ObtenirStatutCandidatureUseCase`, `RemplacerDocumentUseCase`, `DeciderDocumentUseCase`…) + ports (`ICandidatureRepository`, `IDocumentRepository`, `IStockageFichiers`, `IEmailSender`, `IUtilisateurRepository`, `IEmetteurJeton`, `IHacheurMotDePasse`) |
+| Infrastructure | `dal/` | `SqlCandidatureRepository`, `SqlDocumentRepository`, `SqlUtilisateurRepository`, `StockageLocal`, `ResendEmailSender` / `ConsoleEmailSender`, `EmetteurJwt`, `HacheurBcrypt`, `JsonCursusRepository`, migrations Alembic |
 | Presentation | `api/v1/` | Routers FastAPI, Pydantic DTOs, middleware, injection de dépendances |
 
-**Points d'entrée REST :**
+**Points d'entrée REST** (liste complète et à jour : `/docs`, OpenAPI généré par FastAPI) :
 
-| Méthode | Route | Accès |
-|---|---|---|
-| `GET` | `/api/v1/cursus` | Public |
-| `GET` | `/api/v1/documents-requis` | Public |
-| `POST` | `/api/v1/candidature` | Public |
-| `POST` | `/api/v1/upload` | Public |
-| `GET` | `/api/v1/candidature/{ref}` | Public |
-| `POST` | `/api/v1/auth/token` | Public |
-| `GET` | `/api/v1/admin/candidatures` | JWT admin |
-| `PUT` | `/api/v1/admin/documents/{id}/statut` | JWT admin |
-| `GET` | `/api/v1/admin/proxy-document` | JWT admin |
+| Route | Accès |
+|---|---|
+| `GET /api/v1/cursus`, `GET /api/v1/cursus/{id}` | Public |
+| `POST /api/v1/candidatures` puis, sur `/api/v1/candidatures/{id}` : `GET`, `PUT …/informations`, `PUT …/deplacement-physique`, `POST …/paiement`, `GET …/documents`, `POST …/documents/{piece}`, `POST …/soumission` | Public (identifiant du brouillon) |
+| `GET /api/v1/candidatures/{reference}/statut`, `POST …/{reference}/pieces/{piece}/remplacement` | Public (référence `CAN-AAAA-NNNN`), débit limité |
+| `POST /api/v1/contact`, `GET /api/v1/sante` | Public |
+| `POST /api/v1/auth/token` | Public (connexion du personnel) |
+| `/api/v1/admin/…` : `moi`, `candidatures` (liste, `export`, `{reference}`), `proxy-document/{id}`, `documents/{id}/statut` | JWT (admin ou agent), posé sur tout le routeur |
 
 ### 4.3 Services externes
 | Service | Rôle | Interface locale |
 |---|---|---|
 | **PostgreSQL (conteneur sur la VM)** | Source de vérité | SQLAlchemy 2.x via `dal/`, schéma par migrations Alembic (US-023) |
-| **Cloudinary** | Stockage fichiers | `IStorageService` → `CloudinaryStorageAdapter` |
-| **Resend** | Email transactionnel | `IEmailService` → `ResendEmailAdapter` |
+| **Volume Docker `bravetech_uploads_data` (sur la VM)** | Stockage des pièces (ADR-007) | `IStockageFichiers` → `StockageLocal` ; lecture par le personnel via `proxy-document` |
+| **Resend** | Email transactionnel | `IEmailSender` → `ResendEmailSender` (`ConsoleEmailSender` sans clé) |
 
 ---
 
@@ -121,12 +118,12 @@ Organisé selon la **Clean Architecture** (`_ARCHITECTURE_EXPLAINED.md`, Partie 
 | Backend | FastAPI 0.x / Python 3.11+ | Async natif, OpenAPI auto-généré, Pydantic v2 |
 | Base de données | PostgreSQL 15 | ACID, intégrité référentielle stricte, index B-Tree |
 | ORM | SQLAlchemy 2.x | Requêtes paramétrées (anti-injection), migrations Alembic |
-| Auth | python-jose (JWT HS256) + passlib (bcrypt) | Lib éprouvée, hash sécurisé |
-| Stockage fichiers | Cloudinary | Upload sécurisé, URL signée, sans infra propre |
+| Auth | PyJWT (JWT HS256) + bcrypt | Bibliothèques éprouvées, hachage sécurisé |
+| Stockage fichiers | Volume Docker sur la VM (ADR-007) | Aucune clé externe, fichiers servis seulement par le proxy authentifié ; Cloudinary reste possible derrière le même port |
 | Email | Resend (API REST) | Notifications transactionnelles non bloquantes |
 | Déploiement | Docker Compose sur la VM Proxmox de la FDS (ADR-006) | Images construites par GitHub Actions, publiées sur GHCR, déployées par SSH à chaque fusion sur `master` (ADR-009, US-026) |
 | Secrets | `.env` hors repo + `.gitignore` | Anti-fuite de clés |
-| Tests | pytest + pytest-asyncio | Architecture + unitaires + intégration |
+| Tests | pytest + httpx (backend), `node --test` (frontend) ; radon + coverage pour le score CRAP | Architecture + unitaires + intégration |
 
 **Aucun emplacement réservé dans cette stack** — tous les choix sont des décisions réelles déjà validées par l'équipe (cf. cahier des charges §11).
 
@@ -137,7 +134,7 @@ Organisé selon la **Clean Architecture** (`_ARCHITECTURE_EXPLAINED.md`, Partie 
 **Deux sources de données selon la nature de l'information :**
 1. **Fichiers JSON (`cursus/*.json`) :** Catalogue académique de référence (filières, durée, programmes par niveau). Les pièces requises d'admission, identiques pour tous les candidats, sont définies côté backend et non dans ces fichiers. Données statiques institutionnelles versionnées sous Git, exploitées via `JsonCursusRepository`. Aucune table SQL pour les cursus.
 2. **PostgreSQL : Source de vérité unique pour les données transactionnelles et candidates.**
-   Les URLs Cloudinary et les statuts email ne remplacent jamais les données en base — ce sont des effets de bord, pas des états.
+   Les fichiers stockés et les statuts email ne remplacent jamais les données en base — ce sont des effets de bord, pas des états.
 
 ### Entités principales (PostgreSQL)
 
@@ -200,7 +197,17 @@ Pas de boucle autonome, pas de tâche planifiée, pas de risque de runaway en MV
 
 **Au lancement (production) :**
 
-Voir la seconde section « 11. Vue d'ensemble du déploiement » plus bas (VM Proxmox, ADR-006 et ADR-009). *Corrigé le 2026-11-05 (US-026) : cette section décrivait Vercel et Railway.*
+1. **Environnement d'exécution :** Le système tourne au lancement sur une machine virtuelle Linux (Debian/Ubuntu Server) hébergée sur l'hyperviseur Proxmox de la Faculté des Sciences (ADR-006). L'architecture est entièrement conteneurisée via Docker et Docker Compose :
+   - `db` : Conteneur PostgreSQL 15 avec volume persistant `postgres_data` ; les pièces sont sur le volume `uploads_data`.
+   - `backend` : Conteneur Python 3.11-slim exécutant FastAPI via Uvicorn.
+   - `frontend` : Conteneur multi-stage (Node 22 Alpine pour le build Vite, Nginx Alpine pour servir les statiques et faire reverse-proxy vers `/api/`).
+2. **Cheminement d'un changement (US-025, US-026, ADR-009) :**
+   - Branche, puis pull request vers `master`. La protection de `master` exige les vérifications vertes : backend (`pytest`, dont `test_architecture.py`), frontend (`tsc -b`, lint sans avertissement, tests, `vite build`) et GitGuardian.
+   - Fusion sur `master` → `.github/workflows/deploy.yml` construit les images `bravetech-backend` et `bravetech-frontend`, les publie sur GHCR (étiquette = commit), puis se connecte à la VM par SSH.
+   - Sur la VM, `deploy/deploy.sh` copie la base, lance `docker-compose.prod.yml` avec ces images (les migrations Alembic passent au démarrage du backend), vérifie `/api/v1/sante` et revient à la version précédente en cas d'échec.
+3. **Exposition :** l'Apache de l'UEH porte le TLS (`*.ueh.edu.ht`) et relaie vers le port du portail sur la VM. Détails techniques : `technical-specs/ws-tech-01-portail-public.md` §5.
+
+*Corrigé le 2026-11-05 (US-026) : cette section décrivait Vercel et Railway. Le 2026-11-06, le document figurait deux fois (le gabarit du kit à la suite) : fusionné en un seul.*
 
 ---
 
@@ -211,7 +218,7 @@ Voir la seconde section « 11. Vue d'ensemble du déploiement » plus bas (VM Pr
 | Le volume de candidatures reste < 500 en V1 | Pool PostgreSQL (5+10 connexions) insuffisant → augmenter les ressources de la VM |
 | La VM Proxmox de la FDS et son alimentation restent disponibles | Indisponibilité pendant la période d'inscription → perte de candidatures (sauvegardes hors site : US-027) |
 | Les candidats ont accès à un email valide | Le système de suivi par référence + email devient inutilisable → ajouter un canal SMS |
-| Cloudinary maintient son API stable | `CloudinaryStorageAdapter` à réécrire → isolé derrière `IStorageService`, coût limité |
+| Le volume des pièces sur la VM survit aux redéploiements | Pièces perdues alors que la base les référence → nom de projet Compose fixe (`bravetech`), sauvegardes hors site (US-027) |
 | FDS SYS fournit les comptes administrateurs avant le lancement | Besoin d'une procédure manuelle de création de compte si ce n'est pas le cas |
 
 **Hypothèse dont la fausseté imposerait une refonte :** si le candidat a besoin d'un compte complet (pas seulement une référence), le modèle d'accès public de WS-02 et WS-03 est à repenser en profondeur.
@@ -233,13 +240,21 @@ Voir la seconde section « 11. Vue d'ensemble du déploiement » plus bas (VM Pr
 
 ## 14. Registres de décisions d'architecture (ADR)
 
+*Les entrées ne sont jamais supprimées, seulement marquées remplacées, avec une date et une raison. ADR-010 et ADR-011 : décisions du 2026-09-26 qui figuraient sous les numéros 002 et 003 d'un second tableau en double ; renumérotées le 2026-11-06, à la fusion des deux tableaux.*
+
 | # | Décision | Alternative rejetée | Raison | Statut |
 |---|---|---|---|---|
 | ADR-001 | Monolithe Modulaire | Microservices | Équipe < 5 personnes, MVP, complexité opérationnelle non justifiée. Les modules Clean Arch facilitent une migration future. | Accepté |
 | ADR-002 | REST (Contract-First, OpenAPI) | GraphQL | CRUD classique, pas d'over-fetching problématique, OpenAPI auto-généré par FastAPI, cache HTTP natif sur GET. | Accepté |
 | ADR-003 | Clean Architecture (Domain / Application / Infrastructure / Presentation) | MVC | Logique métier testable sans DB, remplacement de services externes sans impact domaine, structure explicite pour l'onboarding. | Accepté |
-| ADR-004 | Cloudinary pour le stockage fichiers | S3 / MinIO auto-hébergé | Pas d'infrastructure propre à gérer, URLs signées, SDK simple. Isolé derrière `IStorageService`. | Accepté |
-| ADR-005 | Resend pour l'email transactionnel | SendGrid / SMTP propre | API REST simple, bonne délivrabilité, SDK Python. Isolé derrière `IEmailService`. | Accepté |
+| ADR-004 | Cloudinary pour le stockage fichiers | S3 / MinIO auto-hébergé | Pas d'infrastructure propre à gérer, URLs signées, SDK simple. Isolé derrière un port. | Remplacé par ADR-007 (2026-09-27) : aucun adaptateur Cloudinary n'a été écrit |
+| ADR-005 | Resend pour l'email transactionnel | SendGrid / SMTP propre | API REST simple, bonne délivrabilité, SDK Python. Isolé derrière `IEmailSender`. | Accepté |
+| ADR-006 | Déploiement conteneurisé (Docker Compose / Proxmox) | Dépendance exclusive à un PaaS propriétaire | Hébergement souverain sur l'infrastructure Linux de la faculté des sciences via Proxmox avec portabilité immédiate | Accepté (2026-09-26) |
+| ADR-007 | Stockage des pièces derrière un port `IStockageFichiers`, avec un volume local persistant par défaut ; Cloudinary reste un adaptateur optionnel | Cloudinary obligatoire (ADR-004 seul) | Autonomie sur la VM Proxmox (ADR-006) et développement sans clé d'API externe. Le port permet d'ajouter Cloudinary sans toucher au métier. Arbitrage de l'Epic 2 (Q1) ; adaptateur local livré avec US-007 (2026-11-01), adaptateur Cloudinary non écrit | Accepté (2026-09-27) |
+| ADR-008 | Admission unique au MPC : la candidature ne porte ni `cursus_slug` ni filière ; les pièces requises forment une liste unique de 5 | Une candidature par cursus, avec pièces variables selon le cursus (modèle initial : `UNIQUE (email, cursus_slug, campagne)`) | Règle institutionnelle (2026-10-31) : tout candidat entre en MPC (2 ans), puis choisit sa branche (3 ans) hors du portail. Un champ cursus à la candidature serait trompeur et obligerait à le migrer. Contrainte d'unicité : `(email, campagne)`. Voir `reviews/01-admission-unique-mpc.md` | Accepté (2026-10-31) |
+| ADR-009 | Déploiement continu : images construites par GitHub Actions, publiées sur GHCR (publiques), déployées par SSH avec une clé limitée à `deploy/deploy.sh` (`command=`) ; contrôle `/api/v1/sante` et retour automatique à la version précédente | Runner GitHub Actions auto-hébergé sur la VM ; Dokploy ; construction des images sur la VM | Dépôt public : un runner sur la VM exécuterait le code d'un fork (E5-4). Dokploy ajoute une couche pour un seul portail (E5-3). Construire sur la VM charge la machine de production et rend chaque version non reproductible. Images publiques : elles ne contiennent que le code déjà public, et la VM n'a aucun jeton à garder. Limite acceptée : si le port SSH est un jour fermé à Internet, GitHub ne pourra plus déployer (E5-5) | Accepté (2026-11-05) |
+| ADR-010 | PostgreSQL comme source unique de vérité | NoSQL (MongoDB) | Intégrité référentielle stricte, transactions ACID pour les candidatures | Accepté (2026-09-26) |
+| ADR-011 | Authentification sans état par JWT | Sessions serveur (cookies) | Compatible avec une SPA mobile, aucun état de session sur le serveur | Accepté (2026-09-26) |
 
 ---
 
@@ -255,143 +270,3 @@ Voir la seconde section « 11. Vue d'ensemble du déploiement » plus bas (VM Pr
 ---
 
 *SOLUTION_DESIGN.md — FDS Portail — Bravetech · GL-EN3-2026*
-
-
----
-
-## 1. Objectif et périmètre
-
-> 1. Qu'est-ce que ce document est responsable de décider sans qu'un autre document décide à sa place ?
-> 2. Qu'est-ce qui est explicitement hors de sa portée (par exemple, les décisions produit appartiennent au PRD) ?
-
-*(À rédiger)*
-
-## 2. Workstreams — définition canonique de `WS-NN`
-
-> **Rappel de vocabulaire (générique, indépendant du produit — voir aussi `GLOSSARY.md` § Workstream, Epic et Milestone) :**
-> - **Workstream** = *quelle zone fonctionnelle*. Ne finit jamais, peut être revisité par un Epic ultérieur. Identifiant : `WS-NN` (deux chiffres).
-> - **Epic** = *quand, et à quel volume à la fois*. Étape de construction séquentielle et cadrée dans le temps. Identifiant : `epic-NNN-name`.
-> - **Milestone** = *ce qui est livré*. La représentation native GitHub d'un Epic, pas un concept séparé.
->
-> Les Workstreams sont définis ici ; les Epics (qui regroupent les Workstreams dans le temps) sont définis ensuite dans `PLAN.md`.
-
-> 1. Quelles sont les zones fonctionnelles indépendantes de ce système, sans tenir compte de l'ordre de construction ?
-> 2. Deux Workstreams peuvent-ils être traités par des personnes différentes en même temps sans se marcher dessus ?
-> 3. Un Workstream se cache-t-il dans un autre et mérite-t-il son propre identifiant ?
-
-*(À rédiger)*
-
-## 3. Vue d'ensemble du système
-
-> 1. En quelques phrases, comment les éléments majeurs s'assemblent-ils de bout en bout ?
-> 2. Quel est le seul diagramme ou flux qui expliquerait le plus vite ce système à un ingénieur junior ?
-
-*(À rédiger)*
-
-## 4. Carte des composants
-
-> 1. Quels sont les composants réellement exécutable/déployables, et que chacun possède-t-il ?
-> 2. Quels ports, URLs ou points d'entrée chaque composant expose-t-il ?
-> 3. Existe-t-il un composant qui est en réalité deux composants qui se font passer pour un seul ?
-
-*(À rédiger)*
-
-**Avant de répondre à cette section, lis `project-docs/_ARCHITECTURE_EXPLAINED.md`.** Elle propose une structure interne stabilisée pour les deux moitiés d'un projet — un backend structuré en couches (entities / dal / bll / api, avec DTOs et versioning à la frontière) et un frontend en Feature-Sliced Design — ainsi que les conventions de nommage et une stack recommandée, chaque élément accompagné de sa raison et de son coût.
-
-**Traite-la comme une proposition à accepter ou remplacer délibérément, pas comme un défaut à appliquer silencieusement.** Un service utilitaire à point d'entrée unique n'a pas besoin de quatre couches, et l'imposer est une erreur en soi. Quelle que soit ta décision, **consigne-la ici** — c'est précisément ce que cette section est pour, et « on a utilisé le kit » est une bonne réponse tant qu'elle est écrite.
-
-`project-docs/learnings/03-backend-layered-architecture-template.md` contient la réflexion plus longue sur le schéma backend, y compris le compromis quand deux services ont besoin de la même table.
-
-## 5. Stack technique
-
-> 1. Quelle est la pile pour chaque partie majeure du système, et pourquoi ce choix précisément ?
-> 2. Y a-t-il une pièce de la stack qui est un emplacement réservé/une supposition plutôt qu'une décision réelle ?
-
-*(À rédiger)*
-
-## 6. Couche de données
-
-> 1. Où chaque type de donnée vit-il réellement, et sous quelle forme ?
-> 2. Quel magasin est la source de vérité si deux magasins peuvent diverger ?
-> 3. Quel est le schéma ou contrat, assez précisément pour éviter qu'une implémentation et une autre ne dérivent ?
-
-*(À rédiger)*
-
-## 7. Flux d'authentification et d'autorisation *(Conditionnelle — ignorer s'il n'y a aucun contrôle d'accès)*
-
-> 1. Étape par étape, comment quelqu'un passe-t-il d'anonyme à authentifié puis autorisé pour une action spécifique ?
-> 2. Qu'est-ce qui est émis (jeton, session, clé), et ce qu'il prouve réellement ?
-
-*(À confirmer : applicable ou ignoré)*
-
-## 8. Architecture temps réel / interactive *(Conditionnelle — ignorer s'il n'y a rien en direct ou en streaming)*
-
-> 1. Qu'est-ce qui doit arriver en temps réel par rapport à ce qui peut être en requête/réponse ?
-> 2. Quel est le plan de secours si le canal temps réel tombe en plein milieu d'une interaction ?
-
-*(À confirmer : applicable ou ignoré)*
-
-## 9-10. Boucle de mise à jour automatique ou de retour d'information *(Conditionnelle — ignorer si le contenu/comportement ne change que par modification manuelle)*
-
-> 1. Le système met-il quelque chose à jour automatiquement selon l'usage ou de nouvelles données ? Quel est le déclencheur ?
-> 2. Qui valide une modification automatisée avant qu'elle passe en ligne, si quelqu'un le fait ?
-> 3. Quel est le pire effet qu'une boucle de mise à jour automatique pourrait provoquer si elle échappe au contrôle ?
-
-*(À confirmer : applicable ou ignoré)*
-
-## 11. Vue d'ensemble du déploiement
-
-1. **Environnement d'exécution :** Le système tourne au lancement sur une machine virtuelle Linux (Debian/Ubuntu Server) hébergée sur l'hyperviseur Proxmox de la Faculté des Sciences (ADR-006). L'architecture est entièrement conteneurisée via Docker et Docker Compose :
-   - `db` : Conteneur PostgreSQL 15 avec volume persistant `postgres_data`.
-   - `backend` : Conteneur Python 3.11-slim exécutant FastAPI via Uvicorn.
-   - `frontend` : Conteneur multi-stage (Node 20 Alpine pour le build Vite, Nginx Alpine pour servir les statiques et faire reverse-proxy vers `/api/`).
-2. **Cheminement d'un changement (US-025, US-026, ADR-009) :**
-   - Branche, puis pull request vers `master`. La protection de `master` exige les vérifications vertes : backend (`pytest`, dont `test_architecture.py`), frontend (`tsc -b`, lint sans avertissement, tests, `vite build`) et GitGuardian.
-   - Fusion sur `master` → `.github/workflows/deploy.yml` construit les images `bravetech-backend` et `bravetech-frontend`, les publie sur GHCR (étiquette = commit), puis se connecte à la VM par SSH.
-   - Sur la VM, `deploy/deploy.sh` copie la base, lance `docker-compose.prod.yml` avec ces images (les migrations Alembic passent au démarrage du backend), vérifie `/api/v1/sante` et revient à la version précédente en cas d'échec.
-3. **Exposition :** l'Apache de l'UEH porte le TLS (`*.ueh.edu.ht`) et relaie vers le port du portail sur la VM. Détails techniques : `technical-specs/ws-tech-01-portail-public.md` §5.
-
-## 12. Hypothèses
-
-> 1. Sur quoi cette conception s'appuie-t-elle sans avoir été vérifiée ?
-> 2. Quelle hypothèse, si elle est fausse, imposerait une refonte plutôt qu'un correctif ?
-
-*(À rédiger)*
-
-## 13. Hors périmètre
-
-> 1. Qu'est-ce qui est exclu architecturalement de cette version, et pourquoi ?
-> 2. Existe-t-il quelque chose d'exclu ici qu'un Workstream ultérieur devra revoir ?
-
-*(À rédiger)*
-
-## 14. Registres de décisions d'architecture (ADR)
-
-*Générique — réutilise le tableau tel quel. Les entrées ne sont jamais supprimées, seulement marquées `Deprecated` avec une date et une raison.*
-
-| # | Décision | Alternative rejetée | Raison | Statut |
-|---|---|---|---|---|
-| ADR-001 | Architecture modulaire découplée (Clean Arch + FSD) | Monolithe Django / Rails classique | Découplage strict des règles métier, maintenabilité et testabilité | Accepté (2026-09-26) |
-| ADR-002 | PostgreSQL comme source unique de vérité | NoSQL (MongoDB) | Intégrité référentielle stricte, transactions ACID pour les candidatures | Accepté (2026-09-26) |
-| ADR-003 | Authentification stateless JWT | Sessions serveur (cookies stateful) | Compatibilité SPA Mobile, scalabilité horizontale et absence d'état serveur | Accepté (2026-09-26) |
-| ADR-004 | Stockage des pièces sur Cloudinary | Stockage direct sur disque serveur | URLs signées, mise à l'échelle automatique et absence de gestion de volumes disques locaux | Accepté (2026-09-26), complété par ADR-007 |
-| ADR-005 | Emails transactionnels via Resend | Serveur SMTP local (Postfix) | Délivrabilité garantie, API REST asynchrone sans maintenance de serveur mail | Accepté (2026-09-26) |
-| ADR-006 | Déploiement conteneurisé (Docker Compose / Proxmox) | Dépendance exclusive à un PaaS propriétaire | Hébergement souverain sur l'infrastructure Linux de la faculté des sciences via Proxmox avec portabilité immédiate | Accepté (2026-09-26) |
-| ADR-007 | Stockage des pièces derrière un port `IStockageFichiers`, avec un volume local persistant par défaut ; Cloudinary reste un adaptateur optionnel | Cloudinary obligatoire (ADR-004 seul) | Autonomie sur la VM Proxmox (ADR-006) et développement sans clé d'API externe. Le port permet d'ajouter Cloudinary sans toucher au métier. Arbitrage de l'Epic 2 (Q1) ; adaptateur local livré avec US-007 (2026-11-01), adaptateur Cloudinary non écrit | Accepté (2026-09-27) |
-| ADR-008 | Admission unique au MPC : la candidature ne porte ni `cursus_slug` ni filière ; les pièces requises forment une liste unique de 5 | Une candidature par cursus, avec pièces variables selon le cursus (modèle initial : `UNIQUE (email, cursus_slug, campagne)`) | Règle institutionnelle (2026-10-31) : tout candidat entre en MPC (2 ans), puis choisit sa branche (3 ans) hors du portail. Un champ cursus à la candidature serait trompeur et obligerait à le migrer. Contrainte d'unicité : `(email, campagne)`. Voir `reviews/01-admission-unique-mpc.md` | Accepté (2026-10-31) |
-| ADR-009 | Déploiement continu : images construites par GitHub Actions, publiées sur GHCR (publiques), déployées par SSH avec une clé limitée à `deploy/deploy.sh` (`command=`) ; contrôle `/api/v1/sante` et retour automatique à la version précédente | Runner GitHub Actions auto-hébergé sur la VM ; Dokploy ; construction des images sur la VM | Dépôt public : un runner sur la VM exécuterait le code d'un fork (E5-4). Dokploy ajoute une couche pour un seul portail (E5-3). Construire sur la VM charge la machine de production et rend chaque version non reproductible. Images publiques : elles ne contiennent que le code déjà public, et la VM n'a aucun jeton à garder. Limite acceptée : si le port SSH est un jour fermé à Internet, GitHub ne pourra plus déployer (E5-5) | Accepté (2026-11-05) |
-
-> **Questions à se poser, pour chaque nouvelle entrée :**
-> 1. Qu'a-t-on décidé qui aurait pu très bien aller dans l'autre sens ?
-> 2. Pourquoi l'autre option a-t-elle été rejetée, de façon suffisamment explicite pour que quelqu'un ne la propose pas de nouveau sans le savoir ?
-
-## 15. Questions ouvertes
-
-> 1. Qu'est-ce qui reste réellement non résolu maintenant, sans bloquer le démarrage, mais sans être oublié non plus ?
-> 2. Qui ou quoi résoudra chaque question ouverte, et quand ?
-
-*(À rédiger au fur et à mesure)*
-
----
-
-*SOLUTION_DESIGN.md — [Nom du projet] — structure de départ issue de `project-init-kit/`.*

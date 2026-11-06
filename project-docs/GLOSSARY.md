@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T00:35:00Z
-updated: 2026-11-05T14:28:36Z
+updated: 2026-11-06T03:03:27Z
 ---
 
 # GLOSSARY.md — FDS Portail
@@ -46,11 +46,11 @@ updated: 2026-11-05T14:28:36Z
 | Terme | Définition |
 |---|---|
 | **Fichiers JSON (`cursus/`)** | **Source de vérité pour l'offre académique.** Fichiers JSON officiels décrivant les filières, leur durée et leurs matières par niveau (`mpc.json`, `genie-civil.json`, etc.). Données de référence statiques versionnées avec le code, sans nécessité de table SQL. |
-| **PostgreSQL** | **Source de vérité des dossiers candidats.** Conteneurisé sous Docker sur VM Linux / Proxmox (ADR-006). Contient les tables transactionnelles (`candidats`, `candidatures`, `documents_soumis`, `utilisateurs`). Backup régulier. Perte = perte de dossiers. |
-| **Cloudinary** | Stockage des fichiers physiques (PDF, JPG) uploadés par les candidats. Stockage secondaire — les fichiers survivent si PostgreSQL est perdu, mais les dossiers associés ne peuvent pas être reconstitués sans la base. URLs signées, accès via proxy admin. |
+| **PostgreSQL** | **Source de vérité des dossiers candidats.** Conteneurisé sous Docker sur VM Linux / Proxmox (ADR-006). Contient les tables transactionnelles (`candidats`, `candidatures`, `documents_soumis`, `decisions_documents`, `utilisateurs`), créées par les migrations Alembic. Copie de la base avant chaque déploiement ; sauvegardes hors site : US-027. Perte = perte de dossiers. |
+| **Volume des pièces** | Stockage des fichiers (PDF, JPG, PNG) déposés par les candidats : volume Docker `bravetech_uploads_data` sur la VM, monté en `/app/uploads` dans le backend (ADR-007). Clé de chaque fichier : `<candidature>/<pièce>-<uuid>.<ext>`. Aucun fichier n'a d'adresse publique : le personnel les lit par le proxy document. Sans la base, les fichiers ne permettent pas de reconstituer les dossiers. Cloudinary (ADR-004) a été remplacé par ce volume ; il reste possible derrière le port `IStockageFichiers`. |
 | **Mémoire application** | L'API FastAPI est **stateless** — aucun état de session persisté entre les requêtes. Cache en mémoire pour la lecture des fichiers JSON de cursus. |
 
-> **Règle absolue :** Les URLs Cloudinary et les statuts d'email ne remplacent jamais les données PostgreSQL. Les informations académiques des cursus émanent directement des fichiers JSON officiels.
+> **Règle absolue :** Les fichiers stockés et les statuts d'email ne remplacent jamais les données PostgreSQL. Les informations académiques des cursus émanent directement des fichiers JSON officiels.
 
 ---
 
@@ -73,7 +73,7 @@ updated: 2026-11-05T14:28:36Z
 | **Déplacement physique** | Champ booléen `deplacement_physique` sur l'entité `Candidat`. Indique si le candidat a dû se déplacer physiquement pour compléter sa candidature. Valeur cible : `false` pour ≥ 70 % des dossiers (critère de succès PRD §11). |
 | **Walking Skeleton** | Implémentation minimale traversant toutes les couches du système de bout en bout : d'un `POST /api/v1/candidature` jusqu'à l'affichage de la référence à l'écran et l'envoi de l'email. Objectif de `epic-002`. |
 | **Simulation de paiement** | Dans FDS Portail V1, le paiement MonCash/NatCash est simulé — aucune transaction réelle n'a lieu. Le candidat saisit une référence transactionnelle fictive, et le système la persiste comme si elle était valide. Le paiement réel est délégué à FDS Pay (hors V1). |
-| **Proxy document** | Endpoint admin (`GET /api/v1/admin/proxy-document`) qui récupère un fichier Cloudinary et le sert au client après vérification du JWT. Empêche l'accès direct aux URLs Cloudinary sans authentification. |
+| **Proxy document** | Endpoint admin (`GET /api/v1/admin/proxy-document/{document_id}`) qui lit une pièce dans le volume des pièces et la sert au client après vérification du JWT. C'est le seul accès aux fichiers. |
 | **Audit** | Enregistrement immuable de chaque décision admin sur un Document soumis — champs `valide_par` (ID de l'Admin) et `date_validation` (timestamp). Permet au secrétariat de justifier toute décision. |
 | **Upsert** | Opération d'écriture qui crée un Document soumis s'il n'existe pas, ou le met à jour s'il existe déjà (sur la contrainte UNIQUE `(candidat_id, document_requis_id)`). Utilisé lors du remplacement d'un document rejeté — garantit qu'un candidat n'a jamais deux lignes pour le même document. |
 | **Magic bytes** | Signature binaire au début d'un fichier identifiant son vrai format (ex. `%PDF-` pour les PDFs). Vérifiés côté serveur via la bibliothèque `filetype` pour empêcher l'upload de fichiers exécutables renommés en `.pdf` ou `.jpg`. |

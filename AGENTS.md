@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T12:52:00Z
-updated: 2026-11-05T14:28:36Z
+updated: 2026-11-06T03:03:27Z
 ---
 
 # AGENTS.md — FDS Portail
@@ -16,44 +16,36 @@ FDS Portail est la vitrine publique officielle de la Faculté des Sciences (FDS-
 ## Carte des dossiers
 
 ```
-bravetech/
-├── cahier_des_charges.md           # Référence métier francophone complète
+bravetech/                          # racine du dépôt
+├── AGENTS.md  CLAUDE.md  README.md
+├── cahier_des_charges.md           # Livrable 1 : référence métier
+├── project-docs/
+│   ├── PRD.md  NFR.md  SOLUTION_DESIGN.md  PLAN.md  GLOSSARY.md  PROJECT_WORKFLOW.md
+│   ├── _ARCHITECTURE_EXPLAINED.md  # Référence architecture (ne jamais modifier)
+│   ├── execution/                  # EPIC_EXECUTION.md + epic-NNN-*/US-NNN.md
+│   ├── functional-specs/  technical-specs/   # Une spec par Workstream (ws-func-NN, ws-tech-NN)
+│   ├── reviews/                    # Croyances invalidées — écrire au moment de la découverte
+│   ├── learnings/                  # Pratiques transférables à un autre projet
+│   ├── exploration/                # Notes exploratoires — jamais citées comme décision
+│   └── templates/                  # Gabarit de user story
+├── backend/
+│   ├── entities/                   # Domain — dataclasses pures, zéro dépendance externe
+│   ├── ports/                      # Interfaces abstraites (ICandidatureRepository, IStockageFichiers, IEmailSender…)
+│   ├── bll/                        # Application — cas d'utilisation (*UseCase)
+│   ├── dal/                        # Infrastructure — SQLAlchemy, migrations Alembic (dal/migrations/), stockage local, Resend, JWT
+│   ├── api/v1/                     # Presentation — routers FastAPI, DTOs Pydantic (api/v1/dto/)
+│   └── scripts/                    # migrer.py (lancé au démarrage), seed_admin.py
+├── frontend/src/                   # FSD : app/ pages/ features/ entities/ shared/ (steiger en CI)
+├── cursus/                         # Offre académique en JSON (source de vérité des cursus)
 ├── tests/
-│   ├── conftest.py
-│   ├── unit/
-│   │   ├── test_architecture.py   # ← Gardien de la Clean Architecture (run en CI)
-│   │   └── entities/              # Tests des règles métier pures
-│   └── integration/               # Tests des routes FastAPI (DB de test)
-│
-└── project-init-kit/
-    ├── AGENTS.md                  # ← ce fichier
-    ├── CLAUDE.md                  # import de ce fichier + instructions Claude Code
-    ├── STARTER_PROMPT.md
-    └── project-docs/
-        ├── PRD.md                 # Quoi / pour qui / pourquoi
-        ├── NFR.md                 # Barre de qualité (perf, sécu, dispo...)
-        ├── SOLUTION_DESIGN.md     # Architecture, Workstreams, ADRs, stack
-        ├── PLAN.md                # Epics, User Stories, MoSCoW
-        ├── GLOSSARY.md            # Vocabulaire du domaine
-        ├── PROJECT_WORKFLOW.md    # Tracker, définition de fini, init
-        ├── _ARCHITECTURE_EXPLAINED.md  # Référence architecture (ne pas modifier)
-        ├── execution/             # Suivi en cours d'Epic (EPIC_EXECUTION.md)
-        ├── functional-specs/      # Specs fonctionnelles par Workstream
-        ├── technical-specs/       # Specs techniques par Workstream
-        ├── reviews/               # Croyances invalidées — écrire au moment de la découverte
-        ├── learnings/             # Pratiques transférables — écrire après une review
-        ├── exploration/           # Notes exploratoires — jamais mises à jour, jamais citées comme décision
-        └── templates/             # Templates user-story, etc.
-```
-
-**Backend (à scaffolder) :**
-```
-backend/
-├── entities/     # Domain — dataclasses pures, zéro dépendance externe
-├── bll/          # Application — use cases + interfaces (ports)
-├── ports/        # Interfaces abstraites (ICandidatRepository, IEmailService...)
-├── dal/          # Infrastructure — adapters SQLAlchemy, Cloudinary, Resend
-└── api/v1/       # Presentation — routers FastAPI, Pydantic DTOs
+│   ├── unit/test_architecture.py   # ← Gardien de la Clean Architecture (CI)
+│   ├── unit/                       # Entités et cas d'utilisation, sans base
+│   └── integration/                # Routes FastAPI sur SQLite en mémoire, migrations
+├── tools/crap.py                   # Score CRAP (CI : échec au-dessus de 30)
+├── deploy/deploy.sh                # Déploiement et retour arrière sur la VM (ADR-009)
+├── docker-compose.yml              # Développement ; docker-compose.prod.yml : production (images GHCR)
+├── .github/workflows/              # ci.yml (contrôles), deploy.yml (déploiement continu)
+└── .claude/skills/                 # Skills du kit (user-story, epic, get-work-status…)
 ```
 
 ---
@@ -64,7 +56,7 @@ Voir `SOLUTION_DESIGN.md §5` — ne pas recopier ici. En résumé :
 - **Backend :** FastAPI + SQLAlchemy + Alembic + PostgreSQL
 - **Frontend :** React 19 + Vite + TypeScript + FSD
 - **Hébergement :** Docker Compose sur la VM Proxmox de la FDS ; déploiement continu GitHub Actions → GHCR → SSH (ADR-006, ADR-009)
-- **Services :** Cloudinary (fichiers), Resend (emails)
+- **Services :** volume Docker de la VM pour les pièces (ADR-007, pas Cloudinary), Resend pour les emails
 - **Auth :** JWT HS256 + bcrypt
 
 ---
@@ -89,17 +81,17 @@ Règle complémentaire : **jamais de logique métier dans `dal/`, jamais d'impor
 
 **Python (backend) :**
 - Fichiers : `snake_case.py`
-- Classes/Entités : `PascalCase` (ex. `CandidatRepository`, `DocumentSoumis`)
+- Classes/Entités : `PascalCase` (ex. `SqlCandidatureRepository`, `DocumentSoumis`)
 - Variables/fonctions : `snake_case`
-- Booléens : préfixés `is_`, `has_`, `can_` (ex. `is_valid`, `has_document`)
+- Booléens : préfixés `est_` (ex. `est_actif`, `est_admission`, `est_obligatoire`)
 - Constantes : `UPPER_SNAKE_CASE`
-- Interfaces (ports) : préfixées `I` (ex. `ICandidatRepository`, `IEmailService`)
+- Interfaces (ports) : préfixées `I` (ex. `ICandidatureRepository`, `IEmailSender`)
 
 **TypeScript/React (frontend) :**
 - Composants : `PascalCase.tsx`
 - Fichiers non-composants : `camelCase.ts`
 - Variables/fonctions : `camelCase`
-- Booléens : préfixés `is`, `has`, `can`
+- Booléens : préfixés `est` ou `is` (ex. `estKreyol`, `isLoading`)
 - Types/Interfaces : `PascalCase`
 
 **Horodatages :** toujours UTC, format ISO-8601 avec `Z` (`2026-09-26T12:52:00Z`). Jamais d'heure locale stockée.
@@ -153,7 +145,7 @@ Règle complémentaire : **jamais de logique métier dans `dal/`, jamais d'impor
 
 ## Faits critiques à ne pas se tromper
 
-1. **PostgreSQL est la seule source de vérité.** Les URLs Cloudinary et les statuts email sont des effets de bord — jamais des états.
+1. **PostgreSQL est la seule source de vérité.** Les fichiers stockés et les statuts email sont des effets de bord — jamais des états.
 
 2. **L'email est non bloquant.** Une erreur Resend ne doit jamais annuler une candidature ou une validation. La référence dossier s'affiche à l'écran même si l'email échoue.
 
@@ -163,9 +155,9 @@ Règle complémentaire : **jamais de logique métier dans `dal/`, jamais d'impor
 
 5. **Toute action admin est auditée** — `valide_par` + `date_validation` sont immuables une fois écrits.
 
-6. **Les fichiers sont validés côté serveur** — magic bytes (`filetype`), extension, taille ≤ 5 Mo — avant tout stockage Cloudinary.
+6. **Les fichiers sont validés côté serveur** — magic bytes (`filetype`), extension, taille ≤ 5 Mo — avant tout stockage.
 
-7. **Les routes `/api/v1/admin/` sont protégées par JWT** — `get_current_admin()` à chaque endpoint, jamais seulement à la connexion.
+7. **Les routes `/api/v1/admin/` sont protégées par JWT** — `get_current_admin` est posé sur le routeur admin (toute nouvelle route en hérite) ; `get_current_admin_complet` pour ce qui est réservé au rôle `admin`.
 
 8. **La simulation de paiement doit être visuellement claire** — le candidat ne doit pas croire qu'il paye réellement (risque de recours).
 
