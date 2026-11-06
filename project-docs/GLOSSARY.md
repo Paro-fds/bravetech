@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T00:35:00Z
-updated: 2026-11-06T18:04:23Z
+updated: 2026-11-06T18:35:56Z
 ---
 
 # GLOSSARY.md — FDS Portail
@@ -73,6 +73,7 @@ updated: 2026-11-06T18:04:23Z
 | **Déplacement physique** | Champ booléen `deplacement_physique` sur l'entité `Candidat`. Indique si le candidat a dû se déplacer physiquement pour compléter sa candidature. Valeur cible : `false` pour ≥ 70 % des dossiers (critère de succès PRD §11). |
 | **Walking Skeleton** | Implémentation minimale traversant toutes les couches du système de bout en bout : d'un `POST /api/v1/candidature` jusqu'à l'affichage de la référence à l'écran et l'envoi de l'email. Objectif de `epic-002`. |
 | **Simulation de paiement** | Dans FDS Portail V1, le paiement MonCash/NatCash est simulé — aucune transaction réelle n'a lieu. Le candidat saisit une référence transactionnelle fictive, et le système la persiste comme si elle était valide. Le paiement réel est délégué à FDS Pay (hors V1). |
+| **SMS simulé** | Notification SMS que le portail aurait envoyée au candidat (soumission, décision sur une pièce). Comme le paiement, l'envoi est simulé en V1 : le message est enregistré (`sms_simules`) et consultable par le personnel, aucun fournisseur n'est appelé (US-016). |
 | **Proxy document** | Endpoint admin (`GET /api/v1/admin/proxy-document/{document_id}`) qui lit une pièce dans le volume des pièces et la sert au client après vérification du JWT. C'est le seul accès aux fichiers. |
 | **Audit** | Enregistrement immuable de chaque décision admin sur un Document soumis — champs `valide_par` (ID de l'Admin) et `date_validation` (timestamp). Permet au secrétariat de justifier toute décision. |
 | **Upsert** | Opération d'écriture qui crée un Document soumis s'il n'existe pas, ou le met à jour s'il existe déjà (sur la contrainte UNIQUE `(candidat_id, document_requis_id)`). Utilisé lors du remplacement d'un document rejeté — garantit qu'un candidat n'a jamais deux lignes pour le même document. |

@@ -1,12 +1,12 @@
 ---
 created: 2026-11-06T04:00:00Z
-updated: 2026-11-06T14:13:35Z
+updated: 2026-11-06T18:35:56Z
 ---
 
 # Spécification Fonctionnelle — WS-05 Notifications
 
 **Réponses :** Quels emails le portail envoie-t-il, à qui, et que se passe-t-il s'ils n'arrivent pas ?
-**Périmètre :** consolidé à la clôture de l'Epic 3 (2026-11-06) à partir d'US-008, US-010, US-014 et US-019. Les SMS (US-016) ne sont pas livrés. Implémentation : [`ws-tech-05-notifications.md`](../technical-specs/ws-tech-05-notifications.md).
+**Périmètre :** consolidé à la clôture de l'Epic 3 (2026-11-06) à partir d'US-008, US-010, US-014 et US-019, complété par les SMS simulés (US-016). Implémentation : [`ws-tech-05-notifications.md`](../technical-specs/ws-tech-05-notifications.md).
 
 ---
 
@@ -31,9 +31,13 @@ Un dossier de 5 pièces décidées une par une produit jusqu'à 5 emails de déc
 - **Expéditeur en production** : `FDS Portail <noreply@fds.ctpea-prefac.me>` (domaine vérifié chez Resend ; réception confirmée le 2026-11-06 sur une candidature test. Un premier envoi depuis un domaine neuf peut être classé en indésirables). Le domaine de l'UEH n'a pas pu être vérifié à temps (DNS gérés par l'UEH).
 - **Interrupteur** : l'administrateur système peut couper tous les envois (`EMAIL_ENABLED=false`) sans redéployer le code.
 
-## 3. Non livré
+## 3. SMS simulés (US-016)
 
-**Notifications SMS (US-016, Should Have)** : non construites. Voir `execution/EPIC_EXECUTION.md`.
+- **Comme le paiement MonCash / NatCash, l'envoi est simulé** : aucun fournisseur SMS n'est branché en V1. Chaque SMS est construit et enregistré, puis consultable par le personnel dans « SMS (simulation) ».
+- **Quand** : à la soumission du dossier (référence et lien de suivi), puis à chaque décision (« pièce validée » ou « pièce à remplacer », avec le lien de suivi). Le motif d'un refus n'est pas dans le SMS : il est dans l'email et sur la page de suivi.
+- **À qui** : le téléphone saisi à l'étape 1 du formulaire.
+- **160 caractères au plus** (un seul SMS) ; un texte plus long est coupé.
+- **Non bloquant**, comme l'email.
 
 ---
 

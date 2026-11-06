@@ -1,12 +1,12 @@
 ---
 created: 2026-11-06T04:00:00Z
-updated: 2026-11-06T14:13:35Z
+updated: 2026-11-06T18:35:56Z
 ---
 
 # Spécification Technique — WS-05 Notifications
 
 **Réponses :** Comment les emails sont-ils construits, envoyés, et isolés des pannes ?
-**Périmètre :** consolidé à la clôture de l'Epic 3 (2026-11-06), d'après US-008, US-010, US-014 et US-019. Comportement : [`ws-func-05-notifications.md`](../functional-specs/ws-func-05-notifications.md).
+**Périmètre :** consolidé à la clôture de l'Epic 3 (2026-11-06), d'après US-008, US-010, US-014, US-019 et US-016 (SMS simulés). Comportement : [`ws-func-05-notifications.md`](../functional-specs/ws-func-05-notifications.md).
 
 ---
 
@@ -40,9 +40,16 @@ Les routes de soumission (WS-02), de décision (WS-04) et de remplacement (WS-03
 
 **Production (2026-11-05)** : domaine d'envoi `fds.ctpea-prefac.me` vérifié chez Resend (Resend accepte les envois : aucune erreur dans les journaux ; réception confirmée le 2026-11-06) (DKIM `resend._domainkey.fds`, CNAME `send.fds` et `rsend.fds` vers l'infrastructure Resend, DMARC `_dmarc`). Un CNAME ne peut pas cohabiter avec un autre enregistrement de même nom : les anciens TXT et MX de `send.fds` ont dû être supprimés. Les variables sont dans `~/bravetech/.env` sur la VM, jamais dans le dépôt.
 
-## 4. Non livré
+## 4. SMS simulés (US-016)
 
-SMS (US-016) : aucun port `ISmsSender` n'existe.
+| Élément | Couche | Rôle |
+|---|---|---|
+| `SmsSimule`, `LONGUEUR_MAX_SMS = 160` | `entities/sms_simule.py` | Un SMS que le portail aurait envoyé |
+| `ISmsSender`, `IJournalSms`, `MessageSms` | `ports/sms_sender.py` | Envoi ; lecture du journal |
+| `sms_confirmation`, `sms_decision`, `NotifierSmsUseCase` | `bll/notifier_sms.py` | Textes bornés à 160 caractères ; aucune exception remontée (journal : référence et type d'erreur) |
+| `SmsSimuleSql` | `dal/sms_adapters.py` | Écrit dans `sms_simules` (migration `0003`) avec **sa propre session** : la tâche de fond s'exécute après la fermeture de celle de la requête |
+
+Branchement : dépendance `get_sms_simule` (`api/v1/candidatures.py`), ajoutée en `BackgroundTasks` après l'email, à la soumission et à la décision. Lecture : `GET /api/v1/admin/sms?limit=` (admin, agent ; 100 par défaut, 500 au plus). Les tests d'intégration remplacent `get_sms_simule` par la base en mémoire. Un vrai fournisseur s'ajouterait comme un autre `ISmsSender`, choisi par variable d'environnement, sans toucher au BLL.
 
 ---
 

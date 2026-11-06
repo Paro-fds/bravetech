@@ -36,7 +36,14 @@ def _ecart_tolere(ecart) -> bool:
     """Une table en trop (reste d'un ancien schéma), ou une table créée par une migration postérieure à l'initiale."""
     if not isinstance(ecart, tuple):
         return False
-    return ecart[0].startswith("remove_") or (ecart[0] == "add_table" and ecart[1].name not in TABLES_INITIALES)
+    if ecart[0].startswith("remove_"):
+        return True
+    # Une table postérieure, et ses index (signalés à part par autogenerate : `add_index`), arriveront par `upgrade`
+    if ecart[0] == "add_table":
+        return ecart[1].name not in TABLES_INITIALES
+    if ecart[0] == "add_index":
+        return ecart[1].table.name not in TABLES_INITIALES
+    return False
 
 
 def _ecarts_bloquants(connexion: Connection) -> list:

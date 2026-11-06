@@ -12,6 +12,7 @@ from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, R
 from pydantic import BaseModel
 
 from backend.api.v1.candidatures import (
+    get_sms_simule,
     get_candidature_repository,
     get_document_repository,
     get_email_sender,
@@ -55,6 +56,8 @@ from backend.bll.gerer_utilisateurs import (
     ReinitialiserMotDePasseUseCase,
 )
 from backend.bll.notifier_decision import NotifierDecisionUseCase
+from backend.bll.notifier_sms import NotifierSmsUseCase
+from backend.dal.sms_adapters import SmsSimuleSql
 from backend.bll.televerser_document import trouver_piece
 from backend.bll.obtenir_statut_candidature import (
     STATUT_GLOBAL_ACTION_REQUISE,
@@ -307,6 +310,7 @@ def decider_document(
     repo: ICandidatureRepository = Depends(get_candidature_repository),
     documents: IDocumentRepository = Depends(get_document_repository),
     email_sender: IEmailSender = Depends(get_email_sender),
+    sms: SmsSimuleSql = Depends(get_sms_simule),
     url_base: str = Depends(get_url_base_portail),
 ):
     """Enregistre `valide_par` et `date_validation` ; un refus exige un motif, que le candidat verra.
@@ -329,6 +333,7 @@ def decider_document(
     candidature = repo.obtenir_par_candidat(document.candidat_id)
     if candidat is not None and candidature is not None:
         taches.add_task(NotifierDecisionUseCase(email_sender, url_base).executer, candidat, candidature, decision)
+        taches.add_task(NotifierSmsUseCase(sms, url_base).decision, candidat, candidature, decision)
     return _piece_apres_decision(document)
 
 
@@ -475,3 +480,24 @@ def reinitialiser_mot_de_passe_utilisateur(
         raise HTTPException(status_code=404, detail="Compte introuvable.")
     _journal.info("Mot de passe du compte %s réinitialisé par %s.", modifie.id, admin.id)
     return _compte_reponse(modifie)
+
+
+# --- US-016 : SMS simulés -----------------------------------------------------------------------------
+
+class SmsSimuleResponse(BaseModel):
+    destinataire: str
+    texte: str
+    reference_dossier: str | None
+    envoye_le: datetime
+
+
+@router.get(
+    "/sms",
+    response_model=list[SmsSimuleResponse],
+    summary="SMS simulés (aucun SMS réel n'est envoyé en V1), du plus récent au plus ancien",
+)
+def lister_sms(limit: int = Query(100, ge=1, le=500), sms: SmsSimuleSql = Depends(get_sms_simule)):
+    return [
+        SmsSimuleResponse(destinataire=s.destinataire, texte=s.texte, reference_dossier=s.reference_dossier, envoye_le=s.envoye_le)
+        for s in sms.lister(limit)
+    ]

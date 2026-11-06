@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T13:09:00Z
-updated: 2026-11-06T18:04:26Z
+updated: 2026-11-06T18:36:28Z
 ---
 
 # EPIC_EXECUTION.md — FDS Portail
@@ -13,9 +13,9 @@ updated: 2026-11-06T18:04:26Z
 ## Où en est le projet (2026-11-06)
 
 - **En production** sur https://dorfilus.ueh.edu.ht (VM Proxmox de la FDS, déploiement continu : US-026). 26 stories sur 28 sont livrées. Epics 1, 2 et 3 clôturés.
-- **Prochaine story à construire : `US-016` — Notifications SMS** (Epic 4). C'est le **seul élément du périmètre contractuel** (Should Have du document de lancement, Partie 3) qui n'est pas livré. Elle dépend d'un fournisseur SMS (clé `SMS_API_KEY`) : sans fournisseur, on livre le port et l'adaptateur console, et le non-envoi réel est justifié au §2 du rapport.
+- **`US-016` — Notifications SMS : construite en simulation** (comme le paiement, faute de fournisseur SMS), en attente de validation par le Project Owner. Tout le périmètre contractuel (Must, Should, Could) est livré.
+- **Prochaine story à construire : `US-027` — sauvegardes hors site** (Epic 5) : hors contrat, mais aucune copie de la base ni des pièces n'existe hors de la VM (`NFR.md`, Récupération après sinistre).
 - **Ajoutée le 2026-11-05 à la demande du Project Owner : `US-028` — calendrier d'admission réglable par l'administration** (Epic 4) : fusionnée, déployée (PR #60, #63) et validée par le Project Owner le 2026-11-06.
-- **Ensuite :** `US-027` — sauvegardes hors site (Epic 5, hors périmètre contractuel, nécessaire à l'exploitation).
 - **Epics 2 et 3 clôturés le 2026-11-06** (closeouts, specs WS-02 à WS-05). Issues et Milestones GitHub fermés le 2026-11-06.
 - **Emails** : en production, réception confirmée le 2026-11-06 (`reviews/03`, F2).
 
@@ -84,7 +84,7 @@ Fonctionnalités de confort et d'efficacité opérationnelle : SMS en complémen
 | Story | Titre | MoSCoW | Statut | Spec |
 |---|---|---|---|---|
 | US-015 | Export CSV/PDF filtré des dossiers validés | 🔵 Could | ✅ Done | [US-015.md](epic-004-could-have/US-015.md) |
-| US-016 | Notifications SMS en complément de l'email | 🟡 Should | 🔲 Backlog | [US-016.md](epic-004-could-have/US-016.md) |
+| US-016 | Notifications SMS en complément de l'email (simulées) | 🟡 Should | 🔲 Backlog | [US-016.md](epic-004-could-have/US-016.md) |
 | US-017 | Mode sombre interface admin et formulaire candidat | 🔵 Could | ✅ Done | [US-017.md](epic-004-could-have/US-017.md) |
 | US-019 | Pages Histoire et Contact | 🟡 Should | ✅ Done | [US-019.md](epic-004-could-have/US-019.md) |
 | US-020 | Interface en Kreyòl (sélecteur FR / KR) | 🟡 Should | ✅ Done | [US-020.md](epic-004-could-have/US-020.md) |

@@ -1,6 +1,6 @@
 ---
 created: 2026-11-06T04:13:16Z
-updated: 2026-11-06T04:13:16Z
+updated: 2026-11-06T18:35:56Z
 ---
 
 > **First learned:** 2026-11-04 18:00:00
@@ -41,4 +41,5 @@ Beaucoup de projets commencent sans outil de migrations (tables créées par l'O
 |---|---|---|
 | Adopter sans vérifier le contenu | « La base vient de `create_all`, elle est forcément conforme » | Comparaison avant adoption, refus si une table ou une colonne manque |
 | Comparer aux modèles courants | Juste le jour de l'adoption, avec une seule migration | Comparaison limitée aux tables de la révision d'origine |
+| Tolérer la table postérieure mais pas son index | L'outil de comparaison signale l'index (`add_index`) séparément de la table (`add_table`) ; découvert à la troisième migration (`0003`, 2026-11-06) | Tolérer aussi les index des tables postérieures à la révision d'origine |
 | Simuler une base ancienne avec `create_all` sur les modèles courants | Le test réutilisait l'outil de création du jour | Base de test créée avec les seules tables d'origine, et test de la constante contre la migration `0001` |

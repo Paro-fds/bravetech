@@ -124,3 +124,14 @@ class CalendrierAdmissionModel(Base):
     date_rentree = Column(Date, nullable=True)
     modifie_par = Column(String(36), ForeignKey("utilisateurs.id"), nullable=False)
     modifie_le = Column(DateTime(timezone=True), nullable=False)
+
+
+class SmsSimuleModel(Base):
+    """Table `sms_simules` (US-016) : SMS que le portail aurait envoyés (simulation, aucun fournisseur branché)."""
+    __tablename__ = "sms_simules"
+
+    id = Column(String(36), primary_key=True)
+    destinataire = Column(String(20), nullable=False)
+    texte = Column(Text, nullable=False)
+    reference_dossier = Column(String(20), nullable=True, index=True)
+    envoye_le = Column(DateTime(timezone=True), nullable=False)

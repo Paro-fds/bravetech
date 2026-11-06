@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T00:30:00Z
-updated: 2026-11-06T14:13:35Z
+updated: 2026-11-06T18:35:56Z
 ---
 
 # PLAN.md — FDS Portail
@@ -178,7 +178,7 @@ Source : `PRD.md §6` (Must / Should / Won't). Consolidé ici pour le séquencem
 
 > Mis à jour le 2026-11-06. Les Epics 1, 2 et 3 sont clôturés ; il reste `US-016` (Epic 4) et `US-027` (Epic 5). Le portail est en production sur la VM de la FDS, emails activés.
 
-1. **Construire `US-016` — Notifications SMS** (Should Have, seul élément du périmètre contractuel non livré). Passer par le skill `user-story` (Refine) : choisir le fournisseur (Twilio en essai, ou opérateur local) ou, faute de clé, livrer le port `ISmsProvider` et l'adaptateur console et justifier l'absence d'envoi réel dans le rapport.
+1. **Valider `US-016`** (SMS simulés, construite le 2026-11-06), puis clôturer l'Epic 4.
 2. **Construire `US-027`** — sauvegardes hors site et procédure d'exploitation (Epic 5), puis clôturer les Epics 4 et 5.
 
 > Le statut quotidien (story en cours, bloquages) vit dans `project-docs/execution/` une fois le travail commencé — pas ici. Ce fichier ne change que si la séquence des Epics change.
