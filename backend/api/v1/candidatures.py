@@ -58,6 +58,7 @@ from backend.entities.erreurs import (
     PaiementRefuse,
     RemplacementNonAutorise,
 )
+from backend.api.v1.calendrier import exiger_periode_ouverte
 from backend.ports.candidature_repository import ICandidatureRepository
 from backend.ports.document_repository import IDocumentRepository
 from backend.ports.email_sender import IEmailSender
@@ -128,7 +129,13 @@ def _vers_http(erreur: Exception) -> HTTPException:
     raise erreur
 
 
-@router.post("", response_model=BrouillonResponse, status_code=201, summary="Créer un brouillon (étape 1)")
+@router.post(
+    "",
+    response_model=BrouillonResponse,
+    status_code=201,
+    summary="Créer un brouillon (étape 1)",
+    dependencies=[Depends(exiger_periode_ouverte)],
+)
 def creer_brouillon(
     payload: InformationsPersonnellesRequest,
     repo: ICandidatureRepository = Depends(get_candidature_repository),
@@ -306,6 +313,7 @@ def get_url_base_portail() -> str:
     "/{candidature_id}/soumission",
     response_model=BrouillonResponse,
     summary="Soumettre définitivement le dossier et obtenir la référence CAN-AAAA-NNNN",
+    dependencies=[Depends(exiger_periode_ouverte)],
 )
 def soumettre_candidature(
     candidature_id: str,

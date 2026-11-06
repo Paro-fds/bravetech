@@ -1,6 +1,9 @@
 /** Kreyòl ayisyen — brouillon sans relecture, à faire valider par la Faculté (US-020). */
 export const accueil = {
   'accueil.badge': 'Admisyon louvri',
+  'accueil.badgeJusquau': 'Admisyon louvri jiska {date}',
+  'accueil.badgeAVenir': 'Admisyon ap louvri {date}',
+  'accueil.badgeFermees': 'Admisyon fèmen',
   'accueil.titre': 'Poze kandidati ou nan Fakilte Syans lan, san ou pa bezwen deplase.',
   'accueil.sousTitre': 'Gade kourikoulòm yo, depoze dosye ou epi swiv jan yo ap trete l, depi nan telefòn ou.',
   'accueil.postuler': 'Aplike kounye a',

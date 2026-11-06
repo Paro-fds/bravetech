@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T13:09:00Z
-updated: 2026-11-05T17:49:02Z
+updated: 2026-11-06T03:21:37Z
 ---
 
 # EPIC_EXECUTION.md — FDS Portail
@@ -14,6 +14,7 @@ updated: 2026-11-05T17:49:02Z
 
 - **En production** sur https://dorfilus.ueh.edu.ht (VM Proxmox de la FDS, déploiement continu : US-026). 25 stories sur 27 sont livrées.
 - **Prochaine story à construire : `US-016` — Notifications SMS** (Epic 4). C'est le **seul élément du périmètre contractuel** (Should Have du document de lancement, Partie 3) qui n'est pas livré. Elle dépend d'un fournisseur SMS (clé `SMS_API_KEY`) : sans fournisseur, on livre le port et l'adaptateur console, et le non-envoi réel est justifié au §2 du rapport.
+- **Ajoutée le 2026-11-05 à la demande du Project Owner : `US-028` — calendrier d'admission réglable par l'administration** (Epic 4), construite sur la branche `feat/us-028-calendrier`, en attente de validation.
 - **Ensuite :** `US-027` — sauvegardes hors site (Epic 5, hors périmètre contractuel, nécessaire à l'exploitation).
 - **Clôtures en retard :** les Epics 2 et 3 ont toutes leurs stories livrées mais ne sont pas formellement fermés (pas de closeout, pas de specs WS-02 à WS-04 consolidées). À faire avant de fermer les Epics 4 et 5.
 - **Bloquant hors code :** les emails (Must Have) sont désactivés en production tant que le domaine d'envoi Resend n'est pas vérifié (`reviews/03`, F2).
@@ -89,6 +90,7 @@ Fonctionnalités de confort et d'efficacité opérationnelle : SMS en complémen
 | US-020 | Interface en Kreyòl (sélecteur FR / KR) | 🟡 Should | ✅ Done | [US-020.md](epic-004-could-have/US-020.md) |
 | US-021 | Refonte visuelle de l'accueil et des fiches de cursus | 🔵 Could | ✅ Done | [US-021.md](epic-004-could-have/US-021.md) |
 | US-022 | Finition de la refonte visuelle (menu mobile, accueil et fiche MPC sur ordinateur, suivi) | 🔵 Could | ✅ Done | [US-022.md](epic-004-could-have/US-022.md) |
+| US-028 | Calendrier d'admission réglable par l'administration | 🟡 Should | 🔲 Backlog | [US-028.md](epic-004-could-have/US-028.md) |
 
 ---
 

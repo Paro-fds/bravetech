@@ -11,3 +11,5 @@ python-multipart==0.0.33
 bcrypt==5.0.0
 PyJWT==2.15.1
 reportlab==5.1.0
+# Fuseau d'Haïti pour le calendrier d'admission (US-028) : l'image python:slim n'a pas de base de fuseaux
+tzdata==2026.5

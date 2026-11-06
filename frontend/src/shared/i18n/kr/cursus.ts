@@ -12,6 +12,11 @@ export const cursus = {
   'cursus.dateLimite': 'Dat limit pou depoze',
   'cursus.rentree': 'Rantre klas',
   'cursus.aConfirmer': 'Fakilte a ap konfime sa',
+  'cursus.datesCles': 'Dat enpòtan yo',
+  'cursus.ouverture': 'Kandidati yo louvri',
+  'cursus.concours': 'Konkou admisyon an',
+  'cursus.resultats': 'Rezilta yo soti',
+  'cursus.fermees': 'Kandidati yo fèmen pou kounye a.',
   'cursus.acces': 'Aksè',
   'cursus.apresMpc': 'Apre MPC a',
 

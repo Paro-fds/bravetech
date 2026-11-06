@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T15:23:00Z
-updated: 2026-11-06T01:57:24Z
+updated: 2026-11-06T03:21:37Z
 workstream: WS-01
 ---
 
@@ -164,7 +164,7 @@ Conformément à l'ADR-006 (serveur Linux sur site / Proxmox à la Faculté des 
 - **Au démarrage du conteneur backend**, `python -m backend.scripts.migrer` applique `alembic upgrade head`, puis uvicorn démarre. Si une migration échoue, l'API ne démarre pas. En développement, on lance la même commande avant `uvicorn`.
 - **Modifier un modèle (`backend/dal/models.py`) impose une migration** dans la même PR :
   `alembic -c backend/alembic.ini revision --autogenerate -m "description"`, depuis la racine du dépôt, puis relire le fichier produit dans `backend/dal/migrations/versions/`. Le test `tests/integration/test_migrations.py` fait échouer la CI si les modèles et la dernière migration divergent.
-- **Adoption d'une base créée avant Alembic** (la base de la VM, créée par `create_all` le 2026-11-04) : `backend/dal/schema.py` la détecte (tables présentes, pas de table `alembic_version`) et la marque à la révision `0001` sans la modifier, ce qui équivaut à `alembic stamp 0001`. Les données restent intactes. L'adoption est **refusée** si une table ou une colonne des modèles manque : une base plus ancienne que `0001` ne doit pas être déclarée à jour. Une table en trop (`cursus`, `documents_requis` dans les vieilles bases de développement) est tolérée.
+- **Adoption d'une base créée avant Alembic** (la base de la VM, créée par `create_all` le 2026-11-04) : `backend/dal/schema.py` la détecte (tables présentes, pas de table `alembic_version`) et la marque à la révision `0001` sans la modifier, ce qui équivaut à `alembic stamp 0001`. Les données restent intactes. L'adoption est **refusée** si une table ou une colonne des modèles manque : une base plus ancienne que `0001` ne doit pas être déclarée à jour. Une table en trop (`cursus`, `documents_requis` dans les vieilles bases de développement) est tolérée. La comparaison porte sur les seules tables de `0001` (`TABLES_INITIALES` dans `schema.py`) : une table créée par une migration suivante (`calendriers_admission`, `0002`) manque forcément à une base d'avant Alembic, et `upgrade` la crée juste après. Un test vérifie que `TABLES_INITIALES` reste la liste exacte des tables créées par `0001`.
 - **Une migration doit rester compatible avec la version précédente du code** (US-026). Le retour arrière automatique remet les anciennes images mais pas l'ancien schéma : Alembic ne va que vers l'avant. On ajoute (table, colonne nullable ou avec valeur par défaut) dans une version ; on renomme ou on supprime seulement dans une version suivante, une fois que plus aucun code en ligne ne s'en sert. Sinon, le retour arrière passe par la copie de la base faite avant le déploiement (§5.3).
 - **Pilote PostgreSQL : psycopg2.** SQLAlchemy 2.1 prend psycopg 3 par défaut pour `postgresql://`, qui n'est pas installé. `backend/dal/database.py` réécrit donc `postgresql://` et `postgres://` en `postgresql+psycopg2://`, quelle que soit l'URL fournie.
 - **Versions Python figées** (`==`) dans `requirements.txt` et `requirements-dev.txt`. Une version sans borne haute a cassé le démarrage en production (SQLAlchemy 2.1.8 installé à la place de 2.0). Monter une version passe par une PR, avec la CI verte.
@@ -205,6 +205,19 @@ visiteur → Apache UEH (TLS, *.ueh.edu.ht) → Nginx du conteneur frontend → 
   La liste des versions déployables est celle des commits de `master` dont le workflow « Déploiement » a construit les images.
 - **Restaurer la copie faite avant un déploiement** (si une migration a abîmé la base) : arrêter le backend, puis `pg_restore --clean --if-exists` du fichier `~/sauvegardes/deploiements/avant-<commit>-<date>.dump` dans le conteneur `db`. Procédure complète et testée : US-027.
 - **Mettre à jour le script lui-même** : il n'est pas déployé automatiquement. Après une modification de `deploy/deploy.sh` fusionnée sur `master`, recopier le fichier dans `~/deploiement/` sur la VM.
+
+## 6. Calendrier d'admission (US-028)
+
+- **Table `calendriers_admission`** (migration `0002`), en ajout seul : chaque enregistrement par l'admin crée une ligne ; la ligne de plus grand `numero` est en vigueur, les précédentes gardent qui (`modifie_par`, clé étrangère vers `utilisateurs`) a changé quelles dates, et quand (`modifie_le`, UTC).
+- **Dates civiles, heure d'Haïti.** Les cinq dates sont des `Date` sans heure. La période est ouverte du jour d'ouverture à 0 h jusqu'au jour limite à 23 h 59, heure de `America/Port-au-Prince` (`backend/bll/calendrier_admission.py`), quel que soit le fuseau du serveur. L'image `python:slim` n'a pas de base de fuseaux : le paquet `tzdata` est figé dans `requirements.txt`.
+- **Ordre imposé** des dates renseignées : ouverture ≤ date limite ≤ concours ≤ résultats ≤ rentrée (une date facultative vide est sautée). Ouverture et date limite sont obligatoires. Erreur → 422 `{"detail": {"erreurs": {champ: message}}}`.
+- **Routes** :
+  - `GET /api/v1/calendrier` (public) : `{etat, date_ouverture, date_limite, date_concours, date_resultats, date_rentree}` ; `etat` ∈ `non_definie | a_venir | ouverte | fermee`. L'auteur des modifications n'y figure pas.
+  - `GET /api/v1/admin/calendrier` (admin ou agent) : idem, plus `modifie_par` (email) et `modifie_le`.
+  - `PUT /api/v1/admin/calendrier` (rôle **admin** seulement, `get_current_admin_complet`) : un agent reçoit 403.
+- **Contrôle de période** : la dépendance `exiger_periode_ouverte` (`backend/api/v1/calendrier.py`), qui appelle `ControlerPeriodeUseCase`, est posée sur `POST /api/v1/candidatures` et `POST /api/v1/candidatures/{id}/soumission`. Hors période : 403 `{"detail": {"code": "candidatures_fermees", "message", "date_ouverture", "date_limite", …}}`. Les autres étapes du brouillon, le suivi et le remplacement d'une pièce refusée ne sont pas contrôlés.
+- **Frontend** : entité `entities/calendrier` (types, `calendrierApi`, `estCandidaturesFermees`), page `pages/admin-calendrier` (`/admin/calendrier`), requête partagée `['calendrier']` (TanStack Query) sur l'accueil, la fiche MPC et `/postuler`. Les dates s'affichent avec `formaterDateCivile` (sans conversion de fuseau : `new Date('2026-11-30')` est minuit UTC, soit le 29 au soir à Port-au-Prince).
+- **`date_ouverture_inscription` du cursus** (`cursus_loader.py`, `2026-08-01`) n'est plus affichée : le calendrier la remplace. Le champ reste dans l'API des cursus pour ne pas casser le contrat.
 
 ---
 

@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T15:23:00Z
-updated: 2026-11-01T15:51:55Z
+updated: 2026-11-06T03:21:37Z
 workstream: WS-01
 ---
 
@@ -21,7 +21,7 @@ Le portail public constitue la vitrine officielle et la première étape du parc
 ### 1.1 Page d'accueil (`/`)
 
 1. **En-tête institutionnel** : logo FDS-UEH, nom de la Faculté, sélecteur de langue FR / KR, menu (Accueil, Cursus, Histoire, Suivre mon dossier, Contact).
-2. **Bandeau d'accroche** : message « Candidatez à la Faculté des Sciences, sans vous déplacer », bouton principal **Postuler maintenant** (`/postuler`), bouton secondaire **Suivre mon dossier** (`/suivi`). Sur ordinateur, une illustration d'un téléphone affichant un dossier validé pièce par pièce.
+2. **Bandeau d'accroche** : badge d'après le calendrier d'admission (US-028) — « Admissions ouvertes jusqu'au 30 novembre 2026 », « Admissions à partir du … », « Admissions fermées », ou « Admissions ouvertes » sans calendrier ; message « Candidatez à la Faculté des Sciences, sans vous déplacer », bouton principal **Postuler maintenant** (`/postuler`), bouton secondaire **Suivre mon dossier** (`/suivi`). Sur ordinateur, une illustration d'un téléphone affichant un dossier validé pièce par pièce.
 3. **Comment ça marche** : cinq étapes (découvrir le parcours, remplir le formulaire, payer en simulation, déposer les pièces, suivre son dossier).
 4. **Une admission, puis votre branche** — **À faire** (Epic 1 affichait cinq cartes de même rang) :
    - Une carte mise en avant **Premier cycle MPC** (badge « Vous candidatez ici », 2 ans) menant à sa fiche.
@@ -33,7 +33,8 @@ Le portail public constitue la vitrine officielle et la première étape du parc
 ### 1.2 Fiche du Premier cycle MPC (`/cursus/mpc`) — **À faire**
 
 1. **En-tête** : retour vers l'accueil, badges « Admission unique » et « Admissions ouvertes », titre, description.
-2. **Chiffres clés** : durée du MPC (2 ans), durée totale (5 ans), frais de dossier (500 HTG, simulés), date limite de dépôt et rentrée (à confirmer par la Faculté).
+2. **Chiffres clés** : durée du MPC (2 ans), durée totale (5 ans), frais de dossier (500 HTG, simulés), date limite de dépôt et rentrée.
+   **Dates clés (US-028)** : ouverture des candidatures, date limite de dépôt, concours d'admission, publication des résultats, rentrée. Elles viennent du calendrier réglé par l'administration (espace admin → Calendrier) ; une date non fixée s'affiche « À confirmer par la Faculté ». Hors période, le badge « Admissions ouvertes » disparaît et la fiche indique que les candidatures sont fermées.
 3. **Votre parcours en 5 ans** : MPC (années 1 et 2, « Vous candidatez ici »), puis branche au choix (années 3 à 5) avec les quatre branches nommées.
 4. **Programme du MPC** : niveaux MPC 1 et MPC 2 avec, pour chaque matière, les heures de cours et de travaux pratiques (source `cursus/mpc.json`).
 5. **Après le MPC** : quatre cartes branches illustrées, avec la mention que le choix de la branche se fait après le MPC et n'est pas demandé à la candidature.
@@ -79,6 +80,13 @@ Source du texte : *Histoire de la Faculté Des Sciences* (document fourni par la
 3. Aucune image sur les écrans d'action (formulaire, paiement simulé, dépôt de pièces, suivi). Poids des images : voir `NFR.md` (Performance).
 
 ---
+
+### 1.8 Période de candidature (`/postuler`, US-028)
+
+1. **Avant l'ouverture ou après la date limite**, un nouveau candidat voit « Les candidatures sont fermées », avec la date d'ouverture à venir ou la date limite passée, et deux liens : **Suivre mon dossier** et **Voir les dates d'admission** (fiche MPC). Le formulaire ne s'affiche pas.
+2. **Un brouillon déjà commencé** reste affiché ; si la date limite passe avant l'envoi, la soumission est refusée avec le message « Les candidatures sont fermées : la date limite de dépôt est passée. »
+3. **Après la date limite**, le suivi d'un dossier envoyé et le remplacement d'une pièce refusée restent possibles : un candidat qui a envoyé à temps doit pouvoir corriger.
+4. **Sans calendrier enregistré**, les candidatures restent ouvertes (comportement d'avant US-028).
 
 ## 2. Règles métier et contraintes fonctionnelles
 

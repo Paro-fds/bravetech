@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T00:35:00Z
-updated: 2026-11-06T03:03:27Z
+updated: 2026-11-06T03:21:37Z
 ---
 
 # GLOSSARY.md — FDS Portail
@@ -18,7 +18,7 @@ updated: 2026-11-06T03:03:27Z
 |---|---|
 | **Candidat** | Lycéen ou adulte souhaitant s'inscrire à la FDS-UEH. Accès entièrement public — aucun compte requis. S'identifie via sa **référence dossier** pour le suivi. Peut consulter les cursus, postuler, uploader des documents, suivre son dossier et remplacer un document rejeté. |
 | **Administrateur (Admin)** | Agent du secrétariat FDS. Accès authentifié (email + mot de passe → JWT). Peut consulter toutes les candidatures, valider ou rejeter des documents. Toute action est auditée. En cas de conflit de besoin avec le Candidat, l'Admin est prioritaire (traçabilité > simplicité). |
-| **Agent** | Sous-rôle d'Administrateur avec permissions potentiellement réduites. Identifiant de rôle : `agent` (vs `admin`). Non différencié fonctionnellement en V1 — distinction préparée pour post-MVP. |
+| **Agent** | Sous-rôle d'Administrateur avec permissions potentiellement réduites. Identifiant de rôle : `agent` (vs `admin`). Différence en V1 : un agent consulte le calendrier d'admission mais ne peut pas le modifier (rôle `admin` requis, US-028). |
 | **Système** | Le backend FastAPI agissant de façon autonome : génération de références, déclenchement d'emails, validation des fichiers. N'est pas un acteur humain. |
 
 > **Terme à ne pas confondre :** « utilisateur » n'est jamais utilisé seul dans ce projet — il désigne toujours un Candidat (public) ou un Administrateur (authentifié). Utiliser le terme précis selon le contexte.
@@ -77,7 +77,8 @@ updated: 2026-11-06T03:03:27Z
 | **Audit** | Enregistrement immuable de chaque décision admin sur un Document soumis — champs `valide_par` (ID de l'Admin) et `date_validation` (timestamp). Permet au secrétariat de justifier toute décision. |
 | **Upsert** | Opération d'écriture qui crée un Document soumis s'il n'existe pas, ou le met à jour s'il existe déjà (sur la contrainte UNIQUE `(candidat_id, document_requis_id)`). Utilisé lors du remplacement d'un document rejeté — garantit qu'un candidat n'a jamais deux lignes pour le même document. |
 | **Magic bytes** | Signature binaire au début d'un fichier identifiant son vrai format (ex. `%PDF-` pour les PDFs). Vérifiés côté serveur via la bibliothèque `filetype` pour empêcher l'upload de fichiers exécutables renommés en `.pdf` ou `.jpg`. |
-| **Période d'inscription** | Fenêtre temporelle pendant laquelle les candidatures sont ouvertes. Correspond au pic de charge connu — aucune maintenance tolérée durant cette période. |
+| **Période d'inscription** | Fenêtre temporelle pendant laquelle les candidatures sont ouvertes : du jour d'**ouverture** au jour de la **date limite** inclus, heure d'Haïti, tels que réglés dans le **Calendrier d'admission**. Hors période, on ne peut ni commencer ni soumettre une candidature ; le suivi et le remplacement d'une pièce refusée restent possibles. Correspond au pic de charge connu — aucune maintenance tolérée durant cette période. |
+| **Calendrier d'admission** | Dates de la session en cours, réglées par un Admin dans l'espace admin (US-028) : ouverture, date limite de dépôt, concours, publication des résultats, rentrée. Chaque modification est conservée (qui, quand). Une date non fixée s'affiche « À confirmer par la Faculté ». Sans calendrier enregistré, les candidatures restent ouvertes. |
 
 ---
 
