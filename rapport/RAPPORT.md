@@ -1,6 +1,6 @@
 ---
 created: 2026-11-06T04:30:00Z
-updated: 2026-11-06T13:53:00Z
+updated: 2026-11-06T14:13:35Z
 ---
 
 # Rapport — Projet 2 · Équipe 2 Bravetech · M2 FDS Portail
@@ -47,7 +47,7 @@ Trois Epics séquentiels pour le MVP : `epic-001` socle, `epic-002` candidature 
 | Must — Référence `CAN-2026-X` | ✅ | ws-func-02 |
 | Must — Suivi par référence | ✅ | ws-func-03 |
 | Must — Interface d'administration sécurisée | ✅ JWT, 2 rôles, audit | ws-func-04 |
-| Must — Emails (confirmation, validation, rejet avec lien) | ✅ codés le 01/11 ; **activés en production le 05/11** | ws-func-05 |
+| Must — Emails (confirmation, validation, rejet avec lien) | ✅ codés le 01/11 ; **activés en production le 05/11, réception confirmée le 06/11** | ws-func-05 |
 | Must — Remplacer un document rejeté | ✅ | ws-func-03 |
 | Must — Simulation MonCash / NatCash, **tous les cas** | ✅ réussi le 01/11 ; refusé, échoué, relancé le 05/11 | ws-func-02 §2 |
 | Should — Notifications SMS | ❌ **non livré** (voir ci-dessous) | US-016 |

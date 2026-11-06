@@ -1,6 +1,6 @@
 ---
 created: 2026-11-06T04:00:00Z
-updated: 2026-11-06T04:11:35Z
+updated: 2026-11-06T14:13:35Z
 ---
 
 # Spécification Fonctionnelle — WS-05 Notifications
@@ -28,7 +28,7 @@ Un dossier de 5 pièces décidées une par une produit jusqu'à 5 emails de déc
 - **Le formulaire de contact est l'exception** : là, l'email *est* l'action. S'il ne part pas (envoi en échec, ou adresse du secrétariat non configurée), le visiteur reçoit un message d'erreur clair et **garde son texte** dans la page, pour réessayer plus tard.
 - **Anti-spam du contact** : 3 messages par 10 minutes depuis une même adresse ; un robot qui remplit le champ piège invisible reçoit une réponse normale, sans qu'aucun email ne parte.
 - **Langue** : les emails sont en français.
-- **Expéditeur en production** : `FDS Portail <noreply@fds.ctpea-prefac.me>` (domaine configuré chez Resend le 2026-11-05 ; vérification à confirmer dans le tableau de bord Resend). Le domaine de l'UEH n'a pas pu être vérifié à temps (DNS gérés par l'UEH).
+- **Expéditeur en production** : `FDS Portail <noreply@fds.ctpea-prefac.me>` (domaine vérifié chez Resend ; réception confirmée le 2026-11-06 sur une candidature test. Un premier envoi depuis un domaine neuf peut être classé en indésirables). Le domaine de l'UEH n'a pas pu être vérifié à temps (DNS gérés par l'UEH).
 - **Interrupteur** : l'administrateur système peut couper tous les envois (`EMAIL_ENABLED=false`) sans redéployer le code.
 
 ## 3. Non livré

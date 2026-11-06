@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T13:09:00Z
-updated: 2026-11-06T13:53:00Z
+updated: 2026-11-06T14:13:35Z
 ---
 
 # EPIC_EXECUTION.md — FDS Portail
@@ -17,7 +17,7 @@ updated: 2026-11-06T13:53:00Z
 - **Ajoutée le 2026-11-05 à la demande du Project Owner : `US-028` — calendrier d'admission réglable par l'administration** (Epic 4) : fusionnée, déployée (PR #60, #63) et validée par le Project Owner le 2026-11-06.
 - **Ensuite :** `US-027` — sauvegardes hors site (Epic 5, hors périmètre contractuel, nécessaire à l'exploitation).
 - **Epics 2 et 3 clôturés le 2026-11-06** (closeouts, specs WS-02 à WS-05). Issues et Milestones GitHub fermés le 2026-11-06.
-- **Emails** : activés en production le 2026-11-05 ; réception réelle à confirmer par une candidature test (`reviews/03`, F2).
+- **Emails** : en production, réception confirmée le 2026-11-06 (`reviews/03`, F2).
 
 ---
 

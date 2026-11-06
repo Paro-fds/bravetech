@@ -1,6 +1,6 @@
 ---
 created: 2026-11-06T04:00:00Z
-updated: 2026-11-06T04:11:35Z
+updated: 2026-11-06T14:13:35Z
 ---
 
 # Spécification Technique — WS-05 Notifications
@@ -38,7 +38,7 @@ Les routes de soumission (WS-02), de décision (WS-04) et de remplacement (WS-03
 | `CONTACT_EMAIL` | Secrétariat ; vide → le formulaire de contact répond 503 |
 | `APP_BASE_URL` | Base des liens de suivi dans les emails |
 
-**Production (2026-11-05)** : domaine d'envoi `fds.ctpea-prefac.me` configuré chez Resend (enregistrements visibles sur les DNS publics ; statut « Verified » à confirmer dans Resend) (DKIM `resend._domainkey.fds`, CNAME `send.fds` et `rsend.fds` vers l'infrastructure Resend, DMARC `_dmarc`). Un CNAME ne peut pas cohabiter avec un autre enregistrement de même nom : les anciens TXT et MX de `send.fds` ont dû être supprimés. Les variables sont dans `~/bravetech/.env` sur la VM, jamais dans le dépôt.
+**Production (2026-11-05)** : domaine d'envoi `fds.ctpea-prefac.me` vérifié chez Resend (Resend accepte les envois : aucune erreur dans les journaux ; réception confirmée le 2026-11-06) (DKIM `resend._domainkey.fds`, CNAME `send.fds` et `rsend.fds` vers l'infrastructure Resend, DMARC `_dmarc`). Un CNAME ne peut pas cohabiter avec un autre enregistrement de même nom : les anciens TXT et MX de `send.fds` ont dû être supprimés. Les variables sont dans `~/bravetech/.env` sur la VM, jamais dans le dépôt.
 
 ## 4. Non livré
 
