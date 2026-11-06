@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T13:09:00Z
-updated: 2026-11-06T04:11:35Z
+updated: 2026-11-06T13:53:00Z
 ---
 
 # EPIC_EXECUTION.md — FDS Portail
@@ -12,11 +12,11 @@ updated: 2026-11-06T04:11:35Z
 
 ## Où en est le projet (2026-11-06)
 
-- **En production** sur https://dorfilus.ueh.edu.ht (VM Proxmox de la FDS, déploiement continu : US-026). 26 stories sur 28 sont livrées (US-028 en production, à valider par le Project Owner). Epics 1, 2 et 3 clôturés.
+- **En production** sur https://dorfilus.ueh.edu.ht (VM Proxmox de la FDS, déploiement continu : US-026). 26 stories sur 28 sont livrées. Epics 1, 2 et 3 clôturés.
 - **Prochaine story à construire : `US-016` — Notifications SMS** (Epic 4). C'est le **seul élément du périmètre contractuel** (Should Have du document de lancement, Partie 3) qui n'est pas livré. Elle dépend d'un fournisseur SMS (clé `SMS_API_KEY`) : sans fournisseur, on livre le port et l'adaptateur console, et le non-envoi réel est justifié au §2 du rapport.
-- **Ajoutée le 2026-11-05 à la demande du Project Owner : `US-028` — calendrier d'admission réglable par l'administration** (Epic 4) : fusionnée et déployée (PR #60, #63), en attente de validation.
+- **Ajoutée le 2026-11-05 à la demande du Project Owner : `US-028` — calendrier d'admission réglable par l'administration** (Epic 4) : fusionnée, déployée (PR #60, #63) et validée par le Project Owner le 2026-11-06.
 - **Ensuite :** `US-027` — sauvegardes hors site (Epic 5, hors périmètre contractuel, nécessaire à l'exploitation).
-- **Epics 2 et 3 clôturés le 2026-11-06** (closeouts, specs WS-02 à WS-05). Reste au Project Owner : fermer leurs issues GitHub et leurs Milestones (étapes 2 et 7, détail dans chaque closeout).
+- **Epics 2 et 3 clôturés le 2026-11-06** (closeouts, specs WS-02 à WS-05). Issues et Milestones GitHub fermés le 2026-11-06.
 - **Emails** : activés en production le 2026-11-05 ; réception réelle à confirmer par une candidature test (`reviews/03`, F2).
 
 ---
@@ -90,7 +90,7 @@ Fonctionnalités de confort et d'efficacité opérationnelle : SMS en complémen
 | US-020 | Interface en Kreyòl (sélecteur FR / KR) | 🟡 Should | ✅ Done | [US-020.md](epic-004-could-have/US-020.md) |
 | US-021 | Refonte visuelle de l'accueil et des fiches de cursus | 🔵 Could | ✅ Done | [US-021.md](epic-004-could-have/US-021.md) |
 | US-022 | Finition de la refonte visuelle (menu mobile, accueil et fiche MPC sur ordinateur, suivi) | 🔵 Could | ✅ Done | [US-022.md](epic-004-could-have/US-022.md) |
-| US-028 | Calendrier d'admission réglable par l'administration | 🟡 Should | 🔲 Backlog | [US-028.md](epic-004-could-have/US-028.md) |
+| US-028 | Calendrier d'admission réglable par l'administration | 🟡 Should | ✅ Done | [US-028.md](epic-004-could-have/US-028.md) |
 
 ---
 

@@ -1,6 +1,6 @@
 ---
 created: 2026-11-06T04:30:00Z
-updated: 2026-11-06T04:15:42Z
+updated: 2026-11-06T13:53:00Z
 ---
 
 # Rapport — Projet 2 · Équipe 2 Bravetech · M2 FDS Portail
@@ -78,7 +78,7 @@ Trois Epics séquentiels pour le MVP : `epic-001` socle, `epic-002` candidature 
 
 **Ce qui a été abandonné ou adapté :**
 - **Le Refine a été fait par Epic, pas par story.** Chaque Epic 2 à 5 a son `epic-NNN-refinement.md` (constats numérotés, questions, ordre de construction). En revanche, les stories des Epics 2 et 3 ont souvent été écrites et construites le même jour, sans Refine propre. Celles de l'Epic 5 l'ont été (constats `E5-1` à `E5-7` vérifiés sur la VM avant le code).
-- **La clôture des Epics** : l'Epic 1 a été fermé avec ses huit étapes le 26 septembre. **Les Epics 2 et 3 n'ont été fermés que le 6 novembre**, plusieurs jours après la livraison de leurs stories : closeouts et specs WS-02 à WS-05 écrits à ce moment-là, à partir des notes de réalisation. Deux étapes (fermer les issues, fermer le Milestone) restent au Project Owner, seul à fermer les issues. **Les Epics 4 et 5 sont ouverts** au dépôt (US-016 et US-027).
+- **La clôture des Epics** : l'Epic 1 a été fermé avec ses huit étapes le 26 septembre. **Les Epics 2 et 3 n'ont été fermés que le 6 novembre**, plusieurs jours après la livraison de leurs stories : closeouts et specs WS-02 à WS-05 écrits à ce moment-là, à partir des notes de réalisation. Les issues et les Milestones n'ont été fermés que le même jour : jusque-là, toutes les issues des stories livrées étaient restées ouvertes sur le board. **Les Epics 4 et 5 sont ouverts** au dépôt (US-016 et US-027).
 - **Les reviews** : les quatre ont été écrites le jour de la découverte (01 le 1er novembre ; 02, 03, 04 les 5 et 6 novembre). Il n'y en a pas pour octobre, parce qu'il ne s'est rien passé en octobre.
 - **Le statut des stories** n'a été mis à jour qu'en fin de projet (le 5 novembre, 21 stories passées en Done d'un coup, après validation par le Project Owner).
 

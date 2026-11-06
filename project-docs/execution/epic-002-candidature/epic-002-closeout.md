@@ -1,6 +1,6 @@
 ---
 created: 2026-11-06T04:30:00Z
-updated: 2026-11-06T04:11:35Z
+updated: 2026-11-06T13:53:00Z
 ---
 
 # Epic 002 Closeout — Candidature & Suivi
@@ -56,7 +56,7 @@ None.
 
 ## Tracking
 
-- **Étape 2 (réconcilier les issues) et étape 7 (fermer le Milestone) : laissées au Project Owner.** La règle de l'équipe est que seul le Project Owner ferme les issues. Au 2026-11-06, les issues #5 à #10 et #18 sont ouvertes alors que leurs stories sont Done. Pour terminer : fermer ces sept issues, puis `gh api -X PATCH repos/Paro-fds/bravetech/milestones/2 -f state=closed`.
+- **Étape 2 (issues) et étape 7 (Milestone) : faites le 2026-11-06**, sur accord explicite du Project Owner (qui, par règle d'équipe, est seul à fermer les issues). Issues #5 à #10 et #18 fermées, chacune avec un commentaire renvoyant à la PR qui l'a livrée ; Milestone n°2 fermé, 0 issue ouverte.
 - Étape 5 (`PRD.md`, `SOLUTION_DESIGN.md`) : relus le 2026-11-06 (voir `reviews/04-documents-fondateurs-et-adr.md`) ; rien de propre à cet Epic ne restait faux.
 
 ---

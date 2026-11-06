@@ -1,6 +1,6 @@
 ---
 created: 2026-11-06T04:30:00Z
-updated: 2026-11-06T04:11:35Z
+updated: 2026-11-06T13:53:00Z
 ---
 
 # Epic 003 Closeout — Administration & Audit
@@ -54,7 +54,7 @@ None. Not built and not in this Epic: an account-management screen for agents (n
 
 ## Tracking
 
-- **Étape 2 (réconcilier les issues) et étape 7 (fermer le Milestone) : laissées au Project Owner**, qui seul ferme les issues. Au 2026-11-06, les issues #11 à #14 sont ouvertes alors que leurs stories sont Done. Pour terminer : fermer ces quatre issues, puis `gh api -X PATCH repos/Paro-fds/bravetech/milestones/3 -f state=closed`.
+- **Étape 2 (issues) et étape 7 (Milestone) : faites le 2026-11-06**, sur accord explicite du Project Owner (qui, par règle d'équipe, est seul à fermer les issues). Issues #11 à #14 fermées, chacune avec un commentaire renvoyant à la PR qui l'a livrée ; Milestone n°3 fermé, 0 issue ouverte.
 - Étape 5 : `SOLUTION_DESIGN.md` §7 (« appelé à chaque endpoint », « 5 requêtes » au lieu de 5 échecs) et §15 (création des comptes admin) corrigés à cette clôture ; `PRD.md` relu, rien de faux pour cet Epic.
 
 ---
