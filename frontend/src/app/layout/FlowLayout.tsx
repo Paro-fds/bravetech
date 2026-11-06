@@ -21,7 +21,7 @@ export const FlowLayout: React.FC = () => {
   return (
     <div className="flex flex-col min-h-screen bg-fds-page font-fds-sans text-fds-ink">
       <header className="bg-fds-navy text-white">
-        <div className="max-w-xl mx-auto flex items-center gap-3 px-4 py-2.5">
+        <div className="max-w-xl lg:max-w-5xl mx-auto flex items-center gap-3 px-4 py-2.5">
           <Link to="/" className="flex items-center gap-3 min-h-11 mr-auto" aria-label={t('marque.accueilRetour')}>
             <img src="/logo-fds.png" alt={t('marque.logoAlt')} width={40} height={40} className="rounded" />
             <span className="leading-tight">

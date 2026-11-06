@@ -1,8 +1,8 @@
 import React from 'react';
 
-/** Barre d'actions fixée en bas de l'écran (boutons Continuer / Retour), comme sur les maquettes mobiles. */
+/** Barre d'actions fixée en bas de l'écran sur mobile (maquettes) ; sur ordinateur, une ligne en bas du formulaire. */
 export const BarreAction: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <div className="sticky bottom-0 -mx-4 mt-auto bg-fds-surface border-t border-fds-line px-4 py-3 flex flex-col gap-2">
+  <div className="sticky bottom-0 -mx-4 mt-auto bg-fds-surface border-t border-fds-line px-4 py-3 flex flex-col gap-2 lg:static lg:mx-0 lg:mt-8 lg:px-0 lg:pb-0 lg:pt-6">
     {children}
   </div>
 );
