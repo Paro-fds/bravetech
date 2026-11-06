@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T13:09:00Z
-updated: 2026-11-06T03:21:37Z
+updated: 2026-11-06T04:11:35Z
 ---
 
 # EPIC_EXECUTION.md — FDS Portail
@@ -10,14 +10,14 @@ updated: 2026-11-06T03:21:37Z
 
 > Cette table est la source de vérité du statut en temps réel. Mise à jour à chaque changement de statut d'une story — pas à la fin d'un Epic.
 
-## Où en est le projet (2026-11-05)
+## Où en est le projet (2026-11-06)
 
-- **En production** sur https://dorfilus.ueh.edu.ht (VM Proxmox de la FDS, déploiement continu : US-026). 25 stories sur 27 sont livrées.
+- **En production** sur https://dorfilus.ueh.edu.ht (VM Proxmox de la FDS, déploiement continu : US-026). 26 stories sur 28 sont livrées (US-028 en production, à valider par le Project Owner). Epics 1, 2 et 3 clôturés.
 - **Prochaine story à construire : `US-016` — Notifications SMS** (Epic 4). C'est le **seul élément du périmètre contractuel** (Should Have du document de lancement, Partie 3) qui n'est pas livré. Elle dépend d'un fournisseur SMS (clé `SMS_API_KEY`) : sans fournisseur, on livre le port et l'adaptateur console, et le non-envoi réel est justifié au §2 du rapport.
-- **Ajoutée le 2026-11-05 à la demande du Project Owner : `US-028` — calendrier d'admission réglable par l'administration** (Epic 4), construite sur la branche `feat/us-028-calendrier`, en attente de validation.
+- **Ajoutée le 2026-11-05 à la demande du Project Owner : `US-028` — calendrier d'admission réglable par l'administration** (Epic 4) : fusionnée et déployée (PR #60, #63), en attente de validation.
 - **Ensuite :** `US-027` — sauvegardes hors site (Epic 5, hors périmètre contractuel, nécessaire à l'exploitation).
-- **Clôtures en retard :** les Epics 2 et 3 ont toutes leurs stories livrées mais ne sont pas formellement fermés (pas de closeout, pas de specs WS-02 à WS-04 consolidées). À faire avant de fermer les Epics 4 et 5.
-- **Bloquant hors code :** les emails (Must Have) sont désactivés en production tant que le domaine d'envoi Resend n'est pas vérifié (`reviews/03`, F2).
+- **Epics 2 et 3 clôturés le 2026-11-06** (closeouts, specs WS-02 à WS-05). Reste au Project Owner : fermer leurs issues GitHub et leurs Milestones (étapes 2 et 7, détail dans chaque closeout).
+- **Emails** : activés en production le 2026-11-05 ; réception réelle à confirmer par une candidature test (`reviews/03`, F2).
 
 ---
 
@@ -40,7 +40,7 @@ Socle technique complet établi (Clean Architecture, CI GitHub Actions avec test
 ## Epic 2 — Candidature & Suivi (côté candidat)
 
 **Workstream :** WS-02 Candidature, WS-03 Suivi de dossier
-**Status :** ✅ Stories livrées — clôture formelle à faire (closeout, specs WS-02 et WS-03) — [refinement](epic-002-candidature/epic-002-refinement.md)
+**Status :** ✅ Done — closed 2026-11-06, voir [epic-002-closeout.md](epic-002-candidature/epic-002-closeout.md)
 
 Règle d'admission (2026-10-31) : l'admission est unique (Premier cycle MPC), sans choix de cursus ; liste unique de 5 pièces — voir [epic-002-refinement.md](epic-002-candidature/epic-002-refinement.md) (E2-6, E2-7, R5, R6) et ADR-008.
 
@@ -61,7 +61,7 @@ Walking Skeleton complet côté candidat : formulaire multi-étapes, question `d
 ## Epic 3 — Administration & Audit
 
 **Workstream :** WS-04 Administration
-**Status :** ✅ Stories livrées — clôture formelle à faire (closeout, spec WS-04) — [refinement](epic-003-administration/epic-003-refinement.md)
+**Status :** ✅ Done — closed 2026-11-06, voir [epic-003-closeout.md](epic-003-administration/epic-003-closeout.md)
 
 Interface d'administration sécurisée : authentification JWT + RBAC, tableau de bord des candidatures, validation/rejet de documents avec traçabilité complète (`valide_par`, `date_validation`), et notifications email déclenchées par les décisions admin.
 

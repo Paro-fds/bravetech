@@ -1,10 +1,12 @@
 ---
 created: 2026-09-27T12:28:00Z
-updated: 2026-11-01T17:44:15Z
-status: open
+updated: 2026-11-06T04:11:35Z
+status: closed
 ---
 
 # epic-002-refinement.md — Candidature & Suivi
+
+> **Clôturé le 2026-11-06.** Ce fichier n'est plus la source d'aucune règle : c'est l'historique de l'Epic. Les règles R1 à R6 et les arbitrages Q1 à Q4 ont été déplacés dans les documents propriétaires ; la table de destination est dans [epic-002-closeout.md](epic-002-closeout.md).
 
 > **Ce fichier est la source de vérité des règles en cours pour epic-002.**  
 > Toute règle technique ou décision d'arbitrage produite pendant cet Epic vit ici jusqu'à sa clôture.  
@@ -78,4 +80,4 @@ Les 5 User Stories de l'Epic 2 sont ordonnées pour garantir un flux d'intégrat
 
 ---
 
-*epic-002-refinement.md — FDS Portail · GL-EN3-2026 — status: open*
+*epic-002-refinement.md — FDS Portail · GL-EN3-2026 — status: closed*

@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T00:30:00Z
-updated: 2026-11-05T17:49:02Z
+updated: 2026-11-06T04:11:35Z
 ---
 
 # PLAN.md — FDS Portail
@@ -17,14 +17,17 @@ Les Epics sont **séquentiels** — chaque Epic doit être livrable et testable 
 | Epic | Nom | Workstreams | Bloqué par | Livrable clé |
 |---|---|---|---|---|
 | `epic-001-socle` | Socle & Portail public | WS-01 | — | ✅ Done — closed 2026-09-26, voir [epic-001-closeout.md](execution/epic-001-socle/epic-001-closeout.md) |
-| `epic-002-candidature` | Candidature & Suivi | WS-02, WS-03, WS-05 | `epic-001` | 🟡 In progress — [suivi](execution/epic-002-candidature/epic-002-refinement.md) |
-| `epic-003-administration` | Administration & Audit | WS-04, WS-05 | `epic-002` | Un admin valide/rejette des documents. Les emails de statut partent. Le candidat peut remplacer un document rejeté. |
+| `epic-002-candidature` | Candidature & Suivi | WS-02, WS-03, WS-05 | `epic-001` | ✅ Done — closed 2026-11-06, voir [epic-002-closeout.md](execution/epic-002-candidature/epic-002-closeout.md) |
+| `epic-003-administration` | Administration & Audit | WS-04, WS-05 | `epic-002` | ✅ Done — closed 2026-11-06, voir [epic-003-closeout.md](execution/epic-003-administration/epic-003-closeout.md) |
+| `epic-004-could-have` | Could Have & Should Have | WS-01, WS-02, WS-04, WS-05 | `epic-003` | 🟡 In progress — reste `US-016` (SMS) ; [suivi](execution/EPIC_EXECUTION.md) |
 | `epic-005-mise-en-production` | Mise en production | Transverse | — (le portail fonctionnel existe déjà) | Le portail est en ligne sur la VM Proxmox de la FDS, déployé automatiquement à chaque fusion, avec des sauvegardes hors site restaurables. |
 
 **Pourquoi cet ordre ?**
 - `epic-001` établit le socle technique (CI/CD, déploiement, base de données, auth basique) sur lequel tout repose.
 - `epic-002` livre la tâche critique du MVP : permettre à un candidat de postuler sans se déplacer.
 - `epic-003` ferme la boucle administrative sans laquelle les dossiers reçus restent bloqués.
+- `epic-004` ajoute le Should et le Could du périmètre (Histoire et Contact, kreyòl, export, mode sombre, refonte visuelle, SMS, calendrier d'admission).
+- `epic-005` met le portail en production sur la VM de la FDS ; il a démarré pendant l'Epic 4, car le portail fonctionnel existait déjà.
 
 **Parallélisme possible mais non recommandé :** WS-04 (admin) pourrait démarrer pendant WS-03 (suivi) car ils partagent peu de code. Le risque : contention sur le modèle de données `DocumentSoumis`. Décision : séquentiel, Epic-002 terminé avant Epic-003.
 
@@ -66,9 +69,10 @@ Source : `PRD.md §6` (Must / Should / Won't). Consolidé ici pour le séquencem
 ### Should Have — important, non bloquant
 | Fonctionnalité | Cible |
 |---|---|
-| Pages Histoire et Contact (desktop et mobile) | À planifier (évolution de WS-01) |
-| Interface en Kreyòl (sélecteur FR / KR) | À planifier, contenu à valider par la Faculté |
-| Notifications SMS | Post-MVP (WS-05) |
+| Pages Histoire et Contact (desktop et mobile) | `epic-004` (US-019, livré) |
+| Interface en Kreyòl (sélecteur FR / KR) | `epic-004` (US-020, livré ; contenu à valider par la Faculté) |
+| Notifications SMS | `epic-004` (US-016, non livré) |
+| Calendrier d'admission réglable par l'administration | `epic-004` (US-028, ajouté le 2026-11-05) |
 
 ### Won't Have — explicitement hors V1
 | Fonctionnalité | Raison |
@@ -97,6 +101,8 @@ Source : `PRD.md §6` (Must / Should / Won't). Consolidé ici pour le séquencem
 
 ### `epic-002` — Candidature & Suivi
 
+> ✅ **Clôturé le 2026-11-06** — voir [epic-002-closeout.md](execution/epic-002-candidature/epic-002-closeout.md). US-018 ajoutée en cours d'Epic (admission unique).
+
 **Livrable :** le Walking Skeleton complet côté candidat — de la décision de postuler jusqu'à la réception de la référence et la consultation du statut.
 
 **Workstreams :** WS-02, WS-03, WS-05
@@ -117,6 +123,8 @@ Source : `PRD.md §6` (Must / Should / Won't). Consolidé ici pour le séquencem
 
 ### `epic-003` — Administration & Audit
 
+> ✅ **Clôturé le 2026-11-06** — voir [epic-003-closeout.md](execution/epic-003-administration/epic-003-closeout.md). US-010 (remplacement) a été rangée dans l'Epic 2.
+
 **Livrable :** le secrétariat peut traiter les dossiers. La boucle candidat/admin est fermée.
 
 **Workstreams :** WS-04, WS-05
@@ -130,6 +138,18 @@ Source : `PRD.md §6` (Must / Should / Won't). Consolidé ici pour le séquencem
 - `US-014` — Notification email déclenchée par une décision admin (validation/rejet, non bloquant).
 
 **Critère de sortie :** tous les scénarios du plan de tests fonctionnels (`cahier_des_charges.md §12.2`) passent. Les critères de succès du PRD §11 sont mesurables (≥ 20 candidatures, ≥ 70 % sans déplacement).
+
+---
+
+### `epic-004` — Could Have & Should Have
+
+**Livrable :** le reste du périmètre contractuel (Should et Could) et le confort d'usage.
+
+**Workstreams :** WS-01, WS-02, WS-04, WS-05
+
+**User stories :** `US-015` export CSV/PDF · `US-016` SMS (non livré) · `US-017` mode sombre · `US-019` Histoire et Contact · `US-020` kreyòl · `US-021` et `US-022` refonte visuelle · `US-028` calendrier d'admission.
+
+**Critère de sortie :** tout le Should et le Could du document de lancement (Partie 3) est livré ou justifié dans le rapport.
 
 ---
 
@@ -156,12 +176,11 @@ Source : `PRD.md §6` (Must / Should / Won't). Consolidé ici pour le séquencem
 
 ## Prochaines étapes immédiates
 
-> Mis à jour le 2026-11-05. `epic-001` est clôturé ; les stories des Epics 2 et 3 sont toutes livrées ; il reste `US-016` (Epic 4) et `US-027` (Epic 5). Le portail est en production sur la VM de la FDS.
+> Mis à jour le 2026-11-06. Les Epics 1, 2 et 3 sont clôturés ; il reste `US-016` (Epic 4) et `US-027` (Epic 5). Le portail est en production sur la VM de la FDS, emails activés.
 
 1. **Construire `US-016` — Notifications SMS** (Should Have, seul élément du périmètre contractuel non livré). Passer par le skill `user-story` (Refine) : choisir le fournisseur (Twilio en essai, ou opérateur local) ou, faute de clé, livrer le port `ISmsProvider` et l'adaptateur console et justifier l'absence d'envoi réel dans le rapport.
-2. **Activer les emails en production** (Must Have) : domaine d'envoi vérifié chez Resend, clé posée dans le `.env` de la VM (`reviews/03`, F2). Configuration, pas de code.
-3. **Clôturer les Epics 2 et 3** avec le skill `epic` (Close) : closeouts, et specs fonctionnelles / techniques de WS-02, WS-03 et WS-04 consolidées depuis les stories.
-4. **Construire `US-027`** — sauvegardes hors site et procédure d'exploitation (Epic 5), puis clôturer les Epics 4 et 5.
+2. **Vérifier l'arrivée réelle des emails** (Must Have) : activés le 2026-11-05 avec le domaine `fds.ctpea-prefac.me` ; une candidature test doit confirmer la réception (`reviews/03`, F2).
+3. **Construire `US-027`** — sauvegardes hors site et procédure d'exploitation (Epic 5), puis clôturer les Epics 4 et 5.
 
 > Le statut quotidien (story en cours, bloquages) vit dans `project-docs/execution/` une fois le travail commencé — pas ici. Ce fichier ne change que si la séquence des Epics change.
 
