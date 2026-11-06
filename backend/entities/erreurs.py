@@ -65,6 +65,14 @@ class ReferenceDejaAttribuee(ErreurMetier):
     """Une référence (de dossier ou de paiement) est déjà prise : il faut en tirer une autre."""
 
 
+class PaiementRefuse(ErreurMetier):
+    """Paiement simulé refusé par l'opérateur (solde insuffisant) : rien n'est payé, le candidat peut réessayer."""
+
+
+class PaiementEchoue(ErreurMetier):
+    """Échec technique simulé (l'opérateur ne répond pas) : rien n'est payé, une relance aboutit."""
+
+
 class CandidatureDejaSoumise(ErreurMetier):
     """La candidature est déjà soumise : ses informations ne sont plus modifiables."""
 

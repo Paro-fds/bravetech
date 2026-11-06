@@ -54,6 +54,8 @@ from backend.entities.erreurs import (
     FichierTropVolumineux,
     IdentiteNonVerifiee,
     InformationsInvalides,
+    PaiementEchoue,
+    PaiementRefuse,
     RemplacementNonAutorise,
 )
 from backend.ports.candidature_repository import ICandidatureRepository
@@ -112,6 +114,17 @@ def _vers_http(erreur: Exception) -> HTTPException:
         return HTTPException(status_code=409, detail="Répondez d'abord aux étapes précédentes de la candidature.")
     if isinstance(erreur, CandidatureDejaSoumise):
         return HTTPException(status_code=409, detail="Cette candidature est déjà soumise et n'est plus modifiable.")
+    # Paiement simulé qui n'aboutit pas : 402 (refusé par l'opérateur) ou 502 (l'opérateur n'a pas répondu)
+    if isinstance(erreur, PaiementRefuse):
+        return HTTPException(
+            status_code=402,
+            detail={"code": "paiement_refuse", "message": "Paiement refusé par l'opérateur : solde insuffisant."},
+        )
+    if isinstance(erreur, PaiementEchoue):
+        return HTTPException(
+            status_code=502,
+            detail={"code": "paiement_echoue", "message": "L'opérateur n'a pas répondu. Aucun montant n'a été prélevé."},
+        )
     raise erreur
 
 
@@ -188,7 +201,10 @@ def simuler_paiement(
     try:
         candidature = SimulerPaiementUseCase(repo).executer(candidature_id, payload.methode, payload.numero_telephone)
         candidat, candidature = ObtenirBrouillonUseCase(repo).executer(candidature.id)
-    except (InformationsInvalides, CandidatureIntrouvable, EtapePrecedenteIncomplete, CandidatureDejaSoumise) as erreur:
+    except (
+        InformationsInvalides, CandidatureIntrouvable, EtapePrecedenteIncomplete, CandidatureDejaSoumise,
+        PaiementRefuse, PaiementEchoue,
+    ) as erreur:
         raise _vers_http(erreur)
     return _reponse(candidat, candidature)
 

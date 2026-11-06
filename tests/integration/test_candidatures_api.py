@@ -172,3 +172,33 @@ def test_simulation_refusee_avant_la_question_de_deplacement(client):
 def test_simulation_brouillon_inconnu(client):
     reponse = client.post(f"{URL}/inconnu/paiement", json={"methode": "MONCASH", "numero_telephone": "37123456"})
     assert reponse.status_code == 404
+
+
+# --- Paiement simulé qui n'aboutit pas : refus, échec technique, relance ----------------------------------
+
+def test_paiement_refuse_402_puis_depot_des_pieces_bloque(client):
+    cid = _brouillon_pret(client)
+    reponse = client.post(f"{URL}/{cid}/paiement", json={"methode": "MONCASH", "numero_telephone": "37 12 00 00"})
+    assert reponse.status_code == 402
+    assert reponse.json()["detail"]["code"] == "paiement_refuse"
+
+    brouillon = client.get(f"{URL}/{cid}").json()
+    assert brouillon["statut_paiement"] == "REFUSE"
+    assert brouillon["reference_paiement"] is None
+    depot = client.post(
+        f"{URL}/{cid}/documents/mpc-acte-naissance",
+        files={"fichier": ("acte.pdf", b"%PDF-1.4\n%test\n", "application/pdf")},
+    )
+    assert depot.status_code == 409
+
+
+def test_paiement_echoue_502_puis_relance_acceptee(client):
+    cid = _brouillon_pret(client)
+    corps = {"methode": "NATCASH", "numero_telephone": "41 12 99 99"}
+    echec = client.post(f"{URL}/{cid}/paiement", json=corps)
+    assert echec.status_code == 502
+    assert echec.json()["detail"]["code"] == "paiement_echoue"
+
+    relance = client.post(f"{URL}/{cid}/paiement", json=corps)
+    assert relance.status_code == 200
+    assert relance.json()["statut_paiement"] == "SIMULE_PAYE"

@@ -91,6 +91,14 @@ export const candidature = {
   'pay.refApres': ' vous sera donnée. Elle ne correspond à aucun vrai paiement.',
   'pay.bouton': 'Simuler le paiement de {montant} HTG',
   'pay.enCours': 'Simulation en cours…',
+  'pay.numerosTest':
+    'Numéros de test : un numéro finissant par 0000 simule un refus (solde insuffisant), par 9999 une panne de l’opérateur ; tout autre numéro simule un paiement accepté.',
+  'pay.refuseTitre': 'Paiement refusé',
+  'pay.refuse':
+    'L’opérateur a refusé le paiement : solde insuffisant (simulation). Rien n’a été prélevé. Essayez un autre numéro ou l’autre service.',
+  'pay.echecTitre': 'Le paiement n’a pas abouti',
+  'pay.echec': 'L’opérateur n’a pas répondu (simulation). Aucun montant n’a été prélevé : vous pouvez relancer le paiement.',
+  'pay.relancer': 'Relancer le paiement',
 
   'pieces.payeAvant': 'Paiement simulé enregistré :',
   'pieces.payeApres': '(aucun argent réel prélevé).',
