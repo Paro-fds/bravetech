@@ -12,6 +12,11 @@ export const cursus = {
   'cursus.dateLimite': 'Date limite de dépôt',
   'cursus.rentree': 'Rentrée',
   'cursus.aConfirmer': 'À confirmer par la Faculté',
+  'cursus.datesCles': 'Dates clés',
+  'cursus.ouverture': 'Ouverture des candidatures',
+  'cursus.concours': 'Concours d’admission',
+  'cursus.resultats': 'Publication des résultats',
+  'cursus.fermees': 'Les candidatures sont fermées pour le moment.',
   'cursus.acces': 'Accès',
   'cursus.apresMpc': 'Après le MPC',
 

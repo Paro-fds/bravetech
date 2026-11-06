@@ -6,7 +6,7 @@ fichiers JSON dans `cursus/` et ne nécessitent pas de tables SQL (cf. JsonCursu
 Les pièces requises d'admission sont définies par le domaine (`pieces_admission`).
 
 Modèles introduits : `candidats` et `candidatures` (US-005), `documents_soumis` (US-007) ; `candidatures.soumise_le` (US-008).
-`utilisateurs` (US-011).
+`utilisateurs` (US-011). `calendriers_admission` (US-028).
 """
 
 from sqlalchemy import (
@@ -106,3 +106,21 @@ class DecisionDocumentModel(Base):
     motif = Column(Text, nullable=True)
     decide_par = Column(String(36), ForeignKey("utilisateurs.id"), nullable=False)
     decide_le = Column(DateTime(timezone=True), nullable=False)
+
+
+class CalendrierAdmissionModel(Base):
+    """Table `calendriers_admission` (US-028) : versions successives du calendrier, en ajout seul.
+
+    La version de plus grand `numero` est en vigueur ; les précédentes gardent qui a changé quelles dates, et quand.
+    """
+    __tablename__ = "calendriers_admission"
+
+    numero = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(String(36), nullable=False, unique=True)
+    date_ouverture = Column(Date, nullable=False)
+    date_limite = Column(Date, nullable=False)
+    date_concours = Column(Date, nullable=True)
+    date_resultats = Column(Date, nullable=True)
+    date_rentree = Column(Date, nullable=True)
+    modifie_par = Column(String(36), ForeignKey("utilisateurs.id"), nullable=False)
+    modifie_le = Column(DateTime(timezone=True), nullable=False)

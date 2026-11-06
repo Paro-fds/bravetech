@@ -111,3 +111,11 @@ class JetonInvalide(ErreurMetier):
 
 class AccesInterdit(ErreurMetier):
     """Utilisateur authentifié mais dont le rôle ne permet pas l'action."""
+
+
+class CandidaturesFermees(ErreurMetier):
+    """Hors de la période de candidature fixée par l'administration (US-028) : avant l'ouverture ou après la date limite."""
+
+    def __init__(self, calendrier) -> None:
+        super().__init__("Les candidatures sont fermées.")
+        self.calendrier = calendrier
