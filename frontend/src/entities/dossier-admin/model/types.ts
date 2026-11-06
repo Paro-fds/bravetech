@@ -97,6 +97,15 @@ export const BADGES_DOSSIER: Record<StatutDossier, { libelle: string; classe: st
 
 export const TAILLE_PAGE = 20;
 
+/** SMS que le portail aurait envoyé (US-016) : simulation, aucun SMS réel ne part. */
+export interface SmsSimule {
+  destinataire: string;
+  texte: string;
+  reference_dossier: string | null;
+  /** Horodatage ISO-8601 UTC. */
+  envoye_le: string;
+}
+
 /** Longueur minimale du motif d'un refus (alignée sur le serveur). */
 export const MOTIF_MIN = 5;
 export const MOTIF_MAX = 500;

@@ -12,6 +12,7 @@ import { AdminLoginPage } from '../pages/admin-login';
 import { AdminCandidaturesPage } from '../pages/admin-candidatures';
 import { AdminDossierPage } from '../pages/admin-dossier';
 import { AdminCalendrierPage } from '../pages/admin-calendrier';
+import { AdminSmsPage } from '../pages/admin-sms';
 import { AdminUtilisateursPage } from '../pages/admin-utilisateurs';
 
 export const router = createBrowserRouter([
@@ -58,6 +59,8 @@ export const router = createBrowserRouter([
       { path: 'candidatures/:reference', element: <AdminDossierPage /> },
       // Calendrier d'admission réglable sans toucher au code (US-028)
       { path: 'calendrier', element: <AdminCalendrierPage /> },
+      // SMS simulés envoyés aux candidats (US-016)
+      { path: 'sms', element: <AdminSmsPage /> },
       // Gestion des accès du personnel (administrateurs et agents du secrétariat)
       { path: 'utilisateurs', element: <AdminUtilisateursPage /> },
     ],

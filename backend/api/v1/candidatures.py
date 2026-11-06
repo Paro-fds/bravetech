@@ -28,7 +28,10 @@ from backend.bll.definir_deplacement_physique import DefinirDeplacementPhysiqueU
 from backend.bll.enregistrer_informations import EnregistrerInformationsUseCase, MettreAJourInformationsUseCase
 from backend.bll.obtenir_brouillon import ObtenirBrouillonUseCase
 from backend.bll.simuler_paiement import SimulerPaiementUseCase
+from backend.bll.notifier_sms import NotifierSmsUseCase
 from backend.bll.soumettre_candidature import NotifierConfirmationUseCase, SoumettreCandidatureUseCase
+from backend.dal.database import SessionLocal
+from backend.dal.sms_adapters import SmsSimuleSql
 from backend.bll.televerser_document import (
     ListerPiecesDossierUseCase,
     PieceDossier,
@@ -304,6 +307,11 @@ def get_email_sender() -> IEmailSender:
     return creer_email_sender()
 
 
+def get_sms_simule() -> SmsSimuleSql:
+    """SMS simulés (US-016) : envoi et journal, dans leur propre session (les envois partent en tâche de fond)."""
+    return SmsSimuleSql(SessionLocal)
+
+
 def get_url_base_portail() -> str:
     """URL publique du portail, utilisée pour le lien de suivi des emails (`APP_BASE_URL`)."""
     return os.getenv("APP_BASE_URL", "http://localhost:5173")
@@ -321,6 +329,7 @@ def soumettre_candidature(
     repo: ICandidatureRepository = Depends(get_candidature_repository),
     documents: IDocumentRepository = Depends(get_document_repository),
     email_sender: IEmailSender = Depends(get_email_sender),
+    sms: SmsSimuleSql = Depends(get_sms_simule),
     url_base: str = Depends(get_url_base_portail),
 ):
     """Vérifie que le dossier est complet, attribue la référence et le verrouille.
@@ -336,6 +345,7 @@ def soumettre_candidature(
         raise _vers_http(erreur)
     if vient_d_etre_soumise:
         taches.add_task(NotifierConfirmationUseCase(email_sender, url_base).executer, candidat, candidature)
+        taches.add_task(NotifierSmsUseCase(sms, url_base).confirmation, candidat, candidature)
     return _reponse(candidat, candidature)
 
 

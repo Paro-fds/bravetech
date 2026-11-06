@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate, NavLink, Outlet, useLocation } from 'react-router-dom';
-import { CalendarDays, FileText, LogOut, Users } from 'lucide-react';
+import { CalendarDays, FileText, LogOut, MessageSquare, Users } from 'lucide-react';
 import { sessionValide, useSessionStore } from '../../entities/session';
 import { ThemeToggle } from '../../shared/theme';
 
@@ -39,7 +39,7 @@ export const AdminLayout: React.FC = () => {
           to="/admin"
           end={false}
           className={({ isActive }) =>
-            lienMenu(isActive && !pathname.startsWith('/admin/calendrier') && !pathname.startsWith('/admin/utilisateurs'))
+            lienMenu(isActive && !['/admin/calendrier', '/admin/utilisateurs', '/admin/sms'].some((p) => pathname.startsWith(p)))
           }
         >
           <FileText className="w-5 h-5" aria-hidden="true" />
@@ -48,6 +48,10 @@ export const AdminLayout: React.FC = () => {
         <NavLink to="/admin/calendrier" className={({ isActive }) => lienMenu(isActive)}>
           <CalendarDays className="w-5 h-5" aria-hidden="true" />
           Calendrier
+        </NavLink>
+        <NavLink to="/admin/sms" className={({ isActive }) => lienMenu(isActive)}>
+          <MessageSquare className="w-5 h-5" aria-hidden="true" />
+          SMS (simulation)
         </NavLink>
         {session.role === 'admin' && (
           <NavLink to="/admin/utilisateurs" className={({ isActive }) => lienMenu(isActive)}>

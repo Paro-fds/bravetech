@@ -1,6 +1,6 @@
 import { apiClient, ApiError, urlApi } from '../../../shared/api';
 import { enteteAuth, useSessionStore, type Session } from '../../session/@x/dossier-admin';
-import { TAILLE_PAGE, type DossierAdmin, type FiltresDossiers, type PageDossiers, type PieceAdmin } from '../model/types';
+import { TAILLE_PAGE, type DossierAdmin, type FiltresDossiers, type PageDossiers, type PieceAdmin, type SmsSimule } from '../model/types';
 
 const BASE = '/api/v1/admin';
 
@@ -61,4 +61,8 @@ export const dossierAdminApi = {
     if (!reponse.ok) return surSessionRefusee(new ApiError(reponse.status, null, `Erreur API (${reponse.status})`));
     return reponse.blob();
   },
+
+  /** SMS simulés (US-016), du plus récent au plus ancien. */
+  listerSms: (session: Session): Promise<SmsSimule[]> =>
+    apiClient<SmsSimule[]>(`${BASE}/sms`, { headers: enteteAuth(session) }).catch(surSessionRefusee),
 };

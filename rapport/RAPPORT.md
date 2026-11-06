@@ -1,6 +1,6 @@
 ---
 created: 2026-11-06T04:30:00Z
-updated: 2026-11-06T14:13:35Z
+updated: 2026-11-06T18:35:56Z
 ---
 
 # Rapport — Projet 2 · Équipe 2 Bravetech · M2 FDS Portail
@@ -50,7 +50,7 @@ Trois Epics séquentiels pour le MVP : `epic-001` socle, `epic-002` candidature 
 | Must — Emails (confirmation, validation, rejet avec lien) | ✅ codés le 01/11 ; **activés en production le 05/11, réception confirmée le 06/11** | ws-func-05 |
 | Must — Remplacer un document rejeté | ✅ | ws-func-03 |
 | Must — Simulation MonCash / NatCash, **tous les cas** | ✅ réussi le 01/11 ; refusé, échoué, relancé le 05/11 | ws-func-02 §2 |
-| Should — Notifications SMS | ❌ **non livré** (voir ci-dessous) | US-016 |
+| Should — Notifications SMS | ✅ **simulé**, comme le paiement (voir ci-dessous) | US-016, ws-func-05 §3 |
 | Could — Export CSV/PDF filtré | ✅ | ws-func-04 §2 |
 | Could — Mode sombre | ✅ | US-017 |
 | Bonus — déploiement sur les serveurs de la FDS | ✅ déploiement continu avec retour arrière automatique | ws-tech-01 §5.3 |
@@ -58,7 +58,7 @@ Trois Epics séquentiels pour le MVP : `epic-001` socle, `epic-002` candidature 
 **Ajouté en cours de route, hors plan initial :** l'Epic 4 (Histoire et Contact, interface en kreyòl, refonte visuelle d'après les maquettes, export, mode sombre, calendrier d'admission) et l'Epic 5 (Alembic, adresse réelle du visiteur derrière les proxys, CI frontend, déploiement continu). L'export, d'abord Won't Have, a été rétabli quand nous avons relu le contrat, qui le place en Could.
 
 **Coupé ou non livré, et pourquoi :**
-- **SMS (US-016, Should Have).** *[À trancher par l'équipe avant le dépôt : soit construit, soit justifié ici. Arguments vrais à reprendre : aucun fournisseur SMS haïtien avec API d'essai n'a été obtenu ; l'email couvre déjà les trois notifications exigées ; le port d'envoi existe pour les emails et un port `ISmsSender` suivrait le même modèle.]*
+- **SMS réels (US-016, Should Have) : simulés, pas envoyés.** Aucun fournisseur SMS (Twilio, opérateur haïtien) n'a pu être obtenu avant le dépôt. Nous avons appliqué au SMS la règle que le contrat impose au paiement : le portail construit le SMS (≤ 160 caractères) aux mêmes moments que l'email, l'enregistre, et le personnel le lit dans « SMS (simulation) ». Un vrai fournisseur se branche derrière le port `ISmsSender` sans toucher au métier. Ce qui manque : l'adaptateur réel, et la désactivation des SMS par le candidat (critère optionnel).
 - **Sauvegardes hors site (US-027).** Hors contrat, mais nécessaires à l'exploitation. Aujourd'hui, une copie de la base est faite avant chaque déploiement, sur la VM elle-même ; elle ne protège pas d'une perte de la VM. C'est écrit dans `NFR.md`.
 - **Cloudinary, Vercel, Railway.** Abandonnés : fichiers sur un volume de la VM (ADR-007), tout le portail sur la VM de la FDS (ADR-006, ADR-009).
 
