@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T13:09:00Z
-updated: 2026-11-06T18:35:56Z
+updated: 2026-11-06T18:36:28Z
 ---
 
 # EPIC_EXECUTION.md — FDS Portail
@@ -16,7 +16,6 @@ updated: 2026-11-06T18:35:56Z
 - **`US-016` — Notifications SMS : construite en simulation** (comme le paiement, faute de fournisseur SMS), en attente de validation par le Project Owner. Tout le périmètre contractuel (Must, Should, Could) est livré.
 - **Prochaine story à construire : `US-027` — sauvegardes hors site** (Epic 5) : hors contrat, mais aucune copie de la base ni des pièces n'existe hors de la VM (`NFR.md`, Récupération après sinistre).
 - **Ajoutée le 2026-11-05 à la demande du Project Owner : `US-028` — calendrier d'admission réglable par l'administration** (Epic 4) : fusionnée, déployée (PR #60, #63) et validée par le Project Owner le 2026-11-06.
-- **Ensuite :** `US-027` — sauvegardes hors site (Epic 5, hors périmètre contractuel, nécessaire à l'exploitation).
 - **Epics 2 et 3 clôturés le 2026-11-06** (closeouts, specs WS-02 à WS-05). Issues et Milestones GitHub fermés le 2026-11-06.
 - **Emails** : en production, réception confirmée le 2026-11-06 (`reviews/03`, F2).
 
