@@ -1,6 +1,6 @@
 ---
 created: 2026-11-06T04:30:00Z
-updated: 2026-11-06T18:35:56Z
+updated: 2026-11-07T00:50:31Z
 ---
 
 # Rapport — Projet 2 · Équipe 2 Bravetech · M2 FDS Portail
@@ -25,7 +25,7 @@ updated: 2026-11-06T18:35:56Z
 | Specs par Workstream | `functional-specs/ws-func-01` à `05`, `technical-specs/ws-tech-01` à `05` |
 | Reviews / Learnings | [`reviews/`](../project-docs/reviews/) (01 à 04) · [`learnings/`](../project-docs/learnings/) (04 à 06 ; 01 à 03 viennent du kit) |
 | Board | GitHub Projects « Bavetech_Project » : https://github.com/users/Paro-fds/projects/2 · Milestones « Epic 1 » à « Epic 5 » |
-| Pull Requests | https://github.com/Paro-fds/bravetech/pulls?q=is%3Apr — 30+ PR fusionnées, dont #48 (Alembic), #52 (déploiement continu), #53/#54 (test de retour arrière), #55 (steiger, CRAP), #60 (calendrier) |
+| Pull Requests | https://github.com/Paro-fds/bravetech/pulls?q=is%3Apr — 39 PR fusionnées, dont #48 (Alembic), #52 (déploiement continu), #53/#54 (test de retour arrière), #55 (steiger, CRAP), #60 (calendrier) |
 | CI | `.github/workflows/ci.yml` (backend, frontend, steiger, CRAP) et `deploy.yml` (déploiement) |
 
 **Comptes de démonstration :** fournis séparément (jamais dans le dépôt, qui est public).
@@ -55,7 +55,7 @@ Trois Epics séquentiels pour le MVP : `epic-001` socle, `epic-002` candidature 
 | Could — Mode sombre | ✅ | US-017 |
 | Bonus — déploiement sur les serveurs de la FDS | ✅ déploiement continu avec retour arrière automatique | ws-tech-01 §5.3 |
 
-**Ajouté en cours de route, hors plan initial :** l'Epic 4 (Histoire et Contact, interface en kreyòl, refonte visuelle d'après les maquettes, export, mode sombre, calendrier d'admission) et l'Epic 5 (Alembic, adresse réelle du visiteur derrière les proxys, CI frontend, déploiement continu). L'export, d'abord Won't Have, a été rétabli quand nous avons relu le contrat, qui le place en Could.
+**Ajouté en cours de route, hors plan initial :** l'Epic 4 (Histoire et Contact, interface en kreyòl, refonte visuelle d'après les maquettes, export, mode sombre, calendrier d'admission, gestion des accès du personnel depuis l'espace admin — US-029) et l'Epic 5 (Alembic, adresse réelle du visiteur derrière les proxys, CI frontend, déploiement continu). L'export, d'abord Won't Have, a été rétabli quand nous avons relu le contrat, qui le place en Could.
 
 **Coupé ou non livré, et pourquoi :**
 - **SMS réels (US-016, Should Have) : simulés, pas envoyés.** Aucun fournisseur SMS (Twilio, opérateur haïtien) n'a pu être obtenu avant le dépôt. Nous avons appliqué au SMS la règle que le contrat impose au paiement : le portail construit le SMS (≤ 160 caractères) aux mêmes moments que l'email, l'enregistre, et le personnel le lit dans « SMS (simulation) ». Un vrai fournisseur se branche derrière le port `ISmsSender` sans toucher au métier. Ce qui manque : l'adaptateur réel, et la désactivation des SMS par le candidat (critère optionnel).
@@ -78,7 +78,7 @@ Trois Epics séquentiels pour le MVP : `epic-001` socle, `epic-002` candidature 
 
 **Ce qui a été abandonné ou adapté :**
 - **Le Refine a été fait par Epic, pas par story.** Chaque Epic 2 à 5 a son `epic-NNN-refinement.md` (constats numérotés, questions, ordre de construction). En revanche, les stories des Epics 2 et 3 ont souvent été écrites et construites le même jour, sans Refine propre. Celles de l'Epic 5 l'ont été (constats `E5-1` à `E5-7` vérifiés sur la VM avant le code).
-- **La clôture des Epics** : l'Epic 1 a été fermé avec ses huit étapes le 26 septembre. **Les Epics 2 et 3 n'ont été fermés que le 6 novembre**, plusieurs jours après la livraison de leurs stories : closeouts et specs WS-02 à WS-05 écrits à ce moment-là, à partir des notes de réalisation. Les issues et les Milestones n'ont été fermés que le même jour : jusque-là, toutes les issues des stories livrées étaient restées ouvertes sur le board. **Les Epics 4 et 5 sont ouverts** au dépôt (US-016 et US-027).
+- **La clôture des Epics** : l'Epic 1 a été fermé avec ses huit étapes le 26 septembre. **Les Epics 2 et 3 n'ont été fermés que le 6 novembre**, plusieurs jours après la livraison de leurs stories : closeouts et specs WS-02 à WS-05 écrits à ce moment-là, à partir des notes de réalisation. Les issues et les Milestones n'ont été fermés que le même jour : jusque-là, toutes les issues des stories livrées étaient restées ouvertes sur le board. **Les Epics 4 et 5 sont ouverts** au dépôt : US-016 et US-029 attendent la validation en production, US-027 n'est pas construite.
 - **Les reviews** : les quatre ont été écrites le jour de la découverte (01 le 1er novembre ; 02, 03, 04 les 5 et 6 novembre). Il n'y en a pas pour octobre, parce qu'il ne s'est rien passé en octobre.
 - **Le statut des stories** n'a été mis à jour qu'en fin de projet (le 5 novembre, 21 stories passées en Done d'un coup, après validation par le Project Owner).
 
@@ -116,20 +116,28 @@ Quatre reviews, chacune écrite le jour de la découverte. Les trois plus import
 
 ## 6. Le travail avec l'agent
 
-> **À rédiger par l'équipe, à la première personne.** Cette section évalue votre pilotage de l'agent : ce que vous lui avez demandé, où il s'est trompé, comment vous l'avez recadré, et ce qui a fini dans `AGENTS.md`. Matériau vérifiable à reprendre (ou à remplacer par vos propres exemples) :
+**Comment nous l'avons utilisé.** Nous avons travaillé avec Claude Code (Opus) dans VS Code, sur tout le cycle : rédaction des stories et des refinements avec les skills du kit (`user-story`, `epic`, `document-learning`), écriture du code story par story, une branche et une PR à chaque fois, puis mise à jour des specs, des reviews et des learnings. L'agent n'a jamais eu la main sur ce qui engage l'équipe : nous validions chaque PR avant fusion, et nous posions nous-mêmes les secrets sur la VM.
 
-**Où l'agent s'est trompé, et le recadrage :**
-- Il a écrit des **adresses IP réelles** relevées dans les journaux de la VM dans des tests destinés à un dépôt public ; refusé avant la publication. → Adresses fictives (RFC 5737), et règle « Pas d'adresse réelle » dans la définition de fini (`PROJECT_WORKFLOW.md`).
-- Il a laissé un **mot de passe par défaut** (`fds_secret_pass`) dans `docker-compose.yml` ; signalé par GitGuardian. → `POSTGRES_PASSWORD` obligatoire, sans défaut ; règle « Pas de secret en clair, pas même une valeur par défaut ».
-- Il a cru que **les documents suivaient les décisions** et que **les stories cochées couvraient le contrat** (reviews 03 et 04).
-- Il a déclaré un domaine d'envoi « vérifié » sans l'avoir vu vérifié ; corrigé dans la spec avant la fusion.
-- Un formateur de code lancé sans être demandé a réécrit tout un fichier ; changement annulé et refait à la main.
+**Où l'agent s'est trompé, et comment nous l'avons recadré :**
+- **Des adresses IP réelles dans un dépôt public.** Il a copié dans des tests des adresses relevées dans les journaux de la VM. Nous l'avons refusé avant la publication. → Adresses fictives (RFC 5737), et règle « Pas d'adresse réelle » dans la définition de fini (`PROJECT_WORKFLOW.md`).
+- **Un mot de passe par défaut** (`fds_secret_pass`) laissé dans `docker-compose.yml`, signalé par GitGuardian. → `POSTGRES_PASSWORD` obligatoire, sans valeur par défaut ; règle « Pas de secret en clair, pas même une valeur par défaut ».
+- **Croire que les documents suivaient les décisions**, et que les stories cochées couvraient le contrat. Il ne l'a pas vu seul : c'est notre relecture du contrat qui l'a révélé (reviews 03 et 04).
+- **Affirmer sans avoir vérifié.** Il a écrit que le domaine d'envoi Resend était « vérifié » avant que nous l'ayons vu vérifié, et il a annoncé 25 issues à fermer alors que 22 seulement étaient ouvertes. Nous avons fait corriger la spec avant la fusion, et nous avons pris l'habitude de lui demander la commande qui prouve ce qu'il affirme.
+- **Une action non demandée.** Un formateur de code lancé de sa propre initiative a réécrit tout un fichier. Le changement a été annulé et refait à la main.
 
-**Règles de pilotage données à l'agent (dans `CLAUDE.md` et la conversation) :** demander avant d'ouvrir ou de fusionner une PR ; ne jamais fermer une issue ; ne jamais contourner la protection de `master` ; ne jamais manipuler de clé ou de mot de passe dans la conversation (les secrets vont dans le `.env` de la VM, posés par l'équipe) ; seuls les membres de l'équipe changent le statut d'une story.
+**Les règles que nous lui avons imposées** (dans `CLAUDE.md` et dans la conversation) :
+- demander avant d'ouvrir ou de fusionner une PR ;
+- ne fermer une issue ou un Milestone qu'avec notre accord explicite ;
+- ne jamais contourner la protection de `master` (pas de `--admin`) ;
+- ne jamais manipuler de clé ou de mot de passe dans la conversation : les secrets vont dans le `.env` de la VM, et c'est nous qui les posons ;
+- seuls les membres de l'équipe changent le statut d'une story.
 
-**Ce qui est dans `AGENTS.md` à cause de l'agent :** *[à compléter : par exemple la carte des dossiers et les « Services » corrigés le 6 novembre, parce qu'un agent neuf aurait cherché un adaptateur Cloudinary qui n'existe pas (review 04) ; le fait critique 7 réécrit pour décrire la protection par routeur réellement en place.]*
+**Ce qui est dans `AGENTS.md` à cause de l'agent.**
+- **La carte des dossiers et la ligne « Services », corrigées le 6 novembre :** un agent neuf aurait cherché un adaptateur Cloudinary qui n'existe pas (review 04).
+- **Le fait critique 7, réécrit pour décrire la protection réellement en place :** `get_current_admin` posé sur le routeur admin, dont toute nouvelle route hérite.
+- **Le fait critique 9 (admission unique au MPC) :** il empêche un agent de réintroduire un champ « cursus » dans la candidature.
 
----
+Notre constat : l'agent écrit vite du code correct et testé. Il ne sait pas ce que la Faculté veut, ni ce qui est vrai en production. Ces deux vérifications sont restées notre travail.
 
 ## 7. Les preuves
 
@@ -150,26 +158,34 @@ Quatre reviews, chacune écrite le jour de la découverte. Les trois plus import
 
 ## 8. Learnings
 
-> **À rédiger par l'équipe** : ce que vous referiez, ce que vous ne referiez pas, ce qui changerait lundi prochain sur un autre sujet. Les trois apprentissages écrits dans le dépôt peuvent servir de point de départ :
+**Ce que nous referions :**
+- **Une branche, une PR et des notes de réalisation par story**, avec « vérifié » et « non vérifié ». Ces notes nous ont permis d'écrire les specs et les closeouts après coup sans rien inventer.
+- **Protéger `master` par des contrôles obligatoires**, et mettre le retour arrière automatique à l'épreuve avec une version volontairement cassée (PR #53).
+- **Des ports dans le domaine** pour chaque service externe (stockage, email, SMS). Simuler le SMS comme le paiement n'a demandé aucun changement du métier, et un vrai fournisseur pourra s'ajouter de la même façon.
 
-- [`04`](../project-docs/learnings/04-tester-sur-le-moteur-de-production.md) — Une CI verte ne prouve rien sur un moteur qu'elle ne fait pas tourner : figer les dépendances, nommer le pilote, mettre en production tôt.
-- [`05`](../project-docs/learnings/05-adopter-une-base-existante.md) — Adopter une base existante dans un outil de migrations en la comparant à la révision d'origine.
-- [`06`](../project-docs/learnings/06-propager-une-decision-par-recherche.md) — Une décision qui en remplace une autre se propage par une recherche ; les critères se relisent contre le contrat.
+**Ce que nous ne referions pas :**
+- **Laisser un mois sans commit** (octobre), puis tout écrire en cinq jours.
+- **Déployer la semaine 6.** La VM a révélé en une journée des problèmes qu'aucun test local ne montrait : dépendances sans borne haute, base créée sans Alembic, adresse du visiteur masquée par les proxys (learning [`04`](../project-docs/learnings/04-tester-sur-le-moteur-de-production.md), Epic 5).
+- **Écrire les critères d'acceptation depuis notre plan** sans les relire contre le contrat : le paiement ne gérait pas l'échec, et les emails étaient désactivés en production (review 03).
 
-*Pistes vraies à développer : déployer dès la semaine 2 plutôt que la semaine 6 ; ne pas laisser un mois sans commit ; lancer les contrôles du cours (steiger, CRAP) dès le premier jour.*
+**Ce qui changerait lundi prochain, sur un autre sujet :**
+- Mettre en production dès la semaine 2, même une page vide, et faire tourner la CI sur le même moteur de base que la production.
+- Lancer dès le premier jour les contrôles du cours (steiger, CRAP) plutôt qu'à la fin : 53 violations FSD étaient cachées (review 02).
+- Quand une décision en remplace une autre, chercher l'ancien nom dans tout le dépôt le jour même (learning [`06`](../project-docs/learnings/06-propager-une-decision-par-recherche.md)).
+- Faire valider le modèle métier par la Faculté avant d'écrire la première story : l'admission unique a coûté une story de réalignement et six documents à corriger (review 01).
 
----
+Les apprentissages détaillés sont dans le dépôt : [`04`](../project-docs/learnings/04-tester-sur-le-moteur-de-production.md) (tester sur le moteur de production), [`05`](../project-docs/learnings/05-adopter-une-base-existante.md) (adopter une base existante dans un outil de migrations), [`06`](../project-docs/learnings/06-propager-une-decision-par-recherche.md) (propager une décision par une recherche).
 
 ## 9. Contributions individuelles
 
-> **À remplir par l'équipe**, nominativement. Cette table prépare les questions individuelles de soutenance.
+Les stories sont celles assignées à chaque membre sur le board GitHub Projects.
 
-| Membre | Ce qu'il a fait (stories, documents, déploiement, revues) | Ce qu'il peut expliquer en soutenance |
+| Membre | Stories | Ce qu'il peut expliquer en soutenance |
 |---|---|---|
-| VAILLANT Valcin *(capitaine)* | | |
-| DORFILUS Skin-Paolatchi | | |
-| GUERRIER Joas | | |
-| LOUIS Widmaken | | |
+| VAILLANT Valcin *(capitaine)* | US-007 (téléversement sécurisé des pièces), US-011 (authentification JWT et rôles), US-012 (tableau de bord et revue des dossiers), US-015 (export CSV et PDF filtré) | La validation des fichiers côté serveur (magic bytes, extension, 5 Mo) ; le JWT HS256 et bcrypt, les rôles `admin` et `agent` ; les filtres et l'export |
+| DORFILUS Skin-Paolatchi | US-001 à US-004 (cursus, fiche, tests d'architecture en CI, premier déploiement), US-018 à US-022 (admission unique, Histoire et Contact, kreyòl, refonte visuelle), US-023 à US-027 (Alembic, adresse réelle derrière les proxys, CI frontend, déploiement continu, sauvegardes), US-028 (calendrier d'admission), US-029 (gestion des accès). **Hors dépôt :** obtention de la VM Proxmox et de l'accès UEH (sous-domaine, proxy Apache) ; DNS Namecheap et domaine d'envoi Resend ; maquettes de la refonte visuelle. **Documents :** cahier des charges, documents fondateurs, specs, reviews, learnings, rapport, avec l'agent | La Clean Architecture et `test_architecture.py` ; le déploiement GHCR, SSH restreint et retour arrière (ADR-009) ; l'adoption d'une base existante par Alembic ; le calendrier en heure d'Haïti ; le pilotage de l'agent |
+| GUERRIER Joas | US-005 (formulaire et `deplacement_physique`), US-006 (simulation MonCash / NatCash), US-008 (finalisation et confirmation), US-014 (email après décision), US-016 (SMS simulés) | Les quatre cas du paiement simulé ; la référence `CAN-2026-X` ; l'email non bloquant (tâche de fond) ; les SMS de 160 caractères au plus |
+| LOUIS Widmaken | US-009 (suivi par référence), US-010 (remplacement d'une pièce rejetée), US-013 (validation ou rejet audité), US-017 (mode sombre) | Le suivi sans compte ; le remplacement par upsert sur `(candidat_id, document_requis_id)` ; l'audit `valide_par` et `date_validation` ; le thème sombre |
 
 ---
 
