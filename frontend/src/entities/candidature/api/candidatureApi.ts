@@ -64,11 +64,14 @@ export const candidatureApi = {
     }),
 
   /**
-   * Suivi public d'un dossier soumis. Rejette avec une `ApiError` 404 si la référence est inconnue,
+   * Suivi public d'un dossier soumis, protégé par la date de naissance du candidat (AAAA-MM-JJ).
+   * Rejette avec une `ApiError` 404 si la référence ou la date de naissance ne concordent pas,
    * 429 si trop de recherches ont été faites en une minute.
    */
-  obtenirSuivi: (reference: string): Promise<SuiviDossier> =>
-    apiClient<SuiviDossier>(`${BASE}/${encodeURIComponent(reference)}/statut`),
+  obtenirSuivi: (reference: string, dateNaissance: string): Promise<SuiviDossier> => {
+    const params = new URLSearchParams({ date_naissance: dateNaissance });
+    return apiClient<SuiviDossier>(`${BASE}/${encodeURIComponent(reference)}/statut?${params}`);
+  },
 
   /**
    * Remplace une pièce REFUSÉE. Le candidat s'identifie par la référence du dossier et l'email de sa candidature.

@@ -1,9 +1,12 @@
 /** Kreyòl ayisyen — brouillon sans relecture, à faire valider par la Faculté (US-020). */
 export const suivi = {
-  'suivi.intro': 'Antre referans ou te resevwa nan fen kandidati ou a ak nan imèl ou.',
+  'suivi.intro': 'Antre referans ou te resevwa nan fen kandidati ou a ansanm ak dat nesans ou.',
   'suivi.refLabel': 'Referans dosye a',
   'suivi.formatAide': 'Fòma: CAN-2026-0000',
   'suivi.formatErreur': 'Referans sa a pa gen bon fòma. Egzanp: CAN-2026-0089.',
+  'suivi.naissanceLabel': 'Dat nesans kandida a',
+  'suivi.naissanceAide': 'Nou mande l pou anpeche yon lòt moun gade dosye ou.',
+  'suivi.naissanceErreur': 'Antre dat nesans ou.',
   'suivi.voir': 'Gade dosye mwen',
   'suivi.perdueTitre': 'Ou pèdi referans ou?',
   'suivi.perdueTexte': 'Ekri nou ak non ou ak imèl kandidati ou. N ap voye l ba ou ankò.',
@@ -39,7 +42,7 @@ export const suivi = {
   'suivi.remplacer': 'Ranplase dokiman sa a',
   'suivi.note': 'Paj sa a toujou montre dènye eta dosye ou.',
   'suivi.recherche': 'Ap chèche dosye ou…',
-  'suivi.introuvable': 'Nou pa jwenn okenn dosye pou referans sa a. Verifye chif yo, oswa kontakte nou.',
+  'suivi.introuvable': 'Okenn dosye pa koresponn ak referans sa a ak dat nesans sa a. Verifye sa ou ekri a oswa kontakte nou.',
   'suivi.limite': 'Ou fè twòp rechèch twò vit. Tann yon minit epi eseye ankò.',
   'suivi.reseau': 'Nou pa ka rantre an kontak ak sèvè a. Verifye koneksyon ou epi eseye ankò.',
 

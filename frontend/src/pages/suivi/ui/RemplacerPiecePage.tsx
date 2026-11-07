@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, Navigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Check, FileText, TriangleAlert, Upload, X } from 'lucide-react';
-import { candidatureApi, extraireErreursChamps, type PieceSuivi } from '../../../entities/candidature';
+import { candidatureApi, extraireErreursChamps, lireNaissanceSuivi, type PieceSuivi } from '../../../entities/candidature';
 import { attributAccept, formaterTaille, validerFichierLocal } from '../../../features/candidature-form';
 import { ApiError } from '../../../shared/api';
 import { traduireMaintenant as tr, useNomPiece, useT } from '../../../shared/i18n';
@@ -25,6 +25,7 @@ export const RemplacerPiecePage: React.FC = () => {
   const t = useT();
   const nomPiece = useNomPiece();
   const { reference = '', piece: pieceId = '' } = useParams();
+  const dateNaissance = lireNaissanceSuivi(reference);
   const [chargement, setChargement] = useState<Chargement | null>(null);
   const [email, setEmail] = useState('');
   const [fichier, setFichier] = useState<File | null>(null);
@@ -33,9 +34,10 @@ export const RemplacerPiecePage: React.FC = () => {
   const [envoye, setEnvoye] = useState(false);
 
   useEffect(() => {
+    if (!dateNaissance) return;
     let annule = false;
     candidatureApi
-      .obtenirSuivi(reference)
+      .obtenirSuivi(reference, dateNaissance)
       .then((suivi) => {
         if (annule) return;
         const piece = suivi.pieces.find((p) => p.id === pieceId);
@@ -47,7 +49,10 @@ export const RemplacerPiecePage: React.FC = () => {
     return () => {
       annule = true;
     };
-  }, [reference, pieceId]);
+  }, [reference, pieceId, dateNaissance]);
+
+  // Accès direct sans date de naissance vérifiée dans l'onglet : on passe d'abord par la vérification du suivi
+  if (!dateNaissance) return <Navigate to={`/suivi/${encodeURIComponent(reference)}`} replace />;
 
   const retour = (
     <Link to={`/suivi/${reference}`} className="flex items-center gap-2 min-h-11 font-semibold text-fds-accent">

@@ -8,7 +8,7 @@ from backend.dal.models import DecisionDocumentModel, DocumentSoumisModel
 from backend.main import app
 
 from tests.integration.test_admin_dossiers_api import LISTE, _environnement, _soumettre  # noqa: F401
-from tests.integration.test_candidatures_api import URL
+from tests.integration.test_candidatures_api import SAISIE, URL
 from tests.integration.test_decisions_api import _decider, _documents, _EnPanne, _Enregistreur, agent  # noqa: F401
 from tests.integration.test_documents_api import LES_CINQ, PHOTOS
 from tests.unit.bll.fakes_documents import EXE, JPG, PDF
@@ -56,7 +56,7 @@ def test_remplacement_repasse_en_attente_sans_doublon(client, dossier_refuse, se
     assert (dossier_uploads / nouvelle_cle).exists() and not (dossier_uploads / ancienne_cle).exists()
 
     # Le suivi public reflète le nouvel état immédiatement
-    suivi = client.get(f"{URL}/{ref}/statut").json()
+    suivi = client.get(f"{URL}/{ref}/statut", params={"date_naissance": SAISIE["date_naissance"]}).json()
     assert suivi["statut_global"] == "en_examen"
     piece = next(p for p in suivi["pieces"] if p["id"] == RELEVE)
     assert piece["statut"] == "en_attente" and piece["motif_rejet"] is None

@@ -109,4 +109,4 @@ def test_apres_la_date_limite_un_brouillon_ne_peut_plus_etre_soumis(client, admi
 def test_apres_la_date_limite_un_dossier_soumis_reste_consultable(client, admin):
     reference = _soumettre(client, "louismy@exemple.com")
     client.put(ADMIN, json=_periode(-20, -5), headers=admin)
-    assert client.get(f"{URL}/{reference}/statut").status_code == 200
+    assert client.get(f"{URL}/{reference}/statut", params={"date_naissance": SAISIE["date_naissance"]}).status_code == 200

@@ -6,7 +6,7 @@ import { INSTITUTION } from '../../../shared/config';
 import { useT } from '../../../shared/i18n';
 import { PhotoCampus } from '../../../shared/ui/PhotoCampus';
 
-const QUESTIONS = [1, 2, 3] as const;
+const QUESTIONS = [1, 2, 3, 4, 5, 6] as const;
 
 const CLASSE_CHAMP =
   'w-full min-h-12 rounded-lg border-[1.5px] bg-fds-surface px-3 text-base text-fds-ink focus:outline-none focus:ring-2 focus:ring-fds-accent';
@@ -139,7 +139,10 @@ export const ContactPage: React.FC = () => {
             </section>
           ) : (
             <form onSubmit={envoyer} noValidate className="rounded-xl border border-fds-line bg-fds-surface p-4 flex flex-col gap-3.5">
-              <h2 className="font-fds-serif text-xl font-bold text-fds-title">{t('contact.formTitre')}</h2>
+              <div className="flex flex-col gap-1">
+                <h2 className="font-fds-serif text-xl font-bold text-fds-title">{t('contact.formTitre')}</h2>
+                <p className="text-xs text-fds-mute">{t('contact.delai')}</p>
+              </div>
               <Champ id="contact-nom" libelle={t('contact.nom')} erreur={erreurs.nom}>
                 {(p) => <input {...p} autoComplete="name" value={nom} onChange={(e) => setNom(e.target.value)} />}
               </Champ>

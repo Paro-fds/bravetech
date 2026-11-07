@@ -7,6 +7,8 @@ import { RemplacerPiecePage, SuiviPage } from '../pages/suivi';
 import { SiteLayout } from './layout/SiteLayout';
 import { HistoryPage } from '../pages/histoire';
 import { ContactPage } from '../pages/contact';
+import { ConfidentialitePage } from '../pages/confidentialite';
+import { NotFoundPage } from '../pages/not-found';
 import { AdminLayout } from './layout/AdminLayout';
 import { AdminLoginPage } from '../pages/admin-login';
 import { AdminCandidaturesPage } from '../pages/admin-candidatures';
@@ -39,6 +41,10 @@ export const router = createBrowserRouter([
       // Suivi par référence : en-tête public et pied de page (maquettes « Suivi » et « Dossier », US-022)
       { path: '/suivi', element: <SuiviPage /> },
       { path: '/suivi/:reference', element: <SuiviPage /> },
+      // Mentions légales, confidentialité et avertissement anti-fraude
+      { path: '/confidentialite', element: <ConfidentialitePage /> },
+      // Toute adresse publique inconnue affiche une page 404 explicite
+      { path: '*', element: <NotFoundPage /> },
     ],
   },
   {

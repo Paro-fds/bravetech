@@ -4,7 +4,10 @@ import { ArrowLeft, Check, Clock, Search, TriangleAlert, X } from 'lucide-react'
 import {
   candidatureApi,
   FORMAT_REFERENCE,
+  lireNaissanceSuivi,
+  memoriserNaissanceSuivi,
   normaliserReference as normaliser,
+  oublierNaissanceSuivi,
   type PieceSuivi,
   type StatutGlobal,
   type SuiviDossier,
@@ -17,7 +20,9 @@ import type { Cle } from '../../../shared/i18n';
 // Adresse déjà affichée dans le pied de page du site ; à confirmer avec la Faculté.
 const EMAIL_FACULTE = 'admission@fds.ueh.edu.ht';
 
-type Resultat = { reference: string; etat: 'ok'; suivi: SuiviDossier } | { reference: string; etat: 'introuvable' | 'limite' | 'erreur' };
+type Resultat =
+  | { cle: string; etat: 'ok'; suivi: SuiviDossier }
+  | { cle: string; etat: 'introuvable' | 'limite' | 'erreur' };
 
 const BADGES_GLOBAUX: Record<StatutGlobal, { cle: Cle; classe: string }> = {
   en_examen: { cle: 'suivi.enExamen', classe: 'bg-fds-navy-t text-fds-accent' },
@@ -32,22 +37,35 @@ const BADGES_PIECES: Record<PieceSuivi['statut'], { cle: Cle; classe: string }> 
   rejete: { cle: 'suivi.pieceRefuse', classe: 'bg-fds-bad-bg text-fds-bad' },
 };
 
-/** Formulaire de recherche (maquette « Suivi »). */
-const RechercheReference: React.FC<{ valeurInitiale?: string; message?: string }> = ({ valeurInitiale = '', message }) => {
+interface RechercheReferenceProps {
+  valeurInitiale?: string;
+  naissanceInitiale?: string;
+  message?: string;
+  onSoumettre: (reference: string, dateNaissance: string) => void;
+}
+
+/** Formulaire de recherche protégé par référence + date de naissance (maquette « Suivi »). */
+const RechercheReference: React.FC<RechercheReferenceProps> = ({
+  valeurInitiale = '',
+  naissanceInitiale = '',
+  message,
+  onSoumettre,
+}) => {
   const t = useT();
-  const navigate = useNavigate();
   const [saisie, setSaisie] = useState(valeurInitiale);
+  const [dateNaissance, setDateNaissance] = useState(naissanceInitiale);
   const [erreurFormat, setErreurFormat] = useState(false);
+  const [erreurNaissance, setErreurNaissance] = useState(false);
 
   const rechercher = (e: React.FormEvent) => {
     e.preventDefault();
     const reference = normaliser(saisie);
-    if (!FORMAT_REFERENCE.test(reference)) {
-      setErreurFormat(true);
-      return;
-    }
-    setErreurFormat(false);
-    navigate(`/suivi/${reference}`);
+    const formatInvalide = !FORMAT_REFERENCE.test(reference);
+    const naissanceManquante = !/^\d{4}-\d{2}-\d{2}$/.test(dateNaissance.trim());
+    setErreurFormat(formatInvalide);
+    setErreurNaissance(naissanceManquante);
+    if (formatInvalide || naissanceManquante) return;
+    onSoumettre(reference, dateNaissance.trim());
   };
 
   return (
@@ -60,7 +78,7 @@ const RechercheReference: React.FC<{ valeurInitiale?: string; message?: string }
       {/* Sur ordinateur : la recherche à gauche, l'aide « référence perdue » à droite */}
       <div className="flex flex-col gap-[18px] lg:grid lg:grid-cols-[3fr_2fr] lg:gap-8 lg:items-start">
         <div className="flex flex-col gap-[18px] min-w-0">
-          <form onSubmit={rechercher} noValidate className="rounded-xl border border-fds-line bg-fds-surface p-4 lg:p-6 flex flex-col gap-3.5">
+          <form onSubmit={rechercher} noValidate className="rounded-xl border border-fds-line bg-fds-surface p-4 lg:p-6 flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
               <label htmlFor="reference" className="text-[15px] font-semibold">
                 {t('suivi.refLabel')}
@@ -68,7 +86,10 @@ const RechercheReference: React.FC<{ valeurInitiale?: string; message?: string }
               <input
                 id="reference"
                 value={saisie}
-                onChange={(e) => setSaisie(e.target.value)}
+                onChange={(e) => {
+                  setSaisie(e.target.value);
+                  if (erreurFormat) setErreurFormat(false);
+                }}
                 placeholder="CAN-2026-0089"
                 autoCapitalize="characters"
                 autoComplete="off"
@@ -81,6 +102,29 @@ const RechercheReference: React.FC<{ valeurInitiale?: string; message?: string }
                 {erreurFormat ? t('suivi.formatErreur') : t('suivi.formatAide')}
               </p>
             </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="date-naissance-suivi" className="text-[15px] font-semibold">
+                {t('suivi.naissanceLabel')}
+              </label>
+              <input
+                id="date-naissance-suivi"
+                type="date"
+                value={dateNaissance}
+                onChange={(e) => {
+                  setDateNaissance(e.target.value);
+                  if (erreurNaissance) setErreurNaissance(false);
+                }}
+                autoComplete="bday"
+                aria-invalid={erreurNaissance}
+                aria-describedby="naissance-suivi-aide"
+                className={`w-full min-h-12 rounded-lg border-[1.5px] bg-fds-surface px-3 text-base text-fds-ink focus:outline-none focus:ring-2 focus:ring-fds-accent ${erreurNaissance ? 'border-fds-bad' : 'border-fds-field'}`}
+              />
+              <p id="naissance-suivi-aide" role={erreurNaissance ? 'alert' : undefined} className={`text-[13px] ${erreurNaissance ? 'font-semibold text-fds-bad' : 'text-fds-mute'}`}>
+                {erreurNaissance ? t('suivi.naissanceErreur') : t('suivi.naissanceAide')}
+              </p>
+            </div>
+
             <button
               type="submit"
               className="min-h-12 px-4 lg:px-8 lg:self-start rounded-lg bg-fds-navy hover:bg-fds-navy-d text-white font-semibold flex items-center justify-center gap-2 transition-colors"
@@ -251,45 +295,63 @@ const VueDossier: React.FC<{ suivi: SuiviDossier }> = ({ suivi }) => {
 };
 
 /**
- * Suivi de dossier par référence (maquettes « Suivi » et « Dossier »). `/suivi` propose la recherche,
- * `/suivi/CAN-2026-0089` affiche le dossier ; `/suivi?ref=CAN-2026-0089` redirige vers cette adresse.
+ * Suivi de dossier par référence et date de naissance (maquettes « Suivi » et « Dossier »).
+ * La date de naissance reste en mémoire d'onglet (`sessionStorage`), jamais dans l'URL.
  */
 export const SuiviPage: React.FC = () => {
   const t = useT();
+  const navigate = useNavigate();
   const { reference: paramReference } = useParams();
   const [recherche] = useSearchParams();
   const refDansUrl = recherche.get('ref');
 
   const reference = paramReference ? normaliser(paramReference) : undefined;
+  const [naissanceLocale, setNaissanceLocale] = useState<string | null>(null);
+  const [tentative, setTentative] = useState(0);
   const [resultat, setResultat] = useState<Resultat | null>(null);
 
+  const dateNaissance = reference ? lireNaissanceSuivi(reference) ?? naissanceLocale : null;
+  const cleRequete = reference && dateNaissance ? `${reference}|${dateNaissance}|${tentative}` : null;
+
   useEffect(() => {
-    if (!reference || !FORMAT_REFERENCE.test(reference)) return;
+    if (!reference || !FORMAT_REFERENCE.test(reference) || !dateNaissance || !cleRequete) return;
     let annule = false;
     candidatureApi
-      .obtenirSuivi(reference)
+      .obtenirSuivi(reference, dateNaissance)
       .then((suivi) => {
-        if (!annule) setResultat({ reference, etat: 'ok', suivi });
+        if (!annule) setResultat({ cle: cleRequete, etat: 'ok', suivi });
       })
       .catch((erreur) => {
         if (annule) return;
-        const etat = erreur instanceof ApiError ? (erreur.status === 404 ? 'introuvable' : erreur.status === 429 ? 'limite' : 'erreur') : 'erreur';
-        setResultat({ reference, etat });
+        const etat =
+          erreur instanceof ApiError ? (erreur.status === 404 ? 'introuvable' : erreur.status === 429 ? 'limite' : 'erreur') : 'erreur';
+        if (etat === 'introuvable') oublierNaissanceSuivi(reference);
+        setResultat({ cle: cleRequete, etat });
       });
     return () => {
       annule = true;
     };
-  }, [reference]);
+  }, [reference, dateNaissance, cleRequete]);
+
+  const lancerVerification = (refSaisie: string, naissanceSaisie: string) => {
+    memoriserNaissanceSuivi(refSaisie, naissanceSaisie);
+    setNaissanceLocale(naissanceSaisie);
+    setTentative((n) => n + 1);
+    if (refSaisie !== reference) navigate(`/suivi/${refSaisie}`);
+  };
 
   // Lien `?ref=` (ancien format) : on bascule vers l'adresse canonique
   if (!reference && refDansUrl) return <Navigate to={`/suivi/${encodeURIComponent(normaliser(refDansUrl))}`} replace />;
 
   let contenu: React.ReactNode;
   if (!reference) {
-    contenu = <RechercheReference />;
+    contenu = <RechercheReference key="vide" onSoumettre={lancerVerification} />;
   } else if (!FORMAT_REFERENCE.test(reference)) {
-    contenu = <RechercheReference valeurInitiale={reference} message={t('suivi.formatErreur')} />;
-  } else if (!resultat || resultat.reference !== reference) {
+    contenu = <RechercheReference key={`fmt-${reference}`} valeurInitiale={reference} message={t('suivi.formatErreur')} onSoumettre={lancerVerification} />;
+  } else if (!dateNaissance) {
+    // Lien direct (email ou accueil) : la référence est pré-remplie, le candidat confirme sa date de naissance
+    contenu = <RechercheReference key={`ref-${reference}`} valeurInitiale={reference} onSoumettre={lancerVerification} />;
+  } else if (!resultat || resultat.cle !== cleRequete) {
     contenu = (
       <p className="text-fds-mute" role="status">
         {t('suivi.recherche')}
@@ -303,7 +365,15 @@ export const SuiviPage: React.FC = () => {
       limite: t('suivi.limite'),
       erreur: t('suivi.reseau'),
     } as const;
-    contenu = <RechercheReference valeurInitiale={reference} message={messages[resultat.etat]} />;
+    contenu = (
+      <RechercheReference
+        key={`err-${reference}`}
+        valeurInitiale={reference}
+        naissanceInitiale={dateNaissance}
+        message={messages[resultat.etat]}
+        onSoumettre={lancerVerification}
+      />
+    );
   }
 
   return <div className="max-w-xl lg:max-w-5xl w-full mx-auto px-4 py-6 lg:pt-10 lg:pb-14 flex-1 flex flex-col gap-[18px] lg:gap-7">{contenu}</div>;

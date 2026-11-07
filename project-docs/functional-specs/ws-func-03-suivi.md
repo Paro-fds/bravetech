@@ -1,6 +1,6 @@
 ---
 created: 2026-11-06T04:00:00Z
-updated: 2026-11-06T04:11:35Z
+updated: 2026-11-07T16:37:11Z
 ---
 
 # Spécification Fonctionnelle — WS-03 Suivi de dossier
@@ -12,14 +12,14 @@ updated: 2026-11-06T04:11:35Z
 
 ## 1. Retrouver son dossier (`/suivi`)
 
-- Le candidat saisit sa référence `CAN-AAAA-NNNN` (minuscules et espaces acceptés). Un format invalide est signalé avant tout appel.
-- Liens directs : `/suivi/CAN-2026-0089` (écran de confirmation, emails) ; l'ancien `/suivi?ref=…` y redirige.
-- Référence inconnue ou mal formée : un seul message, « Aucun dossier trouvé pour cette référence. Vérifiez les chiffres, ou contactez-nous. » Rien ne permet de savoir si une référence existe.
+- Le candidat saisit sa référence `CAN-AAAA-NNNN` (minuscules et espaces acceptés) **et sa date de naissance** (`AAAA-MM-JJ`). Un format invalide est signalé avant tout appel.
+- Liens directs : `/suivi/CAN-2026-0089` (écran de confirmation, emails) pré-remplit la référence et invite le candidat à confirmer sa date de naissance (sauf dans l'onglet où il vient de soumettre son dossier) ; l'ancien `/suivi?ref=…` y redirige.
+- Référence inconnue, mal formée ou date de naissance non concordante : un seul message, « Aucun dossier ne correspond à cette référence et à cette date de naissance. Vérifiez votre saisie ou contactez-nous. » Rien ne permet de savoir si une référence séquentielle existe.
 - « Vous avez perdu votre référence ? » : lien d'écriture à la Faculté.
 
 ## 2. Ce que montre un dossier
 
-- **Identité minimale** : référence, prénom et **initiale** du nom (« Louismy L. »), admission MPC, date d'envoi. Jamais d'email, de téléphone, de date de naissance, de commune ni de nom de fichier : la référence suffit pour consulter, elle ne doit rien révéler d'autre.
+- **Identité minimale** : référence, prénom et **initiale** du nom (« Louismy L. »), admission MPC, date d'envoi. Jamais d'email, de téléphone, de date de naissance, de commune ni de nom de fichier.
 - **Avancement** : « n pièces validées sur 5 » et un badge global :
 
 | Badge | Quand |

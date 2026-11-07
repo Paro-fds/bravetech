@@ -12,15 +12,17 @@ export const accueil = {
 
   'accueil.comment': 'Comment ça marche',
   'accueil.etape1.titre': 'Découvrez le parcours',
-  'accueil.etape1.texte': 'Lisez la fiche du MPC, les pièces à fournir et les dates clés.',
+  'accueil.etape1.texte': 'Premier cycle MPC (Bac II requis), les 5 pièces à fournir et les dates clés.',
   'accueil.etape2.titre': 'Remplissez le formulaire',
-  'accueil.etape2.texte': 'Vos informations, en quelques minutes.',
-  'accueil.etape3.titre': 'Payez les frais (simulation)',
+  'accueil.etape2.texte': 'Vos informations, sauvegardées automatiquement en cas de coupure.',
+  'accueil.etape3.titre': 'Frais : 500 HTG (simulation)',
   'accueil.etape3.texte': "MonCash ou NatCash. Aucun argent réel n'est prélevé pendant cette phase.",
-  'accueil.etape4.titre': 'Déposez vos pièces',
-  'accueil.etape4.texte': 'Photographiez ou importez vos documents (PDF ou JPG, 5 Mo max).',
+  'accueil.etape4.titre': 'Déposez les 5 pièces',
+  'accueil.etape4.texte': 'Acte de naissance, Bac II, relevé, photos et CIN (PDF ou JPG, 5 Mo max).',
   'accueil.etape5.titre': 'Suivez votre dossier',
-  'accueil.etape5.texte': 'Une référence vous est remise. Pas besoin de compte.',
+  'accueil.etape5.texte': 'Avec votre référence et votre date de naissance, sans créer de compte.',
+  'accueil.antiArnaque':
+    'Portail officiel FDS-UEH : ne versez jamais d’argent à un intermédiaire ou sur WhatsApp. Toute démarche se fait exclusivement ici.',
 
   'accueil.cursusTitre': 'Une admission, puis votre branche',
   'accueil.chargement': 'Chargement des cursus…',

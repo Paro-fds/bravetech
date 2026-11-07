@@ -5,6 +5,7 @@ import { CalendarX, Info } from 'lucide-react';
 import { calendrierApi, candidaturesAcceptees, type CalendrierPublic } from '../../../entities/calendrier';
 import {
   candidatureApi,
+  memoriserNaissanceSuivi,
   STATUT_PAIEMENT_SIMULE,
   STATUT_SOUMISE,
   type Brouillon,
@@ -179,6 +180,9 @@ export const ApplyPage: React.FC = () => {
     if (!candidatureId) return;
     // Le serveur enregistre le dossier AVANT d'envoyer l'email : la référence est toujours renvoyée
     const brouillon = await candidatureApi.soumettre(candidatureId);
+    if (brouillon.reference_dossier && brouillon.informations.date_naissance) {
+      memoriserNaissanceSuivi(brouillon.reference_dossier, brouillon.informations.date_naissance);
+    }
     appliquerBrouillon(brouillon);
     allerEtape(6);
   };

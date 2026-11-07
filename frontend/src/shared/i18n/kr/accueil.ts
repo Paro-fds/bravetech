@@ -12,15 +12,17 @@ export const accueil = {
 
   'accueil.comment': 'Kijan sa mache',
   'accueil.etape1.titre': 'Dekouvri pakou a',
-  'accueil.etape1.texte': 'Li fich MPC a, dokiman ou dwe bay yo ak dat enpòtan yo.',
+  'accueil.etape1.texte': 'Premye sik MPC (Bak II obligatwa), 5 dokiman pou bay yo ak dat enpòtan yo.',
   'accueil.etape2.titre': 'Ranpli fòmilè a',
-  'accueil.etape2.texte': 'Enfòmasyon pa ou yo, nan kèk minit.',
-  'accueil.etape3.titre': 'Peye frè yo (simulasyon)',
+  'accueil.etape2.texte': 'Enfòmasyon ou yo sove otomatikman si entènèt la koupe.',
+  'accueil.etape3.titre': 'Frè: 500 HTG (simulasyon)',
   'accueil.etape3.texte': 'MonCash oswa NatCash. Yo pa pran okenn lajan reyèl pandan faz sa a.',
-  'accueil.etape4.titre': 'Depoze dokiman ou yo',
-  'accueil.etape4.texte': 'Pran foto oswa voye dokiman ou yo (PDF oswa JPG, 5 Mo maksimòm).',
+  'accueil.etape4.titre': 'Depoze 5 dokiman yo',
+  'accueil.etape4.texte': 'Batistè, Bak II, relve nòt, foto ak CIN (PDF oswa JPG, 5 Mo maksimòm).',
   'accueil.etape5.titre': 'Swiv dosye ou',
-  'accueil.etape5.texte': 'Yo ba ou yon referans. Ou pa bezwen kreye kont.',
+  'accueil.etape5.texte': 'Ak referans ou epi dat nesans ou, san kreye kont.',
+  'accueil.antiArnaque':
+    'Pòtay ofisyèl FDS-UEH: pa janm bay okenn entèmedyè lajan ni sou WhatsApp. Tout demach fèt sèlman isit la.',
 
   'accueil.cursusTitre': 'Yon sèl admisyon, answit branch ou',
   'accueil.chargement': 'Ap chaje kourikoulòm yo…',

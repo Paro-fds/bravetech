@@ -1,6 +1,6 @@
 ---
 created: 2026-11-06T04:30:00Z
-updated: 2026-11-07T00:58:45Z
+updated: 2026-11-07T16:37:11Z
 ---
 
 # Rapport — Projet 2 · Équipe 2 Bravetech · M2 FDS Portail
@@ -42,18 +42,18 @@ Trois Epics séquentiels pour le MVP : `epic-001` socle, `epic-002` candidature 
 
 | Périmètre du contrat (Partie 3) | État | Où |
 |---|---|---|
-| Must — Pages des cursus **et dates clés** | ✅ Cursus depuis le 26/09 ; dates clés réglables par l'admin depuis le 05/11 (US-028) | ws-func-01 |
-| Must — Formulaire en ligne avec dépôt des pièces | ✅ | ws-func-02 |
-| Must — Référence `CAN-2026-X` | ✅ | ws-func-02 |
-| Must — Suivi par référence | ✅ | ws-func-03 |
-| Must — Interface d'administration sécurisée | ✅ JWT, 2 rôles, audit | ws-func-04 |
-| Must — Emails (confirmation, validation, rejet avec lien) | ✅ codés le 01/11 ; **activés en production le 05/11, réception confirmée le 06/11** | ws-func-05 |
-| Must — Remplacer un document rejeté | ✅ | ws-func-03 |
-| Must — Simulation MonCash / NatCash, **tous les cas** | ✅ réussi le 01/11 ; refusé, échoué, relancé le 05/11 | ws-func-02 §2 |
-| Should — Notifications SMS | ✅ **simulé**, comme le paiement (voir ci-dessous) | US-016, ws-func-05 §3 |
-| Could — Export CSV/PDF filtré | ✅ | ws-func-04 §2 |
-| Could — Mode sombre | ✅ | US-017 |
-| Bonus — déploiement sur les serveurs de la FDS | ✅ déploiement continu avec retour arrière automatique | ws-tech-01 §5.3 |
+| Must — Pages des cursus **et dates clés** | Livré — Cursus depuis le 26/09 ; dates clés réglables par l'admin depuis le 05/11 (US-028) | ws-func-01 |
+| Must — Formulaire en ligne avec dépôt des pièces | Livré | ws-func-02 |
+| Must — Référence `CAN-2026-X` | Livré | ws-func-02 |
+| Must — Suivi par référence | Livré | ws-func-03 |
+| Must — Interface d'administration sécurisée | Livré — JWT, 2 rôles, audit | ws-func-04 |
+| Must — Emails (confirmation, validation, rejet avec lien) | Livré — codés le 01/11 ; **activés en production le 05/11, réception confirmée le 06/11** | ws-func-05 |
+| Must — Remplacer un document rejeté | Livré | ws-func-03 |
+| Must — Simulation MonCash / NatCash, **tous les cas** | Livré — réussi le 01/11 ; refusé, échoué, relancé le 05/11 | ws-func-02 §2 |
+| Should — Notifications SMS | Livré — **simulé**, comme le paiement (voir ci-dessous) | US-016, ws-func-05 §3 |
+| Could — Export CSV/PDF filtré | Livré | ws-func-04 §2 |
+| Could — Mode sombre | Livré | US-017 |
+| Bonus — déploiement sur les serveurs de la FDS | Livré — déploiement continu avec retour arrière automatique | ws-tech-01 §5.3 |
 
 **Ajouté en cours de route, hors plan initial :** l'Epic 4 (Histoire et Contact, interface en kreyòl, refonte visuelle d'après les maquettes, export, mode sombre, calendrier d'admission, gestion des accès du personnel depuis l'espace admin — US-029) et l'Epic 5 (Alembic, adresse réelle du visiteur derrière les proxys, CI frontend, déploiement continu). L'export, d'abord Won't Have, a été rétabli quand nous avons relu le contrat, qui le place en Could.
 
@@ -68,7 +68,7 @@ Trois Epics séquentiels pour le MVP : `epic-001` socle, `epic-002` candidature 
 
 ## 3. Journal de la méthode
 
-**Ce que l'historique git montre, sans arrangement :** 110 commits sur `master` au 6 novembre, dont 63 hors fusions de PR (extrait au §7). Les documents fondateurs sont commités avant le code (22–30 septembre). Puis **un trou d'un mois** : un seul commit entre le 30 septembre et le 31 octobre. L'essentiel du code est écrit du 1er au 5 novembre (31 commits le 1er novembre, 36 le 5). Le rythme proposé par le cours (six semaines régulières) n'a pas été tenu.
+**Ce que l'historique git montre, sans arrangement :** 110 commits sur `master` au 6 novembre, dont 63 hors fusions de PR (extrait à l'annexe B). Les documents fondateurs sont commités avant le code (22–30 septembre). Puis **un trou d'un mois** : un seul commit entre le 30 septembre et le 31 octobre. L'essentiel du code est écrit du 1er au 5 novembre (31 commits le 1er novembre, 36 le 5). Le rythme proposé par le cours (six semaines régulières) n'a pas été tenu.
 
 **Ce qui a marché :**
 - **Une branche et une PR par story**, avec `Issue : #N` dans le corps, et des stories empilées (`US-006` construite sur la branche d'`US-005`, etc.) pour avancer sans attendre les fusions.
@@ -78,7 +78,7 @@ Trois Epics séquentiels pour le MVP : `epic-001` socle, `epic-002` candidature 
 
 **Ce qui a été abandonné ou adapté :**
 - **Le Refine a été fait par Epic, pas par story.** Chaque Epic 2 à 5 a son `epic-NNN-refinement.md` (constats numérotés, questions, ordre de construction). En revanche, les stories des Epics 2 et 3 ont souvent été écrites et construites le même jour, sans Refine propre. Celles de l'Epic 5 l'ont été (constats `E5-1` à `E5-7` vérifiés sur la VM avant le code).
-- **La clôture des Epics** : l'Epic 1 a été fermé avec ses huit étapes le 26 septembre. **Les Epics 2 et 3 n'ont été fermés que le 6 novembre**, plusieurs jours après la livraison de leurs stories : closeouts et specs WS-02 à WS-05 écrits à ce moment-là, à partir des notes de réalisation. Les issues et les Milestones n'ont été fermés que le même jour : jusque-là, toutes les issues des stories livrées étaient restées ouvertes sur le board. **Les Epics 4 et 5 sont ouverts** au dépôt : US-016 et US-029 attendent la validation en production, US-027 n'est pas construite.
+- **La clôture des Epics** : l'Epic 1 a été fermé avec ses huit étapes le 26 septembre. **Les Epics 2 et 3 n'ont été fermés que le 6 novembre**, plusieurs jours après la livraison de leurs stories : closeouts et specs WS-02 à WS-05 écrits à ce moment-là, à partir des notes de réalisation. Les issues et les Milestones n'ont été fermés que le même jour : jusque-là, toutes les issues des stories livrées étaient restées ouvertes sur le board. **Les Epics 4 et 5 sont ouverts** au dépôt : US-016 (SMS simulés, validation du Project Owner en attente) et US-029 (gestion des accès) sont au statut Backlog ; US-027 (sauvegardes hors site) n'est pas construite.
 - **Les reviews** : les quatre ont été écrites le jour de la découverte (01 le 1er novembre ; 02, 03, 04 les 5 et 6 novembre). Il n'y en a pas pour octobre, parce qu'il ne s'est rien passé en octobre.
 - **Le statut des stories** n'a été mis à jour qu'en fin de projet (le 5 novembre, 21 stories passées en Done d'un coup, après validation par le Project Owner).
 
@@ -143,16 +143,81 @@ Notre constat : l'agent écrit vite du code correct et testé. Il ne sait pas ce
 
 | Preuve | Valeur au 6 novembre | Comment la vérifier |
 |---|---|---|
-| Tests backend | **374 tests verts** (unitaires, intégration, architecture, migrations) | `pytest tests/` |
+| Tests backend | **388 tests verts** (unitaires, intégration, architecture, migrations) | `pytest tests/` |
 | Tests frontend | 19 tests (`node --test`, fonctions utilitaires) ; `tsc -b`, oxlint sans avertissement, build | `cd frontend && npm test` |
 | Architecture | `test_architecture.py` (règle de dépendance) ; **steiger : 0 erreur** | `npx steiger ./src` |
-| **Score CRAP** | **moyenne 2,56 ; maximum 17,00** (`valider_informations`, complexité 17, couverture 97,8 %) ; 0 fonction au-dessus de 30 ; 253 fonctions | Commande dans le `README.md` ; `tools/crap.py` |
-| Couverture | ≈ 97 % du backend (le frontend n'est pas mesuré par le CRAP : limite assumée, review 02 F4) | `coverage report` |
+| **Score CRAP** | **moyenne 2,50 ; maximum 17,00** (`valider_informations`, complexité 17, couverture 97,8 %) ; 0 fonction au-dessus de 30 ; 291 fonctions | `python tools/crap.py coverage.json --seuil 30 --top 15` |
+| Couverture | 98 % du backend (2 508 instructions, 61 non couvertes) ; le frontend n'est pas mesuré par le CRAP, limite assumée (review 02 F4) | `coverage report` |
 | CI | 3 contrôles obligatoires pour fusionner sur `master` | Onglet « Actions » du dépôt |
 | Production | https://dorfilus.ueh.edu.ht ; `GET /api/v1/sante` → `{"statut":"ok"}` | Navigateur |
 | Retour arrière | PR #53 (version cassée) → retour automatique ; #54 redéployée | Journal du workflow « Déploiement » |
 
-**Extrait de l'historique** (`git log origin/master --no-merges --date=short --format="%ad %h %s"`, au 6 novembre) :
+Les extraits détaillés du score CRAP et de l'historique git sont conservés aux annexes A et B.
+
+Commits par jour, fusions comprises : 22/09 : 1 · 26/09 : 5 · 27/09 : 1 · 29/09 : 1 · 30/09 : 1 · **28/10 : 1** · 01/11 : 31 · 02/11 : 3 · 03/11 : 2 · 04/11 : 13 · 05/11 : 36 · 06/11 : 15.
+
+*Captures à insérer : le board GitHub Projects, la page « Actions » (CI et déploiements verts), la page d'accueil en production sur téléphone et sur ordinateur.*
+
+---
+
+## 8. Leçons retenues
+
+**Ce que nous conserverions :**
+- Les notes de réalisation qui distinguent clairement le vérifié du non vérifié, et les contrôles obligatoires avant fusion (voir §3).
+- Les ports dans le domaine pour isoler les services externes : la simulation SMS a pu être ajoutée sans changer le métier.
+
+**Ce que nous changerions sur un prochain projet :**
+- Déployer dès la deuxième semaine et exécuter dès le début la CI sur le moteur de base de production, avec les contrôles d'architecture et de complexité (voir §§3 et 5).
+- Valider le modèle métier avec le responsable fonctionnel avant la première story, puis relire chaque critère d'acceptation contre le contrat (voir §§2, 4.2 et 5).
+- Propager immédiatement une décision d'architecture en recherchant l'ancien choix dans tout le dépôt (learning [`06`](../project-docs/learnings/06-propager-une-decision-par-recherche.md)).
+
+Les détails des apprentissages techniques restent documentés dans le dépôt : [`04`](../project-docs/learnings/04-tester-sur-le-moteur-de-production.md) (tester sur le moteur de production), [`05`](../project-docs/learnings/05-adopter-une-base-existante.md) (adopter une base existante dans un outil de migrations), [`06`](../project-docs/learnings/06-propager-une-decision-par-recherche.md) (propager une décision par une recherche).
+
+## 9. Contributions individuelles
+
+Les stories sont celles assignées à chaque membre sur le board GitHub Projects.
+
+| Membre | Stories | Ce qu'il peut expliquer en soutenance |
+|---|---|---|
+| VAILLANT Valcin *(capitaine)* | US-007 (téléversement sécurisé des pièces), US-011 (authentification JWT et rôles), US-012 (tableau de bord et revue des dossiers), US-015 (export CSV et PDF filtré) | La validation des fichiers côté serveur (magic bytes, extension, 5 Mo) ; le JWT HS256 et bcrypt, les rôles `admin` et `agent` ; les filtres et l'export |
+| DORFILUS Skin-Paolatchi | US-001 à US-004 (cursus, fiche, tests d'architecture en CI, premier déploiement), US-018 à US-022 (admission unique, Histoire et Contact, kreyòl, refonte visuelle), US-023 à US-027 (Alembic, adresse réelle derrière les proxys, CI frontend, déploiement continu, sauvegardes), US-028 (calendrier d'admission), US-029 (gestion des accès). **Hors dépôt :** obtention de la VM Proxmox et de l'accès UEH (sous-domaine, proxy Apache) ; DNS Namecheap et domaine d'envoi Resend ; maquettes de la refonte visuelle. **Documents :** cahier des charges, documents fondateurs, specs, reviews, learnings, rapport, avec l'agent | La Clean Architecture et `test_architecture.py` ; le déploiement GHCR, SSH restreint et retour arrière (ADR-009) ; l'adoption d'une base existante par Alembic ; le calendrier en heure d'Haïti ; le pilotage de l'agent |
+| GUERRIER Joas | US-005 (formulaire et `deplacement_physique`), US-006 (simulation MonCash / NatCash), US-008 (finalisation et confirmation), US-014 (email après décision), US-016 (SMS simulés) | Les quatre cas du paiement simulé ; la référence `CAN-2026-X` ; l'email non bloquant (tâche de fond) ; les SMS de 160 caractères au plus |
+| LOUIS Widmaken | US-009 (suivi par référence), US-010 (remplacement d'une pièce rejetée), US-013 (validation ou rejet audité), US-017 (mode sombre) | Le suivi sans compte ; le remplacement par upsert sur `(candidat_id, document_requis_id)` ; l'audit `valide_par` et `date_validation` ; le thème sombre |
+
+---
+
+## 10. Annexes
+
+### Annexe A — Sortie détaillée du score CRAP
+
+Commande exécutée le 6 novembre 2026 : `python tools/crap.py coverage.json --seuil 30 --top 15`.
+
+```
+Fonctions analysées : 291
+CRAP moyen : 2.50 ; maximum : 17.00
+Au-dessus du seuil 30 : 0
+
+   CRAP   CC   Couv.  Fonction
+  17.00   17   97.8%  backend/bll/validation_informations.py:46 valider_informations
+  15.00   15  100.0%  backend/api/v1/admin.py:196 obtenir_dossier
+  13.08   13   92.3%  backend/api/v1/candidatures.py:96 _vers_http
+  13.02   13   95.5%  backend/bll/contacter_secretariat.py:24 valider_message_contact
+  13.00   13  100.0%  backend/bll/decider_document.py:28 DeciderDocumentUseCase.executer
+  10.00   10  100.0%  backend/bll/consulter_candidatures.py:126 ListerCandidaturesUseCase._correspond
+  10.00   10  100.0%  backend/bll/televerser_document.py:48 TeleverserDocumentUseCase.executer
+   9.00    9  100.0%  backend/bll/simuler_paiement.py:59 SimulerPaiementUseCase.executer
+   8.15    8   86.7%  backend/api/v1/admin.py:153 exporter_candidatures
+   8.01    8   94.4%  backend/bll/enregistrer_informations.py:47 MettreAJourInformationsUseCase.executer
+   8.00    8  100.0%  backend/bll/consulter_candidatures.py:69 ListerCandidaturesUseCase.executer
+   8.00    8  100.0%  backend/bll/consulter_candidatures.py:158 ObtenirDossierAdminUseCase.executer
+   8.00    8  100.0%  backend/bll/validation_fichier.py:54 valider_fichier
+   8.00    8  100.0%  backend/dal/export_pdf.py:34 generer_pdf
+   7.61    3   20.0%  backend/dal/cursus_repository_json.py:35 JsonCursusRepository.sauvegarder_tous
+```
+
+### Annexe B — Extrait de l'historique git
+
+Commande : `git log origin/master --no-merges --date=short --format="%ad %h %s"` (au 6 novembre 2026).
 
 ```
 # Le début : documents fondateurs et Epic 1, puis le mois creux
@@ -185,43 +250,6 @@ Notre constat : l'agent écrit vite du code correct et testé. Il ne sait pas ce
 2026-11-06 06bf92b feat(us-016): notifications SMS simulées, comme le paiement
 2026-11-06 f1fa3ec docs: une seule ligne « prochaine story » dans EPIC_EXECUTION
 ```
-
-Commits par jour, fusions comprises : 22/09 : 1 · 26/09 : 5 · 27/09 : 1 · 29/09 : 1 · 30/09 : 1 · **28/10 : 1** · 01/11 : 31 · 02/11 : 3 · 03/11 : 2 · 04/11 : 13 · 05/11 : 36 · 06/11 : 15.
-
-*Captures à insérer : le board GitHub Projects, la page « Actions » (CI et déploiements verts), la sortie de `tools/crap.py`, la page d'accueil en production sur téléphone et sur ordinateur.*
-
----
-
-## 8. Learnings
-
-**Ce que nous referions :**
-- **Une branche, une PR et des notes de réalisation par story**, avec « vérifié » et « non vérifié ». Ces notes nous ont permis d'écrire les specs et les closeouts après coup sans rien inventer.
-- **Protéger `master` par des contrôles obligatoires**, et mettre le retour arrière automatique à l'épreuve avec une version volontairement cassée (PR #53).
-- **Des ports dans le domaine** pour chaque service externe (stockage, email, SMS). Simuler le SMS comme le paiement n'a demandé aucun changement du métier, et un vrai fournisseur pourra s'ajouter de la même façon.
-
-**Ce que nous ne referions pas :**
-- **Laisser un mois sans commit** (octobre), puis tout écrire en cinq jours.
-- **Déployer la semaine 6.** La VM a révélé en une journée des problèmes qu'aucun test local ne montrait : dépendances sans borne haute, base créée sans Alembic, adresse du visiteur masquée par les proxys (learning [`04`](../project-docs/learnings/04-tester-sur-le-moteur-de-production.md), Epic 5).
-- **Écrire les critères d'acceptation depuis notre plan** sans les relire contre le contrat : le paiement ne gérait pas l'échec, et les emails étaient désactivés en production (review 03).
-
-**Ce qui changerait lundi prochain, sur un autre sujet :**
-- Mettre en production dès la semaine 2, même une page vide, et faire tourner la CI sur le même moteur de base que la production.
-- Lancer dès le premier jour les contrôles du cours (steiger, CRAP) plutôt qu'à la fin : 53 violations FSD étaient cachées (review 02).
-- Quand une décision en remplace une autre, chercher l'ancien nom dans tout le dépôt le jour même (learning [`06`](../project-docs/learnings/06-propager-une-decision-par-recherche.md)).
-- Faire valider le modèle métier par la Faculté avant d'écrire la première story : l'admission unique a coûté une story de réalignement et six documents à corriger (review 01).
-
-Les apprentissages détaillés sont dans le dépôt : [`04`](../project-docs/learnings/04-tester-sur-le-moteur-de-production.md) (tester sur le moteur de production), [`05`](../project-docs/learnings/05-adopter-une-base-existante.md) (adopter une base existante dans un outil de migrations), [`06`](../project-docs/learnings/06-propager-une-decision-par-recherche.md) (propager une décision par une recherche).
-
-## 9. Contributions individuelles
-
-Les stories sont celles assignées à chaque membre sur le board GitHub Projects.
-
-| Membre | Stories | Ce qu'il peut expliquer en soutenance |
-|---|---|---|
-| VAILLANT Valcin *(capitaine)* | US-007 (téléversement sécurisé des pièces), US-011 (authentification JWT et rôles), US-012 (tableau de bord et revue des dossiers), US-015 (export CSV et PDF filtré) | La validation des fichiers côté serveur (magic bytes, extension, 5 Mo) ; le JWT HS256 et bcrypt, les rôles `admin` et `agent` ; les filtres et l'export |
-| DORFILUS Skin-Paolatchi | US-001 à US-004 (cursus, fiche, tests d'architecture en CI, premier déploiement), US-018 à US-022 (admission unique, Histoire et Contact, kreyòl, refonte visuelle), US-023 à US-027 (Alembic, adresse réelle derrière les proxys, CI frontend, déploiement continu, sauvegardes), US-028 (calendrier d'admission), US-029 (gestion des accès). **Hors dépôt :** obtention de la VM Proxmox et de l'accès UEH (sous-domaine, proxy Apache) ; DNS Namecheap et domaine d'envoi Resend ; maquettes de la refonte visuelle. **Documents :** cahier des charges, documents fondateurs, specs, reviews, learnings, rapport, avec l'agent | La Clean Architecture et `test_architecture.py` ; le déploiement GHCR, SSH restreint et retour arrière (ADR-009) ; l'adoption d'une base existante par Alembic ; le calendrier en heure d'Haïti ; le pilotage de l'agent |
-| GUERRIER Joas | US-005 (formulaire et `deplacement_physique`), US-006 (simulation MonCash / NatCash), US-008 (finalisation et confirmation), US-014 (email après décision), US-016 (SMS simulés) | Les quatre cas du paiement simulé ; la référence `CAN-2026-X` ; l'email non bloquant (tâche de fond) ; les SMS de 160 caractères au plus |
-| LOUIS Widmaken | US-009 (suivi par référence), US-010 (remplacement d'une pièce rejetée), US-013 (validation ou rejet audité), US-017 (mode sombre) | Le suivi sans compte ; le remplacement par upsert sur `(candidat_id, document_requis_id)` ; l'audit `valide_par` et `date_validation` ; le thème sombre |
 
 ---
 
