@@ -1,6 +1,6 @@
 ---
 created: 2026-11-06T04:30:00Z
-updated: 2026-11-07T00:50:31Z
+updated: 2026-11-07T00:58:45Z
 ---
 
 # Rapport — Projet 2 · Équipe 2 Bravetech · M2 FDS Portail
@@ -68,7 +68,7 @@ Trois Epics séquentiels pour le MVP : `epic-001` socle, `epic-002` candidature 
 
 ## 3. Journal de la méthode
 
-**Ce que l'historique git montre, sans arrangement :** 94 commits. Les documents fondateurs sont commités avant le code (22–30 septembre). Puis **un trou d'un mois** : un seul commit entre le 30 septembre et le 31 octobre. L'essentiel du code est écrit du 1er au 5 novembre (31 commits le 1er novembre, 35 le 5). Le rythme proposé par le cours (six semaines régulières) n'a pas été tenu.
+**Ce que l'historique git montre, sans arrangement :** 110 commits sur `master` au 6 novembre, dont 63 hors fusions de PR (extrait au §7). Les documents fondateurs sont commités avant le code (22–30 septembre). Puis **un trou d'un mois** : un seul commit entre le 30 septembre et le 31 octobre. L'essentiel du code est écrit du 1er au 5 novembre (31 commits le 1er novembre, 36 le 5). Le rythme proposé par le cours (six semaines régulières) n'a pas été tenu.
 
 **Ce qui a marché :**
 - **Une branche et une PR par story**, avec `Issue : #N` dans le corps, et des stories empilées (`US-006` construite sur la branche d'`US-005`, etc.) pour avancer sans attendre les fusions.
@@ -152,7 +152,43 @@ Notre constat : l'agent écrit vite du code correct et testé. Il ne sait pas ce
 | Production | https://dorfilus.ueh.edu.ht ; `GET /api/v1/sante` → `{"statut":"ok"}` | Navigateur |
 | Retour arrière | PR #53 (version cassée) → retour automatique ; #54 redéployée | Journal du workflow « Déploiement » |
 
-*Captures à insérer : le board GitHub Projects, la page « Actions » (CI et déploiements verts), un extrait de `git log --oneline`, la sortie de `tools/crap.py`, la page d'accueil en production sur téléphone et sur ordinateur.*
+**Extrait de l'historique** (`git log origin/master --no-merges --date=short --format="%ad %h %s"`, au 6 novembre) :
+
+```
+# Le début : documents fondateurs et Epic 1, puis le mois creux
+2026-09-22 6ebd611 initialisation
+2026-09-26 510ccc1 remplissage des documents
+2026-09-26 d838977 feat(ci): socle backend clean architecture et workflow ci pytes
+2026-09-26 894a6ab us-001
+2026-09-26 fb39305 feat(epic-001): close Epic 1 — Socle & Portail public (US-001, US-002, US-003, US-004)
+2026-09-26 334a63c refactor(cursus): rely purely on JSON reference files in cursus/ without SQL tables
+2026-09-27 178136f docs(epic-002): scaffold Epic 2 refinement and user stories (US-005 to US-009)
+2026-09-29 f992298 docs(livrable-1): remaniement CDC + scaffold Epics 3-4 et US-010 a US-017
+2026-09-30 0998ba3 configuration
+2026-10-28 8a2c6f7 repartition des taches
+2026-11-01 2860739 docs(admission): admission unique au MPC, 5 pieces requises, ADR-008
+2026-11-01 2cb0a5d docs(stories): ajoute US-018 (alignement admission unique), US-019 (Histoire/Contact), US-020 (Kreyol)
+2026-11-01 9cd69d8 feat(us-018): aligner le portail public sur l'admission unique au MPC
+2026-11-01 7b9fee1 feat(us-005): backend du formulaire d'inscription et de la question deplacement_physique
+…
+# La fin : clôtures, mise en production, derniers ajouts
+2026-11-05 231ee6b feat(postuler): mise en page bureau du tunnel de candidature et du remplacement
+2026-11-05 0ae26fe docs: clôture des Epics 2 et 3, specs WS-02 à WS-05
+2026-11-05 a6fb5d2 docs(learnings): trois apprentissages tirés du projet (04 à 06)
+2026-11-05 3e0bf90 docs(rapport): premier jet du rapport (sections 1 à 5 et 7 ; trame des sections 6, 8, 9)
+2026-11-06 865f96c docs: US-028 validée ; issues et Milestones des Epics 2 et 3 fermés
+2026-11-06 1d3ad87 docs: emails confirmés en production (review 03, F2 corrigé)
+2026-11-06 b9bb9bd fix: favicon de la FDS à la place de l'icône Vite
+2026-11-06 c544cfd gestiond'acces
+2026-11-06 ec38bcc docs(us-029): gestion des accès dans les specs WS-04, story US-029
+2026-11-06 581797a feat(us-020): noms et descriptions des cursus en kreyòl
+2026-11-06 06bf92b feat(us-016): notifications SMS simulées, comme le paiement
+2026-11-06 f1fa3ec docs: une seule ligne « prochaine story » dans EPIC_EXECUTION
+```
+
+Commits par jour, fusions comprises : 22/09 : 1 · 26/09 : 5 · 27/09 : 1 · 29/09 : 1 · 30/09 : 1 · **28/10 : 1** · 01/11 : 31 · 02/11 : 3 · 03/11 : 2 · 04/11 : 13 · 05/11 : 36 · 06/11 : 15.
+
+*Captures à insérer : le board GitHub Projects, la page « Actions » (CI et déploiements verts), la sortie de `tools/crap.py`, la page d'accueil en production sur téléphone et sur ordinateur.*
 
 ---
 
