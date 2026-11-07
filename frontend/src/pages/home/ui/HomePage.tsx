@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import { ShieldCheck } from 'lucide-react';
 import { cursusApi, CursusCard, trierBranches } from '../../../entities/cursus';
 import { FORMAT_REFERENCE, normaliserReference } from '../../../entities/candidature';
 import { calendrierApi, candidaturesAcceptees, type DatesCalendrier } from '../../../entities/calendrier';
@@ -181,6 +182,13 @@ export const HomePage: React.FC = () => {
               </li>
             ))}
           </ol>
+          <div className="rounded-xl border border-fds-accent-line bg-fds-navy-t px-4 py-3 flex flex-wrap items-center gap-2.5 text-sm">
+            <ShieldCheck className="w-5 h-5 text-fds-accent shrink-0" aria-hidden="true" />
+            <span className="flex-1 min-w-60 text-fds-ink">{t('accueil.antiArnaque')}</span>
+            <Link to="/confidentialite" className="font-semibold text-fds-accent underline">
+              {t('nav.confidentialite')}
+            </Link>
+          </div>
         </section>
 
         <section className="flex flex-col gap-4" aria-labelledby="cursus">

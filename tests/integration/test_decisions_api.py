@@ -12,7 +12,7 @@ from backend.dal.utilisateur_repository_sql import SqlUtilisateurRepository
 from backend.entities.utilisateur import ROLE_ADMIN, ROLE_AGENT, Utilisateur
 
 from tests.integration.test_admin_dossiers_api import LISTE, _environnement, _soumettre  # noqa: F401
-from tests.integration.test_candidatures_api import URL
+from tests.integration.test_candidatures_api import SAISIE, URL
 from tests.integration.test_documents_api import LES_CINQ
 
 SECRET = "a" * 48
@@ -68,8 +68,8 @@ def test_refus_exige_un_motif_puis_apparait_cote_candidat(client, agent):
     assert _documents(client, entete, ref)[LES_CINQ[2]]["statut"] == "en_attente"  # rien n'a été écrit
 
     assert _decider(client, entete, releve["document_id"], "rejete", "Document illisible, page coupée").status_code == 200
-    # Le candidat voit le refus et son motif sur la page publique de suivi
-    suivi = client.get(f"{URL}/{ref}/statut").json()
+    # Le candidat voit le refus et son motif sur la page publique de suivi (après vérification de sa date de naissance)
+    suivi = client.get(f"{URL}/{ref}/statut", params={"date_naissance": SAISIE["date_naissance"]}).json()
     assert suivi["statut_global"] == "action_requise"
     piece = next(p for p in suivi["pieces"] if p["id"] == LES_CINQ[2])
     assert piece["statut"] == "rejete" and piece["motif_rejet"] == "Document illisible, page coupée"

@@ -1,9 +1,12 @@
 /** Textes du suivi de dossier et du remplacement d'une pièce refusée. */
 export const suivi = {
-  'suivi.intro': 'Entrez la référence reçue à la fin de votre candidature et dans votre email.',
+  'suivi.intro': 'Entrez la référence reçue à la fin de votre candidature ainsi que votre date de naissance.',
   'suivi.refLabel': 'Référence du dossier',
   'suivi.formatAide': 'Format : CAN-2026-0000',
   'suivi.formatErreur': 'Cette référence n’a pas le bon format. Exemple : CAN-2026-0089.',
+  'suivi.naissanceLabel': 'Date de naissance du candidat',
+  'suivi.naissanceAide': 'Demandée pour empêcher un tiers de consulter votre dossier.',
+  'suivi.naissanceErreur': 'Indiquez votre date de naissance.',
   'suivi.voir': 'Voir mon dossier',
   'suivi.perdueTitre': 'Vous avez perdu votre référence ?',
   'suivi.perdueTexte': 'Écrivez-nous avec votre nom et votre email de candidature. Nous vous la renverrons.',
@@ -39,7 +42,7 @@ export const suivi = {
   'suivi.remplacer': 'Remplacer ce document',
   'suivi.note': 'Cette page affiche toujours l’état le plus récent de votre dossier.',
   'suivi.recherche': 'Recherche de votre dossier…',
-  'suivi.introuvable': 'Aucun dossier trouvé pour cette référence. Vérifiez les chiffres, ou contactez-nous.',
+  'suivi.introuvable': 'Aucun dossier ne correspond à cette référence et à cette date de naissance. Vérifiez votre saisie ou contactez-nous.',
   'suivi.limite': 'Trop de recherches en peu de temps. Patientez une minute puis réessayez.',
   'suivi.reseau': 'Impossible de joindre le serveur. Vérifiez votre connexion puis réessayez.',
 

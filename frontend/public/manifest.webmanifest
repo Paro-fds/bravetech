@@ -1,0 +1,38 @@
+{
+  "id": "/",
+  "name": "Faculté des Sciences — FDS-UEH | Portail d'Admission",
+  "short_name": "FDS Portail",
+  "description": "Portail officiel d'admission et des cursus de la Faculté des Sciences de l'Université d'État d'Haïti (FDS-UEH).",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f4f6f9",
+  "theme_color": "#01346d",
+  "lang": "fr",
+  "icons": [
+    {
+      "src": "/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

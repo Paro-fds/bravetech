@@ -1,6 +1,6 @@
 ---
 created: 2026-11-06T04:00:00Z
-updated: 2026-11-06T04:11:35Z
+updated: 2026-11-07T16:37:11Z
 ---
 
 # Spécification Technique — WS-03 Suivi de dossier
@@ -14,7 +14,7 @@ updated: 2026-11-06T04:11:35Z
 
 | Route | Cas d'utilisation | Réponses |
 |---|---|---|
-| `GET /api/v1/candidatures/{reference}/statut` | `ObtenirStatutCandidatureUseCase` | 200 ; **404 identique** pour une référence inconnue, mal formée ou un UUID de brouillon ; 429 (`limiter_suivi`, compteur `limiteur_suivi`) |
+| `GET /api/v1/candidatures/{reference}/statut?date_naissance=AAAA-MM-JJ` | `ObtenirStatutCandidatureUseCase` | 200 ; **404 identique** pour une référence inconnue, mal formée, un UUID de brouillon ou une date de naissance absente/erronée ; 429 (`limiter_suivi`, compteur `limiteur_suivi`) |
 | `POST /api/v1/candidatures/{reference}/pieces/{piece}/remplacement` (multipart : `email`, `fichier`) | `RemplacerDocumentUseCase` | 200 ; **403 identique** pour référence inconnue ou email faux ; 409 pièce non refusée ; 413, 422 ; 429 (`limiteur_identite` après 5 échecs, `limiter_envois`) |
 
 ## 2. Réponse publique (`SuiviDossierResponse`)
@@ -34,7 +34,7 @@ updated: 2026-11-06T04:11:35Z
 
 ## 5. Frontend
 
-`pages/suivi` : `SuiviPage` (recherche, dossier ; validation du format par `FORMAT_REFERENCE` et `normaliserReference` de `entities/candidature`) et `RemplacerPiecePage`. Dates affichées au jour d'Haïti (`formaterJour`).
+`pages/suivi` : `SuiviPage` (recherche par référence + date de naissance mémorisée en `sessionStorage` pour l'onglet en cours via `suiviSession.ts`, jamais dans l'URL ; validation du format par `FORMAT_REFERENCE` et `normaliserReference` de `entities/candidature`) et `RemplacerPiecePage`. Dates affichées au jour d'Haïti (`formaterJour`).
 
 ---
 

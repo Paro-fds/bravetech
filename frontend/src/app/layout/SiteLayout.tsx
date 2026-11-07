@@ -46,6 +46,12 @@ export const SiteLayout: React.FC = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-fds-page font-fds-sans text-fds-ink">
+      <a
+        href="#contenu-principal"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-lg focus:bg-fds-gold focus:px-4 focus:py-2.5 focus:font-semibold focus:text-fds-on-light focus:shadow-lg"
+      >
+        {t('nav.allerContenu')}
+      </a>
       <header className="bg-fds-navy text-white">
         <div className="max-w-5xl mx-auto px-4 py-2.5 flex items-center gap-3 lg:gap-4">
           {/* Sur petit écran le nom passe sur deux lignes (et l'université se masque sous 400 px) */}
@@ -104,7 +110,7 @@ export const SiteLayout: React.FC = () => {
         )}
       </header>
 
-      <main className="flex-1 flex flex-col">
+      <main id="contenu-principal" tabIndex={-1} className="flex-1 flex flex-col focus:outline-none">
         <Outlet />
       </main>
 
@@ -113,7 +119,7 @@ export const SiteLayout: React.FC = () => {
         <div className="max-w-5xl mx-auto px-4 py-6 lg:py-8 flex flex-col lg:flex-row lg:flex-wrap lg:items-center lg:justify-between gap-3 lg:gap-x-8">
           <div className="flex flex-col gap-3 lg:gap-2">
             <div className="flex items-center gap-3">
-              <img src="/logo-fds.png" alt="" width={40} height={40} className="rounded" />
+              <img src="/logo-fds.png" alt="" aria-hidden="true" width={40} height={40} className="rounded" />
               <span className="font-semibold text-white">{t('marque.facuteUeh')}</span>
             </div>
             <p>{t('marque.adresse')}</p>
@@ -126,8 +132,14 @@ export const SiteLayout: React.FC = () => {
                 </Link>
               </li>
             ))}
+            <li>
+              <Link to="/confidentialite" className="min-h-11 inline-flex items-center underline">
+                {t('nav.confidentialite')}
+              </Link>
+            </li>
           </ul>
-          <div className="flex flex-col gap-3 lg:basis-full lg:gap-1.5 lg:border-t lg:border-white/15 lg:pt-4">
+          <div className="flex flex-col gap-2 lg:basis-full lg:gap-1.5 lg:border-t lg:border-white/15 lg:pt-4">
+            <p className="text-xs font-semibold text-white">{t('pied.antiArnaque')}</p>
             <p className="text-xs">{t('pied.simulation')}</p>
             <p className="text-xs">{t('pied.droits')}</p>
           </div>

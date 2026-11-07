@@ -1,13 +1,14 @@
-"""Cas d'utilisation : suivre un dossier par sa référence — Couche BLL (US-009).
+"""Cas d'utilisation : suivre un dossier par sa référence et sa date de naissance — Couche BLL (US-009).
 
-La page de suivi est publique : la référence tient lieu de secret partagé. On n'en tire donc que le strict
-nécessaire (prénom et initiale du nom, statut des pièces), jamais l'email, le téléphone, la date de naissance
-ni le nom des fichiers déposés.
+Les références `CAN-AAAA-NNNN` étant séquentielles, la consultation publique exige en complément la date de naissance
+du candidat. Une référence inconnue, mal formée ou associée à une autre date de naissance lève la même erreur afin de ne
+pas révéler quels numéros existent. La vue ne retourne que le strict nécessaire (prénom, initiale du nom, statut des
+pièces), jamais l'email, le téléphone ni le nom des fichiers déposés.
 """
 
 import re
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import date, datetime
 
 from backend.bll.televerser_document import ListerPiecesDossierUseCase, PieceDossier
 from backend.entities.candidature import STATUT_SOUMISE
@@ -27,6 +28,19 @@ def normaliser_reference(saisie: str) -> str | None:
     """« can-2026-0089 » → « CAN-2026-0089 » ; None si le format n'est pas celui d'une référence de dossier."""
     reference = (saisie or "").strip().upper()
     return reference if _FORMAT_REFERENCE.fullmatch(reference) else None
+
+
+def analyser_date_naissance(saisie: str | date | None) -> date | None:
+    """Convertit une saisie ISO `AAAA-MM-JJ` en `date`, ou retourne `None` si elle est absente ou invalide."""
+    if isinstance(saisie, date) and not isinstance(saisie, datetime):
+        return saisie
+    texte = (saisie or "").strip() if isinstance(saisie, str) else ""
+    if len(texte) != 10:
+        return None
+    try:
+        return date.fromisoformat(texte)
+    except ValueError:
+        return None
 
 
 @dataclass
@@ -59,17 +73,18 @@ def statut_global(pieces: list[PieceDossier]) -> str:
 
 
 class ObtenirStatutCandidatureUseCase:
-    """Retourne l'état d'un dossier soumis. Une référence mal formée ou inconnue lève la même erreur."""
+    """Retourne l'état d'un dossier soumis si la référence et la date de naissance concordent."""
 
     def __init__(self, candidatures: ICandidatureRepository, documents: IDocumentRepository) -> None:
         self._candidatures = candidatures
         self._documents = documents
 
-    def executer(self, saisie: str) -> SuiviDossier:
+    def executer(self, saisie: str, date_naissance: str | date | None = None) -> SuiviDossier:
         reference = normaliser_reference(saisie)
-        trouve = self._candidatures.trouver_par_reference(reference) if reference else None
-        # Seuls les dossiers soumis ont une référence ; on revérifie le statut par prudence
-        if trouve is None or trouve[1].statut != STATUT_SOUMISE:
+        naissance = analyser_date_naissance(date_naissance)
+        trouve = self._candidatures.trouver_par_reference(reference) if (reference and naissance) else None
+        # Même erreur pour référence absente, brouillon ou date de naissance erronée (aucun oracle d'énumération)
+        if trouve is None or trouve[1].statut != STATUT_SOUMISE or trouve[0].date_naissance != naissance:
             raise CandidatureIntrouvable()
         candidat, candidature = trouve
         pieces = ListerPiecesDossierUseCase(self._candidatures, self._documents).executer(candidature.id)

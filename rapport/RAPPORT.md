@@ -1,6 +1,6 @@
 ---
 created: 2026-11-06T04:30:00Z
-updated: 2026-11-06T18:35:56Z
+updated: 2026-11-07T16:37:11Z
 ---
 
 # Rapport — Projet 2 · Équipe 2 Bravetech · M2 FDS Portail
@@ -25,7 +25,7 @@ updated: 2026-11-06T18:35:56Z
 | Specs par Workstream | `functional-specs/ws-func-01` à `05`, `technical-specs/ws-tech-01` à `05` |
 | Reviews / Learnings | [`reviews/`](../project-docs/reviews/) (01 à 04) · [`learnings/`](../project-docs/learnings/) (04 à 06 ; 01 à 03 viennent du kit) |
 | Board | GitHub Projects « Bavetech_Project » : https://github.com/users/Paro-fds/projects/2 · Milestones « Epic 1 » à « Epic 5 » |
-| Pull Requests | https://github.com/Paro-fds/bravetech/pulls?q=is%3Apr — 30+ PR fusionnées, dont #48 (Alembic), #52 (déploiement continu), #53/#54 (test de retour arrière), #55 (steiger, CRAP), #60 (calendrier) |
+| Pull Requests | https://github.com/Paro-fds/bravetech/pulls?q=is%3Apr — 39 PR fusionnées, dont #48 (Alembic), #52 (déploiement continu), #53/#54 (test de retour arrière), #55 (steiger, CRAP), #60 (calendrier) |
 | CI | `.github/workflows/ci.yml` (backend, frontend, steiger, CRAP) et `deploy.yml` (déploiement) |
 
 **Comptes de démonstration :** fournis séparément (jamais dans le dépôt, qui est public).
@@ -42,20 +42,20 @@ Trois Epics séquentiels pour le MVP : `epic-001` socle, `epic-002` candidature 
 
 | Périmètre du contrat (Partie 3) | État | Où |
 |---|---|---|
-| Must — Pages des cursus **et dates clés** | ✅ Cursus depuis le 26/09 ; dates clés réglables par l'admin depuis le 05/11 (US-028) | ws-func-01 |
-| Must — Formulaire en ligne avec dépôt des pièces | ✅ | ws-func-02 |
-| Must — Référence `CAN-2026-X` | ✅ | ws-func-02 |
-| Must — Suivi par référence | ✅ | ws-func-03 |
-| Must — Interface d'administration sécurisée | ✅ JWT, 2 rôles, audit | ws-func-04 |
-| Must — Emails (confirmation, validation, rejet avec lien) | ✅ codés le 01/11 ; **activés en production le 05/11, réception confirmée le 06/11** | ws-func-05 |
-| Must — Remplacer un document rejeté | ✅ | ws-func-03 |
-| Must — Simulation MonCash / NatCash, **tous les cas** | ✅ réussi le 01/11 ; refusé, échoué, relancé le 05/11 | ws-func-02 §2 |
-| Should — Notifications SMS | ✅ **simulé**, comme le paiement (voir ci-dessous) | US-016, ws-func-05 §3 |
-| Could — Export CSV/PDF filtré | ✅ | ws-func-04 §2 |
-| Could — Mode sombre | ✅ | US-017 |
-| Bonus — déploiement sur les serveurs de la FDS | ✅ déploiement continu avec retour arrière automatique | ws-tech-01 §5.3 |
+| Must — Pages des cursus **et dates clés** | Livré — Cursus depuis le 26/09 ; dates clés réglables par l'admin depuis le 05/11 (US-028) | ws-func-01 |
+| Must — Formulaire en ligne avec dépôt des pièces | Livré | ws-func-02 |
+| Must — Référence `CAN-2026-X` | Livré | ws-func-02 |
+| Must — Suivi par référence | Livré | ws-func-03 |
+| Must — Interface d'administration sécurisée | Livré — JWT, 2 rôles, audit | ws-func-04 |
+| Must — Emails (confirmation, validation, rejet avec lien) | Livré — codés le 01/11 ; **activés en production le 05/11, réception confirmée le 06/11** | ws-func-05 |
+| Must — Remplacer un document rejeté | Livré | ws-func-03 |
+| Must — Simulation MonCash / NatCash, **tous les cas** | Livré — réussi le 01/11 ; refusé, échoué, relancé le 05/11 | ws-func-02 §2 |
+| Should — Notifications SMS | Livré — **simulé**, comme le paiement (voir ci-dessous) | US-016, ws-func-05 §3 |
+| Could — Export CSV/PDF filtré | Livré | ws-func-04 §2 |
+| Could — Mode sombre | Livré | US-017 |
+| Bonus — déploiement sur les serveurs de la FDS | Livré — déploiement continu avec retour arrière automatique | ws-tech-01 §5.3 |
 
-**Ajouté en cours de route, hors plan initial :** l'Epic 4 (Histoire et Contact, interface en kreyòl, refonte visuelle d'après les maquettes, export, mode sombre, calendrier d'admission) et l'Epic 5 (Alembic, adresse réelle du visiteur derrière les proxys, CI frontend, déploiement continu). L'export, d'abord Won't Have, a été rétabli quand nous avons relu le contrat, qui le place en Could.
+**Ajouté en cours de route, hors plan initial :** l'Epic 4 (Histoire et Contact, interface en kreyòl, refonte visuelle d'après les maquettes, export, mode sombre, calendrier d'admission, gestion des accès du personnel depuis l'espace admin — US-029) et l'Epic 5 (Alembic, adresse réelle du visiteur derrière les proxys, CI frontend, déploiement continu). L'export, d'abord Won't Have, a été rétabli quand nous avons relu le contrat, qui le place en Could.
 
 **Coupé ou non livré, et pourquoi :**
 - **SMS réels (US-016, Should Have) : simulés, pas envoyés.** Aucun fournisseur SMS (Twilio, opérateur haïtien) n'a pu être obtenu avant le dépôt. Nous avons appliqué au SMS la règle que le contrat impose au paiement : le portail construit le SMS (≤ 160 caractères) aux mêmes moments que l'email, l'enregistre, et le personnel le lit dans « SMS (simulation) ». Un vrai fournisseur se branche derrière le port `ISmsSender` sans toucher au métier. Ce qui manque : l'adaptateur réel, et la désactivation des SMS par le candidat (critère optionnel).
@@ -68,7 +68,7 @@ Trois Epics séquentiels pour le MVP : `epic-001` socle, `epic-002` candidature 
 
 ## 3. Journal de la méthode
 
-**Ce que l'historique git montre, sans arrangement :** 94 commits. Les documents fondateurs sont commités avant le code (22–30 septembre). Puis **un trou d'un mois** : un seul commit entre le 30 septembre et le 31 octobre. L'essentiel du code est écrit du 1er au 5 novembre (31 commits le 1er novembre, 35 le 5). Le rythme proposé par le cours (six semaines régulières) n'a pas été tenu.
+**Ce que l'historique git montre, sans arrangement :** 110 commits sur `master` au 6 novembre, dont 63 hors fusions de PR (extrait à l'annexe B). Les documents fondateurs sont commités avant le code (22–30 septembre). Puis **un trou d'un mois** : un seul commit entre le 30 septembre et le 31 octobre. L'essentiel du code est écrit du 1er au 5 novembre (31 commits le 1er novembre, 36 le 5). Le rythme proposé par le cours (six semaines régulières) n'a pas été tenu.
 
 **Ce qui a marché :**
 - **Une branche et une PR par story**, avec `Issue : #N` dans le corps, et des stories empilées (`US-006` construite sur la branche d'`US-005`, etc.) pour avancer sans attendre les fusions.
@@ -78,7 +78,7 @@ Trois Epics séquentiels pour le MVP : `epic-001` socle, `epic-002` candidature 
 
 **Ce qui a été abandonné ou adapté :**
 - **Le Refine a été fait par Epic, pas par story.** Chaque Epic 2 à 5 a son `epic-NNN-refinement.md` (constats numérotés, questions, ordre de construction). En revanche, les stories des Epics 2 et 3 ont souvent été écrites et construites le même jour, sans Refine propre. Celles de l'Epic 5 l'ont été (constats `E5-1` à `E5-7` vérifiés sur la VM avant le code).
-- **La clôture des Epics** : l'Epic 1 a été fermé avec ses huit étapes le 26 septembre. **Les Epics 2 et 3 n'ont été fermés que le 6 novembre**, plusieurs jours après la livraison de leurs stories : closeouts et specs WS-02 à WS-05 écrits à ce moment-là, à partir des notes de réalisation. Les issues et les Milestones n'ont été fermés que le même jour : jusque-là, toutes les issues des stories livrées étaient restées ouvertes sur le board. **Les Epics 4 et 5 sont ouverts** au dépôt (US-016 et US-027).
+- **La clôture des Epics** : l'Epic 1 a été fermé avec ses huit étapes le 26 septembre. **Les Epics 2 et 3 n'ont été fermés que le 6 novembre**, plusieurs jours après la livraison de leurs stories : closeouts et specs WS-02 à WS-05 écrits à ce moment-là, à partir des notes de réalisation. Les issues et les Milestones n'ont été fermés que le même jour : jusque-là, toutes les issues des stories livrées étaient restées ouvertes sur le board. **Les Epics 4 et 5 sont ouverts** au dépôt : US-016 (SMS simulés, validation du Project Owner en attente) et US-029 (gestion des accès) sont au statut Backlog ; US-027 (sauvegardes hors site) n'est pas construite.
 - **Les reviews** : les quatre ont été écrites le jour de la découverte (01 le 1er novembre ; 02, 03, 04 les 5 et 6 novembre). Il n'y en a pas pour octobre, parce qu'il ne s'est rien passé en octobre.
 - **Le statut des stories** n'a été mis à jour qu'en fin de projet (le 5 novembre, 21 stories passées en Done d'un coup, après validation par le Project Owner).
 
@@ -116,60 +116,140 @@ Quatre reviews, chacune écrite le jour de la découverte. Les trois plus import
 
 ## 6. Le travail avec l'agent
 
-> **À rédiger par l'équipe, à la première personne.** Cette section évalue votre pilotage de l'agent : ce que vous lui avez demandé, où il s'est trompé, comment vous l'avez recadré, et ce qui a fini dans `AGENTS.md`. Matériau vérifiable à reprendre (ou à remplacer par vos propres exemples) :
+**Comment nous l'avons utilisé.** Nous avons travaillé avec Claude Code (Opus) dans VS Code, sur tout le cycle : rédaction des stories et des refinements avec les skills du kit (`user-story`, `epic`, `document-learning`), écriture du code story par story, une branche et une PR à chaque fois, puis mise à jour des specs, des reviews et des learnings. L'agent n'a jamais eu la main sur ce qui engage l'équipe : nous validions chaque PR avant fusion, et nous posions nous-mêmes les secrets sur la VM.
 
-**Où l'agent s'est trompé, et le recadrage :**
-- Il a écrit des **adresses IP réelles** relevées dans les journaux de la VM dans des tests destinés à un dépôt public ; refusé avant la publication. → Adresses fictives (RFC 5737), et règle « Pas d'adresse réelle » dans la définition de fini (`PROJECT_WORKFLOW.md`).
-- Il a laissé un **mot de passe par défaut** (`fds_secret_pass`) dans `docker-compose.yml` ; signalé par GitGuardian. → `POSTGRES_PASSWORD` obligatoire, sans défaut ; règle « Pas de secret en clair, pas même une valeur par défaut ».
-- Il a cru que **les documents suivaient les décisions** et que **les stories cochées couvraient le contrat** (reviews 03 et 04).
-- Il a déclaré un domaine d'envoi « vérifié » sans l'avoir vu vérifié ; corrigé dans la spec avant la fusion.
-- Un formateur de code lancé sans être demandé a réécrit tout un fichier ; changement annulé et refait à la main.
+**Où l'agent s'est trompé, et comment nous l'avons recadré :**
+- **Des adresses IP réelles dans un dépôt public.** Il a copié dans des tests des adresses relevées dans les journaux de la VM. Nous l'avons refusé avant la publication. → Adresses fictives (RFC 5737), et règle « Pas d'adresse réelle » dans la définition de fini (`PROJECT_WORKFLOW.md`).
+- **Un mot de passe par défaut** (`fds_secret_pass`) laissé dans `docker-compose.yml`, signalé par GitGuardian. → `POSTGRES_PASSWORD` obligatoire, sans valeur par défaut ; règle « Pas de secret en clair, pas même une valeur par défaut ».
+- **Croire que les documents suivaient les décisions**, et que les stories cochées couvraient le contrat. Il ne l'a pas vu seul : c'est notre relecture du contrat qui l'a révélé (reviews 03 et 04).
+- **Affirmer sans avoir vérifié.** Il a écrit que le domaine d'envoi Resend était « vérifié » avant que nous l'ayons vu vérifié, et il a annoncé 25 issues à fermer alors que 22 seulement étaient ouvertes. Nous avons fait corriger la spec avant la fusion, et nous avons pris l'habitude de lui demander la commande qui prouve ce qu'il affirme.
+- **Une action non demandée.** Un formateur de code lancé de sa propre initiative a réécrit tout un fichier. Le changement a été annulé et refait à la main.
 
-**Règles de pilotage données à l'agent (dans `CLAUDE.md` et la conversation) :** demander avant d'ouvrir ou de fusionner une PR ; ne jamais fermer une issue ; ne jamais contourner la protection de `master` ; ne jamais manipuler de clé ou de mot de passe dans la conversation (les secrets vont dans le `.env` de la VM, posés par l'équipe) ; seuls les membres de l'équipe changent le statut d'une story.
+**Les règles que nous lui avons imposées** (dans `CLAUDE.md` et dans la conversation) :
+- demander avant d'ouvrir ou de fusionner une PR ;
+- ne fermer une issue ou un Milestone qu'avec notre accord explicite ;
+- ne jamais contourner la protection de `master` (pas de `--admin`) ;
+- ne jamais manipuler de clé ou de mot de passe dans la conversation : les secrets vont dans le `.env` de la VM, et c'est nous qui les posons ;
+- seuls les membres de l'équipe changent le statut d'une story.
 
-**Ce qui est dans `AGENTS.md` à cause de l'agent :** *[à compléter : par exemple la carte des dossiers et les « Services » corrigés le 6 novembre, parce qu'un agent neuf aurait cherché un adaptateur Cloudinary qui n'existe pas (review 04) ; le fait critique 7 réécrit pour décrire la protection par routeur réellement en place.]*
+**Ce qui est dans `AGENTS.md` à cause de l'agent.**
+- **La carte des dossiers et la ligne « Services », corrigées le 6 novembre :** un agent neuf aurait cherché un adaptateur Cloudinary qui n'existe pas (review 04).
+- **Le fait critique 7, réécrit pour décrire la protection réellement en place :** `get_current_admin` posé sur le routeur admin, dont toute nouvelle route hérite.
+- **Le fait critique 9 (admission unique au MPC) :** il empêche un agent de réintroduire un champ « cursus » dans la candidature.
 
----
+Notre constat : l'agent écrit vite du code correct et testé. Il ne sait pas ce que la Faculté veut, ni ce qui est vrai en production. Ces deux vérifications sont restées notre travail.
 
 ## 7. Les preuves
 
 | Preuve | Valeur au 6 novembre | Comment la vérifier |
 |---|---|---|
-| Tests backend | **374 tests verts** (unitaires, intégration, architecture, migrations) | `pytest tests/` |
+| Tests backend | **388 tests verts** (unitaires, intégration, architecture, migrations) | `pytest tests/` |
 | Tests frontend | 19 tests (`node --test`, fonctions utilitaires) ; `tsc -b`, oxlint sans avertissement, build | `cd frontend && npm test` |
 | Architecture | `test_architecture.py` (règle de dépendance) ; **steiger : 0 erreur** | `npx steiger ./src` |
-| **Score CRAP** | **moyenne 2,56 ; maximum 17,00** (`valider_informations`, complexité 17, couverture 97,8 %) ; 0 fonction au-dessus de 30 ; 253 fonctions | Commande dans le `README.md` ; `tools/crap.py` |
-| Couverture | ≈ 97 % du backend (le frontend n'est pas mesuré par le CRAP : limite assumée, review 02 F4) | `coverage report` |
+| **Score CRAP** | **moyenne 2,50 ; maximum 17,00** (`valider_informations`, complexité 17, couverture 97,8 %) ; 0 fonction au-dessus de 30 ; 291 fonctions | `python tools/crap.py coverage.json --seuil 30 --top 15` |
+| Couverture | 98 % du backend (2 508 instructions, 61 non couvertes) ; le frontend n'est pas mesuré par le CRAP, limite assumée (review 02 F4) | `coverage report` |
 | CI | 3 contrôles obligatoires pour fusionner sur `master` | Onglet « Actions » du dépôt |
 | Production | https://dorfilus.ueh.edu.ht ; `GET /api/v1/sante` → `{"statut":"ok"}` | Navigateur |
 | Retour arrière | PR #53 (version cassée) → retour automatique ; #54 redéployée | Journal du workflow « Déploiement » |
 
-*Captures à insérer : le board GitHub Projects, la page « Actions » (CI et déploiements verts), un extrait de `git log --oneline`, la sortie de `tools/crap.py`, la page d'accueil en production sur téléphone et sur ordinateur.*
+Les extraits détaillés du score CRAP et de l'historique git sont conservés aux annexes A et B.
+
+Commits par jour, fusions comprises : 22/09 : 1 · 26/09 : 5 · 27/09 : 1 · 29/09 : 1 · 30/09 : 1 · **28/10 : 1** · 01/11 : 31 · 02/11 : 3 · 03/11 : 2 · 04/11 : 13 · 05/11 : 36 · 06/11 : 15.
+
+*Captures à insérer : le board GitHub Projects, la page « Actions » (CI et déploiements verts), la page d'accueil en production sur téléphone et sur ordinateur.*
 
 ---
 
-## 8. Learnings
+## 8. Leçons retenues
 
-> **À rédiger par l'équipe** : ce que vous referiez, ce que vous ne referiez pas, ce qui changerait lundi prochain sur un autre sujet. Les trois apprentissages écrits dans le dépôt peuvent servir de point de départ :
+**Ce que nous conserverions :**
+- Les notes de réalisation qui distinguent clairement le vérifié du non vérifié, et les contrôles obligatoires avant fusion (voir §3).
+- Les ports dans le domaine pour isoler les services externes : la simulation SMS a pu être ajoutée sans changer le métier.
 
-- [`04`](../project-docs/learnings/04-tester-sur-le-moteur-de-production.md) — Une CI verte ne prouve rien sur un moteur qu'elle ne fait pas tourner : figer les dépendances, nommer le pilote, mettre en production tôt.
-- [`05`](../project-docs/learnings/05-adopter-une-base-existante.md) — Adopter une base existante dans un outil de migrations en la comparant à la révision d'origine.
-- [`06`](../project-docs/learnings/06-propager-une-decision-par-recherche.md) — Une décision qui en remplace une autre se propage par une recherche ; les critères se relisent contre le contrat.
+**Ce que nous changerions sur un prochain projet :**
+- Déployer dès la deuxième semaine et exécuter dès le début la CI sur le moteur de base de production, avec les contrôles d'architecture et de complexité (voir §§3 et 5).
+- Valider le modèle métier avec le responsable fonctionnel avant la première story, puis relire chaque critère d'acceptation contre le contrat (voir §§2, 4.2 et 5).
+- Propager immédiatement une décision d'architecture en recherchant l'ancien choix dans tout le dépôt (learning [`06`](../project-docs/learnings/06-propager-une-decision-par-recherche.md)).
 
-*Pistes vraies à développer : déployer dès la semaine 2 plutôt que la semaine 6 ; ne pas laisser un mois sans commit ; lancer les contrôles du cours (steiger, CRAP) dès le premier jour.*
-
----
+Les détails des apprentissages techniques restent documentés dans le dépôt : [`04`](../project-docs/learnings/04-tester-sur-le-moteur-de-production.md) (tester sur le moteur de production), [`05`](../project-docs/learnings/05-adopter-une-base-existante.md) (adopter une base existante dans un outil de migrations), [`06`](../project-docs/learnings/06-propager-une-decision-par-recherche.md) (propager une décision par une recherche).
 
 ## 9. Contributions individuelles
 
-> **À remplir par l'équipe**, nominativement. Cette table prépare les questions individuelles de soutenance.
+Les stories sont celles assignées à chaque membre sur le board GitHub Projects.
 
-| Membre | Ce qu'il a fait (stories, documents, déploiement, revues) | Ce qu'il peut expliquer en soutenance |
+| Membre | Stories | Ce qu'il peut expliquer en soutenance |
 |---|---|---|
-| VAILLANT Valcin *(capitaine)* | | |
-| DORFILUS Skin-Paolatchi | | |
-| GUERRIER Joas | | |
-| LOUIS Widmaken | | |
+| VAILLANT Valcin *(capitaine)* | US-007 (téléversement sécurisé des pièces), US-011 (authentification JWT et rôles), US-012 (tableau de bord et revue des dossiers), US-015 (export CSV et PDF filtré) | La validation des fichiers côté serveur (magic bytes, extension, 5 Mo) ; le JWT HS256 et bcrypt, les rôles `admin` et `agent` ; les filtres et l'export |
+| DORFILUS Skin-Paolatchi | US-001 à US-004 (cursus, fiche, tests d'architecture en CI, premier déploiement), US-018 à US-022 (admission unique, Histoire et Contact, kreyòl, refonte visuelle), US-023 à US-027 (Alembic, adresse réelle derrière les proxys, CI frontend, déploiement continu, sauvegardes), US-028 (calendrier d'admission), US-029 (gestion des accès). **Hors dépôt :** obtention de la VM Proxmox et de l'accès UEH (sous-domaine, proxy Apache) ; DNS Namecheap et domaine d'envoi Resend ; maquettes de la refonte visuelle. **Documents :** cahier des charges, documents fondateurs, specs, reviews, learnings, rapport, avec l'agent | La Clean Architecture et `test_architecture.py` ; le déploiement GHCR, SSH restreint et retour arrière (ADR-009) ; l'adoption d'une base existante par Alembic ; le calendrier en heure d'Haïti ; le pilotage de l'agent |
+| GUERRIER Joas | US-005 (formulaire et `deplacement_physique`), US-006 (simulation MonCash / NatCash), US-008 (finalisation et confirmation), US-014 (email après décision), US-016 (SMS simulés) | Les quatre cas du paiement simulé ; la référence `CAN-2026-X` ; l'email non bloquant (tâche de fond) ; les SMS de 160 caractères au plus |
+| LOUIS Widmaken | US-009 (suivi par référence), US-010 (remplacement d'une pièce rejetée), US-013 (validation ou rejet audité), US-017 (mode sombre) | Le suivi sans compte ; le remplacement par upsert sur `(candidat_id, document_requis_id)` ; l'audit `valide_par` et `date_validation` ; le thème sombre |
+
+---
+
+## 10. Annexes
+
+### Annexe A — Sortie détaillée du score CRAP
+
+Commande exécutée le 6 novembre 2026 : `python tools/crap.py coverage.json --seuil 30 --top 15`.
+
+```
+Fonctions analysées : 291
+CRAP moyen : 2.50 ; maximum : 17.00
+Au-dessus du seuil 30 : 0
+
+   CRAP   CC   Couv.  Fonction
+  17.00   17   97.8%  backend/bll/validation_informations.py:46 valider_informations
+  15.00   15  100.0%  backend/api/v1/admin.py:196 obtenir_dossier
+  13.08   13   92.3%  backend/api/v1/candidatures.py:96 _vers_http
+  13.02   13   95.5%  backend/bll/contacter_secretariat.py:24 valider_message_contact
+  13.00   13  100.0%  backend/bll/decider_document.py:28 DeciderDocumentUseCase.executer
+  10.00   10  100.0%  backend/bll/consulter_candidatures.py:126 ListerCandidaturesUseCase._correspond
+  10.00   10  100.0%  backend/bll/televerser_document.py:48 TeleverserDocumentUseCase.executer
+   9.00    9  100.0%  backend/bll/simuler_paiement.py:59 SimulerPaiementUseCase.executer
+   8.15    8   86.7%  backend/api/v1/admin.py:153 exporter_candidatures
+   8.01    8   94.4%  backend/bll/enregistrer_informations.py:47 MettreAJourInformationsUseCase.executer
+   8.00    8  100.0%  backend/bll/consulter_candidatures.py:69 ListerCandidaturesUseCase.executer
+   8.00    8  100.0%  backend/bll/consulter_candidatures.py:158 ObtenirDossierAdminUseCase.executer
+   8.00    8  100.0%  backend/bll/validation_fichier.py:54 valider_fichier
+   8.00    8  100.0%  backend/dal/export_pdf.py:34 generer_pdf
+   7.61    3   20.0%  backend/dal/cursus_repository_json.py:35 JsonCursusRepository.sauvegarder_tous
+```
+
+### Annexe B — Extrait de l'historique git
+
+Commande : `git log origin/master --no-merges --date=short --format="%ad %h %s"` (au 6 novembre 2026).
+
+```
+# Le début : documents fondateurs et Epic 1, puis le mois creux
+2026-09-22 6ebd611 initialisation
+2026-09-26 510ccc1 remplissage des documents
+2026-09-26 d838977 feat(ci): socle backend clean architecture et workflow ci pytes
+2026-09-26 894a6ab us-001
+2026-09-26 fb39305 feat(epic-001): close Epic 1 — Socle & Portail public (US-001, US-002, US-003, US-004)
+2026-09-26 334a63c refactor(cursus): rely purely on JSON reference files in cursus/ without SQL tables
+2026-09-27 178136f docs(epic-002): scaffold Epic 2 refinement and user stories (US-005 to US-009)
+2026-09-29 f992298 docs(livrable-1): remaniement CDC + scaffold Epics 3-4 et US-010 a US-017
+2026-09-30 0998ba3 configuration
+2026-10-28 8a2c6f7 repartition des taches
+2026-11-01 2860739 docs(admission): admission unique au MPC, 5 pieces requises, ADR-008
+2026-11-01 2cb0a5d docs(stories): ajoute US-018 (alignement admission unique), US-019 (Histoire/Contact), US-020 (Kreyol)
+2026-11-01 9cd69d8 feat(us-018): aligner le portail public sur l'admission unique au MPC
+2026-11-01 7b9fee1 feat(us-005): backend du formulaire d'inscription et de la question deplacement_physique
+…
+# La fin : clôtures, mise en production, derniers ajouts
+2026-11-05 231ee6b feat(postuler): mise en page bureau du tunnel de candidature et du remplacement
+2026-11-05 0ae26fe docs: clôture des Epics 2 et 3, specs WS-02 à WS-05
+2026-11-05 a6fb5d2 docs(learnings): trois apprentissages tirés du projet (04 à 06)
+2026-11-05 3e0bf90 docs(rapport): premier jet du rapport (sections 1 à 5 et 7 ; trame des sections 6, 8, 9)
+2026-11-06 865f96c docs: US-028 validée ; issues et Milestones des Epics 2 et 3 fermés
+2026-11-06 1d3ad87 docs: emails confirmés en production (review 03, F2 corrigé)
+2026-11-06 b9bb9bd fix: favicon de la FDS à la place de l'icône Vite
+2026-11-06 c544cfd gestiond'acces
+2026-11-06 ec38bcc docs(us-029): gestion des accès dans les specs WS-04, story US-029
+2026-11-06 581797a feat(us-020): noms et descriptions des cursus en kreyòl
+2026-11-06 06bf92b feat(us-016): notifications SMS simulées, comme le paiement
+2026-11-06 f1fa3ec docs: une seule ligne « prochaine story » dans EPIC_EXECUTION
+```
 
 ---
 

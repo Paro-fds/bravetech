@@ -6,7 +6,7 @@ conservé par son navigateur pour reprendre le formulaire après une coupure de 
 
 import os
 
-from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, HTTPException, Request, UploadFile
+from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, HTTPException, Query, Request, UploadFile
 from sqlalchemy.orm import Session
 
 from backend.api.v1.limiteur import adresse_client, limiter_envois, limiter_suivi, limiteur_identite
@@ -354,22 +354,24 @@ def soumettre_candidature(
 @router.get(
     "/{reference}/statut",
     response_model=SuiviDossierResponse,
-    summary="Suivre un dossier soumis par sa référence CAN-AAAA-NNNN (public)",
+    summary="Suivre un dossier soumis par sa référence CAN-AAAA-NNNN et sa date de naissance (public)",
     dependencies=[Depends(limiter_suivi)],
 )
 def obtenir_statut(
     reference: str,
+    date_naissance: str = Query("", max_length=32, description="Date de naissance du candidat (AAAA-MM-JJ)"),
     repo: ICandidatureRepository = Depends(get_candidature_repository),
     documents: IDocumentRepository = Depends(get_document_repository),
 ):
-    """Statut du dossier et de chaque pièce. N'expose ni email, ni téléphone, ni nom de fichier.
+    """Statut du dossier et de chaque pièce, après vérification de la date de naissance.
 
-    Référence inconnue, mal formée ou d'un simple brouillon : même réponse 404, pour ne rien révéler.
+    Référence inconnue, mal formée, simple brouillon ou date de naissance non concordante : même réponse 404,
+    pour empêcher toute énumération des références séquentielles.
     """
     try:
-        suivi = ObtenirStatutCandidatureUseCase(repo, documents).executer(reference)
+        suivi = ObtenirStatutCandidatureUseCase(repo, documents).executer(reference, date_naissance)
     except CandidatureIntrouvable:
-        raise HTTPException(status_code=404, detail="Aucun dossier trouvé pour cette référence.")
+        raise HTTPException(status_code=404, detail="Aucun dossier trouvé pour cette référence et cette date de naissance.")
     return SuiviDossierResponse(
         reference_dossier=suivi.reference,
         prenom=suivi.prenom,
