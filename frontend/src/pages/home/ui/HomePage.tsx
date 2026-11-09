@@ -8,7 +8,6 @@ import { calendrierApi, candidaturesAcceptees, type DatesCalendrier } from '../.
 import { formaterDateCivile } from '../../../features/candidature-form';
 import { useT, type Cle } from '../../../shared/i18n';
 import { PhotoCampus } from '../../../shared/ui/PhotoCampus';
-import { IllustrationDossier } from './IllustrationDossier';
 
 const ETAPES = [1, 2, 3, 4, 5] as const;
 
@@ -125,6 +124,32 @@ const RechercheRapide: React.FC = () => {
   );
 };
 
+/**
+ * Photo d'étudiants de la Faculté, dans le bandeau d'accueil. Les quatre visages occupent 26 à 78 % de la largeur :
+ * le cadrage ne doit jamais descendre sous un rapport largeur / hauteur d'environ 1,6, sinon les deux du bord disparaissent.
+ * - jusqu'à 1279 px : photo pleine largeur au-dessus du texte, au rapport 12/5 ;
+ * - à partir de 1280 px (xl) : photo à droite de la colonne de texte, sur toute la hauteur du bandeau, avec un fondu marine.
+ * Image principale de la page : chargée tout de suite (pas de chargement différé), en WebP (43 Ko ou 117 Ko).
+ */
+const PhotoEtudiants: React.FC = () => {
+  const t = useT();
+  return (
+    <div className="xl:absolute xl:inset-y-0 xl:right-0 xl:left-[calc(max(0px,50%-32rem)+30rem)]">
+      <img
+        src="/etudiants-fds-1600.webp"
+        srcSet="/etudiants-fds-800.webp 800w, /etudiants-fds-1600.webp 1600w"
+        sizes="(min-width: 1280px) 60vw, 100vw"
+        width={1600}
+        height={630}
+        fetchPriority="high"
+        decoding="async"
+        alt={t('accueil.photoAlt')}
+        className="block w-full h-auto aspect-[12/5] object-cover object-[50%_22%] xl:h-full xl:aspect-auto"
+      />
+    </div>
+  );
+};
+
 /** Accueil du portail (maquettes « Accueil » mobile et bureau). */
 export const HomePage: React.FC = () => {
   const t = useT();
@@ -139,11 +164,17 @@ export const HomePage: React.FC = () => {
 
   return (
     <>
-      <section className="bg-fds-navy text-white">
-        <div className="max-w-5xl mx-auto px-4 py-8 md:py-14 lg:pb-20 flex items-center gap-10">
-          <div className="flex-[1_1_480px] flex flex-col gap-4">
+      <section className="relative bg-fds-navy text-white">
+        <PhotoEtudiants />
+        {/* Fondu entre la colonne marine et la photo (ordinateur large) */}
+        <div
+          aria-hidden="true"
+          className="hidden xl:block absolute inset-y-0 left-[calc(max(0px,50%-32rem)+30rem)] w-16 bg-linear-to-r from-fds-navy to-transparent"
+        />
+        <div className="relative max-w-5xl mx-auto px-4 py-8 md:py-14 lg:pb-20 xl:pt-10 xl:pb-16">
+          <div className="flex flex-col gap-4 xl:max-w-[28rem]">
             <BadgeAdmissions />
-            <h1 className="font-fds-serif text-[30px] md:text-[44px] leading-tight font-bold">{t('accueil.titre')}</h1>
+            <h1 className="font-fds-serif text-[30px] md:text-[44px] xl:text-[34px] leading-tight font-bold">{t('accueil.titre')}</h1>
             <p className="text-fds-on-navy md:text-lg max-w-xl">{t('accueil.sousTitre')}</p>
             <div className="flex flex-col sm:flex-row gap-3 pt-1">
               <Link to="/postuler" className={`${CLASSE_BOUTON} sm:min-w-50 bg-fds-gold text-fds-on-light hover:brightness-95`}>
@@ -154,7 +185,6 @@ export const HomePage: React.FC = () => {
               </Link>
             </div>
           </div>
-          <IllustrationDossier className="hidden lg:block flex-[0_1_380px]" />
         </div>
       </section>
 

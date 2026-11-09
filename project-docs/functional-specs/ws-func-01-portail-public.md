@@ -1,6 +1,6 @@
 ---
 created: 2026-09-26T15:23:00Z
-updated: 2026-11-06T18:23:57Z
+updated: 2026-11-09T01:49:35Z
 workstream: WS-01
 ---
 
@@ -21,7 +21,7 @@ Le portail public constitue la vitrine officielle et la première étape du parc
 ### 1.1 Page d'accueil (`/`)
 
 1. **En-tête institutionnel** : logo FDS-UEH, nom de la Faculté, sélecteur de langue FR / KR, menu (Accueil, Cursus, Histoire, Suivre mon dossier, Contact).
-2. **Bandeau d'accroche** : badge d'après le calendrier d'admission (US-028) — « Admissions ouvertes jusqu'au 30 novembre 2026 », « Admissions à partir du … », « Admissions fermées », ou « Admissions ouvertes » sans calendrier ; message « Candidatez à la Faculté des Sciences, sans vous déplacer », bouton principal **Postuler maintenant** (`/postuler`), bouton secondaire **Suivre mon dossier** (`/suivi`). Sur ordinateur, une illustration d'un téléphone affichant un dossier validé pièce par pièce.
+2. **Bandeau d'accroche** : badge d'après le calendrier d'admission (US-028) — « Admissions ouvertes jusqu'au 30 novembre 2026 », « Admissions à partir du … », « Admissions fermées », ou « Admissions ouvertes » sans calendrier ; message « Candidatez à la Faculté des Sciences, sans vous déplacer », bouton principal **Postuler maintenant** (`/postuler`), bouton secondaire **Suivre mon dossier** (`/suivi`). **Photo de quatre étudiants de la Faculté** : sur téléphone et tablette, pleine largeur au-dessus du texte ; sur grand écran (≥ 1280 px), à droite de la colonne de texte, avec un fondu marine. Les quatre visages restent visibles à toutes les largeurs.
 3. **Calendrier d'admission (US-028)** : cinq cases — ouverture, date limite de dépôt (mise en avant), concours, résultats, rentrée ; « À confirmer par la Faculté » pour une date non fixée ; mention « Les candidatures sont fermées » hors période. Section masquée tant qu'aucun calendrier n'est enregistré.
 4. **Comment ça marche** : cinq étapes (découvrir le parcours, remplir le formulaire, payer en simulation, déposer les pièces, suivre son dossier).
 5. **Une admission, puis votre branche** :

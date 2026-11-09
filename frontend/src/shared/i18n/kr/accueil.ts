@@ -7,6 +7,7 @@ export const accueil = {
   'accueil.calendrierTitre': 'Kalandriye admisyon',
   'accueil.titre': 'Poze kandidati ou nan Fakilte Syans lan, san ou pa bezwen deplase.',
   'accueil.sousTitre': 'Gade kourikoulòm yo, depoze dosye ou epi swiv jan yo ap trete l, depi nan telefòn ou.',
+  'accueil.photoAlt': 'Kat etidyan Fakilte Syans lan, k ap souri, devan pòt batiman an',
   'accueil.postuler': 'Aplike kounye a',
   'accueil.suivre': 'Swiv dosye mwen',
 
