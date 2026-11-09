@@ -7,6 +7,7 @@ export const accueil = {
   'accueil.calendrierTitre': 'Calendrier d’admission',
   'accueil.titre': 'Candidatez à la Faculté des Sciences, sans vous déplacer.',
   'accueil.sousTitre': 'Consultez les cursus, déposez votre dossier et suivez son traitement depuis votre téléphone.',
+  'accueil.photoAlt': 'Quatre étudiants de la Faculté des Sciences, souriants, devant l’entrée du bâtiment',
   'accueil.postuler': 'Postuler maintenant',
   'accueil.suivre': 'Suivre mon dossier',
 
