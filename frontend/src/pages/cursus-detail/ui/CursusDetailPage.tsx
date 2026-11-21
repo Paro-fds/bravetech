@@ -108,7 +108,7 @@ export const CursusDetailPage: React.FC = () => {
 
   return (
     <>
-      <section className="lg:bg-fds-navy lg:text-white">
+      <section className="lg:bg-fds-bandeau lg:text-white">
         <div className="max-w-5xl mx-auto px-4 pt-6 lg:pt-7 lg:pb-10 flex flex-col gap-4">
           {retour}
           <div className="flex items-center gap-8">

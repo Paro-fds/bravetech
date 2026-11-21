@@ -107,7 +107,7 @@ export const ContactPage: React.FC = () => {
   return (
     <>
       {/* Sur ordinateur, le titre devient un bandeau marine (maquette « Contact bureau ») */}
-      <section className="lg:bg-fds-navy lg:text-white">
+      <section className="lg:bg-fds-bandeau lg:text-white">
         <div className="max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 lg:py-11 flex flex-col gap-2 lg:gap-2.5">
           <h1 className="font-fds-serif text-2xl lg:text-[40px] font-bold text-fds-title lg:text-white">{t('contact.titre')}</h1>
           <p className="text-fds-mute lg:text-fds-on-navy lg:text-lg">{t('contact.sousTitre')}</p>

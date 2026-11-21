@@ -26,7 +26,7 @@ export const FlowLayout: React.FC = () => {
       >
         {t('nav.allerContenu')}
       </a>
-      <header className="bg-fds-navy text-white">
+      <header className="bg-fds-bandeau text-white border-b border-fds-bandeau-line">
         <div className="max-w-xl lg:max-w-5xl mx-auto flex items-center gap-3 px-4 py-2.5">
           <Link to="/" className="flex items-center gap-3 min-h-11 mr-auto" aria-label={t('marque.accueilRetour')}>
             <img src="/logo-fds.png" alt={t('marque.logoAlt')} width={40} height={40} className="rounded" />

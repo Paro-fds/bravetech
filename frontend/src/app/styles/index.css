@@ -5,7 +5,10 @@
  * Les composants n'emploient QUE ces jetons : le mode sombre (US-017) les redéfinit plus bas sous [data-theme='dark'],
  * sans toucher aux composants. Les noms décrivent un rôle, pas une teinte :
  *   - fonds : page, surface (cartes, champs), surface-alt, sunken (zones creuses), navy-t (fond teinté bleu), *-bg ;
- *   - aplats portant du texte blanc : navy, navy-d (en-têtes, boutons), ok-solid, bad-solid ; gold porte on-light ;
+ *   - aplats portant du texte blanc : navy, navy-d (boutons, pastilles), ok-solid, bad-solid ; gold porte on-light ;
+ *   - bandeaux de structure (en-tête, pied de page, bandeaux de titre, barre admin) : bandeau, bandeau-d, bandeau-line.
+ *     Ils sont distincts de navy car, en sombre, navy s'éclaircit (boutons lisibles) alors que les bandeaux
+ *     doivent s'assombrir avec la page — sinon en-tête et pied de page restent des blocs bleus vifs ;
  *   - textes : ink (courant), mute (secondaire), title (titres), accent (liens, icônes, bordures actives), ok, bad, warn ;
  *     on-navy (texte secondaire sur aplat marine), on-light (texte sombre sur aplat clair : or, pastille blanche) ;
  *   - traits : line, field (bord des champs), accent-line, ok-line, bad-line, warn-line.
@@ -19,6 +22,9 @@
   --color-fds-navy: #01346d;
   --color-fds-navy-d: #022552;
   --color-fds-navy-t: #e6edf6;
+  --color-fds-bandeau: #01346d;
+  --color-fds-bandeau-d: #022552;
+  --color-fds-bandeau-line: #01346d;
   --color-fds-gold: #f0b429;
   --color-fds-on-navy: #cfe0f5;
   --color-fds-on-light: #022552;
@@ -56,6 +62,9 @@
   --color-fds-navy: #1d4b86;
   --color-fds-navy-d: #163a69;
   --color-fds-navy-t: #182c49;
+  --color-fds-bandeau: #121d31;
+  --color-fds-bandeau-d: #0a111d;
+  --color-fds-bandeau-line: #24334d;
   --color-fds-on-navy: #d6e4f6;
   --color-fds-title: #eef3fa;
   --color-fds-accent: #93bbf0;
