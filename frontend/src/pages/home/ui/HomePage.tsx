@@ -164,12 +164,12 @@ export const HomePage: React.FC = () => {
 
   return (
     <>
-      <section className="relative bg-fds-navy text-white">
+      <section className="relative bg-fds-bandeau text-white">
         <PhotoEtudiants />
         {/* Fondu entre la colonne marine et la photo (ordinateur large) */}
         <div
           aria-hidden="true"
-          className="hidden xl:block absolute inset-y-0 left-[calc(max(0px,50%-32rem)+30rem)] w-16 bg-linear-to-r from-fds-navy to-transparent"
+          className="hidden xl:block absolute inset-y-0 left-[calc(max(0px,50%-32rem)+30rem)] w-16 bg-linear-to-r from-fds-bandeau to-transparent"
         />
         <div className="relative max-w-5xl mx-auto px-4 py-8 md:py-14 lg:pb-20 xl:pt-10 xl:pb-16">
           <div className="flex flex-col gap-4 xl:max-w-[28rem]">

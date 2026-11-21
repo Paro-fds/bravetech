@@ -49,7 +49,7 @@ export const AdminLoginPage: React.FC = () => {
     'w-full min-h-12 rounded-lg border-[1.5px] border-fds-field bg-fds-surface px-3 text-base text-fds-ink focus:outline-none focus:ring-2 focus:ring-fds-accent';
 
   return (
-    <div className="min-h-screen bg-fds-navy flex items-center justify-center px-4 py-8 font-fds-sans">
+    <div className="min-h-screen bg-fds-bandeau flex items-center justify-center px-4 py-8 font-fds-sans">
       <main className="w-full max-w-[440px] flex flex-col gap-5">
         <div className="flex flex-col items-center gap-2.5 text-center text-white">
           <img

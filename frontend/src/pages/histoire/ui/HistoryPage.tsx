@@ -17,10 +17,10 @@ export const HistoryPage: React.FC = () => {
   const t = useT();
   return (
     <>
-      <section className="relative overflow-hidden bg-fds-navy text-white lg:bg-fds-navy-d lg:min-h-100 lg:flex lg:items-end">
+      <section className="relative overflow-hidden bg-fds-bandeau text-white lg:bg-fds-bandeau-d lg:min-h-100 lg:flex lg:items-end">
         <PhotoCampus tailles="100vw" className="hidden lg:block absolute inset-0 w-full h-full" />
         {/* Voile marine : le titre blanc reste lisible sur la photo */}
-        <div aria-hidden="true" className="hidden lg:block absolute inset-0 bg-fds-navy-d/75" />
+        <div aria-hidden="true" className="hidden lg:block absolute inset-0 bg-fds-bandeau-d/75" />
         <div className="relative w-full max-w-3xl lg:max-w-5xl mx-auto px-4 py-8 lg:pt-14 lg:pb-12 flex flex-col gap-2.5 lg:gap-3">
           <span className="self-start rounded-full bg-white/15 px-2.5 py-0.5 text-[13px] font-semibold">{t('histoire.badge')}</span>
           <h1 className="font-fds-serif text-[28px] lg:text-[46px] leading-tight font-bold lg:max-w-3xl">{t('histoire.titre')}</h1>

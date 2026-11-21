@@ -52,7 +52,7 @@ export const SiteLayout: React.FC = () => {
       >
         {t('nav.allerContenu')}
       </a>
-      <header className="bg-fds-navy text-white">
+      <header className="bg-fds-bandeau text-white border-b border-fds-bandeau-line">
         <div className="max-w-5xl mx-auto px-4 py-2.5 flex items-center gap-3 lg:gap-4">
           {/* Sur petit écran le nom passe sur deux lignes (et l'université se masque sous 400 px) */}
           <Link to="/" className="flex flex-1 min-w-0 items-center gap-3 min-h-11 lg:flex-none lg:mr-auto" aria-label={t('marque.accueilLien')}>
@@ -114,7 +114,7 @@ export const SiteLayout: React.FC = () => {
         <Outlet />
       </main>
 
-      <footer className="bg-fds-navy-d text-fds-on-navy text-sm">
+      <footer className="bg-fds-bandeau-d text-fds-on-navy text-sm border-t border-fds-bandeau-line">
         {/* Sur ordinateur (maquette bureau) : identité à gauche, liens à droite, mentions sur toute la largeur */}
         <div className="max-w-5xl mx-auto px-4 py-6 lg:py-8 flex flex-col lg:flex-row lg:flex-wrap lg:items-center lg:justify-between gap-3 lg:gap-x-8">
           <div className="flex flex-col gap-3 lg:gap-2">
